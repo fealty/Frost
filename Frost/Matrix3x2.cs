@@ -3,3 +3,367 @@
 // 
 // See LICENSE for more information.
 
+using System;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
+
+namespace Frost
+{
+	public struct Matrix3x2 : IEquatable<Matrix3x2>
+	{
+		private static readonly Matrix3x2 _Identity;
+
+		private readonly float _11;
+		private readonly float _12;
+		private readonly float _21;
+		private readonly float _22;
+		private readonly float _31;
+		private readonly float _32;
+
+		static Matrix3x2()
+		{
+			_Identity = new Matrix3x2(
+				1.0f,
+				0.0f,
+				0.0f,
+				1.0f,
+				0.0f,
+				0.0f);
+		}
+
+		public Matrix3x2(
+			float m11,
+			float m12,
+			float m21,
+			float m22,
+			float m31,
+			float m32)
+		{
+			Trace.Assert(Check.IsFinite(m11));
+			Trace.Assert(Check.IsFinite(m12));
+			Trace.Assert(Check.IsFinite(m21));
+			Trace.Assert(Check.IsFinite(m22));
+			Trace.Assert(Check.IsFinite(m31));
+			Trace.Assert(Check.IsFinite(m32));
+
+			this._11 = m11;
+			this._12 = m12;
+			this._21 = m21;
+			this._22 = m22;
+			this._31 = m31;
+			this._32 = m32;
+		}
+
+		public static Matrix3x2 Identity
+		{
+			get { return _Identity; }
+		}
+
+		public float M32
+		{
+			get
+			{
+				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+
+				return this._32;
+			}
+		}
+
+		public float M31
+		{
+			get
+			{
+				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+
+				return this._31;
+			}
+		}
+
+		public float M22
+		{
+			get
+			{
+				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+
+				return this._22;
+			}
+		}
+
+		public float M21
+		{
+			get
+			{
+				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+
+				return this._21;
+			}
+		}
+
+		public float M12
+		{
+			get
+			{
+				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+
+				return this._12;
+			}
+		}
+
+		public float M11
+		{
+			get
+			{
+				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+
+				return this._11;
+			}
+		}
+
+		public bool IsIdentity
+		{
+			get
+			{
+				return this._11.Equals(1.0f) && this._12.Equals(0.0f) &&
+				       this._21.Equals(0.0f) && this._22.Equals(1.0f) &&
+				       this._31.Equals(0.0f) && this._32.Equals(0.0f);
+			}
+		}
+
+		public bool Equals(Matrix3x2 other)
+		{
+			return other._11.Equals(this._11) && other._12.Equals(this._12) &&
+			       other._21.Equals(this._21) && other._22.Equals(this._22) &&
+			       other._31.Equals(this._31) && other._32.Equals(this._32);
+		}
+
+		public void Translate(
+			float width,
+			float height,
+			out Matrix3x2 result)
+		{
+			Trace.Assert(Check.IsFinite(width));
+			Trace.Assert(Check.IsFinite(height));
+
+			result = new Matrix3x2(
+				1.0f,
+				0.0f,
+				0.0f,
+				1.0f,
+				width,
+				height);
+
+			result.Multiply(
+				ref this,
+				out result);
+		}
+
+		public void Skew(
+			float angleX,
+			float angleY,
+			out Matrix3x2 result)
+		{
+			Trace.Assert(Check.IsDegrees(angleX));
+			Trace.Assert(Check.IsDegrees(angleY));
+
+			double radiansX = (Math.PI * angleX) / 180.0f;
+			double radiansY = (Math.PI * angleY) / 180.0;
+
+			result = new Matrix3x2(
+				1.0f,
+				Convert.ToSingle(Math.Tan(radiansX)),
+				Convert.ToSingle(Math.Tan(radiansY)),
+				1.0f,
+				0.0f,
+				0.0f);
+
+			result.Multiply(
+				ref this,
+				out result);
+		}
+
+		public void Scale(
+			float width,
+			float height,
+			out Matrix3x2 result)
+		{
+			Trace.Assert(Check.IsPositive(width));
+			Trace.Assert(Check.IsPositive(height));
+
+			result = new Matrix3x2(
+				width,
+				0.0f,
+				0.0f,
+				height,
+				0.0f,
+				0.0f);
+
+			result.Multiply(
+				ref this,
+				out result);
+		}
+
+		public void Scale(
+			float width,
+			float height,
+			float originX,
+			float originY,
+			out Matrix3x2 result)
+		{
+			Trace.Assert(Check.IsPositive(width));
+			Trace.Assert(Check.IsPositive(height));
+			Trace.Assert(Check.IsFinite(originX));
+			Trace.Assert(Check.IsFinite(originY));
+
+			float translationX = originX - (width * originX);
+			float translationY = originY - (height * originY);
+
+			result = new Matrix3x2(
+				width,
+				0.0f,
+				0.0f,
+				height,
+				translationX,
+				translationY);
+
+			result.Multiply(
+				ref this,
+				out result);
+		}
+
+		public void Rotate(
+			float angle,
+			out Matrix3x2 result)
+		{
+			Trace.Assert(Check.IsDegrees(angle));
+
+			double radians = (Math.PI * angle) / 180.0;
+
+			float rcos = Convert.ToSingle(Math.Cos(radians));
+			float rsin = Convert.ToSingle(Math.Sin(radians));
+
+			result = new Matrix3x2(
+				rcos,
+				rsin,
+				-rsin,
+				rcos,
+				0.0f,
+				0.0f);
+
+			result.Multiply(
+				ref this,
+				out result);
+		}
+
+		public void Rotate(
+			float angle,
+			float originX,
+			float originY,
+			out Matrix3x2 result)
+		{
+			Trace.Assert(Check.IsDegrees(angle));
+			Trace.Assert(Check.IsFinite(originX));
+			Trace.Assert(Check.IsFinite(originY));
+
+			Matrix3x2 nTranslate;
+			Matrix3x2 pTranslate;
+
+			Identity.Translate(
+				-originX,
+				-originY,
+				out nTranslate);
+			Identity.Translate(
+				+originX,
+				+originY,
+				out pTranslate);
+
+			Matrix3x2 rotation;
+
+			Identity.Rotate(
+				angle,
+				out rotation);
+
+			result = nTranslate;
+
+			result.Multiply(
+				ref rotation,
+				out result);
+			result.Multiply(
+				ref pTranslate,
+				out result);
+			result.Multiply(
+				ref this,
+				out result);
+		}
+
+		public void Multiply(
+			ref Matrix3x2 right,
+			out Matrix3x2 result)
+		{
+			float m11 = (this._11 * right.M11) + (this._12 * right.M21);
+			float m12 = (this._11 * right.M12) + (this._12 * right.M22);
+			float m21 = (this._21 * right.M11) + (this._22 * right.M21);
+			float m22 = (this._21 * right.M12) + (this._22 * right.M22);
+			float m31 = (this._31 * right.M11) + (this._32 * right.M21) + right.M31;
+			float m32 = (this._31 * right.M12) + (this._32 * right.M22) + right.M32;
+
+			result = new Matrix3x2(
+				m11,
+				m12,
+				m21,
+				m22,
+				m31,
+				m32);
+		}
+
+		public override string ToString()
+		{
+			return
+				string.Format(
+					"M11: {0}, M12: {1}, M21: {2}, M22: {3}, M31: {4}, M32: {5}",
+					this._11,
+					this._12,
+					this._21,
+					this._22,
+					this._31,
+					this._32);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if(ReferenceEquals(
+				null,
+				obj))
+			{
+				return false;
+			}
+
+			return obj is Matrix3x2 && Equals((Matrix3x2)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int result = this._11.GetHashCode();
+				result = (result * 397) ^ this._12.GetHashCode();
+				result = (result * 397) ^ this._21.GetHashCode();
+				result = (result * 397) ^ this._22.GetHashCode();
+				result = (result * 397) ^ this._31.GetHashCode();
+				result = (result * 397) ^ this._32.GetHashCode();
+				return result;
+			}
+		}
+
+		public static bool operator ==(Matrix3x2 left,
+		                               Matrix3x2 right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(Matrix3x2 left,
+		                               Matrix3x2 right)
+		{
+			return !left.Equals(right);
+		}
+	}
+}
