@@ -1,8 +1,13 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 
 namespace Frost
 {
-	internal static class Check
+	public static class Check
 	{
 		public static bool IsFinite(float value)
 		{
