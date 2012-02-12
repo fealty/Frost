@@ -1395,7 +1395,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsDegrees(Contract.Result<float>()));
-
+				
 				float result;
 
 				float max = V;

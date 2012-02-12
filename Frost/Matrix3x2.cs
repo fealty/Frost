@@ -165,7 +165,7 @@ namespace Frost
 			Trace.Assert(Check.IsDegrees(angleX));
 			Trace.Assert(Check.IsDegrees(angleY));
 
-			double radiansX = (Math.PI * angleX) / 180.0f;
+			double radiansX = (Math.PI * angleX) / 180.0;
 			double radiansY = (Math.PI * angleY) / 180.0;
 
 			result = new Matrix3x2(
