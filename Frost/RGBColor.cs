@@ -23,10 +23,20 @@ namespace Frost
 			Trace.Assert(Check.IsByte(blue));
 			Trace.Assert(Check.IsPercentage(alpha));
 
+			red = Convert.ToSingle(Math.Round(red, 4));
+			green = Convert.ToSingle(Math.Round(green, 4));
+			blue = Convert.ToSingle(Math.Round(blue, 4));
+			alpha = Convert.ToSingle(Math.Round(alpha, 4));
+
 			this._R = red;
 			this._G = green;
 			this._B = blue;
 			this._A = alpha;
+
+			Contract.Assert(R.Equals(red));
+			Contract.Assert(G.Equals(green));
+			Contract.Assert(B.Equals(blue));
+			Contract.Assert(A.Equals(alpha));
 		}
 
 		public float R
@@ -34,6 +44,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsByte(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._R));
 
 				return this._R;
 			}
@@ -44,6 +55,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsByte(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._G));
 
 				return this._G;
 			}
@@ -54,6 +66,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsByte(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._B));
 
 				return this._B;
 			}
@@ -64,6 +77,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsPercentage(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._A));
 
 				return this._A;
 			}
@@ -124,5 +138,18 @@ namespace Frost
 		{
 			return !left.Equals(right);
 		}
+
+#if(UNIT_TESTING)
+		[Fact] internal static void Test0()
+		{
+			Assert.Equal<RGBColor>(new RGBColor(000, 000, 000), new Color(0, 0, 0));
+			Assert.Equal<RGBColor>(new RGBColor(255, 255, 255), new Color(1, 1, 1));
+
+			Assert.Equal<Color>(new Color(0, 0, 0), new RGBColor(000, 000, 000));
+			Assert.Equal<Color>(new Color(1, 1, 1), new RGBColor(255, 255, 255));
+
+			Assert.TestObject<RGBColor>(Color.Red, Color.Blue);
+		}
+#endif
 	}
 }
