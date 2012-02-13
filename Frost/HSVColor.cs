@@ -168,7 +168,7 @@ namespace Frost
 						b = v;
 						break;
 
-					case 5:
+					default:
 						r = v;
 						g = p;
 						b = q;
