@@ -142,6 +142,11 @@ namespace Frost
 #if(UNIT_TESTING)
 		[Fact] internal static void Test0()
 		{
+			Assert.Equal(1, new RGBColor(1, 2, 3, 4).R);
+			Assert.Equal(2, new RGBColor(1, 2, 3, 4).G);
+			Assert.Equal(3, new RGBColor(1, 2, 3, 4).B);
+			Assert.Equal(4, new RGBColor(1, 2, 3, 4).A);
+
 			Assert.Equal<RGBColor>(new RGBColor(000, 000, 000), new Color(0, 0, 0));
 			Assert.Equal<RGBColor>(new RGBColor(255, 255, 255), new Color(1, 1, 1));
 

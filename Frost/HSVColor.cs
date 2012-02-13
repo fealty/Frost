@@ -258,6 +258,11 @@ namespace Frost
 #if(UNIT_TESTING)
 		[Fact] internal static void Test0()
 		{
+			Assert.Equal(1, new HSVColor(1, 2, 3, 4).H);
+			Assert.Equal(2, new HSVColor(1, 2, 3, 4).S);
+			Assert.Equal(3, new HSVColor(1, 2, 3, 4).V);
+			Assert.Equal(4, new HSVColor(1, 2, 3, 4).A);
+
 			Assert.Equal<HSVColor>(new HSVColor(000, 100, 100), new Color(1, 0, 0));
 			Assert.Equal<HSVColor>(new HSVColor(060, 100, 100), new Color(1, 1, 0));
 			Assert.Equal<HSVColor>(new HSVColor(120, 100, 100), new Color(0, 1, 0));

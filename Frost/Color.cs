@@ -6,7 +6,6 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Reflection;
 
 namespace Frost
 {
@@ -929,6 +928,11 @@ namespace Frost
 
 		[Fact] internal void Test0()
 		{
+			Assert.Equal(0, new Color(0, 0.25f, 0.5f).R);
+			Assert.Equal(0.25f, new Color(0, 0.25f, 0.5f).G);
+			Assert.Equal(0.5f, new Color(0, 0.25f, 0.5f).B);
+			Assert.Equal(1, new Color(0, 0.25f, 0.5f).A);
+
 			Assert.TestObject(Red, Blue);
 
 			Assert.Equal<Color>(new Color(1, 0, 0), new HSVColor(000, 100, 100));
