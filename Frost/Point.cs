@@ -128,7 +128,7 @@ namespace Frost
 			return new Point(lineStart.X + (d * v.X), lineStart.Y + (d * v.Y));
 		}
 
-		public Point Transform(ref Matrix3x2 transformation)
+		public Point Transform(ref Matrix3X2 transformation)
 		{
 			return
 				new Point(
