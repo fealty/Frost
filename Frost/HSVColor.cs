@@ -7,8 +7,6 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-using NUnit.Framework;
-
 namespace Frost
 {
 	public struct HSVColor : IEquatable<HSVColor>
@@ -246,7 +244,7 @@ namespace Frost
 			return !left.Equals(right);
 		}
 
-#if TEST
+#if UNIT_TESTING
 		[TestFixture] internal static class Tests
 		{
 			[Test] public static void Test0()
