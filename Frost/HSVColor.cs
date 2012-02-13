@@ -244,13 +244,15 @@ namespace Frost
 			return !left.Equals(right);
 		}
 
-#if UNIT_TESTING
-		[TestFixture] internal static class Tests
+#if(UNIT_TESTING)
+		[Fact] internal static void Test0()
 		{
-			[Test] public static void Test0()
-			{
-				Assert.AreEqual(0, new HSVColor()._H);
-			}
+			Assert.Equal(0, 1);
+		}
+
+		[Fact] internal static void Test1()
+		{
+			Assert.True(true);
 		}
 #endif
 	}
