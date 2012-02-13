@@ -27,9 +27,7 @@ namespace Frost
 			_Empty = new Point(0.0f);
 		}
 
-		public Point(
-			float x,
-			float y)
+		public Point(float x, float y)
 		{
 			Trace.Assert(Check.IsFinite(x));
 			Trace.Assert(Check.IsFinite(y));
@@ -106,16 +104,10 @@ namespace Frost
 			return Convert.ToSingle((dx * dx) + (dy * dy));
 		}
 
-		public Point FindIntersectionWith(
-			Point lineStart,
-			Point lineEnd)
+		public Point FindIntersectionWith(Point lineStart, Point lineEnd)
 		{
-			Point v = new Point(
-				lineEnd.X - lineStart.X,
-				lineEnd.Y - lineStart.Y);
-			Point w = new Point(
-				this._X - lineStart.X,
-				this._Y - lineStart.Y);
+			Point v = new Point(lineEnd.X - lineStart.X, lineEnd.Y - lineStart.Y);
+			Point w = new Point(this._X - lineStart.X, this._Y - lineStart.Y);
 
 			float c1 = w.X * v.X + w.Y * v.Y;
 
@@ -133,25 +125,22 @@ namespace Frost
 
 			float d = c1 / c2;
 
-			return new Point(
-				lineStart.X + (d * v.X),
-				lineStart.Y + (d * v.Y));
+			return new Point(lineStart.X + (d * v.X), lineStart.Y + (d * v.Y));
 		}
 
 		public Point Transform(ref Matrix3x2 transformation)
 		{
-			return new Point(
-				(this._X * transformation.M11) + (this._Y * transformation.M21) +
-				transformation.M31,
-				(this._X * transformation.M12) + (this._Y * transformation.M22) +
-				transformation.M32);
+			return
+				new Point(
+					(this._X * transformation.M11) + (this._Y * transformation.M21) +
+					transformation.M31,
+					(this._X * transformation.M12) + (this._Y * transformation.M22) +
+					transformation.M32);
 		}
 
 		public override bool Equals(object obj)
 		{
-			if(ReferenceEquals(
-				null,
-				obj))
+			if(ReferenceEquals(null, obj))
 			{
 				return false;
 			}
@@ -167,14 +156,17 @@ namespace Frost
 			}
 		}
 
-		public static bool operator ==(Point left,
-		                               Point right)
+		public override string ToString()
+		{
+			return string.Format("X: {0}, Y: {1}", this._X, this._Y);
+		}
+
+		public static bool operator ==(Point left, Point right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(Point left,
-		                               Point right)
+		public static bool operator !=(Point left, Point right)
 		{
 			return !left.Equals(right);
 		}

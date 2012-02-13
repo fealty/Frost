@@ -22,22 +22,11 @@ namespace Frost
 
 		static Matrix3x2()
 		{
-			_Identity = new Matrix3x2(
-				1.0f,
-				0.0f,
-				0.0f,
-				1.0f,
-				0.0f,
-				0.0f);
+			_Identity = new Matrix3x2(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 		}
 
 		public Matrix3x2(
-			float m11,
-			float m12,
-			float m21,
-			float m22,
-			float m31,
-			float m32)
+			float m11, float m12, float m21, float m22, float m31, float m32)
 		{
 			Trace.Assert(Check.IsFinite(m11));
 			Trace.Assert(Check.IsFinite(m12));
@@ -136,31 +125,17 @@ namespace Frost
 			       other._31.Equals(this._31) && other._32.Equals(this._32);
 		}
 
-		public void Translate(
-			float width,
-			float height,
-			out Matrix3x2 result)
+		public void Translate(float width, float height, out Matrix3x2 result)
 		{
 			Trace.Assert(Check.IsFinite(width));
 			Trace.Assert(Check.IsFinite(height));
 
-			result = new Matrix3x2(
-				1.0f,
-				0.0f,
-				0.0f,
-				1.0f,
-				width,
-				height);
+			result = new Matrix3x2(1.0f, 0.0f, 0.0f, 1.0f, width, height);
 
-			result.Multiply(
-				ref this,
-				out result);
+			result.Multiply(ref this, out result);
 		}
 
-		public void Skew(
-			float angleX,
-			float angleY,
-			out Matrix3x2 result)
+		public void Skew(float angleX, float angleY, out Matrix3x2 result)
 		{
 			Trace.Assert(Check.IsDegrees(angleX));
 			Trace.Assert(Check.IsDegrees(angleY));
@@ -176,38 +151,21 @@ namespace Frost
 				0.0f,
 				0.0f);
 
-			result.Multiply(
-				ref this,
-				out result);
+			result.Multiply(ref this, out result);
 		}
 
-		public void Scale(
-			float width,
-			float height,
-			out Matrix3x2 result)
+		public void Scale(float width, float height, out Matrix3x2 result)
 		{
 			Trace.Assert(Check.IsPositive(width));
 			Trace.Assert(Check.IsPositive(height));
 
-			result = new Matrix3x2(
-				width,
-				0.0f,
-				0.0f,
-				height,
-				0.0f,
-				0.0f);
+			result = new Matrix3x2(width, 0.0f, 0.0f, height, 0.0f, 0.0f);
 
-			result.Multiply(
-				ref this,
-				out result);
+			result.Multiply(ref this, out result);
 		}
 
 		public void Scale(
-			float width,
-			float height,
-			float originX,
-			float originY,
-			out Matrix3x2 result)
+			float width, float height, float originX, float originY, out Matrix3x2 result)
 		{
 			Trace.Assert(Check.IsPositive(width));
 			Trace.Assert(Check.IsPositive(height));
@@ -217,22 +175,12 @@ namespace Frost
 			float translationX = originX - (width * originX);
 			float translationY = originY - (height * originY);
 
-			result = new Matrix3x2(
-				width,
-				0.0f,
-				0.0f,
-				height,
-				translationX,
-				translationY);
+			result = new Matrix3x2(width, 0.0f, 0.0f, height, translationX, translationY);
 
-			result.Multiply(
-				ref this,
-				out result);
+			result.Multiply(ref this, out result);
 		}
 
-		public void Rotate(
-			float angle,
-			out Matrix3x2 result)
+		public void Rotate(float angle, out Matrix3x2 result)
 		{
 			Trace.Assert(Check.IsDegrees(angle));
 
@@ -241,24 +189,13 @@ namespace Frost
 			float rcos = Convert.ToSingle(Math.Cos(radians));
 			float rsin = Convert.ToSingle(Math.Sin(radians));
 
-			result = new Matrix3x2(
-				rcos,
-				rsin,
-				-rsin,
-				rcos,
-				0.0f,
-				0.0f);
+			result = new Matrix3x2(rcos, rsin, -rsin, rcos, 0.0f, 0.0f);
 
-			result.Multiply(
-				ref this,
-				out result);
+			result.Multiply(ref this, out result);
 		}
 
 		public void Rotate(
-			float angle,
-			float originX,
-			float originY,
-			out Matrix3x2 result)
+			float angle, float originX, float originY, out Matrix3x2 result)
 		{
 			Trace.Assert(Check.IsDegrees(angle));
 			Trace.Assert(Check.IsFinite(originX));
@@ -267,37 +204,21 @@ namespace Frost
 			Matrix3x2 nTranslate;
 			Matrix3x2 pTranslate;
 
-			Identity.Translate(
-				-originX,
-				-originY,
-				out nTranslate);
-			Identity.Translate(
-				+originX,
-				+originY,
-				out pTranslate);
+			Identity.Translate(-originX, -originY, out nTranslate);
+			Identity.Translate(+originX, +originY, out pTranslate);
 
 			Matrix3x2 rotation;
 
-			Identity.Rotate(
-				angle,
-				out rotation);
+			Identity.Rotate(angle, out rotation);
 
 			result = nTranslate;
 
-			result.Multiply(
-				ref rotation,
-				out result);
-			result.Multiply(
-				ref pTranslate,
-				out result);
-			result.Multiply(
-				ref this,
-				out result);
+			result.Multiply(ref rotation, out result);
+			result.Multiply(ref pTranslate, out result);
+			result.Multiply(ref this, out result);
 		}
 
-		public void Multiply(
-			ref Matrix3x2 right,
-			out Matrix3x2 result)
+		public void Multiply(ref Matrix3x2 right, out Matrix3x2 result)
 		{
 			float m11 = (this._11 * right.M11) + (this._12 * right.M21);
 			float m12 = (this._11 * right.M12) + (this._12 * right.M22);
@@ -306,13 +227,7 @@ namespace Frost
 			float m31 = (this._31 * right.M11) + (this._32 * right.M21) + right.M31;
 			float m32 = (this._31 * right.M12) + (this._32 * right.M22) + right.M32;
 
-			result = new Matrix3x2(
-				m11,
-				m12,
-				m21,
-				m22,
-				m31,
-				m32);
+			result = new Matrix3x2(m11, m12, m21, m22, m31, m32);
 		}
 
 		public override string ToString()
@@ -330,9 +245,7 @@ namespace Frost
 
 		public override bool Equals(object obj)
 		{
-			if(ReferenceEquals(
-				null,
-				obj))
+			if(ReferenceEquals(null, obj))
 			{
 				return false;
 			}
@@ -354,14 +267,12 @@ namespace Frost
 			}
 		}
 
-		public static bool operator ==(Matrix3x2 left,
-		                               Matrix3x2 right)
+		public static bool operator ==(Matrix3x2 left, Matrix3x2 right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(Matrix3x2 left,
-		                               Matrix3x2 right)
+		public static bool operator !=(Matrix3x2 left, Matrix3x2 right)
 		{
 			return !left.Equals(right);
 		}

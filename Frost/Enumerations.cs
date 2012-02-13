@@ -26,12 +26,6 @@ namespace Frost
 		RightToLeft
 	}
 
-	public enum ColorSpace
-	{
-		RGB,
-		HSV
-	}
-
 	public enum TransformMode
 	{
 		Multiply,
