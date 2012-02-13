@@ -6,6 +6,7 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Reflection;
 
 namespace Frost
 {
@@ -808,17 +809,22 @@ namespace Frost
 		private readonly float _G;
 		private readonly float _R;
 
-		public Color(float r, float g, float b, float a = 1.0f)
+		public Color(float red, float green, float blue, float alpha = 1.0f)
 		{
-			Trace.Assert(Check.IsNormalized(g));
-			Trace.Assert(Check.IsNormalized(b));
-			Trace.Assert(Check.IsNormalized(a));
-			Trace.Assert(Check.IsNormalized(r));
+			Trace.Assert(Check.IsNormalized(green));
+			Trace.Assert(Check.IsNormalized(blue));
+			Trace.Assert(Check.IsNormalized(alpha));
+			Trace.Assert(Check.IsNormalized(red));
 
-			this._R = r;
-			this._G = g;
-			this._B = b;
-			this._A = a;
+			this._R = red;
+			this._G = green;
+			this._B = blue;
+			this._A = alpha;
+
+			Contract.Assert(R.Equals(red));
+			Contract.Assert(G.Equals(green));
+			Contract.Assert(B.Equals(blue));
+			Contract.Assert(A.Equals(alpha));
 		}
 
 		public float R
@@ -826,6 +832,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._R));
 
 				return this._R;
 			}
@@ -836,6 +843,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._G));
 
 				return this._G;
 			}
@@ -846,6 +854,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._B));
 
 				return this._B;
 			}
@@ -856,6 +865,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._A));
 
 				return this._A;
 			}
@@ -914,5 +924,25 @@ namespace Frost
 		{
 			return !left.Equals(right);
 		}
+
+		#if(UNIT_TESTING)
+
+		[Fact] internal void Test0()
+		{
+			Assert.TestObject(Red, Blue);
+
+			Assert.Equal<Color>(new Color(1, 0, 0), new HSVColor(000, 100, 100));
+			Assert.Equal<Color>(new Color(1, 1, 0), new HSVColor(060, 100, 100));
+			Assert.Equal<Color>(new Color(0, 1, 0), new HSVColor(120, 100, 100));
+			Assert.Equal<Color>(new Color(0, 1, 1), new HSVColor(180, 100, 100));
+			Assert.Equal<Color>(new Color(0, 0, 1), new HSVColor(240, 100, 100));
+			Assert.Equal<Color>(new Color(1, 0, 1), new HSVColor(360, 100, 100));
+			Assert.Equal<Color>(new Color(1, 1, 1), new HSVColor(180, 000, 100));
+
+			Assert.Equal<Color>(new Color(0, 0, 0), new RGBColor(000, 000, 000));
+			Assert.Equal<Color>(new Color(1, 1, 1), new RGBColor(255, 255, 255));
+		}
+
+		#endif
 	}
 }
