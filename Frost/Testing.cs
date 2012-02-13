@@ -26,6 +26,8 @@ namespace Frost
 			// test IEquatable<T> if any on the type
 			Equal(item1, item1);
 			NotEqual(item1, item2);
+			NotEqual(item2, item1);
+			Equal(item2, item2);
 
 			// test the object.Equals() on the type
 			True(item1.Equals(object1));
