@@ -34,14 +34,13 @@ namespace Frost
 
 			this._X = x;
 			this._Y = y;
+
+			Contract.Assert(X.Equals(x));
+			Contract.Assert(Y.Equals(y));
 		}
 
-		public Point(float xy)
+		public Point(float xy) : this(xy, xy)
 		{
-			Trace.Assert(Check.IsFinite(xy));
-
-			this._X = xy;
-			this._Y = xy;
 		}
 
 		public float Y
@@ -49,6 +48,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._Y));
 
 				return this._Y;
 			}
@@ -59,6 +59,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._X));
 
 				return this._X;
 			}
@@ -170,5 +171,44 @@ namespace Frost
 		{
 			return !left.Equals(right);
 		}
+
+#if(UNIT_TESTING)
+		[Fact] internal static void Test0()
+		{
+			Assert.Equal(0, new Point(0, 1).X);
+			Assert.Equal(1, new Point(0, 1).Y);
+
+			Assert.Equal(0, Empty.X);
+			Assert.Equal(0, Empty.Y);
+
+			Assert.Equal(1.41421, Math.Round(Empty.DistanceTo(new Point(1, 1)), 5));
+			Assert.Equal(0.00000, Math.Round(Empty.DistanceTo(new Point(0, 0)), 5));
+
+			Assert.Equal(2, Empty.SquaredDistanceTo(new Point(1, 1)));
+			Assert.Equal(0, Empty.SquaredDistanceTo(new Point(0, 0)));
+
+			Assert.Equal(
+				new Point(0, 0),
+				Empty.FindIntersectionWith(new Point(-5, 5), new Point(0, +0)));
+			Assert.Equal(
+				new Point(0, 0),
+				Empty.FindIntersectionWith(new Point(+0, 0), new Point(5, -5)));
+			Assert.Equal(
+				new Point(0, 0),
+				Empty.FindIntersectionWith(new Point(+0, 0), new Point(0, +0)));
+			Assert.Equal(
+				new Point(1, 0),
+				Empty.FindIntersectionWith(new Point(+1, 5), new Point(1, -5)));
+			Assert.Equal(
+				new Point(5, 0),
+				Empty.FindIntersectionWith(new Point(+5, 5), new Point(5, -5)));
+
+			Matrix3X2 identity = Matrix3X2.Identity;
+
+			Assert.Equal(Empty, Empty.Transform(ref identity));
+
+			Assert.TestObject(MinValue, MaxValue);
+		}
+#endif
 	}
 }
