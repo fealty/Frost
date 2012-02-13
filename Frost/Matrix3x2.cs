@@ -9,9 +9,9 @@ using System.Diagnostics.Contracts;
 
 namespace Frost
 {
-	public struct Matrix3x2 : IEquatable<Matrix3x2>
+	public struct Matrix3X2 : IEquatable<Matrix3X2>
 	{
-		private static readonly Matrix3x2 _Identity;
+		private static readonly Matrix3X2 _Identity;
 
 		private readonly float _11;
 		private readonly float _12;
@@ -20,12 +20,12 @@ namespace Frost
 		private readonly float _31;
 		private readonly float _32;
 
-		static Matrix3x2()
+		static Matrix3X2()
 		{
-			_Identity = new Matrix3x2(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+			_Identity = new Matrix3X2(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 		}
 
-		public Matrix3x2(
+		public Matrix3X2(
 			float m11, float m12, float m21, float m22, float m31, float m32)
 		{
 			Trace.Assert(Check.IsFinite(m11));
@@ -41,9 +41,16 @@ namespace Frost
 			this._22 = m22;
 			this._31 = m31;
 			this._32 = m32;
+
+			Contract.Assert(M11.Equals(m11));
+			Contract.Assert(M12.Equals(m12));
+			Contract.Assert(M21.Equals(m21));
+			Contract.Assert(M22.Equals(m22));
+			Contract.Assert(M31.Equals(m31));
+			Contract.Assert(M32.Equals(m32));
 		}
 
-		public static Matrix3x2 Identity
+		public static Matrix3X2 Identity
 		{
 			get { return _Identity; }
 		}
@@ -53,6 +60,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._32));
 
 				return this._32;
 			}
@@ -63,6 +71,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._31));
 
 				return this._31;
 			}
@@ -73,6 +82,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._22));
 
 				return this._22;
 			}
@@ -83,6 +93,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._21));
 
 				return this._21;
 			}
@@ -93,6 +104,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._12));
 
 				return this._12;
 			}
@@ -103,6 +115,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+				Contract.Ensures(Contract.Result<float>().Equals(this._11));
 
 				return this._11;
 			}
@@ -118,24 +131,24 @@ namespace Frost
 			}
 		}
 
-		public bool Equals(Matrix3x2 other)
+		public bool Equals(Matrix3X2 other)
 		{
 			return other._11.Equals(this._11) && other._12.Equals(this._12) &&
 			       other._21.Equals(this._21) && other._22.Equals(this._22) &&
 			       other._31.Equals(this._31) && other._32.Equals(this._32);
 		}
 
-		public void Translate(float width, float height, out Matrix3x2 result)
+		public void Translate(float width, float height, out Matrix3X2 result)
 		{
 			Trace.Assert(Check.IsFinite(width));
 			Trace.Assert(Check.IsFinite(height));
 
-			result = new Matrix3x2(1.0f, 0.0f, 0.0f, 1.0f, width, height);
+			result = new Matrix3X2(1.0f, 0.0f, 0.0f, 1.0f, width, height);
 
 			result.Multiply(ref this, out result);
 		}
 
-		public void Skew(float angleX, float angleY, out Matrix3x2 result)
+		public void Skew(float angleX, float angleY, out Matrix3X2 result)
 		{
 			Trace.Assert(Check.IsDegrees(angleX));
 			Trace.Assert(Check.IsDegrees(angleY));
@@ -143,7 +156,7 @@ namespace Frost
 			double radiansX = (Math.PI * angleX) / 180.0;
 			double radiansY = (Math.PI * angleY) / 180.0;
 
-			result = new Matrix3x2(
+			result = new Matrix3X2(
 				1.0f,
 				Convert.ToSingle(Math.Tan(radiansX)),
 				Convert.ToSingle(Math.Tan(radiansY)),
@@ -154,18 +167,18 @@ namespace Frost
 			result.Multiply(ref this, out result);
 		}
 
-		public void Scale(float width, float height, out Matrix3x2 result)
+		public void Scale(float width, float height, out Matrix3X2 result)
 		{
 			Trace.Assert(Check.IsPositive(width));
 			Trace.Assert(Check.IsPositive(height));
 
-			result = new Matrix3x2(width, 0.0f, 0.0f, height, 0.0f, 0.0f);
+			result = new Matrix3X2(width, 0.0f, 0.0f, height, 0.0f, 0.0f);
 
 			result.Multiply(ref this, out result);
 		}
 
 		public void Scale(
-			float width, float height, float originX, float originY, out Matrix3x2 result)
+			float width, float height, float originX, float originY, out Matrix3X2 result)
 		{
 			Trace.Assert(Check.IsPositive(width));
 			Trace.Assert(Check.IsPositive(height));
@@ -175,12 +188,12 @@ namespace Frost
 			float translationX = originX - (width * originX);
 			float translationY = originY - (height * originY);
 
-			result = new Matrix3x2(width, 0.0f, 0.0f, height, translationX, translationY);
+			result = new Matrix3X2(width, 0.0f, 0.0f, height, translationX, translationY);
 
 			result.Multiply(ref this, out result);
 		}
 
-		public void Rotate(float angle, out Matrix3x2 result)
+		public void Rotate(float angle, out Matrix3X2 result)
 		{
 			Trace.Assert(Check.IsDegrees(angle));
 
@@ -189,25 +202,25 @@ namespace Frost
 			float rcos = Convert.ToSingle(Math.Cos(radians));
 			float rsin = Convert.ToSingle(Math.Sin(radians));
 
-			result = new Matrix3x2(rcos, rsin, -rsin, rcos, 0.0f, 0.0f);
+			result = new Matrix3X2(rcos, rsin, -rsin, rcos, 0.0f, 0.0f);
 
 			result.Multiply(ref this, out result);
 		}
 
 		public void Rotate(
-			float angle, float originX, float originY, out Matrix3x2 result)
+			float angle, float originX, float originY, out Matrix3X2 result)
 		{
 			Trace.Assert(Check.IsDegrees(angle));
 			Trace.Assert(Check.IsFinite(originX));
 			Trace.Assert(Check.IsFinite(originY));
 
-			Matrix3x2 nTranslate;
-			Matrix3x2 pTranslate;
+			Matrix3X2 nTranslate;
+			Matrix3X2 pTranslate;
 
 			Identity.Translate(-originX, -originY, out nTranslate);
 			Identity.Translate(+originX, +originY, out pTranslate);
 
-			Matrix3x2 rotation;
+			Matrix3X2 rotation;
 
 			Identity.Rotate(angle, out rotation);
 
@@ -218,7 +231,7 @@ namespace Frost
 			result.Multiply(ref this, out result);
 		}
 
-		public void Multiply(ref Matrix3x2 right, out Matrix3x2 result)
+		public void Multiply(ref Matrix3X2 right, out Matrix3X2 result)
 		{
 			float m11 = (this._11 * right.M11) + (this._12 * right.M21);
 			float m12 = (this._11 * right.M12) + (this._12 * right.M22);
@@ -227,7 +240,7 @@ namespace Frost
 			float m31 = (this._31 * right.M11) + (this._32 * right.M21) + right.M31;
 			float m32 = (this._31 * right.M12) + (this._32 * right.M22) + right.M32;
 
-			result = new Matrix3x2(m11, m12, m21, m22, m31, m32);
+			result = new Matrix3X2(m11, m12, m21, m22, m31, m32);
 		}
 
 		public override string ToString()
@@ -250,7 +263,7 @@ namespace Frost
 				return false;
 			}
 
-			return obj is Matrix3x2 && Equals((Matrix3x2)obj);
+			return obj is Matrix3X2 && Equals((Matrix3X2)obj);
 		}
 
 		public override int GetHashCode()
@@ -267,14 +280,45 @@ namespace Frost
 			}
 		}
 
-		public static bool operator ==(Matrix3x2 left, Matrix3x2 right)
+		public static bool operator ==(Matrix3X2 left, Matrix3X2 right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(Matrix3x2 left, Matrix3x2 right)
+		public static bool operator !=(Matrix3X2 left, Matrix3X2 right)
 		{
 			return !left.Equals(right);
 		}
+
+#if(UNIT_TESTING)
+		[Fact] internal static void Test0()
+		{
+			Assert.Equal(0, new Matrix3X2(0, 1, 2, 3, 4, 5).M11);
+			Assert.Equal(1, new Matrix3X2(0, 1, 2, 3, 4, 5).M12);
+			Assert.Equal(2, new Matrix3X2(0, 1, 2, 3, 4, 5).M21);
+			Assert.Equal(3, new Matrix3X2(0, 1, 2, 3, 4, 5).M22);
+			Assert.Equal(4, new Matrix3X2(0, 1, 2, 3, 4, 5).M31);
+			Assert.Equal(5, new Matrix3X2(0, 1, 2, 3, 4, 5).M32);
+			
+			Assert.True(Identity.IsIdentity);
+
+			Matrix3X2 matrix1;
+			Matrix3X2 matrix2;
+
+			Identity.Rotate(50, out matrix1);
+			Identity.Rotate(50, 0, 0, out matrix2);
+
+			Assert.Equal(matrix1, matrix2);
+
+			Identity.Scale(2, 2, out matrix1);
+			Identity.Scale(2, 2, 0, 0, out matrix2);
+
+			Assert.Equal(matrix1, matrix2);
+
+			Identity.Skew(50, 50, out matrix1);
+
+			Assert.TestObject(Identity, matrix1);
+		}
+#endif
 	}
 }
