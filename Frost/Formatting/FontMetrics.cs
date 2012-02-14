@@ -143,6 +143,15 @@ namespace Frost.Formatting
 #if(UNIT_TESTING)
 		[Fact] internal static void Test0()
 		{
+			Assert.Equal(0, new FontMetrics(0, 1, 2).Ascent);
+			Assert.Equal(1, new FontMetrics(0, 1, 2).Descent);
+			Assert.Equal(2, new FontMetrics(0, 1, 2).UnitsPerEm);
+
+			Assert.Equal(12, new FontMetrics(5, 10, 5).MeasureAscent(9));
+			Assert.Equal(24, new FontMetrics(5, 10, 5).MeasureDescent(9));
+			Assert.Equal(36, new FontMetrics(5, 10, 5).MeasureEm(9));
+
+			Assert.TestObject(new FontMetrics(0, 1, 2), new FontMetrics(2, 1, 0));
 		}
 #endif
 	}
