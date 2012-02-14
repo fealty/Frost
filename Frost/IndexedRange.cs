@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-namespace Frost.Formatting
+namespace Frost
 {
 	public struct IndexedRange : IEquatable<IndexedRange>, IEnumerable<int>
 	{
