@@ -111,6 +111,7 @@
     <Compile Include="Enumerations.cs" />
     <Compile Include="Check.cs" />
     <Compile Include="Formatting\Enumerations.cs" />
+    <Compile Include="Formatting\FontFeature.cs" />
     <Compile Include="HSVColor.cs" />
     <Compile Include="Matrix3x2.cs" />
     <Compile Include="Painting\Enumerations.cs" />
