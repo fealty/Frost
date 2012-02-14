@@ -30,6 +30,7 @@ namespace Frost.Formatting
 			get
 			{
 				Contract.Ensures(Contract.Result<string>() != null);
+				Contract.Ensures(Contract.Result<string>().Equals(this._Tag));
 
 				return this._Tag;
 			}
