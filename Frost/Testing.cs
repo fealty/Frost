@@ -19,7 +19,7 @@ namespace Frost
 		public static void TestObject<T>(T item1, T item2)
 		{
 			Contract.Requires(!item1.Equals(item2));
-			
+
 			object object1 = item1;
 			object object2 = item2;
 
@@ -51,10 +51,10 @@ namespace Frost
 
 			if(opEquality1 != null && opEquality2 != null)
 			{
-				False((bool)opEquality1.Invoke(null, new[] { object1, object2 }));
-				False((bool)opEquality2.Invoke(null, new[] { object2, object1 }));
-				True((bool)opEquality1.Invoke(null, new[] { object1, object1 }));
-				True((bool)opEquality2.Invoke(null, new[] { object2, object2 }));
+				False((bool)opEquality1.Invoke(null, new[] {object1, object2}));
+				False((bool)opEquality2.Invoke(null, new[] {object2, object1}));
+				True((bool)opEquality1.Invoke(null, new[] {object1, object1}));
+				True((bool)opEquality2.Invoke(null, new[] {object2, object2}));
 			}
 
 			// test the != operator if any is defined on the type
@@ -63,10 +63,10 @@ namespace Frost
 
 			if(opInequality1 != null && opInequality2 != null)
 			{
-				True((bool)opInequality1.Invoke(null, new[] { object1, object2 }));
-				True((bool)opInequality2.Invoke(null, new[] { object2, object1 }));
-				False((bool)opInequality1.Invoke(null, new[] { object1, object1 }));
-				False((bool)opInequality2.Invoke(null, new[] { object2, object2 }));
+				True((bool)opInequality1.Invoke(null, new[] {object1, object2}));
+				True((bool)opInequality2.Invoke(null, new[] {object2, object1}));
+				False((bool)opInequality1.Invoke(null, new[] {object1, object1}));
+				False((bool)opInequality2.Invoke(null, new[] {object2, object2}));
 			}
 		}
 	}

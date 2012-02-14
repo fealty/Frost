@@ -924,7 +924,7 @@ namespace Frost
 			return !left.Equals(right);
 		}
 
-		#if(UNIT_TESTING)
+#if(UNIT_TESTING)
 
 		[Fact] internal void Test0()
 		{
@@ -947,6 +947,6 @@ namespace Frost
 			Assert.Equal<Color>(new Color(1, 1, 1), new RGBColor(255, 255, 255));
 		}
 
-		#endif
+#endif
 	}
 }

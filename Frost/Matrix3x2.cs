@@ -299,7 +299,7 @@ namespace Frost
 			Assert.Equal(3, new Matrix3X2(0, 1, 2, 3, 4, 5).M22);
 			Assert.Equal(4, new Matrix3X2(0, 1, 2, 3, 4, 5).M31);
 			Assert.Equal(5, new Matrix3X2(0, 1, 2, 3, 4, 5).M32);
-			
+
 			Assert.True(Identity.IsIdentity);
 
 			Matrix3X2 matrix1;

@@ -143,7 +143,6 @@ namespace Frost.Formatting
 #if(UNIT_TESTING)
 		[Fact] internal static void Test0()
 		{
-			
 		}
 #endif
 	}

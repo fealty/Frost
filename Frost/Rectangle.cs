@@ -362,7 +362,7 @@ namespace Frost
 			Assert.Equal(10, new Rectangle(0, 5, 10, 15).Height);
 			Assert.Equal(new Point(0, 1), new Rectangle(0, 1, 2, 3).Location);
 			Assert.Equal(new Size(2, 2), new Rectangle(0, 1, 2, 3).Size);
-			
+
 			Assert.Equal(
 				new Rectangle(1, 1, 1, 1),
 				new Rectangle(0, 0, 2, 2).Contract(new Thickness(1)));
