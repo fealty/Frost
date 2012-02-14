@@ -113,6 +113,8 @@
     <Compile Include="Formatting\Enumerations.cs" />
     <Compile Include="Formatting\FontFeature.cs" />
     <Compile Include="Formatting\FontMetrics.cs" />
+    <Compile Include="Formatting\ITextMetrics.cs" />
+    <Compile Include="IndexedRange.cs" />
     <Compile Include="HSVColor.cs" />
     <Compile Include="Matrix3x2.cs" />
     <Compile Include="Painting\Enumerations.cs" />
