@@ -108,6 +108,7 @@
     <Compile Include="Buffering\Enumerations.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="Composition\Enumerations.cs" />
+    <Compile Include="Device2D.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="Check.cs" />
     <Compile Include="Formatting\Enumerations.cs" />
