@@ -126,6 +126,7 @@
     <Compile Include="Shaping\Enumerations.cs" />
     <Compile Include="Shaping\Geometry.cs" />
     <Compile Include="Shaping\IGeometrySink.cs" />
+    <Compile Include="Shaping\ITessellationSink.cs" />
     <Compile Include="Surfacing\Enumerations.cs" />
     <Compile Include="Testing.cs" />
     <Compile Include="Point.cs" />
