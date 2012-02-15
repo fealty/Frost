@@ -121,6 +121,7 @@
     <Compile Include="HSVColor.cs" />
     <Compile Include="Matrix3x2.cs" />
     <Compile Include="Painting\Enumerations.cs" />
+    <Compile Include="Painting\GradientStop.cs" />
     <Compile Include="Shaping\Enumerations.cs" />
     <Compile Include="Shaping\Geometry.cs" />
     <Compile Include="Surfacing\Enumerations.cs" />
