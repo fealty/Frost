@@ -129,6 +129,7 @@
     <Compile Include="Shaping\IGeometrySink.cs" />
     <Compile Include="Shaping\ITessellationSink.cs" />
     <Compile Include="Surfacing\Enumerations.cs" />
+    <Compile Include="Surfacing\ISurface2D.cs" />
     <Compile Include="Testing.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
