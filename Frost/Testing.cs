@@ -3,6 +3,7 @@
 // 
 // See LICENSE for more information.
 
+using System;
 using System.Diagnostics.Contracts;
 using System.Reflection;
 
@@ -28,6 +29,16 @@ namespace Frost
 			NotEqual(item1, item2);
 			NotEqual(item2, item1);
 			Equal(item2, item2);
+
+			// test null on IEquatable
+			IEquatable<T> equate = item1 as IEquatable<T>;
+
+			if(equate != null)
+			{
+				// ReSharper disable ReturnValueOfPureMethodIsNotUsed
+				equate.Equals(default(T));
+				// ReSharper restore ReturnValueOfPureMethodIsNotUsed
+			}
 
 			// test the object.Equals() on the type
 			True(item1.Equals(object1));
