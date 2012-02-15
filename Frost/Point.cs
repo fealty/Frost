@@ -27,6 +27,12 @@ namespace Frost
 			_Empty = new Point(0.0f);
 		}
 
+		[ContractInvariantMethod] private void Invariant()
+		{
+			Contract.Invariant(Check.IsFinite(this._X));
+			Contract.Invariant(Check.IsFinite(this._Y));
+		}
+
 		public Point(float x, float y)
 		{
 			Trace.Assert(Check.IsFinite(x));

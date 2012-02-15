@@ -16,6 +16,14 @@ namespace Frost
 		private readonly float _G;
 		private readonly float _R;
 
+		[ContractInvariantMethod] private void Invariant()
+		{
+			Contract.Invariant(Check.IsByte(this._R));
+			Contract.Invariant(Check.IsByte(this._G));
+			Contract.Invariant(Check.IsByte(this._B));
+			Contract.Invariant(Check.IsPercentage(this._A));
+		}
+
 		public RGBColor(float red, float green, float blue, float alpha = 100.0f)
 		{
 			Trace.Assert(Check.IsByte(red));

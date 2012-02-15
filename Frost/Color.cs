@@ -808,6 +808,14 @@ namespace Frost
 		private readonly float _G;
 		private readonly float _R;
 
+		[ContractInvariantMethod] private void Invariant()
+		{
+			Contract.Invariant(Check.IsNormalized(this._A));
+			Contract.Invariant(Check.IsNormalized(this._B));
+			Contract.Invariant(Check.IsNormalized(this._G));
+			Contract.Invariant(Check.IsNormalized(this._R));
+		}
+
 		public Color(float red, float green, float blue, float alpha = 1.0f)
 		{
 			Trace.Assert(Check.IsNormalized(green));

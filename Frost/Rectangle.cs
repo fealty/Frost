@@ -31,6 +31,14 @@ namespace Frost
 			_Empty = new Rectangle(Point.Empty, Size.Empty);
 		}
 
+		[System.Diagnostics.Contracts.ContractInvariantMethod] private void Invariant()
+		{
+			Contracts.Invariant(Check.IsFinite(this._X));
+			Contracts.Invariant(Check.IsFinite(this._Y));
+			Contracts.Invariant(Check.IsPositive(this._Width));
+			Contracts.Invariant(Check.IsPositive(this._Height));
+		}
+
 		public Rectangle(float left, float top, float right, float bottom)
 		{
 			Trace.Assert(Check.IsFinite(left));

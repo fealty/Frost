@@ -25,6 +25,16 @@ namespace Frost
 			_Identity = new Matrix3X2(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 		}
 
+		[ContractInvariantMethod] private void Invariant()
+		{
+			Contract.Invariant(Check.IsFinite(this._11));
+			Contract.Invariant(Check.IsFinite(this._12));
+			Contract.Invariant(Check.IsFinite(this._21));
+			Contract.Invariant(Check.IsFinite(this._22));
+			Contract.Invariant(Check.IsFinite(this._31));
+			Contract.Invariant(Check.IsFinite(this._32));
+		}
+
 		public Matrix3X2(
 			float m11, float m12, float m21, float m22, float m31, float m32)
 		{

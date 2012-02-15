@@ -27,6 +27,12 @@ namespace Frost
 			_Empty = new Size(0.0f);
 		}
 
+		[ContractInvariantMethod] private void Invariant()
+		{
+			Contract.Invariant(Check.IsFinite(this._Width));
+			Contract.Invariant(Check.IsFinite(this._Height));
+		}
+
 		public Size(float width, float height)
 		{
 			Trace.Assert(Check.IsFinite(width));

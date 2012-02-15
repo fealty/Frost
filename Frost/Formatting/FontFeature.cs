@@ -25,6 +25,11 @@ namespace Frost.Formatting
 			Contract.Assert(Parameter.Equals(parameter));
 		}
 
+		[ContractInvariantMethod] private void Invariant()
+		{
+			Contract.Invariant(this._Tag != null);
+		}
+
 		public string Tag
 		{
 			get

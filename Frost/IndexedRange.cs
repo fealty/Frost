@@ -23,6 +23,12 @@ namespace Frost
 			_Empty = new IndexedRange(0, 0);
 		}
 
+		[ContractInvariantMethod] private void Invariant()
+		{
+			Contract.Invariant(this._Length >= 0);
+			Contract.Invariant(this._StartIndex >= 0);
+		}
+
 		public IndexedRange(int startIndex, int length)
 		{
 			Trace.Assert(startIndex >= 0);
@@ -186,7 +192,7 @@ namespace Frost
 			Assert.Equal(5, new IndexedRange(1, 5).LastIndex);
 			Assert.Equal(5, new IndexedRange(1, 5).Length);
 
-			int[] expectedValues = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+			int[] expectedValues = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
 			Assert.Equal(expectedValues, new IndexedRange(0, 10));
 
@@ -194,7 +200,7 @@ namespace Frost
 
 			Assert.Equal(expectedValues, testSlice);
 
-			int[] expectedSlice = { 2, 3, 4, 5 };
+			int[] expectedSlice = {2, 3, 4, 5};
 
 			testSlice = testSlice.Slice(2, 4);
 

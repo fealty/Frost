@@ -16,6 +16,14 @@ namespace Frost
 		private readonly float _S;
 		private readonly float _V;
 
+		[ContractInvariantMethod] private void Invariant()
+		{
+			Contract.Invariant(Check.IsDegrees(this._H));
+			Contract.Invariant(Check.IsPercentage(this._S));
+			Contract.Invariant(Check.IsPercentage(this._V));
+			Contract.Invariant(Check.IsPercentage(this._A));
+		}
+
 		public HSVColor(
 			float hue, float saturation, float value, float alpha = 100.0f)
 		{

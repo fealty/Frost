@@ -16,8 +16,8 @@ namespace Frost
 		private static readonly Thickness _MaxValue;
 
 		private static readonly Thickness _Empty;
-		private readonly float _Bottom;
 
+		private readonly float _Bottom;
 		private readonly float _Left;
 		private readonly float _Right;
 		private readonly float _Top;
@@ -28,6 +28,14 @@ namespace Frost
 			_MaxValue = new Thickness(float.MaxValue);
 
 			_Empty = new Thickness(0.0f);
+		}
+
+		[System.Diagnostics.Contracts.ContractInvariantMethod] private void Invariant()
+		{
+			Contracts.Invariant(Check.IsPositive(this._Left));
+			Contracts.Invariant(Check.IsPositive(this._Top));
+			Contracts.Invariant(Check.IsPositive(this._Right));
+			Contracts.Invariant(Check.IsPositive(this._Bottom));
 		}
 
 		public Thickness(float left, float top, float right, float bottom)

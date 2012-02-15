@@ -15,6 +15,13 @@ namespace Frost.Formatting
 		private readonly float _Descent;
 		private readonly float _UnitsPerEm;
 
+		[ContractInvariantMethod] private void Invariant()
+		{
+			Contract.Invariant(Check.IsPositive(this._Ascent));
+			Contract.Invariant(Check.IsPositive(this._Descent));
+			Contract.Invariant(Check.IsPositive(this._UnitsPerEm));
+		}
+
 		public FontMetrics(float ascent, float descent, float unitsPerEm)
 		{
 			Trace.Assert(Check.IsPositive(ascent));
