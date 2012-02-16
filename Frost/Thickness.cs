@@ -30,7 +30,8 @@ namespace Frost
 			_Empty = new Thickness(0.0f);
 		}
 
-		[System.Diagnostics.Contracts.ContractInvariantMethod] private void Invariant()
+		[System.Diagnostics.Contracts.ContractInvariantMethod] private void Invariant(
+			)
 		{
 			Contracts.Invariant(Check.IsPositive(this._Left));
 			Contracts.Invariant(Check.IsPositive(this._Top));

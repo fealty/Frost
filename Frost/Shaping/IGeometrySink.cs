@@ -9,8 +9,8 @@ namespace Frost.Shaping
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(IGeometrySink))]
-		internal abstract class IGeometrySinkContract : IGeometrySink
+		[ContractClassFor(typeof(IGeometrySink))] internal abstract class
+			IGeometrySinkContract : IGeometrySink
 		{
 			public abstract void Begin();
 			public abstract void End();
@@ -30,8 +30,8 @@ namespace Frost.Shaping
 		}
 	}
 
-	[ContractClass(typeof(Contracts.IGeometrySinkContract))]
-	public interface IGeometrySink
+	[ContractClass(typeof(Contracts.IGeometrySinkContract))] public interface
+		IGeometrySink
 	{
 		void Begin();
 		void End();

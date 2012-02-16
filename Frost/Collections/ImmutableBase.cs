@@ -11,25 +11,25 @@ using System.Linq;
 
 namespace Frost.Collections
 {
-	public class ImmutableBase<T> : IEnumerable<T>
+	public abstract class ImmutableBase<T> : IEnumerable<T>
 	{
 		private readonly T[] _Items;
 
-		public ImmutableBase(T[] items)
+		protected ImmutableBase(T[] items)
 		{
 			Trace.Assert(items != null);
 
 			_Items = (T[])items.Clone();
 		}
 
-		public ImmutableBase(List<T> items)
+		protected ImmutableBase(List<T> items)
 		{
 			Trace.Assert(items != null);
 
 			_Items = items.ToArray();
 		}
 
-		public ImmutableBase(IEnumerable<T> items)
+		protected ImmutableBase(IEnumerable<T> items)
 		{
 			Trace.Assert(items != null);
 
@@ -38,21 +38,22 @@ namespace Frost.Collections
 
 		public T this[int index]
 		{
-			get { return _Items[index]; }
+			get
+			{
+				Contract.Requires(index >= 0 && index < Count);
+
+				return _Items[index];
+			}
 		}
 
 		public int Count
 		{
-			get { return _Items.Length; }
-		}
+			get
+			{
+				Contract.Ensures(Contract.Result<int>() >= 0);
 
-		public Slice TakeSlice(int startIndex, int length)
-		{
-			Trace.Assert(startIndex >= 0);
-			Trace.Assert(length >= 0);
-			Trace.Assert(startIndex + length <= this._Items.Length);
-
-			return new Slice(startIndex, length, this);
+				return _Items.Length;
+			}
 		}
 
 		IEnumerator<T> IEnumerable<T>.GetEnumerator()
@@ -65,9 +66,123 @@ namespace Frost.Collections
 			return GetEnumerator();
 		}
 
+		public CollectionSlice TakeSlice(int startIndex, int length)
+		{
+			Trace.Assert(startIndex >= 0);
+			Trace.Assert(length >= 0);
+			Trace.Assert(startIndex + length <= this._Items.Length);
+
+			return new CollectionSlice(startIndex, length, this);
+		}
+
 		public Enumerator GetEnumerator()
 		{
 			return new Enumerator(this);
+		}
+
+		public struct CollectionSlice : IEnumerable<T>
+		{
+			private readonly ImmutableBase<T> _Collection;
+
+			private readonly int _Length;
+			private readonly int _StartIndex;
+
+			internal CollectionSlice(
+				int startIndex, int length, ImmutableBase<T> collection)
+			{
+				Contract.Requires(startIndex >= 0);
+				Contract.Requires(length >= 0);
+				Contract.Requires(collection != null);
+				Contract.Requires(startIndex + length <= collection.Count);
+
+				this._StartIndex = startIndex;
+				this._Length = length;
+				this._Collection = collection;
+			}
+
+			public int Count
+			{
+				get
+				{
+					Contract.Ensures(Contract.Result<int>() >= 0);
+
+					return this._Length;
+				}
+			}
+
+			public T this[int index]
+			{
+				get
+				{
+					Contract.Requires(index >= 0 && index < Count);
+
+					return this._Collection[this._StartIndex + index];
+				}
+			}
+
+			IEnumerator<T> IEnumerable<T>.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			public CollectionSlice TakeSlice(int startIndex, int length)
+			{
+				Trace.Assert(startIndex >= 0);
+				Trace.Assert(length >= 0);
+				Trace.Assert(startIndex + length <= this._Length);
+
+				int adjustedIndex = this._StartIndex + startIndex;
+
+				return new CollectionSlice(adjustedIndex, length, this._Collection);
+			}
+
+			public Enumerator GetEnumerator()
+			{
+				return new Enumerator(this);
+			}
+
+			public struct Enumerator : IEnumerator<T>
+			{
+				private readonly CollectionSlice _Slice;
+
+				private int _Index;
+
+				internal Enumerator(CollectionSlice slice)
+				{
+					this._Slice = slice;
+
+					this._Index = -1;
+				}
+
+				public void Dispose()
+				{
+				}
+
+				public bool MoveNext()
+				{
+					return ++this._Index < this._Slice.Count;
+				}
+
+				public void Reset()
+				{
+					this._Index = -1;
+				}
+
+				public T Current
+				{
+					get { return this._Slice[this._Index]; }
+				}
+
+				object IEnumerator.Current
+				{
+					get { return Current; }
+				}
+			}
 		}
 
 		public struct Enumerator : IEnumerator<T>
@@ -105,105 +220,6 @@ namespace Frost.Collections
 			public T Current
 			{
 				get { return this._Collection._Items[this._Index]; }
-			}
-		}
-
-		public struct Slice : IEnumerable<T>
-		{
-			private readonly ImmutableBase<T> _Collection;
-
-			private readonly int _Length;
-			private readonly int _StartIndex;
-
-			internal Slice(int startIndex, int length, ImmutableBase<T> collection)
-			{
-				Contract.Requires(startIndex >= 0);
-				Contract.Requires(length >= 0);
-				Contract.Requires(collection != null);
-				Contract.Requires(startIndex + length <= collection.Count);
-
-				this._StartIndex = startIndex;
-				this._Length = length;
-				this._Collection = collection;
-			}
-
-			public int Count
-			{
-				get
-				{
-					Contract.Ensures(Contract.Result<int>() >= 0);
-
-					return this._Length;
-				}
-			}
-
-			public T this[int index]
-			{
-				get { return this._Collection[this._StartIndex + index]; }
-			}
-
-			IEnumerator<T> IEnumerable<T>.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-
-			public Slice TakeSlice(int startIndex, int length)
-			{
-				Trace.Assert(startIndex >= 0);
-				Trace.Assert(length >= 0);
-				Trace.Assert(startIndex + length <= this._Length);
-
-				int adjustedIndex = this._StartIndex + startIndex;
-
-				return new Slice(adjustedIndex, length, this._Collection);
-			}
-
-			public Enumerator GetEnumerator()
-			{
-				return new Enumerator(this);
-			}
-
-			public struct Enumerator : IEnumerator<T>
-			{
-				private readonly Slice _Slice;
-
-				private int _Index;
-
-				internal Enumerator(Slice slice)
-				{
-					this._Slice = slice;
-
-					this._Index = -1;
-				}
-
-				public void Dispose()
-				{
-				}
-
-				public bool MoveNext()
-				{
-					return ++this._Index < this._Slice.Count;
-				}
-
-				public void Reset()
-				{
-					this._Index = -1;
-				}
-
-				public T Current
-				{
-					get { return this._Slice[this._Index]; }
-				}
-
-				object IEnumerator.Current
-				{
-					get { return Current; }
-				}
 			}
 		}
 	}

@@ -14,7 +14,8 @@ namespace Frost.Formatting
 	{
 		private readonly CultureInfo _Culture;
 		private readonly string _Family;
-		private readonly FontFeature[] _Features;
+
+		private readonly FontFeatureCollection _Features;
 
 		private readonly Alignment _HAlignment;
 
@@ -38,7 +39,7 @@ namespace Frost.Formatting
 			Alignment hAlignment,
 			Alignment vAlignment,
 			Size inline,
-			FontFeature[] features)
+			FontFeatureCollection features)
 		{
 			Trace.Assert(Check.IsPositive(pointSize));
 			Trace.Assert(Check.IsPositive(inline.Width));
@@ -66,14 +67,14 @@ namespace Frost.Formatting
 			Contract.Assert(HAlignment == hAlignment);
 			Contract.Assert(VAlignment == vAlignment);
 			Contract.Assert(Inline.Equals(inline));
-			Contract.Assert(Features == features);
+			Contract.Assert(Equals(Features, features));
 		}
 
-		public FontFeature[] Features
+		public FontFeatureCollection Features
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<FontFeature[]>() == this._Features);
+				Contract.Ensures(Contract.Result<FontFeatureCollection>() == this._Features);
 
 				return this._Features;
 			}
@@ -283,6 +284,8 @@ namespace Frost.Formatting
 				Alignment.Stretch,
 				Size.Empty,
 				null);
+
+			Assert.Equal(run1.Features, run2.Features);
 
 			Assert.TestObject(run1, run2);
 		}

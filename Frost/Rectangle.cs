@@ -31,7 +31,8 @@ namespace Frost
 			_Empty = new Rectangle(Point.Empty, Size.Empty);
 		}
 
-		[System.Diagnostics.Contracts.ContractInvariantMethod] private void Invariant()
+		[System.Diagnostics.Contracts.ContractInvariantMethod] private void Invariant(
+			)
 		{
 			Contracts.Invariant(Check.IsFinite(this._X));
 			Contracts.Invariant(Check.IsFinite(this._Y));

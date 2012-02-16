@@ -4,7 +4,6 @@
 // See LICENSE for more information.
 
 using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 
 namespace Frost.Formatting
@@ -39,32 +38,31 @@ namespace Frost.Formatting
 
 			public abstract Size BaselineOffset { get; }
 
-			public ReadOnlyCollection<IndexedRange> Lines
+			public LineCollection Lines
 			{
 				get
 				{
-					Contract.Ensures(
-						Contract.Result<ReadOnlyCollection<IndexedRange>>() != null);
+					Contract.Ensures(Contract.Result<LineCollection>() != null);
 
 					throw new NotSupportedException();
 				}
 			}
 
-			public ReadOnlyCollection<Rectangle> Regions
+			public RegionCollection Regions
 			{
 				get
 				{
-					Contract.Ensures(Contract.Result<ReadOnlyCollection<Rectangle>>() != null);
+					Contract.Ensures(Contract.Result<RegionCollection>() != null);
 
 					throw new NotSupportedException();
 				}
 			}
 
-			public ReadOnlyCollection<Outline> Outlines
+			public OutlineCollection Outlines
 			{
 				get
 				{
-					Contract.Ensures(Contract.Result<ReadOnlyCollection<Outline>>() != null);
+					Contract.Ensures(Contract.Result<OutlineCollection>() != null);
 
 					throw new NotSupportedException();
 				}
@@ -125,11 +123,11 @@ namespace Frost.Formatting
 
 		Size BaselineOffset { get; }
 
-		ReadOnlyCollection<IndexedRange> Lines { get; }
+		LineCollection Lines { get; }
 
-		ReadOnlyCollection<Rectangle> Regions { get; }
+		RegionCollection Regions { get; }
 
-		ReadOnlyCollection<Outline> Outlines { get; }
+		OutlineCollection Outlines { get; }
 
 		bool FindIndexNear(Point position, out int textIndex);
 

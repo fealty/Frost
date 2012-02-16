@@ -4,10 +4,10 @@
 // See LICENSE for more information.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Frost.Painting
 {
@@ -147,14 +147,12 @@ namespace Frost.Painting
 		}
 
 #if(UNIT_TESTING)
-		[Fact]
-		internal static void Test0()
+		[Fact] internal static void Test0()
 		{
-			Gradient gradient = Create()
-				.WithStop(0.0f, new Color(0.0f, 0.0f, 0.0f))
-				.WithStop(0.5f, new Color(0.5f, 0.5f, 0.5f))
-				.WithStop(1.0f, new Color(1.0f, 1.0f, 1.0f))
-				.Build();
+			Gradient gradient =
+				Create().WithStop(0.0f, new Color(0.0f, 0.0f, 0.0f)).WithStop(
+					0.5f, new Color(0.5f, 0.5f, 0.5f)).WithStop(
+						1.0f, new Color(1.0f, 1.0f, 1.0f)).Build();
 
 			Assert.Equal(0.0f, gradient.Stops[0].Position);
 			Assert.Equal(new Color(0.0f, 0.0f, 0.0f), gradient.Stops[0].Color);
@@ -163,10 +161,9 @@ namespace Frost.Painting
 			Assert.Equal(1.0f, gradient.Stops[2].Position);
 			Assert.Equal(new Color(1.0f, 1.0f, 1.0f), gradient.Stops[2].Color);
 
-			Gradient gradient2 = Create()
-				.WithStop(0.0f, Color.AliceBlue)
-				.WithStop(1.0f, Color.AntiqueWhite)
-				.Build();
+			Gradient gradient2 =
+				Create().WithStop(0.0f, Color.AliceBlue).WithStop(1.0f, Color.AntiqueWhite).
+					Build();
 
 			Assert.TestObject(gradient, gradient2);
 		}

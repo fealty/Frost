@@ -117,8 +117,12 @@
     <Compile Include="Formatting\FontFeatureCollection.cs" />
     <Compile Include="Formatting\FontMetrics.cs" />
     <Compile Include="Formatting\ITextMetrics.cs" />
+    <Compile Include="Formatting\LineCollection.cs" />
     <Compile Include="Formatting\Outline.cs" />
+    <Compile Include="Formatting\OutlineCollection.cs" />
     <Compile Include="Formatting\Paragraph.cs" />
+    <Compile Include="Formatting\RegionCollection.cs" />
+    <Compile Include="Formatting\TextRunCollection.cs" />
     <Compile Include="Formatting\TextRun.cs" />
     <Compile Include="IndexedRange.cs" />
     <Compile Include="HSVColor.cs" />
