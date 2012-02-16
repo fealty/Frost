@@ -22,5 +22,21 @@ namespace Frost.Formatting
 		public RegionCollection(IEnumerable<Rectangle> items) : base(items)
 		{
 		}
+
+#if(UNIT_TESTING)
+		[Fact] internal static void Test0()
+		{
+			List<Rectangle> list = new List<Rectangle>();
+
+			for(int i = 0; i < 10; ++i)
+			{
+				list.Add(new Rectangle(i, i, i, i));
+			}
+
+			TestDerived(new RegionCollection(list.ToArray()));
+			TestDerived(new RegionCollection(list));
+			TestDerived(new RegionCollection((IEnumerable<Rectangle>)list));
+		}
+#endif
 	}
 }

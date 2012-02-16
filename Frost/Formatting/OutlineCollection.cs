@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 
 using Frost.Collections;
+using Frost.Shaping;
 
 namespace Frost.Formatting
 {
@@ -22,5 +23,20 @@ namespace Frost.Formatting
 		public OutlineCollection(IEnumerable<Outline> items) : base(items)
 		{
 		}
+#if(UNIT_TESTING)
+		[Fact] internal static void Test0()
+		{
+			List<Outline> list = new List<Outline>();
+
+			for(int i = 0; i < 10; ++i)
+			{
+				list.Add(new Outline(new Geometry(), i, i));
+			}
+
+			TestDerived(new OutlineCollection(list.ToArray()));
+			TestDerived(new OutlineCollection(list));
+			TestDerived(new OutlineCollection((IEnumerable<Outline>)list));
+		}
+#endif
 	}
 }
