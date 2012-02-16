@@ -11,6 +11,7 @@ using System.Linq;
 
 namespace Frost.Collections
 {
+	//TODO: add a unit test and protected caller
 	public abstract class ImmutableBase<T> : IEnumerable<T>
 	{
 		private readonly T[] _Items;
