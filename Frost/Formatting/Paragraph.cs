@@ -4,8 +4,11 @@
 // See LICENSE for more information.
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Text;
 
 namespace Frost.Formatting
 {
@@ -52,6 +55,92 @@ namespace Frost.Formatting
 			float tracking,
 			TextRunCollection runs)
 		{
+			this._Text = text;
+			this._Alignment = alignment;
+			this._Indentation = indentation;
+			this._Leading = leading;
+			this._Spacing = spacing;
+			this._Tracking = tracking;
+			this._Runs = runs;
+		}
+
+		public float Tracking
+		{
+			get { return this._Tracking; }
+		}
+
+		public string Text
+		{
+			get { return this._Text; }
+		}
+
+		public float Spacing
+		{
+			get { return this._Spacing; }
+		}
+
+		public TextRunCollection Runs
+		{
+			get { return this._Runs; }
+		}
+
+		public float Leading
+		{
+			get { return this._Leading; }
+		}
+
+		public float Indentation
+		{
+			get { return this._Indentation; }
+		}
+
+		public Alignment Alignment
+		{
+			get { return this._Alignment; }
+		}
+
+		public static float DefaultSpacing
+		{
+			get { return _DefaultSpacing; }
+		}
+
+		public static float DefaultTracking
+		{
+			get { return _DefaultTracking; }
+		}
+
+		public static float DefaultLeading
+		{
+			get { return _DefaultLeading; }
+		}
+
+		public static float DefaultIndentation
+		{
+			get { return _DefaultIndentation; }
+		}
+
+		public static float DefaultPointSize
+		{
+			get { return _DefaultPointSize; }
+		}
+
+		public static string DefaultFamily
+		{
+			get { return _DefaultFamily; }
+		}
+
+		public static CultureInfo DefaultCulture
+		{
+			get { return _DefaultCulture; }
+		}
+
+		public static Builder Create()
+		{
+			_Builder = _Builder ?? new Builder();
+
+			_Builder.Reset();
+
+			return _Builder;
 		}
 
 		[ContractInvariantMethod] private void Invariant()
@@ -66,6 +155,361 @@ namespace Frost.Formatting
 
 		public sealed class Builder
 		{
+			private readonly List<TextRun> _Runs;
+			private readonly Stack<TextRun> _States;
+			private readonly StringBuilder _Text;
+
+			private CultureInfo _ActiveCulture;
+			private string _ActiveFamily;
+			private FontFeatureCollection _ActiveFeatures;
+
+			private Alignment _ActiveHAlignment;
+
+			private Size _ActiveInline;
+			private float _ActivePointSize;
+
+			private FontStretch _ActiveStretch;
+			private FontStyle _ActiveStyle;
+			private IndexedRange _ActiveTextRange;
+			private Alignment _ActiveVAlignment;
+			private FontWeight _ActiveWeight;
+			private Alignment _Alignment;
+
+			private float _Indentation;
+			private float _Leading;
+			private float _Spacing;
+			private float _Tracking;
+
+			internal Builder()
+			{
+				_Runs = new List<TextRun>();
+				_States = new Stack<TextRun>();
+
+				_Text = new StringBuilder();
+			}
+
+			public Builder SaveState()
+			{
+				this._States.Push(
+					new TextRun(
+						this._ActiveTextRange,
+						this._ActiveCulture,
+						this._ActiveFamily,
+						this._ActiveStretch,
+						this._ActiveStyle,
+						this._ActiveWeight,
+						this._ActivePointSize,
+						this._ActiveHAlignment,
+						this._ActiveVAlignment,
+						this._ActiveInline,
+						this._ActiveFeatures));
+
+				return this;
+			}
+
+			public Builder ResetState()
+			{
+				this._ActiveTextRange = IndexedRange.Empty;
+				this._ActiveCulture = DefaultCulture;
+				this._ActiveFamily = DefaultFamily;
+				this._ActiveFeatures = null;
+				this._ActivePointSize = DefaultPointSize;
+				this._ActiveStretch = FontStretch.Regular;
+				this._ActiveStyle = FontStyle.Regular;
+				this._ActiveWeight = FontWeight.Regular;
+				this._ActiveInline = Size.Empty;
+				this._ActiveHAlignment = Alignment.Stretch;
+				this._ActiveVAlignment = Alignment.Stretch;
+
+				return this;
+			}
+
+			public Builder RestoreState()
+			{
+				TextRun activeState = this._States.Pop();
+
+				this._ActiveTextRange = activeState.TextRange;
+				this._ActiveCulture = activeState.Culture;
+				this._ActiveFamily = activeState.Family;
+				this._ActiveFeatures = activeState.Features;
+				this._ActivePointSize = activeState.PointSize;
+				this._ActiveStretch = activeState.Stretch;
+				this._ActiveStyle = activeState.Style;
+				this._ActiveWeight = activeState.Weight;
+				this._ActiveInline = activeState.Inline;
+				this._ActiveHAlignment = activeState.HAlignment;
+				this._ActiveVAlignment = activeState.VAlignment;
+
+				return this;
+			}
+
+			public Builder WithFeatures(FontFeatureCollection features)
+			{
+				this._ActiveFeatures = features;
+
+				return this;
+			}
+
+			public Builder WithLeading(float leading)
+			{
+				Trace.Assert(Check.IsPositive(leading));
+
+				this._Leading = leading;
+
+				return this;
+			}
+
+			public Builder WithTracking(float tracking)
+			{
+				Trace.Assert(Check.IsPositive(tracking));
+
+				this._Tracking = tracking;
+
+				return this;
+			}
+
+			public Builder WithIndentation(float indentation)
+			{
+				Trace.Assert(Check.IsPositive(indentation));
+
+				this._Indentation = indentation;
+
+				return this;
+			}
+
+			public Builder WithSpacing(float spacing)
+			{
+				Trace.Assert(Check.IsPositive(spacing));
+
+				this._Spacing = spacing;
+
+				return this;
+			}
+
+			public Builder WithAlignment(Alignment alignment)
+			{
+				this._Alignment = alignment;
+
+				return this;
+			}
+
+			public Builder WithCulture(CultureInfo culture)
+			{
+				this._ActiveCulture = culture;
+
+				return this;
+			}
+
+			public Builder WithPointSize(float pointSize)
+			{
+				Trace.Assert(Check.IsPositive(pointSize));
+
+				this._ActivePointSize = pointSize;
+
+				return this;
+			}
+
+			public Builder WithFamily(string family)
+			{
+				this._ActiveFamily = family;
+
+				return this;
+			}
+
+			public Builder WithStretch(FontStretch stretch)
+			{
+				this._ActiveStretch = stretch;
+
+				return this;
+			}
+
+			public Builder WithStyle(FontStyle style)
+			{
+				this._ActiveStyle = style;
+
+				return this;
+			}
+
+			public Builder WithWeight(FontWeight weight)
+			{
+				this._ActiveWeight = weight;
+
+				return this;
+			}
+
+			public Builder WithAdditionalInline(
+				Size inline,
+				Alignment hAlignment = Alignment.Stretch,
+				Alignment vAlignment = Alignment.Stretch)
+			{
+				Trace.Assert(Check.IsPositive(inline.Width));
+				Trace.Assert(Check.IsPositive(inline.Height));
+
+				// append a new run with a text length of one
+				this._Runs.Add(
+					new TextRun(
+						new IndexedRange(this._Text.Length, 1),
+						this._ActiveCulture,
+						this._ActiveFamily,
+						this._ActiveStretch,
+						this._ActiveStyle,
+						this._ActiveWeight,
+						this._ActivePointSize,
+						hAlignment,
+						vAlignment,
+						inline,
+						this._ActiveFeatures));
+
+				try
+				{
+					this._Text.Append('\u00A0');
+				}
+				catch
+				{
+					// rollback the change to runs on failure
+					this._Runs.RemoveAt(this._Runs.Count - 1);
+
+					// rethrow the exception
+					throw;
+				}
+
+				return this;
+			}
+
+			public Builder WithAdditionalText(string text)
+			{
+				Trace.Assert(text != null);
+
+				TextRun newRun = new TextRun(
+					this._ActiveTextRange,
+					this._ActiveCulture,
+					this._ActiveFamily,
+					this._ActiveStretch,
+					this._ActiveStyle,
+					this._ActiveWeight,
+					this._ActivePointSize,
+					this._ActiveHAlignment,
+					this._ActiveVAlignment,
+					this._ActiveInline,
+					this._ActiveFeatures);
+
+				if(this._Runs.Count > 0)
+				{
+					TextRun oldRun = this._Runs[this._Runs.Count - 1];
+
+					if((newRun.Culture == oldRun.Culture) &&
+					   (newRun.Family == oldRun.Family) &&
+					   (newRun.Stretch == oldRun.Stretch) &&
+					   (newRun.Style == oldRun.Style) &&
+					   (newRun.Weight == oldRun.Weight) &&
+					   (newRun.PointSize.Equals(oldRun.PointSize)) &&
+					   (newRun.HAlignment == oldRun.HAlignment) &&
+					   (newRun.VAlignment == oldRun.VAlignment) &&
+					   (newRun.Inline == oldRun.Inline) &&
+					   (newRun.Features == oldRun.Features))
+					{
+						// modify the existing run to include the appended text
+						this._Runs[this._Runs.Count - 1] =
+							new TextRun(
+								new IndexedRange(
+									oldRun.TextRange.StartIndex,
+									oldRun.TextRange.Length + text.Length),
+								oldRun.Culture,
+								oldRun.Family,
+								oldRun.Stretch,
+								oldRun.Style,
+								oldRun.Weight,
+								oldRun.PointSize,
+								oldRun.HAlignment,
+								oldRun.VAlignment,
+								oldRun.Inline,
+								oldRun.Features);
+
+						try
+						{
+							this._Text.Append(text);
+						}
+						catch
+						{
+							// rollback the change to run on failure
+							this._Runs.RemoveAt(this._Runs.Count - 1);
+
+							// rethrow the exception
+							throw;
+						}
+
+						return this;
+					}
+				}
+
+				// append a run at the current text position
+				this._Runs.Add(
+					new TextRun(
+						new IndexedRange(this._Text.Length, text.Length),
+						newRun.Culture,
+						newRun.Family,
+						newRun.Stretch,
+						newRun.Style,
+						newRun.Weight,
+						newRun.PointSize,
+						newRun.HAlignment,
+						newRun.VAlignment,
+						newRun.Inline,
+						newRun.Features));
+
+				try
+				{
+					this._Text.Append(text);
+				}
+				catch
+				{
+					// rollback the change to runs on failure
+					this._Runs.RemoveAt(this._Runs.Count - 1);
+
+					// rethrow the exception
+					throw;
+				}
+
+				return this;
+			}
+
+			public Paragraph Build()
+			{
+				return new Paragraph(
+					this._Text.ToString(),
+					this._Alignment,
+					this._Indentation,
+					this._Leading,
+					this._Spacing,
+					this._Tracking,
+					new TextRunCollection(this._Runs));
+			}
+
+			internal void Reset()
+			{
+				this._Runs.Clear();
+				this._States.Clear();
+
+				this._Alignment = Alignment.Stretch;
+				this._Indentation = DefaultIndentation;
+				this._Leading = DefaultLeading;
+				this._Spacing = DefaultSpacing;
+				this._Tracking = DefaultTracking;
+
+				this._Text.Clear();
+
+				this._ActiveCulture = DefaultCulture;
+				this._ActiveFamily = DefaultFamily;
+				this._ActivePointSize = DefaultPointSize;
+				this._ActiveHAlignment = Alignment.Stretch;
+				this._ActiveVAlignment = Alignment.Stretch;
+				this._ActiveInline = Size.Empty;
+				this._ActiveTextRange = IndexedRange.Empty;
+				this._ActiveStretch = FontStretch.Regular;
+				this._ActiveStyle = FontStyle.Regular;
+				this._ActiveWeight = FontWeight.Regular;
+				this._ActiveFeatures = null;
+			}
 		}
 	}
 }
