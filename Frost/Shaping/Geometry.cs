@@ -10,13 +10,32 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Shaping
 {
-	// Add traditional shapes as normalized, static geometries?
 	public sealed class Geometry
 	{
 		[ThreadStatic] private static Builder _Builder;
 
+		private static readonly Geometry _Square;
+		private static readonly Geometry _Circle;
+
 		private readonly GeometryCommand[] _Commands;
 		private readonly Point[] _Points;
+
+		static Geometry()
+		{
+			_Square = Create()
+				.MoveTo(0.0f, 0.0f)
+				.LineTo(1.0f, 0.0f)
+				.LineTo(1.0f, 1.0f)
+				.LineTo(0.0f, 1.0f)
+				.LineTo(0.0f, 0.0f)
+				.Build();
+
+			_Circle = Create()
+				.MoveTo(0.5f, 0.0f)
+				.ArcTo(0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 0.5f)
+				.ArcTo(0.5f, 1.0f, 0.5f, 0.0f, 0.5f, 0.5f)
+				.Build();
+		}
 
 		private Geometry(Point[] points, GeometryCommand[] commands)
 		{
@@ -25,6 +44,16 @@ namespace Frost.Shaping
 
 			this._Points = points;
 			this._Commands = commands;
+		}
+
+		public static Geometry Circle
+		{
+			get { return _Circle; }
+		}
+
+		public static Geometry Square
+		{
+			get { return _Square; }
 		}
 
 		public static Builder Create()

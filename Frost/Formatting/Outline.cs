@@ -129,8 +129,8 @@ namespace Frost.Formatting
 #if(UNIT_TESTING)
 		[Fact] internal static void Test0()
 		{
-			Outline o1 = new Outline(new Geometry(), 0.0f, 0.0f);
-			Outline o2 = new Outline(new Geometry(), 0.0f, 0.0f);
+			Outline o1 = new Outline(Geometry.Square, 0.0f, 0.0f);
+			Outline o2 = new Outline(Geometry.Circle, 0.0f, 0.0f);
 
 			Assert.TestObject(o1, o2);
 		}

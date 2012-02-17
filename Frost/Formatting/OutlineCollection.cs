@@ -31,7 +31,7 @@ namespace Frost.Formatting
 
 			for(int i = 0; i < 10; ++i)
 			{
-				list.Add(new Outline(new Geometry(), i, i));
+				list.Add(new Outline(Geometry.Square, i, i));
 			}
 
 			TestDerived(new OutlineCollection(list.ToArray()));
