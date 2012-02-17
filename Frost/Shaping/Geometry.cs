@@ -29,6 +29,8 @@ namespace Frost.Shaping
 
 		public static Builder Create()
 		{
+			Contract.Ensures(Contract.Result<Builder>() != null);
+
 			_Builder = _Builder ?? new Builder();
 
 			_Builder.Reset();
@@ -61,12 +63,16 @@ namespace Frost.Shaping
 
 			public Geometry Build()
 			{
+				Contract.Ensures(Contract.Result<Geometry>() != null);
+
 				return new Geometry(
 					this._Points.ToArray(), this._Commands.ToArray());
 			}
 
 			public Builder SaveState()
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._States.Push(this._Transform);
 
 				return this;
@@ -74,6 +80,8 @@ namespace Frost.Shaping
 
 			public Builder ResetState()
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Transform = Matrix3X2.Identity;
 
 				return this;
@@ -81,6 +89,8 @@ namespace Frost.Shaping
 
 			public Builder RestoreState()
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Transform = this._States.Pop();
 
 				return this;
@@ -88,6 +98,8 @@ namespace Frost.Shaping
 
 			public Builder Close()
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Commands.Add(GeometryCommand.Close);
 
 				return this;
@@ -95,11 +107,17 @@ namespace Frost.Shaping
 
 			public Builder MoveTo(float x, float y)
 			{
+				Contract.Requires(Check.IsFinite(x));
+				Contract.Requires(Check.IsFinite(y));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				return MoveTo(new Point(x, y));
 			}
 
 			public Builder MoveTo(Point point)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Commands.Add(GeometryCommand.MoveTo);
 
 				try
@@ -120,11 +138,17 @@ namespace Frost.Shaping
 
 			public Builder LineTo(float x, float y)
 			{
+				Contract.Requires(Check.IsFinite(x));
+				Contract.Requires(Check.IsFinite(y));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				return LineTo(new Point(x, y));
 			}
 
 			public Builder LineTo(Point point)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Commands.Add(GeometryCommand.LineTo);
 
 				try
@@ -149,6 +173,12 @@ namespace Frost.Shaping
 				float endPointX,
 				float endPointY)
 			{
+				Contract.Requires(Check.IsFinite(controlPointX));
+				Contract.Requires(Check.IsFinite(controlPointY));
+				Contract.Requires(Check.IsFinite(endPointX));
+				Contract.Requires(Check.IsFinite(endPointY));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				return QuadraticCurveTo(
 					new Point(controlPointX, controlPointY),
 					new Point(endPointX, endPointY));
@@ -156,6 +186,8 @@ namespace Frost.Shaping
 
 			public Builder QuadraticCurveTo(Point controlPoint, Point endPoint)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Commands.Add(GeometryCommand.QuadraticCurveTo);
 
 				try
@@ -195,6 +227,14 @@ namespace Frost.Shaping
 				float endPointX,
 				float endPointY)
 			{
+				Contract.Requires(Check.IsFinite(controlPoint1X));
+				Contract.Requires(Check.IsFinite(controlPoint1Y));
+				Contract.Requires(Check.IsFinite(controlPoint2X));
+				Contract.Requires(Check.IsFinite(controlPoint2Y));
+				Contract.Requires(Check.IsFinite(endPointX));
+				Contract.Requires(Check.IsFinite(endPointY));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				return BezierCurveTo(
 					new Point(controlPoint1X, controlPoint1Y),
 					new Point(controlPoint2X, controlPoint2Y),
@@ -204,6 +244,8 @@ namespace Frost.Shaping
 			public Builder BezierCurveTo(
 				Point controlPoint1, Point controlPoint2, Point endPoint)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Commands.Add(GeometryCommand.BezierCurveTo);
 
 				try
@@ -256,6 +298,10 @@ namespace Frost.Shaping
 				float radiusWidth,
 				float radiusHeight)
 			{
+				Contract.Requires(Check.IsPositive(radiusWidth));
+				Contract.Requires(Check.IsPositive(radiusHeight));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				return ArcTo(
 					new Point(tangentStartX, tangentStartY),
 					new Point(tangentEndX, tangentEndY),
@@ -265,6 +311,8 @@ namespace Frost.Shaping
 			public Builder ArcTo(
 				Point tangentStart, Point tangentEnd, Size radius)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				Trace.Assert(Check.IsPositive(radius.Width));
 				Trace.Assert(Check.IsPositive(radius.Height));
 
@@ -318,6 +366,10 @@ namespace Frost.Shaping
 
 			public Builder Scale(float width, float height)
 			{
+				Contract.Requires(Check.IsPositive(width));
+				Contract.Requires(Check.IsPositive(height));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Transform.Scale(width, height, out this._Transform);
 
 				return this;
@@ -325,12 +377,22 @@ namespace Frost.Shaping
 
 			public Builder Scale(Size size)
 			{
+				Contract.Requires(Check.IsPositive(size.Width));
+				Contract.Requires(Check.IsPositive(size.Height));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				return Scale(size.Width, size.Height);
 			}
 
 			public Builder Scale(
 				float width, float height, float originX, float originY)
 			{
+				Contract.Requires(Check.IsPositive(width));
+				Contract.Requires(Check.IsPositive(height));
+				Contract.Requires(Check.IsFinite(originX));
+				Contract.Requires(Check.IsFinite(originY));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Transform.Scale(
 					width, height, originX, originY, out this._Transform);
 
@@ -339,6 +401,10 @@ namespace Frost.Shaping
 
 			public Builder Skew(float angleX, float angleY)
 			{
+				Contract.Requires(Check.IsDegrees(angleX));
+				Contract.Requires(Check.IsDegrees(angleY));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Transform.Skew(angleX, angleY, out this._Transform);
 
 				return this;
@@ -346,6 +412,9 @@ namespace Frost.Shaping
 
 			public Builder Rotate(float angle)
 			{
+				Contract.Requires(Check.IsDegrees(angle));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Transform.Rotate(angle, out this._Transform);
 
 				return this;
@@ -353,6 +422,11 @@ namespace Frost.Shaping
 
 			public Builder Rotate(float angle, float originX, float originY)
 			{
+				Contract.Requires(Check.IsDegrees(angle));
+				Contract.Requires(Check.IsFinite(originX));
+				Contract.Requires(Check.IsFinite(originY));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Transform.Rotate(
 					angle, originX, originY, out this._Transform);
 
@@ -361,11 +435,18 @@ namespace Frost.Shaping
 
 			public Builder Rotate(float angle, Point origin)
 			{
+				Contract.Requires(Check.IsDegrees(angle));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				return Rotate(angle, origin.X, origin.Y);
 			}
 
 			public Builder Translate(float width, float height)
 			{
+				Contract.Requires(Check.IsFinite(width));
+				Contract.Requires(Check.IsFinite(height));
+				Contract.Ensures(Contract.Result<Builder>() != null);
+				
 				this._Transform.Translate(width, height, out this._Transform);
 
 				return this;
@@ -373,6 +454,8 @@ namespace Frost.Shaping
 
 			public Builder Translate(Size value)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				return Translate(value.Width, value.Height);
 			}
 
@@ -380,6 +463,8 @@ namespace Frost.Shaping
 				ref Matrix3X2 transformation,
 				TransformMode operation = TransformMode.Multiply)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				if(operation == TransformMode.Replace)
 				{
 					this._Transform = transformation;
