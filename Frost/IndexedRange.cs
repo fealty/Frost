@@ -11,6 +11,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost
 {
+	//TODO: should this be part of collections?
 	public struct IndexedRange
 		: IEquatable<IndexedRange>, IEnumerable<int>
 	{
