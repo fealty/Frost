@@ -136,6 +136,8 @@ namespace Frost.Formatting
 
 		public static Builder Create()
 		{
+			Contract.Ensures(Contract.Result<Builder>() != null);
+
 			_Builder = _Builder ?? new Builder();
 
 			_Builder.Reset();
@@ -190,6 +192,8 @@ namespace Frost.Formatting
 
 			public Builder SaveState()
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._States.Push(
 					new TextRun(
 						this._ActiveTextRange,
@@ -209,6 +213,8 @@ namespace Frost.Formatting
 
 			public Builder ResetState()
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._ActiveTextRange = IndexedRange.Empty;
 				this._ActiveCulture = DefaultCulture;
 				this._ActiveFamily = DefaultFamily;
@@ -226,6 +232,8 @@ namespace Frost.Formatting
 
 			public Builder RestoreState()
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				TextRun activeState = this._States.Pop();
 
 				this._ActiveTextRange = activeState.TextRange;
@@ -245,6 +253,8 @@ namespace Frost.Formatting
 
 			public Builder WithFeatures(FontFeatureCollection features)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._ActiveFeatures = features;
 
 				return this;
@@ -252,6 +262,8 @@ namespace Frost.Formatting
 
 			public Builder WithLeading(float leading)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				Trace.Assert(Check.IsPositive(leading));
 
 				this._Leading = leading;
@@ -261,6 +273,8 @@ namespace Frost.Formatting
 
 			public Builder WithTracking(float tracking)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				Trace.Assert(Check.IsPositive(tracking));
 
 				this._Tracking = tracking;
@@ -270,6 +284,8 @@ namespace Frost.Formatting
 
 			public Builder WithIndentation(float indentation)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				Trace.Assert(Check.IsPositive(indentation));
 
 				this._Indentation = indentation;
@@ -279,6 +295,8 @@ namespace Frost.Formatting
 
 			public Builder WithSpacing(float spacing)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				Trace.Assert(Check.IsPositive(spacing));
 
 				this._Spacing = spacing;
@@ -288,6 +306,8 @@ namespace Frost.Formatting
 
 			public Builder WithAlignment(Alignment alignment)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._Alignment = alignment;
 
 				return this;
@@ -295,6 +315,8 @@ namespace Frost.Formatting
 
 			public Builder WithCulture(CultureInfo culture)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._ActiveCulture = culture;
 
 				return this;
@@ -302,6 +324,8 @@ namespace Frost.Formatting
 
 			public Builder WithPointSize(float pointSize)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				Trace.Assert(Check.IsPositive(pointSize));
 
 				this._ActivePointSize = pointSize;
@@ -311,6 +335,8 @@ namespace Frost.Formatting
 
 			public Builder WithFamily(string family)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._ActiveFamily = family;
 
 				return this;
@@ -318,6 +344,8 @@ namespace Frost.Formatting
 
 			public Builder WithStretch(FontStretch stretch)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._ActiveStretch = stretch;
 
 				return this;
@@ -325,6 +353,8 @@ namespace Frost.Formatting
 
 			public Builder WithStyle(FontStyle style)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._ActiveStyle = style;
 
 				return this;
@@ -332,6 +362,8 @@ namespace Frost.Formatting
 
 			public Builder WithWeight(FontWeight weight)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				this._ActiveWeight = weight;
 
 				return this;
@@ -342,6 +374,8 @@ namespace Frost.Formatting
 				Alignment hAlignment = Alignment.Stretch,
 				Alignment vAlignment = Alignment.Stretch)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				Trace.Assert(Check.IsPositive(inline.Width));
 				Trace.Assert(Check.IsPositive(inline.Height));
 
@@ -378,6 +412,8 @@ namespace Frost.Formatting
 
 			public Builder WithAdditionalText(string text)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				Trace.Assert(text != null);
 
 				TextRun newRun = new TextRun(
@@ -475,6 +511,8 @@ namespace Frost.Formatting
 
 			public Paragraph Build()
 			{
+				Contract.Ensures(Contract.Result<Paragraph>() != null);
+
 				return new Paragraph(
 					this._Text.ToString(),
 					this._Alignment,

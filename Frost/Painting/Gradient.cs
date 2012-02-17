@@ -20,6 +20,7 @@ namespace Frost.Painting
 		private Gradient(GradientStop[] stops)
 		{
 			Contract.Requires(stops != null);
+			Contract.Requires(stops.Length >= 2);
 
 			this._Stops = stops;
 
@@ -65,6 +66,8 @@ namespace Frost.Painting
 
 			public Builder WithStop(float position, Color color)
 			{
+				Contract.Ensures(Contract.Result<Builder>() != null);
+
 				Trace.Assert(Check.IsNormalized(position));
 
 				if(this._Stops.Count > 0)
@@ -80,10 +83,11 @@ namespace Frost.Painting
 
 			public Gradient Build()
 			{
+				Contract.Ensures(Contract.Result<Gradient>() != null);
+
 				Trace.Assert(this._Stops.Count >= 2);
 				Trace.Assert(this._Stops[0].Position.Equals(0.0f));
-				Trace.Assert(
-					this._Stops[this._Stops.Count - 1].Position.Equals(1.0f));
+				Trace.Assert(this._Stops[this._Stops.Count - 1].Position.Equals(1.0f));
 
 				return new Gradient(this._Stops.ToArray());
 			}
