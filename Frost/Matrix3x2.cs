@@ -148,7 +148,8 @@ namespace Frost
 			       other._31.Equals(this._31) && other._32.Equals(this._32);
 		}
 
-		public void Translate(float width, float height, out Matrix3X2 result)
+		public void Translate(
+			float width, float height, out Matrix3X2 result)
 		{
 			Trace.Assert(Check.IsFinite(width));
 			Trace.Assert(Check.IsFinite(height));
@@ -188,7 +189,11 @@ namespace Frost
 		}
 
 		public void Scale(
-			float width, float height, float originX, float originY, out Matrix3X2 result)
+			float width,
+			float height,
+			float originX,
+			float originY,
+			out Matrix3X2 result)
 		{
 			Trace.Assert(Check.IsPositive(width));
 			Trace.Assert(Check.IsPositive(height));
@@ -198,7 +203,8 @@ namespace Frost
 			float translationX = originX - (width * originX);
 			float translationY = originY - (height * originY);
 
-			result = new Matrix3X2(width, 0.0f, 0.0f, height, translationX, translationY);
+			result = new Matrix3X2(
+				width, 0.0f, 0.0f, height, translationX, translationY);
 
 			result.Multiply(ref this, out result);
 		}
@@ -247,8 +253,10 @@ namespace Frost
 			float m12 = (this._11 * right.M12) + (this._12 * right.M22);
 			float m21 = (this._21 * right.M11) + (this._22 * right.M21);
 			float m22 = (this._21 * right.M12) + (this._22 * right.M22);
-			float m31 = (this._31 * right.M11) + (this._32 * right.M21) + right.M31;
-			float m32 = (this._31 * right.M12) + (this._32 * right.M22) + right.M32;
+			float m31 = (this._31 * right.M11) + (this._32 * right.M21) +
+			            right.M31;
+			float m32 = (this._31 * right.M12) + (this._32 * right.M22) +
+			            right.M32;
 
 			result = new Matrix3X2(m11, m12, m21, m22, m31, m32);
 		}

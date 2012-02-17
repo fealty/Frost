@@ -143,7 +143,8 @@ namespace Frost.Collections
 
 				int adjustedIndex = this._StartIndex + startIndex;
 
-				return new CollectionSlice(adjustedIndex, length, this._Collection);
+				return new CollectionSlice(
+					adjustedIndex, length, this._Collection);
 			}
 
 			public Enumerator GetEnumerator()
@@ -252,13 +253,15 @@ namespace Frost.Collections
 
 			T[] expected = new[]
 			{
-				@this._Items[1], @this._Items[2], @this._Items[3], @this._Items[4],
-				@this._Items[5], @this._Items[6], @this._Items[7], @this._Items[8]
+				@this._Items[1], @this._Items[2], @this._Items[3], @this._Items[4]
+				, @this._Items[5], @this._Items[6], @this._Items[7],
+				@this._Items[8]
 			};
 
 			Assert.Equal(expected, slice);
 
-			expected = new[] {slice[1], slice[2], slice[3], slice[4], slice[5], slice[6]};
+			expected = new[]
+			{slice[1], slice[2], slice[3], slice[4], slice[5], slice[6]};
 
 			slice = slice.TakeSlice(1, 6);
 

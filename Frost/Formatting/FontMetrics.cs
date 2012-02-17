@@ -42,7 +42,8 @@ namespace Frost.Formatting
 			get
 			{
 				Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._UnitsPerEm));
+				Contract.Ensures(
+					Contract.Result<float>().Equals(this._UnitsPerEm));
 
 				return this._UnitsPerEm;
 			}
@@ -158,7 +159,8 @@ namespace Frost.Formatting
 			Assert.Equal(24, new FontMetrics(5, 10, 5).MeasureDescent(9));
 			Assert.Equal(36, new FontMetrics(5, 10, 5).MeasureEm(9));
 
-			Assert.TestObject(new FontMetrics(0, 1, 2), new FontMetrics(2, 1, 0));
+			Assert.TestObject(
+				new FontMetrics(0, 1, 2), new FontMetrics(2, 1, 0));
 		}
 #endif
 	}

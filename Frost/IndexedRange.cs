@@ -11,7 +11,8 @@ using System.Diagnostics.Contracts;
 
 namespace Frost
 {
-	public struct IndexedRange : IEquatable<IndexedRange>, IEnumerable<int>
+	public struct IndexedRange
+		: IEquatable<IndexedRange>, IEnumerable<int>
 	{
 		private static readonly IndexedRange _Empty;
 
@@ -51,7 +52,8 @@ namespace Frost
 			Trace.Assert(startIndex >= 0);
 			Trace.Assert(length >= 0);
 			Trace.Assert(length <= this._Length);
-			Trace.Assert(startIndex + length <= this._StartIndex + this._Length);
+			Trace.Assert(
+				startIndex + length <= this._StartIndex + this._Length);
 
 			return new IndexedRange(startIndex, length);
 		}
@@ -103,7 +105,8 @@ namespace Frost
 
 		public bool Equals(IndexedRange other)
 		{
-			return other._StartIndex == this._StartIndex && other._Length == this._Length;
+			return other._StartIndex == this._StartIndex &&
+			       other._Length == this._Length;
 		}
 
 		public override bool Equals(object obj)
@@ -175,12 +178,14 @@ namespace Frost
 			}
 		}
 
-		public static bool operator ==(IndexedRange left, IndexedRange right)
+		public static bool operator ==(IndexedRange left, IndexedRange right
+			)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(IndexedRange left, IndexedRange right)
+		public static bool operator !=(IndexedRange left, IndexedRange right
+			)
 		{
 			return !left.Equals(right);
 		}

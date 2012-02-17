@@ -30,8 +30,8 @@ namespace Frost
 			_Empty = new Thickness(0.0f);
 		}
 
-		[System.Diagnostics.Contracts.ContractInvariantMethod] private void Invariant(
-			)
+		[System.Diagnostics.Contracts.ContractInvariantMethod] private void
+			Invariant()
 		{
 			Contracts.Invariant(Check.IsPositive(this._Left));
 			Contracts.Invariant(Check.IsPositive(this._Top));
@@ -152,11 +152,14 @@ namespace Frost
 
 		public bool Equals(Thickness other)
 		{
-			return other._Bottom.Equals(this._Bottom) && other._Left.Equals(this._Left) &&
-			       other._Right.Equals(this._Right) && other._Top.Equals(this._Top);
+			return other._Bottom.Equals(this._Bottom) &&
+			       other._Left.Equals(this._Left) &&
+			       other._Right.Equals(this._Right) &&
+			       other._Top.Equals(this._Top);
 		}
 
-		public Thickness Contract(float left, float top, float right, float bottom)
+		public Thickness Contract(
+			float left, float top, float right, float bottom)
 		{
 			Trace.Assert(Check.IsFinite(left));
 			Trace.Assert(Check.IsFinite(top));
@@ -184,7 +187,8 @@ namespace Frost
 				leftRightTopBottom);
 		}
 
-		public Thickness Expand(float left, float top, float right, float bottom)
+		public Thickness Expand(
+			float left, float top, float right, float bottom)
 		{
 			Trace.Assert(Check.IsFinite(left));
 			Trace.Assert(Check.IsFinite(top));
@@ -276,7 +280,8 @@ namespace Frost
 			Assert.Equal(5, new Thickness(3, 2, 5, 3).Height);
 
 			Assert.Equal(Empty, new Thickness(5).Contract(5, 5, 5, 5));
-			Assert.Equal(new Thickness(6), new Thickness(5).Contract(-1, -1, -1, -1));
+			Assert.Equal(
+				new Thickness(6), new Thickness(5).Contract(-1, -1, -1, -1));
 
 			Assert.Equal(Empty, new Thickness(5).Contract(5, 5));
 			Assert.Equal(new Thickness(6), new Thickness(5).Contract(-1, -1));

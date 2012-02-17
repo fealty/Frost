@@ -66,7 +66,8 @@ namespace Frost.Painting
 		{
 			unchecked
 			{
-				return (this._Color.GetHashCode() * 397) ^ this._Position.GetHashCode();
+				return (this._Color.GetHashCode() * 397) ^
+				       this._Position.GetHashCode();
 			}
 		}
 
@@ -81,12 +82,14 @@ namespace Frost.Painting
 			Contract.Invariant(Check.IsNormalized(this._Position));
 		}
 
-		public static bool operator ==(GradientStop left, GradientStop right)
+		public static bool operator ==(GradientStop left, GradientStop right
+			)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(GradientStop left, GradientStop right)
+		public static bool operator !=(GradientStop left, GradientStop right
+			)
 		{
 			return !left.Equals(right);
 		}
@@ -95,7 +98,8 @@ namespace Frost.Painting
 		[Fact] internal static void Test0()
 		{
 			Assert.TestObject(
-				new GradientStop(0.0f, Color.Red), new GradientStop(1.0f, Color.Blue));
+				new GradientStop(0.0f, Color.Red),
+				new GradientStop(1.0f, Color.Blue));
 		}
 #endif
 	}

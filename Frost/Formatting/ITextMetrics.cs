@@ -71,7 +71,8 @@ namespace Frost.Formatting
 			public bool FindIndexNear(Point position, out int textIndex)
 			{
 				Contract.Ensures(Contract.ValueAtReturn(out textIndex) >= 0);
-				Contract.Ensures(Contract.ValueAtReturn(out textIndex) < Regions.Count);
+				Contract.Ensures(
+					Contract.ValueAtReturn(out textIndex) < Regions.Count);
 
 				throw new NotSupportedException();
 			}
@@ -100,7 +101,8 @@ namespace Frost.Formatting
 				throw new NotSupportedException();
 			}
 
-			public void ComputeRegion(IndexedRange textRange, out Rectangle result)
+			public void ComputeRegion(
+				IndexedRange textRange, out Rectangle result)
 			{
 				Contract.Requires(textRange.StartIndex < Regions.Count);
 				Contract.Requires(textRange.LastIndex < Regions.Count);
@@ -110,8 +112,8 @@ namespace Frost.Formatting
 		}
 	}
 
-	[ContractClass(typeof(Contracts.ITextMetricsContract))] public interface
-		ITextMetrics
+	[ContractClass(typeof(Contracts.ITextMetricsContract))] public
+		interface ITextMetrics
 	{
 		Paragraph Paragraph { get; }
 

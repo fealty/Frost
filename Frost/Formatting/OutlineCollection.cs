@@ -23,6 +23,7 @@ namespace Frost.Formatting
 		public OutlineCollection(IEnumerable<Outline> items) : base(items)
 		{
 		}
+
 #if(UNIT_TESTING)
 		[Fact] internal static void Test0()
 		{

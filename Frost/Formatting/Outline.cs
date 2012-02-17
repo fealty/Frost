@@ -37,7 +37,8 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Geometry>() == this._NormalizedOutline);
+				Contract.Ensures(
+					Contract.Result<Geometry>() == this._NormalizedOutline);
 				Contract.Ensures(Contract.Result<Geometry>() != null);
 
 				return this._NormalizedOutline;
@@ -48,7 +49,8 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<float>().Equals(this._NormalizedBaseline));
+				Contract.Ensures(
+					Contract.Result<float>().Equals(this._NormalizedBaseline));
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
 
 				return this._NormalizedBaseline;

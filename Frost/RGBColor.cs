@@ -24,7 +24,8 @@ namespace Frost
 			Contract.Invariant(Check.IsPercentage(this._A));
 		}
 
-		public RGBColor(float red, float green, float blue, float alpha = 100.0f)
+		public RGBColor(
+			float red, float green, float blue, float alpha = 100.0f)
 		{
 			Trace.Assert(Check.IsByte(red));
 			Trace.Assert(Check.IsByte(green));
@@ -100,7 +101,11 @@ namespace Frost
 		public override string ToString()
 		{
 			return string.Format(
-				"R: {0}, G: {1}, B: {2}, A: {3}", this._R, this._G, this._B, this._A);
+				"R: {0}, G: {1}, B: {2}, A: {3}",
+				this._R,
+				this._G,
+				this._B,
+				this._A);
 		}
 
 		public override bool Equals(object obj)
@@ -128,13 +133,19 @@ namespace Frost
 		internal Color ToColor()
 		{
 			return new Color(
-				this._R / 255.0f, this._G / 255.0f, this._B / 255.0f, this._A / 100.0f);
+				this._R / 255.0f,
+				this._G / 255.0f,
+				this._B / 255.0f,
+				this._A / 100.0f);
 		}
 
 		public static implicit operator RGBColor(Color color)
 		{
 			return new RGBColor(
-				color.R * 255.0f, color.G * 255.0f, color.B * 255.0f, color.A * 100.0f);
+				color.R * 255.0f,
+				color.G * 255.0f,
+				color.B * 255.0f,
+				color.A * 100.0f);
 		}
 
 		public static bool operator ==(RGBColor left, RGBColor right)
@@ -155,11 +166,15 @@ namespace Frost
 			Assert.Equal(3, new RGBColor(1, 2, 3, 4).B);
 			Assert.Equal(4, new RGBColor(1, 2, 3, 4).A);
 
-			Assert.Equal<RGBColor>(new RGBColor(000, 000, 000), new Color(0, 0, 0));
-			Assert.Equal<RGBColor>(new RGBColor(255, 255, 255), new Color(1, 1, 1));
+			Assert.Equal<RGBColor>(
+				new RGBColor(000, 000, 000), new Color(0, 0, 0));
+			Assert.Equal<RGBColor>(
+				new RGBColor(255, 255, 255), new Color(1, 1, 1));
 
-			Assert.Equal<Color>(new Color(0, 0, 0), new RGBColor(000, 000, 000));
-			Assert.Equal<Color>(new Color(1, 1, 1), new RGBColor(255, 255, 255));
+			Assert.Equal<Color>(
+				new Color(0, 0, 0), new RGBColor(000, 000, 000));
+			Assert.Equal<Color>(
+				new Color(1, 1, 1), new RGBColor(255, 255, 255));
 
 			Assert.TestObject<RGBColor>(Color.Red, Color.Blue);
 		}

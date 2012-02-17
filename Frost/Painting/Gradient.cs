@@ -30,7 +30,8 @@ namespace Frost.Painting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<GradientStop[]>().Equals(this._Stops));
+				Contract.Ensures(
+					Contract.Result<GradientStop[]>().Equals(this._Stops));
 				Contract.Ensures(Contract.Result<GradientStop[]>() != null);
 
 				return this._Stops;
@@ -68,7 +69,8 @@ namespace Frost.Painting
 
 				if(this._Stops.Count > 0)
 				{
-					Trace.Assert(position > this._Stops[this._Stops.Count - 1].Position);
+					Trace.Assert(
+						position > this._Stops[this._Stops.Count - 1].Position);
 				}
 
 				this._Stops.Add(new GradientStop(position, color));
@@ -80,7 +82,8 @@ namespace Frost.Painting
 			{
 				Trace.Assert(this._Stops.Count >= 2);
 				Trace.Assert(this._Stops[0].Position.Equals(0.0f));
-				Trace.Assert(this._Stops[this._Stops.Count - 1].Position.Equals(1.0f));
+				Trace.Assert(
+					this._Stops[this._Stops.Count - 1].Position.Equals(1.0f));
 
 				return new Gradient(this._Stops.ToArray());
 			}
@@ -162,8 +165,8 @@ namespace Frost.Painting
 			Assert.Equal(new Color(1.0f, 1.0f, 1.0f), gradient.Stops[2].Color);
 
 			Gradient gradient2 =
-				Create().WithStop(0.0f, Color.AliceBlue).WithStop(1.0f, Color.AntiqueWhite).
-					Build();
+				Create().WithStop(0.0f, Color.AliceBlue).WithStop(
+					1.0f, Color.AntiqueWhite).Build();
 
 			Assert.TestObject(gradient, gradient2);
 		}

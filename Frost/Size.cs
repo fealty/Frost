@@ -111,7 +111,8 @@ namespace Frost
 
 		public bool Equals(Size other)
 		{
-			return other._Width.Equals(this._Width) && other._Height.Equals(this._Height);
+			return other._Width.Equals(this._Width) &&
+			       other._Height.Equals(this._Height);
 		}
 
 		public override bool Equals(object obj)
@@ -128,7 +129,8 @@ namespace Frost
 		{
 			unchecked
 			{
-				return (this._Width.GetHashCode() * 397) ^ this._Height.GetHashCode();
+				return (this._Width.GetHashCode() * 397) ^
+				       this._Height.GetHashCode();
 			}
 		}
 
@@ -144,7 +146,8 @@ namespace Frost
 
 		public override string ToString()
 		{
-			return string.Format("Width: {0}, Height: {1}", this._Width, this._Height);
+			return string.Format(
+				"Width: {0}, Height: {1}", this._Width, this._Height);
 		}
 
 #if(UNIT_TESTING)

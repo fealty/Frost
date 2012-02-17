@@ -40,8 +40,8 @@ namespace Frost.Surfacing
 		}
 	}
 
-	[ContractClass(typeof(Contracts.ISurface2DContract))] public interface
-		ISurface2D
+	[ContractClass(typeof(Contracts.ISurface2DContract))] public
+		interface ISurface2D
 	{
 		Device2D Device2D { get; }
 
@@ -52,7 +52,8 @@ namespace Frost.Surfacing
 
 		void DumpToFile(string file);
 
-		void CopyTo(Rectangle srcRegion, ISurface2D destination, Point dstLocation);
+		void CopyTo(
+			Rectangle srcRegion, ISurface2D destination, Point dstLocation);
 
 		void AcquireLock();
 		void ReleaseLock();

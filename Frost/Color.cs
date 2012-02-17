@@ -14,7 +14,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color AliceBlue, having the ARGB value of #FFF0F8FF.
 		/// </summary>
-		public static readonly Color AliceBlue = new Color(0.9411765f, 0.972549f, 1f);
+		public static readonly Color AliceBlue = new Color(
+			0.9411765f, 0.972549f, 1f);
 
 		/// <summary>
 		///   This field contains the color AntiqueWhite, having the ARGB value of #FFFAEBD7.
@@ -47,7 +48,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Bisque, having the ARGB value of #FFFFE4C4.
 		/// </summary>
-		public static readonly Color Bisque = new Color(1f, 0.8941177f, 0.7686275f);
+		public static readonly Color Bisque = new Color(
+			1f, 0.8941177f, 0.7686275f);
 
 		/// <summary>
 		///   This field contains the color Black, having the ARGB value of #FF000000.
@@ -92,7 +94,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Chartreuse, having the ARGB value of #FF7FFF00.
 		/// </summary>
-		public static readonly Color Chartreuse = new Color(0.4980392f, 1f, 0f);
+		public static readonly Color Chartreuse = new Color(
+			0.4980392f, 1f, 0f);
 
 		/// <summary>
 		///   This field contains the color Chocolate, having the ARGB value of #FFD2691E.
@@ -103,7 +106,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Coral, having the ARGB value of #FFFF7F50.
 		/// </summary>
-		public static readonly Color Coral = new Color(1f, 0.4980392f, 0.3137255f);
+		public static readonly Color Coral = new Color(
+			1f, 0.4980392f, 0.3137255f);
 
 		/// <summary>
 		///   This field contains the color CornflowerBlue, having the ARGB value of #FF6495ED.
@@ -114,7 +118,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Cornsilk, having the ARGB value of #FFFFF8DC.
 		/// </summary>
-		public static readonly Color Cornsilk = new Color(1f, 0.972549f, 0.8627451f);
+		public static readonly Color Cornsilk = new Color(
+			1f, 0.972549f, 0.8627451f);
 
 		/// <summary>
 		///   This field contains the color Crimson, having the ARGB value of #FFDC143C.
@@ -130,12 +135,14 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color DarkBlue, having the ARGB value of #FF00008B.
 		/// </summary>
-		public static readonly Color DarkBlue = new Color(0f, 0f, 0.5450981f);
+		public static readonly Color DarkBlue = new Color(
+			0f, 0f, 0.5450981f);
 
 		/// <summary>
 		///   This field contains the color DarkCyan, having the ARGB value of #FF008B8B.
 		/// </summary>
-		public static readonly Color DarkCyan = new Color(0f, 0.5450981f, 0.5450981f);
+		public static readonly Color DarkCyan = new Color(
+			0f, 0.5450981f, 0.5450981f);
 
 		/// <summary>
 		///   This field contains the color DarkGoldenrod, having the ARGB value of #FFB8860B.
@@ -152,7 +159,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color DarkGreen, having the ARGB value of #FF006400.
 		/// </summary>
-		public static readonly Color DarkGreen = new Color(0f, 0.3921569f, 0f);
+		public static readonly Color DarkGreen = new Color(
+			0f, 0.3921569f, 0f);
 
 		/// <summary>
 		///   This field contains the color DarkKhaki, having the ARGB value of #FFBDB76B.
@@ -175,12 +183,14 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color DarkOrange, having the ARGB value of #FFFF8C00.
 		/// </summary>
-		public static readonly Color DarkOrange = new Color(1f, 0.5490196f, 0f);
+		public static readonly Color DarkOrange = new Color(
+			1f, 0.5490196f, 0f);
 
 		/// <summary>
 		///   This field contains the color DarkOrchid, having the ARGB value of #FF9932CC.
 		/// </summary>
-		public static readonly Color DarkOrchid = new Color(0.6f, 0.1960784f, 0.8f);
+		public static readonly Color DarkOrchid = new Color(
+			0.6f, 0.1960784f, 0.8f);
 
 		/// <summary>
 		///   This field contains the color DarkRed, having the ARGB value of #FF8B0000.
@@ -220,17 +230,20 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color DarkViolet, having the ARGB value of #FF9400D3.
 		/// </summary>
-		public static readonly Color DarkViolet = new Color(0.5803922f, 0f, 0.827451f);
+		public static readonly Color DarkViolet = new Color(
+			0.5803922f, 0f, 0.827451f);
 
 		/// <summary>
 		///   This field contains the color DeepPink, having the ARGB value of #FFFF1493.
 		/// </summary>
-		public static readonly Color DeepPink = new Color(1f, 0.07843138f, 0.5764706f);
+		public static readonly Color DeepPink = new Color(
+			1f, 0.07843138f, 0.5764706f);
 
 		/// <summary>
 		///   This field contains the color DeepSkyBlue, having the ARGB value of #FF00BFFF.
 		/// </summary>
-		public static readonly Color DeepSkyBlue = new Color(0f, 0.7490196f, 1f);
+		public static readonly Color DeepSkyBlue = new Color(
+			0f, 0.7490196f, 1f);
 
 		/// <summary>
 		///   This field contains the color DimGray, having the ARGB value of #FF696969.
@@ -276,7 +289,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color GhostWhite, having the ARGB value of #FFF8F8FF.
 		/// </summary>
-		public static readonly Color GhostWhite = new Color(0.972549f, 0.972549f, 1f);
+		public static readonly Color GhostWhite = new Color(
+			0.972549f, 0.972549f, 1f);
 
 		/// <summary>
 		///   This field contains the color Gold, having the ARGB value of #FFFFD700.
@@ -309,12 +323,14 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Honeydew, having the ARGB value of #FFF0FFF0.
 		/// </summary>
-		public static readonly Color Honeydew = new Color(0.9411765f, 1f, 0.9411765f);
+		public static readonly Color Honeydew = new Color(
+			0.9411765f, 1f, 0.9411765f);
 
 		/// <summary>
 		///   This field contains the color HotPink, having the ARGB value of #FFFF69B4.
 		/// </summary>
-		public static readonly Color HotPink = new Color(1f, 0.4117647f, 0.7058824f);
+		public static readonly Color HotPink = new Color(
+			1f, 0.4117647f, 0.7058824f);
 
 		/// <summary>
 		///   This field contains the color IndianRed, having the ARGB value of #FFCD5C5C.
@@ -325,7 +341,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Indigo, having the ARGB value of #FF4B0082.
 		/// </summary>
-		public static readonly Color Indigo = new Color(0.2941177f, 0f, 0.509804f);
+		public static readonly Color Indigo = new Color(
+			0.2941177f, 0f, 0.509804f);
 
 		/// <summary>
 		///   This field contains the color Ivory, having the ARGB value of #FFFFFFF0.
@@ -353,7 +370,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color LawnGreen, having the ARGB value of #FF7CFC00.
 		/// </summary>
-		public static readonly Color LawnGreen = new Color(0.4862745f, 0.9882353f, 0f);
+		public static readonly Color LawnGreen = new Color(
+			0.4862745f, 0.9882353f, 0f);
 
 		/// <summary>
 		///   This field contains the color LemonChiffon, having the ARGB value of #FFFFFACD.
@@ -376,13 +394,14 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color LightCyan, having the ARGB value of #FFE0FFFF.
 		/// </summary>
-		public static readonly Color LightCyan = new Color(0.8784314f, 1f, 1f);
+		public static readonly Color LightCyan = new Color(
+			0.8784314f, 1f, 1f);
 
 		/// <summary>
 		///   This field contains the color LightGoldenrodYellow, having the ARGB value of #FFFAFAD2.
 		/// </summary>
-		public static readonly Color LightGoldenrodYellow = new Color(
-			0.9803922f, 0.9803922f, 0.8235294f);
+		public static readonly Color LightGoldenrodYellow =
+			new Color(0.9803922f, 0.9803922f, 0.8235294f);
 
 		/// <summary>
 		///   This field contains the color LightGray, having the ARGB value of #FFD3D3D3.
@@ -399,7 +418,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color LightPink, having the ARGB value of #FFFFB6C1.
 		/// </summary>
-		public static readonly Color LightPink = new Color(1f, 0.7137255f, 0.7568628f);
+		public static readonly Color LightPink = new Color(
+			1f, 0.7137255f, 0.7568628f);
 
 		/// <summary>
 		///   This field contains the color LightSalmon, having the ARGB value of #FFFFA07A.
@@ -434,7 +454,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color LightYellow, having the ARGB value of #FFFFFFE0.
 		/// </summary>
-		public static readonly Color LightYellow = new Color(1f, 1f, 0.8784314f);
+		public static readonly Color LightYellow = new Color(
+			1f, 1f, 0.8784314f);
 
 		/// <summary>
 		///   This field contains the color Lime, having the ARGB value of #FF00FF00.
@@ -472,7 +493,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color MediumBlue, having the ARGB value of #FF0000CD.
 		/// </summary>
-		public static readonly Color MediumBlue = new Color(0f, 0f, 0.8039216f);
+		public static readonly Color MediumBlue = new Color(
+			0f, 0f, 0.8039216f);
 
 		/// <summary>
 		///   This field contains the color MediumOrchid, having the ARGB value of #FFBA55D3.
@@ -525,17 +547,20 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color MintCream, having the ARGB value of #FFF5FFFA.
 		/// </summary>
-		public static readonly Color MintCream = new Color(0.9607843f, 1f, 0.9803922f);
+		public static readonly Color MintCream = new Color(
+			0.9607843f, 1f, 0.9803922f);
 
 		/// <summary>
 		///   This field contains the color MistyRose, having the ARGB value of #FFFFE4E1.
 		/// </summary>
-		public static readonly Color MistyRose = new Color(1f, 0.8941177f, 0.8823529f);
+		public static readonly Color MistyRose = new Color(
+			1f, 0.8941177f, 0.8823529f);
 
 		/// <summary>
 		///   This field contains the color Moccasin, having the ARGB value of #FFFFE4B5.
 		/// </summary>
-		public static readonly Color Moccasin = new Color(1f, 0.8941177f, 0.7098039f);
+		public static readonly Color Moccasin = new Color(
+			1f, 0.8941177f, 0.7098039f);
 
 		/// <summary>
 		///   This field contains the color NavajoWhite, having the ARGB value of #FFFFDEAD.
@@ -557,7 +582,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Olive, having the ARGB value of #FF808000.
 		/// </summary>
-		public static readonly Color Olive = new Color(0.5019608f, 0.5019608f, 0f);
+		public static readonly Color Olive = new Color(
+			0.5019608f, 0.5019608f, 0f);
 
 		/// <summary>
 		///   This field contains the color OliveDrab, having the ARGB value of #FF6B8E23.
@@ -573,7 +599,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color OrangeRed, having the ARGB value of #FFFF4500.
 		/// </summary>
-		public static readonly Color OrangeRed = new Color(1f, 0.2705882f, 0f);
+		public static readonly Color OrangeRed = new Color(
+			1f, 0.2705882f, 0f);
 
 		/// <summary>
 		///   This field contains the color Orchid, having the ARGB value of #FFDA70D6.
@@ -614,7 +641,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color PeachPuff, having the ARGB value of #FFFFDAB9.
 		/// </summary>
-		public static readonly Color PeachPuff = new Color(1f, 0.854902f, 0.7254902f);
+		public static readonly Color PeachPuff = new Color(
+			1f, 0.854902f, 0.7254902f);
 
 		/// <summary>
 		///   This field contains the color Peru, having the ARGB value of #FFCD853F.
@@ -625,7 +653,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Pink, having the ARGB value of #FFFFC0CB.
 		/// </summary>
-		public static readonly Color Pink = new Color(1f, 0.7529412f, 0.7960784f);
+		public static readonly Color Pink = new Color(
+			1f, 0.7529412f, 0.7960784f);
 
 		/// <summary>
 		///   This field contains the color Plum, having the ARGB value of #FFDDA0DD.
@@ -642,7 +671,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Purple, having the ARGB value of #FF800080.
 		/// </summary>
-		public static readonly Color Purple = new Color(0.5019608f, 0f, 0.5019608f);
+		public static readonly Color Purple = new Color(
+			0.5019608f, 0f, 0.5019608f);
 
 		/// <summary>
 		///   This field contains the color Red, having the ARGB value of #FFFF0000.
@@ -688,7 +718,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color SeaShell, having the ARGB value of #FFFFF5EE.
 		/// </summary>
-		public static readonly Color SeaShell = new Color(1f, 0.9607843f, 0.9333333f);
+		public static readonly Color SeaShell = new Color(
+			1f, 0.9607843f, 0.9333333f);
 
 		/// <summary>
 		///   This field contains the color Sienna, having the ARGB value of #FFA0522D.
@@ -723,12 +754,14 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Snow, having the ARGB value of #FFFFFAFA.
 		/// </summary>
-		public static readonly Color Snow = new Color(1f, 0.9803922f, 0.9803922f);
+		public static readonly Color Snow = new Color(
+			1f, 0.9803922f, 0.9803922f);
 
 		/// <summary>
 		///   This field contains the color SpringGreen, having the ARGB value of #FF00FF7F.
 		/// </summary>
-		public static readonly Color SpringGreen = new Color(0f, 1f, 0.4980392f);
+		public static readonly Color SpringGreen = new Color(
+			0f, 1f, 0.4980392f);
 
 		/// <summary>
 		///   This field contains the color SteelBlue, having the ARGB value of #FF4682B4.
@@ -745,7 +778,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Teal, having the ARGB value of #FF008080.
 		/// </summary>
-		public static readonly Color Teal = new Color(0f, 0.5019608f, 0.5019608f);
+		public static readonly Color Teal = new Color(
+			0f, 0.5019608f, 0.5019608f);
 
 		/// <summary>
 		///   This field contains the color Thistle, having the ARGB value of #FFD8BFD8.
@@ -756,7 +790,8 @@ namespace Frost
 		/// <summary>
 		///   This field contains the color Tomato, having the ARGB value of #FFFF6347.
 		/// </summary>
-		public static readonly Color Tomato = new Color(1f, 0.3882353f, 0.2784314f);
+		public static readonly Color Tomato = new Color(
+			1f, 0.3882353f, 0.2784314f);
 
 		/// <summary>
 		///   This field contains the color Turquoise, having the ARGB value of #FF40E0D0.
@@ -909,7 +944,11 @@ namespace Frost
 		public override string ToString()
 		{
 			return string.Format(
-				"R: {1}, G: {2}, B: {3}, A: {0}", this._R, this._G, this._B, this._A);
+				"R: {1}, G: {2}, B: {3}, A: {0}",
+				this._R,
+				this._G,
+				this._B,
+				this._A);
 		}
 
 		public static implicit operator Color(RGBColor color)
@@ -943,16 +982,25 @@ namespace Frost
 
 			Assert.TestObject(Red, Blue);
 
-			Assert.Equal<Color>(new Color(1, 0, 0), new HSVColor(000, 100, 100));
-			Assert.Equal<Color>(new Color(1, 1, 0), new HSVColor(060, 100, 100));
-			Assert.Equal<Color>(new Color(0, 1, 0), new HSVColor(120, 100, 100));
-			Assert.Equal<Color>(new Color(0, 1, 1), new HSVColor(180, 100, 100));
-			Assert.Equal<Color>(new Color(0, 0, 1), new HSVColor(240, 100, 100));
-			Assert.Equal<Color>(new Color(1, 0, 1), new HSVColor(360, 100, 100));
-			Assert.Equal<Color>(new Color(1, 1, 1), new HSVColor(180, 000, 100));
+			Assert.Equal<Color>(
+				new Color(1, 0, 0), new HSVColor(000, 100, 100));
+			Assert.Equal<Color>(
+				new Color(1, 1, 0), new HSVColor(060, 100, 100));
+			Assert.Equal<Color>(
+				new Color(0, 1, 0), new HSVColor(120, 100, 100));
+			Assert.Equal<Color>(
+				new Color(0, 1, 1), new HSVColor(180, 100, 100));
+			Assert.Equal<Color>(
+				new Color(0, 0, 1), new HSVColor(240, 100, 100));
+			Assert.Equal<Color>(
+				new Color(1, 0, 1), new HSVColor(360, 100, 100));
+			Assert.Equal<Color>(
+				new Color(1, 1, 1), new HSVColor(180, 000, 100));
 
-			Assert.Equal<Color>(new Color(0, 0, 0), new RGBColor(000, 000, 000));
-			Assert.Equal<Color>(new Color(1, 1, 1), new RGBColor(255, 255, 255));
+			Assert.Equal<Color>(
+				new Color(0, 0, 0), new RGBColor(000, 000, 000));
+			Assert.Equal<Color>(
+				new Color(1, 1, 1), new RGBColor(255, 255, 255));
 		}
 
 #endif

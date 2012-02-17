@@ -74,7 +74,8 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<FontFeatureCollection>() == this._Features);
+				Contract.Ensures(
+					Contract.Result<FontFeatureCollection>() == this._Features);
 
 				return this._Features;
 			}
@@ -185,9 +186,11 @@ namespace Frost.Formatting
 			       other._HAlignment == this._HAlignment &&
 			       other._Inline.Equals(this._Inline) &&
 			       other._PointSize.Equals(this._PointSize) &&
-			       other._Stretch == this._Stretch && other._Style == this._Style &&
+			       other._Stretch == this._Stretch &&
+			       other._Style == this._Style &&
 			       other._TextRange.Equals(this._TextRange) &&
-			       other._VAlignment == this._VAlignment && other._Weight == this._Weight;
+			       other._VAlignment == this._VAlignment &&
+			       other._Weight == this._Weight;
 		}
 
 		public override bool Equals(object obj)
@@ -204,11 +207,15 @@ namespace Frost.Formatting
 		{
 			unchecked
 			{
-				int result = (this._Culture != null ? this._Culture.GetHashCode() : 0);
+				int result = (this._Culture != null
+				              	? this._Culture.GetHashCode()
+				              	: 0);
 				result = (result * 397) ^
 				         (this._Family != null ? this._Family.GetHashCode() : 0);
 				result = (result * 397) ^
-				         (this._Features != null ? this._Features.GetHashCode() : 0);
+				         (this._Features != null
+				          	? this._Features.GetHashCode()
+				          	: 0);
 				result = (result * 397) ^ this._HAlignment.GetHashCode();
 				result = (result * 397) ^ this._Inline.GetHashCode();
 				result = (result * 397) ^ this._PointSize.GetHashCode();

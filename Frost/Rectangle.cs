@@ -31,8 +31,8 @@ namespace Frost
 			_Empty = new Rectangle(Point.Empty, Size.Empty);
 		}
 
-		[System.Diagnostics.Contracts.ContractInvariantMethod] private void Invariant(
-			)
+		[System.Diagnostics.Contracts.ContractInvariantMethod] private void
+			Invariant()
 		{
 			Contracts.Invariant(Check.IsFinite(this._X));
 			Contracts.Invariant(Check.IsFinite(this._Y));
@@ -62,7 +62,10 @@ namespace Frost
 
 		public Rectangle(Point location, Size size)
 			: this(
-				location.X, location.Y, location.X + size.Width, location.Y + size.Height)
+				location.X,
+				location.Y,
+				location.X + size.Width,
+				location.Y + size.Height)
 		{
 		}
 
@@ -225,7 +228,8 @@ namespace Frost
 			float width = this._Width;
 			float height = this._Height;
 
-			if((alignmentAxis == Axis.Both) || (alignmentAxis == Axis.Horizontal))
+			if((alignmentAxis == Axis.Both) ||
+			   (alignmentAxis == Axis.Horizontal))
 			{
 				if(direction == LayoutDirection.RightToLeft)
 				{
@@ -271,7 +275,8 @@ namespace Frost
 						height = container.Height;
 						break;
 					case Alignment.Center:
-						y = ((container.Height / 2.0f) - (this._Height / 2.0f)) + this._Y;
+						y = ((container.Height / 2.0f) - (this._Height / 2.0f)) +
+						    this._Y;
 						break;
 					case Alignment.Leading:
 						y = (container.Height - this._Height) + this._Y;
@@ -312,8 +317,9 @@ namespace Frost
 
 		public bool Equals(Rectangle other)
 		{
-			return other._Height.Equals(this._Height) && other._Width.Equals(this._Width) &&
-			       other._X.Equals(this._X) && other._Y.Equals(this._Y);
+			return other._Height.Equals(this._Height) &&
+			       other._Width.Equals(this._Width) && other._X.Equals(this._X) &&
+			       other._Y.Equals(this._Y);
 		}
 
 		public override bool Equals(object obj)
@@ -383,18 +389,27 @@ namespace Frost
 
 			Assert.Equal(new Point(0.5f), new Rectangle(0, 0, 1, 1).Center);
 
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(0.5f, 0.5f)));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(0.0f, 0.0f)));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(1.0f, 0.0f)));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(1.0f, 1.0f)));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(0.0f, 1.0f)));
-			Assert.False(new Rectangle(0, 0, 1, 1).Contains(new Point(1.5f, 0.5f)));
+			Assert.True(
+				new Rectangle(0, 0, 1, 1).Contains(new Point(0.5f, 0.5f)));
+			Assert.True(
+				new Rectangle(0, 0, 1, 1).Contains(new Point(0.0f, 0.0f)));
+			Assert.True(
+				new Rectangle(0, 0, 1, 1).Contains(new Point(1.0f, 0.0f)));
+			Assert.True(
+				new Rectangle(0, 0, 1, 1).Contains(new Point(1.0f, 1.0f)));
+			Assert.True(
+				new Rectangle(0, 0, 1, 1).Contains(new Point(0.0f, 1.0f)));
+			Assert.False(
+				new Rectangle(0, 0, 1, 1).Contains(new Point(1.5f, 0.5f)));
 
 			Assert.True(new Rectangle(0, 0, 1, 1).Contains(Empty));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Rectangle(0, 0, 1, 1)));
 			Assert.True(
-				new Rectangle(0, 0, 1, 1).Contains(new Rectangle(0.5f, 0, 0.5f, 1)));
-			Assert.False(new Rectangle(0, 0, 1, 1).Contains(new Rectangle(-1, -1, 1, 1)));
+				new Rectangle(0, 0, 1, 1).Contains(new Rectangle(0, 0, 1, 1)));
+			Assert.True(
+				new Rectangle(0, 0, 1, 1).Contains(
+					new Rectangle(0.5f, 0, 0.5f, 1)));
+			Assert.False(
+				new Rectangle(0, 0, 1, 1).Contains(new Rectangle(-1, -1, 1, 1)));
 
 			Assert.TestObject(MinValue, MaxValue);
 		}
@@ -437,7 +452,9 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(0, 0, 50, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal));
+					new Rectangle(0, 0, 100, 100),
+					Alignment.Trailing,
+					Axis.Horizontal));
 			Assert.Equal(
 				new Rectangle(50, 0, 100, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(

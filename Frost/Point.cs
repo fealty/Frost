@@ -113,7 +113,8 @@ namespace Frost
 
 		public Point FindIntersectionWith(Point lineStart, Point lineEnd)
 		{
-			Point v = new Point(lineEnd.X - lineStart.X, lineEnd.Y - lineStart.Y);
+			Point v = new Point(
+				lineEnd.X - lineStart.X, lineEnd.Y - lineStart.Y);
 			Point w = new Point(this._X - lineStart.X, this._Y - lineStart.Y);
 
 			float c1 = w.X * v.X + w.Y * v.Y;
@@ -187,8 +188,10 @@ namespace Frost
 			Assert.Equal(0, Empty.X);
 			Assert.Equal(0, Empty.Y);
 
-			Assert.Equal(1.41421, Math.Round(Empty.DistanceTo(new Point(1, 1)), 5));
-			Assert.Equal(0.00000, Math.Round(Empty.DistanceTo(new Point(0, 0)), 5));
+			Assert.Equal(
+				1.41421, Math.Round(Empty.DistanceTo(new Point(1, 1)), 5));
+			Assert.Equal(
+				0.00000, Math.Round(Empty.DistanceTo(new Point(0, 0)), 5));
 
 			Assert.Equal(2, Empty.SquaredDistanceTo(new Point(1, 1)));
 			Assert.Equal(0, Empty.SquaredDistanceTo(new Point(0, 0)));
