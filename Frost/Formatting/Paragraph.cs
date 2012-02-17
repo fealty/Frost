@@ -510,6 +510,163 @@ namespace Frost.Formatting
 				this._ActiveWeight = FontWeight.Regular;
 				this._ActiveFeatures = null;
 			}
+
+#if(UNIT_TESTING)
+			[Fact] internal static void Test0()
+			{
+				Builder builder = Create();
+
+				builder.SaveState();
+
+				builder.WithWeight(FontWeight.Bold);
+				builder.WithCulture(new CultureInfo("ja-JP"));
+				builder.WithFamily("georgia");
+				builder.WithFeatures(
+					new FontFeatureCollection(
+						new[] {new FontFeature("kern"), new FontFeature("liga")}));
+				builder.WithPointSize(12.0f);
+				builder.WithStretch(FontStretch.Expanded);
+				builder.WithStyle(FontStyle.Italic);
+				builder.WithTracking(1.0f);
+				builder.WithSpacing(2.0f);
+				builder.WithLeading(3.0f);
+				builder.WithIndentation(4.0f);
+				builder.WithAlignment(Alignment.Center);
+
+				Assert.Equal(builder._ActiveWeight, FontWeight.Bold);
+				Assert.Equal(builder._ActiveCulture, new CultureInfo("ja-JP"));
+				Assert.Equal(builder._ActiveFamily, "georgia");
+				Assert.Equal(
+					builder._ActiveFeatures,
+					new FontFeatureCollection(
+						new[] {new FontFeature("kern"), new FontFeature("liga")}));
+				Assert.Equal(builder._ActivePointSize, 12.0);
+				Assert.Equal(builder._ActiveStretch, FontStretch.Expanded);
+				Assert.Equal(builder._ActiveStyle, FontStyle.Italic);
+				Assert.Equal(builder._Tracking, 1.0);
+				Assert.Equal(builder._Spacing, 2.0);
+				Assert.Equal(builder._Leading, 3.0);
+				Assert.Equal(builder._Indentation, 4.0);
+				Assert.Equal(builder._Alignment, Alignment.Center);
+
+				builder.RestoreState();
+
+				Assert.Equal(builder._ActiveWeight, FontWeight.Regular);
+				Assert.Equal(builder._ActiveCulture, DefaultCulture);
+				Assert.Equal(builder._ActiveFamily, DefaultFamily);
+				Assert.Equal(builder._ActiveFeatures, null);
+				Assert.Equal(builder._ActivePointSize, DefaultPointSize);
+				Assert.Equal(builder._ActiveStretch, FontStretch.Regular);
+				Assert.Equal(builder._ActiveStyle, FontStyle.Regular);
+				Assert.Equal(builder._Tracking, 1.0);
+				Assert.Equal(builder._Spacing, 2.0);
+				Assert.Equal(builder._Leading, 3.0);
+				Assert.Equal(builder._Indentation, 4.0);
+				Assert.Equal(builder._Alignment, Alignment.Center);
+
+				builder = Create();
+
+				Assert.Equal(builder._ActiveWeight, FontWeight.Regular);
+				Assert.Equal(builder._ActiveCulture, DefaultCulture);
+				Assert.Equal(builder._ActiveFamily, DefaultFamily);
+				Assert.Equal(builder._ActiveFeatures, null);
+				Assert.Equal(builder._ActivePointSize, DefaultPointSize);
+				Assert.Equal(builder._ActiveStretch, FontStretch.Regular);
+				Assert.Equal(builder._ActiveStyle, FontStyle.Regular);
+				Assert.Equal(builder._Tracking, DefaultTracking);
+				Assert.Equal(builder._Spacing, DefaultSpacing);
+				Assert.Equal(builder._Leading, DefaultLeading);
+				Assert.Equal(builder._Indentation, DefaultIndentation);
+				Assert.Equal(builder._Alignment, Alignment.Stretch);
+
+				builder.WithWeight(FontWeight.Bold);
+				builder.WithCulture(new CultureInfo("ja-JP"));
+				builder.WithFamily("georgia");
+				builder.WithFeatures(
+					new FontFeatureCollection(
+						new[] {new FontFeature("kern"), new FontFeature("liga")}));
+				builder.WithPointSize(12.0f);
+				builder.WithStretch(FontStretch.Expanded);
+				builder.WithStyle(FontStyle.Italic);
+				builder.WithTracking(1.0f);
+				builder.WithSpacing(2.0f);
+				builder.WithLeading(3.0f);
+				builder.WithIndentation(4.0f);
+				builder.WithAlignment(Alignment.Center);
+
+				builder.SaveState();
+				builder.ResetState();
+
+				Assert.Equal(builder._ActiveWeight, FontWeight.Regular);
+				Assert.Equal(builder._ActiveCulture, DefaultCulture);
+				Assert.Equal(builder._ActiveFamily, DefaultFamily);
+				Assert.Equal(builder._ActiveFeatures, null);
+				Assert.Equal(builder._ActivePointSize, DefaultPointSize);
+				Assert.Equal(builder._ActiveStretch, FontStretch.Regular);
+				Assert.Equal(builder._ActiveStyle, FontStyle.Regular);
+				Assert.Equal(builder._Tracking, 1.0);
+				Assert.Equal(builder._Spacing, 2.0);
+				Assert.Equal(builder._Leading, 3.0);
+				Assert.Equal(builder._Indentation, 4.0);
+				Assert.Equal(builder._Alignment, Alignment.Center);
+
+				builder.RestoreState();
+
+				Assert.Equal(builder._ActiveWeight, FontWeight.Bold);
+				Assert.Equal(builder._ActiveCulture, new CultureInfo("ja-JP"));
+				Assert.Equal(builder._ActiveFamily, "georgia");
+				Assert.Equal(
+					builder._ActiveFeatures,
+					new FontFeatureCollection(
+						new[] {new FontFeature("kern"), new FontFeature("liga")}));
+				Assert.Equal(builder._ActivePointSize, 12.0);
+				Assert.Equal(builder._ActiveStretch, FontStretch.Expanded);
+				Assert.Equal(builder._ActiveStyle, FontStyle.Italic);
+				Assert.Equal(builder._Tracking, 1.0);
+				Assert.Equal(builder._Spacing, 2.0);
+				Assert.Equal(builder._Leading, 3.0);
+				Assert.Equal(builder._Indentation, 4.0);
+				Assert.Equal(builder._Alignment, Alignment.Center);
+			}
+#endif
 		}
+
+#if(UNIT_TESTING)
+		[Fact] internal static void Test0()
+		{
+			Paragraph paragraph = Create()
+				.WithAlignment(Alignment.Center)
+				.WithAdditionalText("para")
+				.WithCulture(new CultureInfo("en-us"))
+				.WithWeight(FontWeight.Bold)
+				.WithAdditionalText("graph")
+				.WithPointSize(12)
+				.WithAdditionalText("-")
+				.WithStyle(FontStyle.Regular)
+				.WithAdditionalText("test")
+				.WithTracking(5)
+				.WithIndentation(1)
+				.WithSpacing(3)
+				.WithLeading(7)
+				.WithAdditionalInline(new Size(5, 5))
+				.Build();
+
+			Assert.Equal(paragraph.Runs.Count, 4);
+			Assert.Equal(paragraph.Runs[0].TextRange.StartIndex, 0);
+			Assert.Equal(paragraph.Runs[0].TextRange.Length, 4);
+			Assert.Equal(paragraph.Runs[1].TextRange.StartIndex, 4);
+			Assert.Equal(paragraph.Runs[1].TextRange.Length, 5);
+			Assert.Equal(paragraph.Runs[1].Weight, FontWeight.Bold);
+			Assert.Equal(paragraph.Runs[2].TextRange.StartIndex, 9);
+			Assert.Equal(paragraph.Runs[2].TextRange.Length, 5);
+			Assert.Equal(paragraph.Runs[2].Culture, new CultureInfo("en-us"));
+			Assert.Equal(paragraph.Text, "paragraph-test\u00A0");
+			Assert.Equal(paragraph.Alignment, Alignment.Center);
+			Assert.Equal(paragraph.Tracking, 5);
+			Assert.Equal(paragraph.Indentation, 1);
+			Assert.Equal(paragraph.Spacing, 3);
+			Assert.Equal(paragraph.Leading, 7);
+		}
+#endif
 	}
 }
