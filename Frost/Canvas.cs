@@ -73,12 +73,10 @@ namespace Frost
 			Contract.Requires(destination != null);
 			Contract.Requires(destination.IsValid);
 			Contract.Requires(destination.Device2D == Device2D);
-			Contract.Requires(destination.Surface2D.Format == Surface2D.Format);
 
 			Trace.Assert(destination != null);
 			Trace.Assert(destination.IsValid);
 			Trace.Assert(destination.Device2D == Device2D);
-			Trace.Assert(destination.Surface2D.Format == Surface2D.Format);
 
 			Surface2D.CopyTo(
 				this._Region, destination.Surface2D, destination.Region.Location);
@@ -89,12 +87,10 @@ namespace Frost
 			Contract.Requires(destination != null);
 			Contract.Requires(destination.IsValid);
 			Contract.Requires(destination.Device2D == Device2D);
-			Contract.Requires(destination.Surface2D.Format == Surface2D.Format);
 
 			Trace.Assert(destination != null);
 			Trace.Assert(destination.IsValid);
 			Trace.Assert(destination.Device2D == Device2D);
-			Trace.Assert(destination.Surface2D.Format == Surface2D.Format);
 
 			Surface2D.CopyTo(
 				srcRegion, destination.Surface2D, destination.Region.Location);

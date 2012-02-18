@@ -24,7 +24,6 @@ namespace Frost.Surfacing
 			}
 
 			public abstract SurfaceUsage Usage { get; }
-			public abstract SurfaceFormat Format { get; }
 			public abstract Rectangle Region { get; }
 
 			public abstract void DumpToFile(string file);
@@ -46,7 +45,6 @@ namespace Frost.Surfacing
 		Device2D Device2D { get; }
 
 		SurfaceUsage Usage { get; }
-		SurfaceFormat Format { get; }
 
 		Rectangle Region { get; }
 

@@ -11,11 +11,4 @@ namespace Frost.Surfacing
 		Dynamic,
 		External
 	}
-
-	public enum SurfaceFormat
-	{
-		QuadChannel,
-		DualChannel,
-		MonoChannel
-	}
 }
