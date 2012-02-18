@@ -118,6 +118,7 @@
     <Compile Include="Diagnostics\IDeviceCounter.cs" />
     <Compile Include="Effects\BatchedItem.cs" />
     <Compile Include="Effects\Effect.cs" />
+    <Compile Include="Effects\EffectCollection.cs" />
     <Compile Include="Effects\EffectContext.cs" />
     <Compile Include="Effects\Enumerations.cs" />
     <Compile Include="Effects\IEffect.cs" />
