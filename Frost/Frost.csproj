@@ -105,7 +105,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Atlasing\Enumerations.cs" />
+    <Compile Include="Atlasing\ISurfaceAtlas.cs" />
+    <Compile Include="Atlasing\Notification.cs" />
     <Compile Include="Buffering\Enumerations.cs" />
+    <Compile Include="Canvas.cs" />
     <Compile Include="Collections\ImmutableBase.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="Composition\Enumerations.cs" />
