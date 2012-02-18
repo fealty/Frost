@@ -3,9 +3,9 @@
 // 
 // See LICENSE for more information.
 
-namespace Frost.Composition
+namespace Frost.Effects
 {
-	public abstract class Compositor
+	public interface IEffectSettings
 	{
 	}
 }

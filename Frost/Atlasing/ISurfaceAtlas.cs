@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Diagnostics.Contracts;
 
 using Frost.Surfacing;
@@ -7,8 +12,8 @@ namespace Frost.Atlasing
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(ISurfaceAtlas))]
-		internal abstract class ISurfaceAtlasContract : ISurfaceAtlas
+		[ContractClassFor(typeof(ISurfaceAtlas))] internal abstract class
+			ISurfaceAtlasContract : ISurfaceAtlas
 		{
 			public abstract bool InUse { get; }
 
@@ -44,8 +49,8 @@ namespace Frost.Atlasing
 		}
 	}
 
-	[ContractClass(typeof(Contracts.ISurfaceAtlasContract))]
-	public interface ISurfaceAtlas
+	[ContractClass(typeof(Contracts.ISurfaceAtlasContract))] public
+		interface ISurfaceAtlas
 	{
 		bool InUse { get; }
 

@@ -1,4 +1,9 @@
-﻿using System.Diagnostics;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 namespace Frost.Atlasing
@@ -19,17 +24,12 @@ namespace Frost.Atlasing
 			this._Atlas = atlas;
 		}
 
-		public void Invalidate()
-		{
-			this._Value = false;
-		}
-
 		public ISurfaceAtlas Atlas
 		{
 			get
 			{
 				Contract.Ensures(Contract.Result<ISurfaceAtlas>() != null);
-				
+
 				return this._Atlas;
 			}
 		}
@@ -37,6 +37,11 @@ namespace Frost.Atlasing
 		public bool Value
 		{
 			get { return this._Value; }
+		}
+
+		public void Invalidate()
+		{
+			this._Value = false;
 		}
 	}
 }

@@ -114,8 +114,15 @@
     <Compile Include="Composition\Compositor.cs" />
     <Compile Include="Composition\Enumerations.cs" />
     <Compile Include="Device2D.cs" />
+    <Compile Include="Diagnostics\DeviceCounterCollection.cs" />
     <Compile Include="Diagnostics\IDeviceCounter.cs" />
-    <Compile Include="Diagnostics\IDeviceCounterCollection.cs" />
+    <Compile Include="Effects\BatchedItem.cs" />
+    <Compile Include="Effects\Effect.cs" />
+    <Compile Include="Effects\EffectContext.cs" />
+    <Compile Include="Effects\Enumerations.cs" />
+    <Compile Include="Effects\IEffect.cs" />
+    <Compile Include="Effects\IEffectContext.cs" />
+    <Compile Include="Effects\IEffectSettings.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="Check.cs" />
     <Compile Include="Formatting\Enumerations.cs" />
@@ -151,9 +158,7 @@
     <Compile Include="Size.cs" />
     <Compile Include="Thickness.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Effects\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config">
       <SubType>Designer</SubType>

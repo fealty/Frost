@@ -38,7 +38,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Contract.Result<Device2D>() != null);
-				
+
 				return Surface2D.Device2D;
 			}
 		}
@@ -48,7 +48,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Contract.Result<ISurface2D>() != null);
-				
+
 				return this._Notification.Atlas.Surface2D;
 			}
 		}
@@ -63,7 +63,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Contract.Result<ISurfaceAtlas>() != null);
-				
+
 				return this._Notification.Atlas;
 			}
 		}

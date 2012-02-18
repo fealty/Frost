@@ -87,7 +87,8 @@ namespace Frost.Painting
 
 				Trace.Assert(this._Stops.Count >= 2);
 				Trace.Assert(this._Stops[0].Position.Equals(0.0f));
-				Trace.Assert(this._Stops[this._Stops.Count - 1].Position.Equals(1.0f));
+				Trace.Assert(
+					this._Stops[this._Stops.Count - 1].Position.Equals(1.0f));
 
 				return new Gradient(this._Stops.ToArray());
 			}

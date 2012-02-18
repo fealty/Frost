@@ -672,22 +672,14 @@ namespace Frost.Formatting
 #if(UNIT_TESTING)
 		[Fact] internal static void Test0()
 		{
-			Paragraph paragraph = Create()
-				.WithAlignment(Alignment.Center)
-				.WithAdditionalText("para")
-				.WithCulture(new CultureInfo("en-us"))
-				.WithWeight(FontWeight.Bold)
-				.WithAdditionalText("graph")
-				.WithPointSize(12)
-				.WithAdditionalText("-")
-				.WithStyle(FontStyle.Regular)
-				.WithAdditionalText("test")
-				.WithTracking(5)
-				.WithIndentation(1)
-				.WithSpacing(3)
-				.WithLeading(7)
-				.WithAdditionalInline(new Size(5, 5))
-				.Build();
+			Paragraph paragraph =
+				Create().WithAlignment(Alignment.Center).WithAdditionalText(
+					"para").WithCulture(new CultureInfo("en-us")).WithWeight(
+						FontWeight.Bold).WithAdditionalText("graph").WithPointSize(12).
+					WithAdditionalText("-").WithStyle(FontStyle.Regular).
+					WithAdditionalText("test").WithTracking(5).WithIndentation(1).
+					WithSpacing(3).WithLeading(7).WithAdditionalInline(
+						new Size(5, 5)).Build();
 
 			Assert.Equal(paragraph.Runs.Count, 4);
 			Assert.Equal(paragraph.Runs[0].TextRange.StartIndex, 0);
