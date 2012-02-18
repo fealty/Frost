@@ -11,7 +11,14 @@ using Frost.Composition;
 
 namespace Frost.Effects
 {
-	public abstract class Effect<T> : IEffect
+	public abstract class Effect
+	{
+		internal Effect()
+		{
+		}
+	}
+
+	public abstract class Effect<T> : Effect, IEffect
 		where T : struct, IEffectSettings, IEquatable<T>
 	{
 		void IEffect.Apply<TEnum>(

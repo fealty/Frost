@@ -5,8 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 
 namespace Frost.Effects
 {
@@ -19,16 +17,11 @@ namespace Frost.Effects
 			this._Effects = new Dictionary<Type, IEffect>();
 		}
 
-		public void Register<T>(Effect<T> effect)
-			where T : struct, IEffectSettings, IEquatable<T>
+		public void Register<T>() where T : Effect, new()
 		{
-			Contract.Requires(effect != null);
-
-			Trace.Assert(effect != null);
-
 			lock(this._Effects)
 			{
-				this._Effects[typeof(T)] = effect;
+				this._Effects[typeof(T)] = (IEffect)new T();
 			}
 		}
 

@@ -9,8 +9,15 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Effects
 {
+	public abstract class EffectContext
+	{
+		internal EffectContext()
+		{
+		}
+	}
+
 	public sealed class EffectContext<T>
-		: IEffectContext, IEquatable<EffectContext<T>>
+		: EffectContext, IEffectContext, IEquatable<EffectContext<T>>
 		where T : struct, IEffectSettings, IEquatable<T>
 	{
 		private readonly Effect<T> _Effect;
@@ -94,6 +101,12 @@ namespace Frost.Effects
 				return (this._Options.GetHashCode() * 397) ^
 				       (this._Effect != null ? this._Effect.GetHashCode() : 0);
 			}
+		}
+
+		public override string ToString()
+		{
+			return string.Format(
+				"Effect: {0}, Options: {1}", this._Effect, this._Options);
 		}
 
 		public static bool operator ==(
