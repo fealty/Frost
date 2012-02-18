@@ -10,7 +10,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Shaping
 {
-	public sealed class Geometry
+	public sealed class Geometry : IEquatable<Geometry>
 	{
 		[ThreadStatic] private static Builder _Builder;
 
@@ -711,6 +711,59 @@ namespace Frost.Shaping
 			}
 		}
 
+		public bool Equals(Geometry other)
+		{
+			if(ReferenceEquals(null, other))
+			{
+				return false;
+			}
+
+			if(ReferenceEquals(this, other))
+			{
+				return true;
+			}
+
+			return Equals(other._Commands, this._Commands) &&
+			       Equals(other._Points, this._Points) &&
+			       other._Transform.Equals(this._Transform);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if(ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+
+			if(ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+
+			return obj is Geometry && this.Equals((Geometry)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int result = this._Commands.GetHashCode();
+				result = (result * 397) ^ this._Points.GetHashCode();
+				result = (result * 397) ^ this._Transform.GetHashCode();
+				return result;
+			}
+		}
+
+		public static bool operator ==(Geometry left, Geometry right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(Geometry left, Geometry right)
+		{
+			return !Equals(left, right);
+		}
+
 #if(UNIT_TESTING)
 		private sealed class GeometrySink : IGeometrySink
 		{
@@ -780,6 +833,8 @@ namespace Frost.Shaping
 			Assert.Equal(sink.Geometry._Points[2], new Point(3.0f, 3.0f));
 			Assert.Equal(sink.Geometry._Points[3], new Point(2.0f, 3.0f));
 			Assert.Equal(sink.Geometry._Points[4], new Point(2.0f, 2.0f));
+
+			Assert.TestObject(Square, Circle);
 		}
 #endif
 	}
