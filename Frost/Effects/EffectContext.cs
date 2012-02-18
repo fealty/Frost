@@ -8,8 +8,15 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Effects
 {
+	public abstract class EffectContext
+	{
+		internal EffectContext()
+		{
+		}
+	}
+
 	public sealed class EffectContext<T>
-		: IEffectContext, IEquatable<EffectContext<T>>
+		: EffectContext, IEffectContext, IEquatable<EffectContext<T>>
 		where T : struct, IEffectSettings, IEquatable<T>
 	{
 		private readonly Effect<T> _Effect;
