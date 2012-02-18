@@ -247,7 +247,7 @@ namespace Frost
 			result.Multiply(ref this, out result);
 		}
 
-		public void Multiply(ref Matrix3X2 right, out Matrix3X2 result)
+	 	public void Multiply(ref Matrix3X2 right, out Matrix3X2 result)
 		{
 			float m11 = (this._11 * right.M11) + (this._12 * right.M21);
 			float m12 = (this._11 * right.M12) + (this._12 * right.M22);
