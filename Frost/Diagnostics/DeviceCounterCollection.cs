@@ -58,6 +58,8 @@ namespace Frost.Diagnostics
 
 		public void Register(IDeviceCounter counter)
 		{
+			Contract.Requires(counter != null);
+
 			CounterKey key = new CounterKey(counter.Category, counter.Name);
 
 			lock(this._Counters)

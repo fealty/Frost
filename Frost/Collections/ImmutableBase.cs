@@ -40,7 +40,7 @@ namespace Frost.Collections
 		{
 			get
 			{
-				Contract.Requires(index >= 0 && index < Count);
+				Contract.Assert(index >= 0 && index < Count);
 
 				return _Items[index];
 			}
@@ -72,7 +72,7 @@ namespace Frost.Collections
 		{
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
-			Contract.Assert(startIndex + length <= this._Items.Length);
+			Contract.Requires(startIndex + length <= Count);
 
 			return new CollectionSlice(startIndex, length, this);
 		}
@@ -138,7 +138,7 @@ namespace Frost.Collections
 			{
 				Contract.Requires(startIndex >= 0);
 				Contract.Requires(length >= 0);
-				Contract.Assert(startIndex + length <= this._Length);
+				Contract.Requires(startIndex + length <= Count);
 
 				int adjustedIndex = this._StartIndex + startIndex;
 
@@ -198,6 +198,8 @@ namespace Frost.Collections
 
 			internal Enumerator(ImmutableBase<T> collection)
 			{
+				Contract.Requires(collection != null);
+
 				this._Collection = collection;
 
 				this._Index = -1;
@@ -231,6 +233,8 @@ namespace Frost.Collections
 #if(UNIT_TESTING)
 		protected static void TestDerived(ImmutableBase<T> @this)
 		{
+			Contract.Requires(@this != null);
+
 			Assert.Equal(10, @this.Count);
 			Assert.Equal(@this._Items, @this);
 

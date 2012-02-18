@@ -21,7 +21,9 @@ namespace Frost.Effects
 		{
 			lock(this._Effects)
 			{
-				this._Effects[typeof(T)] = (IEffect)new T();
+				Effect effect = new T();
+
+				this._Effects[effect.OptionsType] = (IEffect)effect;
 			}
 		}
 

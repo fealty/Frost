@@ -289,6 +289,9 @@ namespace Frost.Shaping
 			{
 				Contract.Ensures(Contract.Result<Geometry>() != null);
 
+				Trace.Assert(this._Points.Count > 0);
+				Trace.Assert(this._Commands.Count > 0);
+
 				return new Geometry(
 					this._Points.ToArray(), this._Commands.ToArray());
 			}

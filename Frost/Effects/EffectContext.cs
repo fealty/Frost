@@ -8,15 +8,8 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Effects
 {
-	public abstract class EffectContext
-	{
-		internal EffectContext()
-		{
-		}
-	}
-
 	public sealed class EffectContext<T>
-		: EffectContext, IEffectContext, IEquatable<EffectContext<T>>
+		: IEffectContext, IEquatable<EffectContext<T>>
 		where T : struct, IEffectSettings, IEquatable<T>
 	{
 		private readonly Effect<T> _Effect;
@@ -28,19 +21,24 @@ namespace Frost.Effects
 
 			this._Effect = effect;
 			this._Options = options;
+
+			Contract.Assert(Effect.Equals(effect));
+			Contract.Assert(Options.Equals(options));
 		}
 
 		public EffectContext(Effect<T> effect, T options)
+			: this(effect, ref options)
 		{
-			Contract.Requires(effect != null);
-
-			this._Effect = effect;
-			this._Options = options;
 		}
 
 		public Effect<T> Effect
 		{
-			get { return this._Effect; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Effect<T>>() != null);
+
+				return this._Effect;
+			}
 		}
 
 		public T Options

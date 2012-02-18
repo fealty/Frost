@@ -86,8 +86,7 @@ namespace Frost.Effects
 				result = (result * 397) ^ this._Transformation.GetHashCode();
 				result = (result * 397) ^ this._SourceRegion.GetHashCode();
 				result = (result * 397) ^ this._DestinationRegion.GetHashCode();
-				result = (result * 397) ^
-				         (this._Canvas != null ? this._Canvas.GetHashCode() : 0);
+				result = (result * 397) ^ this._Canvas.GetHashCode();
 				return result;
 			}
 		}
