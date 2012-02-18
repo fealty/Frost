@@ -46,6 +46,7 @@ namespace Frost
 
 		public Point(float xy) : this(xy, xy)
 		{
+			Contract.Requires(Check.IsFinite(xy));
 		}
 
 		public float Y
@@ -72,17 +73,32 @@ namespace Frost
 
 		public static Point Empty
 		{
-			get { return _Empty; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Point>().Equals(_Empty));
+				
+				return _Empty;
+			}
 		}
 
 		public static Point MinValue
 		{
-			get { return _MinValue; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Point>().Equals(_MinValue));
+				
+				return _MinValue;
+			}
 		}
 
 		public static Point MaxValue
 		{
-			get { return _MaxValue; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Point>().Equals(_MaxValue));
+				
+				return _MaxValue;
+			}
 		}
 
 		public bool Equals(Point other)

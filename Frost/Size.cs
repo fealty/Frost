@@ -46,6 +46,7 @@ namespace Frost
 
 		public Size(float widthHeight) : this(widthHeight, widthHeight)
 		{
+			Contract.Requires(Check.IsFinite(widthHeight));
 		}
 
 		public float Height
@@ -72,17 +73,32 @@ namespace Frost
 
 		public static Size Empty
 		{
-			get { return _Empty; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Size>().Equals(_Empty));
+				
+				return _Empty;
+			}
 		}
 
 		public static Size MaxValue
 		{
-			get { return _MaxValue; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Size>().Equals(_MaxValue));
+				
+				return _MaxValue;
+			}
 		}
 
 		public static Size MinValue
 		{
-			get { return _MinValue; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Size>().Equals(_MinValue));
+				
+				return _MinValue;
+			}
 		}
 
 		public float Area

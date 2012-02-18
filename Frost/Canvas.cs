@@ -52,7 +52,12 @@ namespace Frost
 
 		public Rectangle Region
 		{
-			get { return this._Region; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Rectangle>().Equals(this._Region));
+				
+				return this._Region;
+			}
 		}
 
 		public ISurfaceAtlas Atlas

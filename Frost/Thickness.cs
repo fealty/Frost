@@ -59,6 +59,8 @@ namespace Frost
 		public Thickness(float leftRight, float topBottom)
 			: this(leftRight, topBottom, leftRight, topBottom)
 		{
+			Contracts.Requires(Check.IsPositive(leftRight));
+			Contracts.Requires(Check.IsPositive(topBottom));
 		}
 
 		public Thickness(float leftRightTopBottom)
@@ -68,6 +70,7 @@ namespace Frost
 				leftRightTopBottom,
 				leftRightTopBottom)
 		{
+			Contracts.Requires(Check.IsPositive(leftRightTopBottom));
 		}
 
 		public float Bottom
@@ -116,17 +119,32 @@ namespace Frost
 
 		public static Thickness Empty
 		{
-			get { return _Empty; }
+			get
+			{
+				Contracts.Ensures(Contracts.Result<Thickness>().Equals(_Empty));
+				
+				return _Empty;
+			}
 		}
 
 		public static Thickness MaxValue
 		{
-			get { return _MaxValue; }
+			get
+			{
+				Contracts.Ensures(Contracts.Result<Thickness>().Equals(_MaxValue));
+				
+				return _MaxValue;
+			}
 		}
 
 		public static Thickness MinValue
 		{
-			get { return _MinValue; }
+			get
+			{
+				Contracts.Ensures(Contracts.Result<Thickness>().Equals(_MinValue));
+				
+				return _MinValue;
+			}
 		}
 
 		public float Width
@@ -174,11 +192,16 @@ namespace Frost
 
 		public Thickness Contract(float leftRight, float topBottom)
 		{
+			Contracts.Requires(Check.IsFinite(leftRight));
+			Contracts.Requires(Check.IsFinite(topBottom));
+
 			return Contract(leftRight, topBottom, leftRight, topBottom);
 		}
 
 		public Thickness Contract(float leftRightTopBottom)
 		{
+			Contracts.Requires(Check.IsFinite(leftRightTopBottom));
+
 			return Contract(
 				leftRightTopBottom,
 				leftRightTopBottom,
@@ -203,11 +226,16 @@ namespace Frost
 
 		public Thickness Expand(float leftRight, float topBottom)
 		{
+			Contracts.Requires(Check.IsFinite(leftRight));
+			Contracts.Requires(Check.IsFinite(topBottom));
+
 			return Expand(leftRight, topBottom, leftRight, topBottom);
 		}
 
 		public Thickness Expand(float leftRightTopBottom)
 		{
+			Contracts.Requires(Check.IsFinite(leftRightTopBottom));
+
 			return Expand(
 				leftRightTopBottom,
 				leftRightTopBottom,

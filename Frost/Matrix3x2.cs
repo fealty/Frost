@@ -61,7 +61,12 @@ namespace Frost
 
 		public static Matrix3X2 Identity
 		{
-			get { return _Identity; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Matrix3X2>().Equals(_Identity));
+				
+				return _Identity;
+			}
 		}
 
 		public float M32

@@ -66,6 +66,8 @@ namespace Frost
 				location.X + size.Width,
 				location.Y + size.Height)
 		{
+			Contracts.Requires(Check.IsPositive(size.Width));
+			Contracts.Requires(Check.IsPositive(size.Height));
 		}
 
 		public float Height
@@ -114,27 +116,52 @@ namespace Frost
 
 		public static Rectangle Empty
 		{
-			get { return _Empty; }
+			get
+			{
+				Contracts.Ensures(Contracts.Result<Rectangle>().Equals(_Empty));
+				
+				return _Empty;
+			}
 		}
 
 		public static Rectangle MaxValue
 		{
-			get { return _MaxValue; }
+			get
+			{
+				Contracts.Ensures(Contracts.Result<Rectangle>().Equals(_MaxValue));
+				
+				return _MaxValue;
+			}
 		}
 
 		public static Rectangle MinValue
 		{
-			get { return _MinValue; }
+			get
+			{
+				Contracts.Ensures(Contracts.Result<Rectangle>().Equals(_MinValue));
+				
+				return _MinValue;
+			}
 		}
 
 		public Point Location
 		{
-			get { return new Point(this._X, this._Y); }
+			get
+			{
+				Contracts.Ensures(Contracts.Result<Point>().Equals(new Point(this._X, this._Y)));
+				
+				return new Point(this._X, this._Y);
+			}
 		}
 
 		public Size Size
 		{
-			get { return new Size(this._Width, this._Height); }
+			get
+			{
+				Contracts.Ensures(Contracts.Result<Size>().Equals(new Size(this._Width, this._Height)));
+				
+				return new Size(this._Width, this._Height);
+			}
 		}
 
 		public float Left
