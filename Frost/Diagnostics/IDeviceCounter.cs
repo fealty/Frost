@@ -1,18 +1,24 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Diagnostics.Contracts;
 
 namespace Frost.Diagnostics
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(IDeviceCounter))]
-		internal abstract class IDeviceCounterContract : IDeviceCounter
+		[ContractClassFor(typeof(IDeviceCounter))] internal abstract class
+			IDeviceCounterContract : IDeviceCounter
 		{
 			public string Name
 			{
 				get
 				{
-					Contract.Ensures(!String.IsNullOrWhiteSpace(Contract.Result<string>()));
+					Contract.Ensures(
+						!String.IsNullOrWhiteSpace(Contract.Result<string>()));
 
 					throw new NotSupportedException();
 				}
@@ -22,7 +28,8 @@ namespace Frost.Diagnostics
 			{
 				get
 				{
-					Contract.Ensures(!String.IsNullOrWhiteSpace(Contract.Result<string>()));
+					Contract.Ensures(
+						!String.IsNullOrWhiteSpace(Contract.Result<string>()));
 
 					throw new NotSupportedException();
 				}
@@ -70,8 +77,8 @@ namespace Frost.Diagnostics
 		}
 	}
 
-	[ContractClass(typeof(Contracts.IDeviceCounterContract))]
-	public interface IDeviceCounter
+	[ContractClass(typeof(Contracts.IDeviceCounterContract))] public
+		interface IDeviceCounter
 	{
 		string Name { get; }
 		string Category { get; }

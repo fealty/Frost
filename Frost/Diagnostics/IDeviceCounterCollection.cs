@@ -8,17 +8,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
+using CounterKey =
+	System.Collections.Generic.KeyValuePair<string, string>;
+
 namespace Frost.Diagnostics
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(IDeviceCounterCollection))]
-		internal abstract class IDeviceCounterCollectionContract
+		[ContractClassFor(typeof(IDeviceCounterCollection))] internal abstract class IDeviceCounterCollectionContract
 			: IDeviceCounterCollection
 		{
 			public abstract
-				IEnumerator
-					<KeyValuePair<KeyValuePair<string, string>, IDeviceCounter>>
+				IEnumerator<KeyValuePair<CounterKey, IDeviceCounter>>
 				GetEnumerator();
 
 			IEnumerator IEnumerable.GetEnumerator()
@@ -52,10 +53,8 @@ namespace Frost.Diagnostics
 		}
 	}
 
-	[ContractClass(typeof(Contracts.IDeviceCounterCollectionContract))]
-	public interface IDeviceCounterCollection
-		: IEnumerable
-		  	<KeyValuePair<KeyValuePair<string, string>, IDeviceCounter>>
+	[ContractClass(typeof(Contracts.IDeviceCounterCollectionContract))] public interface IDeviceCounterCollection
+		: IEnumerable<KeyValuePair<CounterKey, IDeviceCounter>>
 	{
 		bool Query(string category, string name, out IDeviceCounter result);
 
