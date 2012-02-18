@@ -111,8 +111,11 @@
     <Compile Include="Canvas.cs" />
     <Compile Include="Collections\ImmutableBase.cs" />
     <Compile Include="Color.cs" />
+    <Compile Include="Composition\Compositor.cs" />
     <Compile Include="Composition\Enumerations.cs" />
     <Compile Include="Device2D.cs" />
+    <Compile Include="Diagnostics\IDeviceCounter.cs" />
+    <Compile Include="Diagnostics\IDeviceCounterCollection.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="Check.cs" />
     <Compile Include="Formatting\Enumerations.cs" />
@@ -133,6 +136,7 @@
     <Compile Include="Painting\Enumerations.cs" />
     <Compile Include="Painting\Gradient.cs" />
     <Compile Include="Painting\GradientStop.cs" />
+    <Compile Include="Painting\Painter.cs" />
     <Compile Include="Shaping\Enumerations.cs" />
     <Compile Include="Shaping\Geometry.cs" />
     <Compile Include="Shaping\IGeometrySink.cs" />
@@ -148,7 +152,6 @@
     <Compile Include="Thickness.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Diagnostics\" />
     <Folder Include="Effects\" />
   </ItemGroup>
   <ItemGroup>
