@@ -3,7 +3,6 @@
 // 
 // See LICENSE for more information.
 
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 namespace Frost.Atlasing

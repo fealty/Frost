@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Text;
@@ -274,7 +273,7 @@ namespace Frost.Formatting
 			{
 				Contract.Requires(Check.IsPositive(tracking));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-				
+
 				this._Tracking = tracking;
 
 				return this;
@@ -284,7 +283,7 @@ namespace Frost.Formatting
 			{
 				Contract.Requires(Check.IsPositive(indentation));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-				
+
 				this._Indentation = indentation;
 
 				return this;
@@ -294,7 +293,7 @@ namespace Frost.Formatting
 			{
 				Contract.Requires(Check.IsPositive(spacing));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-				
+
 				this._Spacing = spacing;
 
 				return this;

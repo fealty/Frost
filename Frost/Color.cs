@@ -4,7 +4,6 @@
 // See LICENSE for more information.
 
 using System;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 namespace Frost

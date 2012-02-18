@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -71,7 +70,7 @@ namespace Frost.Painting
 
 				if(this._Stops.Count > 0)
 				{
-					Trace.Assert(
+					Contract.Assert(
 						position > this._Stops[this._Stops.Count - 1].Position);
 				}
 
@@ -84,9 +83,9 @@ namespace Frost.Painting
 			{
 				Contract.Ensures(Contract.Result<Gradient>() != null);
 
-				Trace.Assert(this._Stops.Count >= 2);
-				Trace.Assert(this._Stops[0].Position.Equals(0.0f));
-				Trace.Assert(
+				Contract.Assert(this._Stops.Count >= 2);
+				Contract.Assert(this._Stops[0].Position.Equals(0.0f));
+				Contract.Assert(
 					this._Stops[this._Stops.Count - 1].Position.Equals(1.0f));
 
 				return new Gradient(this._Stops.ToArray());
