@@ -33,8 +33,8 @@ namespace Frost
 
 		public IndexedRange(int startIndex, int length)
 		{
-			Trace.Assert(startIndex >= 0);
-			Trace.Assert(length >= 0);
+			Contract.Requires(startIndex >= 0);
+			Contract.Requires(length >= 0);
 
 			this._StartIndex = startIndex;
 			this._Length = length;
@@ -50,10 +50,10 @@ namespace Frost
 
 		public IndexedRange Slice(int startIndex, int length)
 		{
-			Trace.Assert(startIndex >= 0);
-			Trace.Assert(length >= 0);
-			Trace.Assert(length <= this._Length);
-			Trace.Assert(
+			Contract.Requires(startIndex >= 0);
+			Contract.Requires(length >= 0);
+			Contract.Assert(length <= this._Length);
+			Contract.Assert(
 				startIndex + length <= this._StartIndex + this._Length);
 
 			return new IndexedRange(startIndex, length);

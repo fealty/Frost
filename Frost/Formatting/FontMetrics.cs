@@ -24,9 +24,9 @@ namespace Frost.Formatting
 
 		public FontMetrics(float ascent, float descent, float unitsPerEm)
 		{
-			Trace.Assert(Check.IsPositive(ascent));
-			Trace.Assert(Check.IsPositive(descent));
-			Trace.Assert(Check.IsPositive(unitsPerEm));
+			Contract.Requires(Check.IsPositive(ascent));
+			Contract.Requires(Check.IsPositive(descent));
+			Contract.Requires(Check.IsPositive(unitsPerEm));
 
 			this._Ascent = ascent;
 			this._Descent = descent;

@@ -27,10 +27,10 @@ namespace Frost
 		public RGBColor(
 			float red, float green, float blue, float alpha = 100.0f)
 		{
-			Trace.Assert(Check.IsByte(red));
-			Trace.Assert(Check.IsByte(green));
-			Trace.Assert(Check.IsByte(blue));
-			Trace.Assert(Check.IsPercentage(alpha));
+			Contract.Requires(Check.IsByte(red));
+			Contract.Requires(Check.IsByte(green));
+			Contract.Requires(Check.IsByte(blue));
+			Contract.Requires(Check.IsPercentage(alpha));
 
 			red = Convert.ToSingle(Math.Round(red, 4));
 			green = Convert.ToSingle(Math.Round(green, 4));

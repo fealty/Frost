@@ -35,8 +35,8 @@ namespace Frost
 
 		public Point(float x, float y)
 		{
-			Trace.Assert(Check.IsFinite(x));
-			Trace.Assert(Check.IsFinite(y));
+			Contract.Requires(Check.IsFinite(x));
+			Contract.Requires(Check.IsFinite(y));
 
 			this._X = x;
 			this._Y = y;

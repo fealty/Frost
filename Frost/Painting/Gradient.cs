@@ -66,9 +66,8 @@ namespace Frost.Painting
 
 			public Builder WithStop(float position, Color color)
 			{
+				Contract.Requires(Check.IsNormalized(position));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-
-				Trace.Assert(Check.IsNormalized(position));
 
 				if(this._Stops.Count > 0)
 				{

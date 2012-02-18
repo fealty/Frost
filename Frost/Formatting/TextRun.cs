@@ -41,9 +41,9 @@ namespace Frost.Formatting
 			Size inline,
 			FontFeatureCollection features)
 		{
-			Trace.Assert(Check.IsPositive(pointSize));
-			Trace.Assert(Check.IsPositive(inline.Width));
-			Trace.Assert(Check.IsPositive(inline.Height));
+			Contract.Requires(Check.IsPositive(pointSize));
+			Contract.Requires(Check.IsPositive(inline.Width));
+			Contract.Requires(Check.IsPositive(inline.Height));
 
 			this._TextRange = textRange;
 			this._Culture = culture;

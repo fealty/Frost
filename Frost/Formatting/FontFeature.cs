@@ -16,7 +16,7 @@ namespace Frost.Formatting
 
 		public FontFeature(string tag, int parameter = 1)
 		{
-			Trace.Assert(tag != null);
+			Contract.Requires(tag != null);
 
 			this._Tag = tag;
 			this._Parameter = parameter;

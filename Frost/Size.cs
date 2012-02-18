@@ -35,8 +35,8 @@ namespace Frost
 
 		public Size(float width, float height)
 		{
-			Trace.Assert(Check.IsFinite(width));
-			Trace.Assert(Check.IsFinite(height));
+			Contract.Requires(Check.IsFinite(width));
+			Contract.Requires(Check.IsFinite(height));
 
 			this._Width = width;
 			this._Height = height;

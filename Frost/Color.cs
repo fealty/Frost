@@ -853,10 +853,10 @@ namespace Frost
 
 		public Color(float red, float green, float blue, float alpha = 1.0f)
 		{
-			Trace.Assert(Check.IsNormalized(green));
-			Trace.Assert(Check.IsNormalized(blue));
-			Trace.Assert(Check.IsNormalized(alpha));
-			Trace.Assert(Check.IsNormalized(red));
+			Contract.Requires(Check.IsNormalized(green));
+			Contract.Requires(Check.IsNormalized(blue));
+			Contract.Requires(Check.IsNormalized(alpha));
+			Contract.Requires(Check.IsNormalized(red));
 
 			this._R = red;
 			this._G = green;

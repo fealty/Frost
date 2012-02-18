@@ -28,9 +28,6 @@ namespace Frost.Diagnostics
 			Contract.Requires(!String.IsNullOrWhiteSpace(category));
 			Contract.Requires(!String.IsNullOrWhiteSpace(name));
 
-			Trace.Assert(!String.IsNullOrWhiteSpace(category));
-			Trace.Assert(!String.IsNullOrWhiteSpace(name));
-
 			lock(this._Counters)
 			{
 				CounterKey key = new CounterKey(category, name);
@@ -45,9 +42,6 @@ namespace Frost.Diagnostics
 		{
 			Contract.Requires(!String.IsNullOrWhiteSpace(category));
 			Contract.Requires(!String.IsNullOrWhiteSpace(name));
-
-			Trace.Assert(!String.IsNullOrWhiteSpace(category));
-			Trace.Assert(!String.IsNullOrWhiteSpace(name));
 
 			lock(this._Counters)
 			{

@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 using Frost.Composition;
 
@@ -26,9 +27,6 @@ namespace Frost.Effects
 			IEffectContext effectContext,
 			Compositor compositionContext)
 		{
-			Trace.Assert(batchedItems != null);
-			Trace.Assert(effectContext != null);
-			Trace.Assert(compositionContext != null);
 		}
 
 		public abstract void Apply<TEnum>(

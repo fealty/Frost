@@ -28,8 +28,6 @@ namespace Frost.Effects
 		{
 			Contract.Requires(canvas != null);
 
-			Trace.Assert(canvas != null);
-
 			this._Canvas = canvas;
 			this._SourceRegion = sourceRegion;
 			this._DestinationRegion = destinationRegion;

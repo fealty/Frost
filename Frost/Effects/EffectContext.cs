@@ -27,8 +27,6 @@ namespace Frost.Effects
 		{
 			Contract.Requires(effect != null);
 
-			Trace.Assert(effect != null);
-
 			this._Effect = effect;
 			this._Options = options;
 		}
@@ -36,8 +34,6 @@ namespace Frost.Effects
 		public EffectContext(Effect<T> effect, T options)
 		{
 			Contract.Requires(effect != null);
-
-			Trace.Assert(effect != null);
 
 			this._Effect = effect;
 			this._Options = options;

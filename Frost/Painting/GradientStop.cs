@@ -16,7 +16,7 @@ namespace Frost.Painting
 
 		public GradientStop(float position, Color color)
 		{
-			Trace.Assert(Check.IsNormalized(position));
+			Contract.Requires(Check.IsNormalized(position));
 
 			this._Position = position;
 			this._Color = color;

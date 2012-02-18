@@ -42,12 +42,12 @@ namespace Frost
 
 		public Rectangle(float left, float top, float right, float bottom)
 		{
-			Trace.Assert(Check.IsFinite(left));
-			Trace.Assert(Check.IsFinite(top));
-			Trace.Assert(Check.IsFinite(right));
-			Trace.Assert(Check.IsFinite(bottom));
-			Trace.Assert(Check.IsPositive(right - left));
-			Trace.Assert(Check.IsPositive(bottom - top));
+			Contracts.Requires(Check.IsFinite(left));
+			Contracts.Requires(Check.IsFinite(top));
+			Contracts.Requires(Check.IsFinite(right));
+			Contracts.Requires(Check.IsFinite(bottom));
+			Contracts.Requires(Check.IsPositive(right - left));
+			Contracts.Requires(Check.IsPositive(bottom - top));
 
 			this._X = left;
 			this._Y = top;

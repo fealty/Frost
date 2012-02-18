@@ -262,9 +262,8 @@ namespace Frost.Formatting
 
 			public Builder WithLeading(float leading)
 			{
+				Contract.Requires(Check.IsPositive(leading));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-
-				Trace.Assert(Check.IsPositive(leading));
 
 				this._Leading = leading;
 
@@ -273,10 +272,9 @@ namespace Frost.Formatting
 
 			public Builder WithTracking(float tracking)
 			{
+				Contract.Requires(Check.IsPositive(tracking));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-
-				Trace.Assert(Check.IsPositive(tracking));
-
+				
 				this._Tracking = tracking;
 
 				return this;
@@ -284,10 +282,9 @@ namespace Frost.Formatting
 
 			public Builder WithIndentation(float indentation)
 			{
+				Contract.Requires(Check.IsPositive(indentation));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-
-				Trace.Assert(Check.IsPositive(indentation));
-
+				
 				this._Indentation = indentation;
 
 				return this;
@@ -295,10 +292,9 @@ namespace Frost.Formatting
 
 			public Builder WithSpacing(float spacing)
 			{
+				Contract.Requires(Check.IsPositive(spacing));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-
-				Trace.Assert(Check.IsPositive(spacing));
-
+				
 				this._Spacing = spacing;
 
 				return this;
@@ -324,9 +320,8 @@ namespace Frost.Formatting
 
 			public Builder WithPointSize(float pointSize)
 			{
+				Contract.Requires(Check.IsPositive(pointSize));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-
-				Trace.Assert(Check.IsPositive(pointSize));
 
 				this._ActivePointSize = pointSize;
 
@@ -374,10 +369,9 @@ namespace Frost.Formatting
 				Alignment hAlignment = Alignment.Stretch,
 				Alignment vAlignment = Alignment.Stretch)
 			{
+				Contract.Requires(Check.IsPositive(inline.Width));
+				Contract.Requires(Check.IsPositive(inline.Height));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-
-				Trace.Assert(Check.IsPositive(inline.Width));
-				Trace.Assert(Check.IsPositive(inline.Height));
 
 				// append a new run with a text length of one
 				this._Runs.Add(
@@ -412,9 +406,8 @@ namespace Frost.Formatting
 
 			public Builder WithAdditionalText(string text)
 			{
+				Contract.Requires(text != null);
 				Contract.Ensures(Contract.Result<Builder>() != null);
-
-				Trace.Assert(text != null);
 
 				TextRun newRun = new TextRun(
 					this._ActiveTextRange,

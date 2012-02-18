@@ -38,12 +38,12 @@ namespace Frost
 		public Matrix3X2(
 			float m11, float m12, float m21, float m22, float m31, float m32)
 		{
-			Trace.Assert(Check.IsFinite(m11));
-			Trace.Assert(Check.IsFinite(m12));
-			Trace.Assert(Check.IsFinite(m21));
-			Trace.Assert(Check.IsFinite(m22));
-			Trace.Assert(Check.IsFinite(m31));
-			Trace.Assert(Check.IsFinite(m32));
+			Contract.Requires(Check.IsFinite(m11));
+			Contract.Requires(Check.IsFinite(m12));
+			Contract.Requires(Check.IsFinite(m21));
+			Contract.Requires(Check.IsFinite(m22));
+			Contract.Requires(Check.IsFinite(m31));
+			Contract.Requires(Check.IsFinite(m32));
 
 			this._11 = m11;
 			this._12 = m12;
@@ -151,8 +151,8 @@ namespace Frost
 		public void Translate(
 			float width, float height, out Matrix3X2 result)
 		{
-			Trace.Assert(Check.IsFinite(width));
-			Trace.Assert(Check.IsFinite(height));
+			Contract.Requires(Check.IsFinite(width));
+			Contract.Requires(Check.IsFinite(height));
 
 			result = new Matrix3X2(1.0f, 0.0f, 0.0f, 1.0f, width, height);
 
@@ -161,8 +161,8 @@ namespace Frost
 
 		public void Skew(float angleX, float angleY, out Matrix3X2 result)
 		{
-			Trace.Assert(Check.IsDegrees(angleX));
-			Trace.Assert(Check.IsDegrees(angleY));
+			Contract.Requires(Check.IsDegrees(angleX));
+			Contract.Requires(Check.IsDegrees(angleY));
 
 			double radiansX = (Math.PI * angleX) / 180.0;
 			double radiansY = (Math.PI * angleY) / 180.0;
@@ -180,8 +180,8 @@ namespace Frost
 
 		public void Scale(float width, float height, out Matrix3X2 result)
 		{
-			Trace.Assert(Check.IsPositive(width));
-			Trace.Assert(Check.IsPositive(height));
+			Contract.Requires(Check.IsPositive(width));
+			Contract.Requires(Check.IsPositive(height));
 
 			result = new Matrix3X2(width, 0.0f, 0.0f, height, 0.0f, 0.0f);
 
@@ -195,10 +195,10 @@ namespace Frost
 			float originY,
 			out Matrix3X2 result)
 		{
-			Trace.Assert(Check.IsPositive(width));
-			Trace.Assert(Check.IsPositive(height));
-			Trace.Assert(Check.IsFinite(originX));
-			Trace.Assert(Check.IsFinite(originY));
+			Contract.Requires(Check.IsPositive(width));
+			Contract.Requires(Check.IsPositive(height));
+			Contract.Requires(Check.IsFinite(originX));
+			Contract.Requires(Check.IsFinite(originY));
 
 			float translationX = originX - (width * originX);
 			float translationY = originY - (height * originY);
@@ -211,7 +211,7 @@ namespace Frost
 
 		public void Rotate(float angle, out Matrix3X2 result)
 		{
-			Trace.Assert(Check.IsDegrees(angle));
+			Contract.Requires(Check.IsDegrees(angle));
 
 			double radians = (Math.PI * angle) / 180.0;
 
@@ -226,9 +226,9 @@ namespace Frost
 		public void Rotate(
 			float angle, float originX, float originY, out Matrix3X2 result)
 		{
-			Trace.Assert(Check.IsDegrees(angle));
-			Trace.Assert(Check.IsFinite(originX));
-			Trace.Assert(Check.IsFinite(originY));
+			Contract.Requires(Check.IsDegrees(angle));
+			Contract.Requires(Check.IsFinite(originX));
+			Contract.Requires(Check.IsFinite(originY));
 
 			Matrix3X2 nTranslate;
 			Matrix3X2 pTranslate;

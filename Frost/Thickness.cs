@@ -41,10 +41,10 @@ namespace Frost
 
 		public Thickness(float left, float top, float right, float bottom)
 		{
-			Trace.Assert(Check.IsPositive(left));
-			Trace.Assert(Check.IsPositive(top));
-			Trace.Assert(Check.IsPositive(right));
-			Trace.Assert(Check.IsPositive(bottom));
+			Contracts.Requires(Check.IsPositive(left));
+			Contracts.Requires(Check.IsPositive(top));
+			Contracts.Requires(Check.IsPositive(right));
+			Contracts.Requires(Check.IsPositive(bottom));
 
 			this._Left = left;
 			this._Top = top;
@@ -161,10 +161,10 @@ namespace Frost
 		public Thickness Contract(
 			float left, float top, float right, float bottom)
 		{
-			Trace.Assert(Check.IsFinite(left));
-			Trace.Assert(Check.IsFinite(top));
-			Trace.Assert(Check.IsFinite(right));
-			Trace.Assert(Check.IsFinite(bottom));
+			Contracts.Requires(Check.IsFinite(left));
+			Contracts.Requires(Check.IsFinite(top));
+			Contracts.Requires(Check.IsFinite(right));
+			Contracts.Requires(Check.IsFinite(bottom));
 
 			return new Thickness(
 				this._Left - left,
@@ -190,10 +190,10 @@ namespace Frost
 		public Thickness Expand(
 			float left, float top, float right, float bottom)
 		{
-			Trace.Assert(Check.IsFinite(left));
-			Trace.Assert(Check.IsFinite(top));
-			Trace.Assert(Check.IsFinite(right));
-			Trace.Assert(Check.IsFinite(bottom));
+			Contracts.Requires(Check.IsFinite(left));
+			Contracts.Requires(Check.IsFinite(top));
+			Contracts.Requires(Check.IsFinite(right));
+			Contracts.Requires(Check.IsFinite(bottom));
 
 			return new Thickness(
 				this._Left + left,

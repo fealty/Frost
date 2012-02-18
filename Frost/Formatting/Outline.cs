@@ -20,9 +20,9 @@ namespace Frost.Formatting
 		public Outline(
 			Geometry normalizedOutline, float emSize, float normalizedBaseline)
 		{
-			Trace.Assert(normalizedOutline != null);
-			Trace.Assert(Check.IsPositive(emSize));
-			Trace.Assert(Check.IsFinite(normalizedBaseline));
+			Contract.Requires(normalizedOutline != null);
+			Contract.Requires(Check.IsPositive(emSize));
+			Contract.Requires(Check.IsFinite(normalizedBaseline));
 
 			this._NormalizedOutline = normalizedOutline;
 			this._EmSize = emSize;

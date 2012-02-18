@@ -18,21 +18,21 @@ namespace Frost.Collections
 
 		protected ImmutableBase(T[] items)
 		{
-			Trace.Assert(items != null);
+			Contract.Requires(items != null);
 
 			_Items = (T[])items.Clone();
 		}
 
 		protected ImmutableBase(List<T> items)
 		{
-			Trace.Assert(items != null);
+			Contract.Requires(items != null);
 
 			_Items = items.ToArray();
 		}
 
 		protected ImmutableBase(IEnumerable<T> items)
 		{
-			Trace.Assert(items != null);
+			Contract.Requires(items != null);
 
 			_Items = items.ToArray();
 		}
@@ -71,9 +71,9 @@ namespace Frost.Collections
 
 		public CollectionSlice TakeSlice(int startIndex, int length)
 		{
-			Trace.Assert(startIndex >= 0);
-			Trace.Assert(length >= 0);
-			Trace.Assert(startIndex + length <= this._Items.Length);
+			Contract.Requires(startIndex >= 0);
+			Contract.Requires(length >= 0);
+			Contract.Assert(startIndex + length <= this._Items.Length);
 
 			return new CollectionSlice(startIndex, length, this);
 		}
@@ -137,9 +137,9 @@ namespace Frost.Collections
 
 			public CollectionSlice TakeSlice(int startIndex, int length)
 			{
-				Trace.Assert(startIndex >= 0);
-				Trace.Assert(length >= 0);
-				Trace.Assert(startIndex + length <= this._Length);
+				Contract.Requires(startIndex >= 0);
+				Contract.Requires(length >= 0);
+				Contract.Assert(startIndex + length <= this._Length);
 
 				int adjustedIndex = this._StartIndex + startIndex;
 

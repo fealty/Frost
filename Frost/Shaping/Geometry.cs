@@ -209,7 +209,7 @@ namespace Frost.Shaping
 
 		public void Extract(IGeometrySink sink)
 		{
-			Trace.Assert(sink != null);
+			Contract.Requires(sink != null);
 
 			int pointIndex = 0;
 
@@ -535,10 +535,9 @@ namespace Frost.Shaping
 			public Builder ArcTo(
 				Point tangentStart, Point tangentEnd, Size radius)
 			{
+				Contract.Requires(Check.IsPositive(radius.Width));
+				Contract.Requires(Check.IsPositive(radius.Height));
 				Contract.Ensures(Contract.Result<Builder>() != null);
-
-				Trace.Assert(Check.IsPositive(radius.Width));
-				Trace.Assert(Check.IsPositive(radius.Height));
 
 				this._Commands.Add(GeometryCommand.ArcTo);
 

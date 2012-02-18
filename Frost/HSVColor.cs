@@ -27,10 +27,10 @@ namespace Frost
 		public HSVColor(
 			float hue, float saturation, float value, float alpha = 100.0f)
 		{
-			Trace.Assert(Check.IsDegrees(hue));
-			Trace.Assert(Check.IsPercentage(saturation));
-			Trace.Assert(Check.IsPercentage(value));
-			Trace.Assert(Check.IsPercentage(alpha));
+			Contract.Requires(Check.IsDegrees(hue));
+			Contract.Requires(Check.IsPercentage(saturation));
+			Contract.Requires(Check.IsPercentage(value));
+			Contract.Requires(Check.IsPercentage(alpha));
 
 			hue = Convert.ToSingle(Math.Round(hue, 4));
 			value = Convert.ToSingle(Math.Round(value, 4));

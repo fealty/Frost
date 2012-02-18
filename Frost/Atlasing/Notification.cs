@@ -18,8 +18,6 @@ namespace Frost.Atlasing
 		{
 			Contract.Requires(atlas != null);
 
-			Trace.Assert(atlas != null);
-
 			this._Value = true;
 			this._Atlas = atlas;
 		}
