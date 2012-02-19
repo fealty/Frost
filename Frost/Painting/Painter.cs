@@ -606,7 +606,7 @@ namespace Frost.Painting
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
-			if (operation == TransformMode.Replace)
+			if(operation == TransformMode.Replace)
 			{
 				this._ActiveTransformation = transformation;
 			}

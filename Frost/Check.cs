@@ -42,7 +42,8 @@ namespace Frost
 
 		[Pure] public static bool IsValid(Canvas canvas, Device2D device2D)
 		{
-			return canvas != null && canvas.IsValid && canvas.Device2D == device2D;
+			return canvas != null && canvas.IsValid &&
+			       canvas.Device2D == device2D;
 		}
 	}
 }

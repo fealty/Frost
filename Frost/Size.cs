@@ -76,7 +76,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Contract.Result<Size>().Equals(_Empty));
-				
+
 				return _Empty;
 			}
 		}
@@ -86,7 +86,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Contract.Result<Size>().Equals(_MaxValue));
-				
+
 				return _MaxValue;
 			}
 		}
@@ -96,7 +96,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Contract.Result<Size>().Equals(_MinValue));
-				
+
 				return _MinValue;
 			}
 		}

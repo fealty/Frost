@@ -211,7 +211,7 @@ namespace Frost
 		public Point ComputePointAlongPath(
 			Geometry path,
 			float length,
-			out Point tangentVector, 
+			out Point tangentVector,
 			float tolerance = _FlatteningTolerance)
 		{
 			Contract.Requires(path != null);

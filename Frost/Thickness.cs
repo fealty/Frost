@@ -122,7 +122,7 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Contracts.Result<Thickness>().Equals(_Empty));
-				
+
 				return _Empty;
 			}
 		}
@@ -132,7 +132,7 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Contracts.Result<Thickness>().Equals(_MaxValue));
-				
+
 				return _MaxValue;
 			}
 		}
@@ -142,7 +142,7 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Contracts.Result<Thickness>().Equals(_MinValue));
-				
+
 				return _MinValue;
 			}
 		}

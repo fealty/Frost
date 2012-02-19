@@ -119,7 +119,7 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Contracts.Result<Rectangle>().Equals(_Empty));
-				
+
 				return _Empty;
 			}
 		}
@@ -129,7 +129,7 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Contracts.Result<Rectangle>().Equals(_MaxValue));
-				
+
 				return _MaxValue;
 			}
 		}
@@ -139,7 +139,7 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Contracts.Result<Rectangle>().Equals(_MinValue));
-				
+
 				return _MinValue;
 			}
 		}
@@ -148,8 +148,9 @@ namespace Frost
 		{
 			get
 			{
-				Contracts.Ensures(Contracts.Result<Point>().Equals(new Point(this._X, this._Y)));
-				
+				Contracts.Ensures(
+					Contracts.Result<Point>().Equals(new Point(this._X, this._Y)));
+
 				return new Point(this._X, this._Y);
 			}
 		}
@@ -158,8 +159,10 @@ namespace Frost
 		{
 			get
 			{
-				Contracts.Ensures(Contracts.Result<Size>().Equals(new Size(this._Width, this._Height)));
-				
+				Contracts.Ensures(
+					Contracts.Result<Size>().Equals(
+						new Size(this._Width, this._Height)));
+
 				return new Size(this._Width, this._Height);
 			}
 		}

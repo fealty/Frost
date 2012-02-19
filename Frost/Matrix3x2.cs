@@ -64,7 +64,7 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Contract.Result<Matrix3X2>().Equals(_Identity));
-				
+
 				return _Identity;
 			}
 		}

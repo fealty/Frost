@@ -54,8 +54,9 @@ namespace Frost
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Rectangle>().Equals(this._Region));
-				
+				Contract.Ensures(
+					Contract.Result<Rectangle>().Equals(this._Region));
+
 				return this._Region;
 			}
 		}
