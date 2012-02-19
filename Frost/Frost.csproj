@@ -116,10 +116,14 @@
     <Compile Include="Diagnostics\DeviceCounterCollection.cs" />
     <Compile Include="Diagnostics\IDeviceCounter.cs" />
     <Compile Include="Effects\BatchedItem.cs" />
+    <Compile Include="Effects\BoxBlurSettings.cs" />
+    <Compile Include="Effects\ColorOutputSettings.cs" />
+    <Compile Include="Effects\DropShadowSettings.cs" />
     <Compile Include="Effects\Effect.cs" />
     <Compile Include="Effects\EffectCollection.cs" />
     <Compile Include="Effects\EffectContext.cs" />
     <Compile Include="Effects\Enumerations.cs" />
+    <Compile Include="Effects\GaussianBlurSettings.cs" />
     <Compile Include="Effects\IEffect.cs" />
     <Compile Include="Effects\IEffectContext.cs" />
     <Compile Include="Effects\IEffectSettings.cs" />

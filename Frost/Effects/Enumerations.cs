@@ -5,4 +5,9 @@
 
 namespace Frost.Effects
 {
+	public enum ColorOperation
+	{
+		Replace,
+		Modulate
+	}
 }
