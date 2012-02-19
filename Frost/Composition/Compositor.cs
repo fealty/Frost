@@ -3,6 +3,7 @@
 // 
 // See LICENSE for more information.
 
+using System;
 using System.Diagnostics.Contracts;
 using System.Threading;
 
@@ -58,7 +59,8 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(Contract.Result<EffectContext>() == this._ActiveEffectContext);
+				Contract.Ensures(
+					Contract.Result<EffectContext>() == this._ActiveEffectContext);
 
 				return this._ActiveEffectContext;
 			}
@@ -75,7 +77,8 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(Contract.Result<float>().Equals(this._ActiveOpacity));
+				Contract.Ensures(
+					Contract.Result<float>().Equals(this._ActiveOpacity));
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
 
 				return this._ActiveOpacity;
@@ -94,7 +97,8 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(Contract.Result<BlendOperation>() == this._ActiveBlendOperation);
+				Contract.Ensures(
+					Contract.Result<BlendOperation>() == this._ActiveBlendOperation);
 
 				return this._ActiveBlendOperation;
 			}
@@ -111,7 +115,8 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(Contract.Result<Matrix3X2>().Equals(this._ActiveTransformation));
+				Contract.Ensures(
+					Contract.Result<Matrix3X2>().Equals(this._ActiveTransformation));
 
 				return this._ActiveTransformation;
 			}
@@ -579,6 +584,26 @@ namespace Frost.Composition
 				transformation.Multiply(
 					ref this._ActiveTransformation, out this._ActiveTransformation);
 			}
+		}
+
+		public void ApplyEffect<T>(T options)
+			where T : struct, IEffectSettings, IEquatable<T>
+		{
+			var oldEffectContext = Effect as EffectContext<T>;
+
+			if(oldEffectContext != null)
+			{
+				if(oldEffectContext.Options.Equals(options))
+				{
+					return;
+				}
+			}
+
+			Effect<T> effect = Device2D.Effects.Find<T>();
+
+			this.Effect = effect != null
+			              	? new EffectContext<T>(effect, options)
+			              	: null;
 		}
 
 		protected abstract void OnSaveState();
