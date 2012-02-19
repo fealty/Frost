@@ -54,6 +54,13 @@ namespace Frost.Formatting
 			float tracking,
 			TextRunCollection runs)
 		{
+			Contract.Requires(text != null);
+			Contract.Requires(Check.IsPositive(indentation));
+			Contract.Requires(Check.IsPositive(leading));
+			Contract.Requires(Check.IsPositive(spacing));
+			Contract.Requires(Check.IsPositive(tracking));
+			Contract.Requires(runs != null);
+
 			this._Text = text;
 			this._Alignment = alignment;
 			this._Indentation = indentation;

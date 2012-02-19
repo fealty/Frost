@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 using Frost.Collections;
 
@@ -13,14 +14,17 @@ namespace Frost.Formatting
 	{
 		public TextRunCollection(TextRun[] items) : base(items)
 		{
+			Contract.Requires(items != null);
 		}
 
 		public TextRunCollection(List<TextRun> items) : base(items)
 		{
+			Contract.Requires(items != null);
 		}
 
 		public TextRunCollection(IEnumerable<TextRun> items) : base(items)
 		{
+			Contract.Requires(items != null);
 		}
 
 #if(UNIT_TESTING)

@@ -525,6 +525,10 @@ namespace Frost.Shaping
 				float radiusWidth,
 				float radiusHeight)
 			{
+				Contract.Requires(Check.IsFinite(tangentStartX));
+				Contract.Requires(Check.IsFinite(tangentStartY));
+				Contract.Requires(Check.IsFinite(tangentEndX));
+				Contract.Requires(Check.IsFinite(tangentEndY));
 				Contract.Requires(Check.IsPositive(radiusWidth));
 				Contract.Requires(Check.IsPositive(radiusHeight));
 				Contract.Ensures(Contract.Result<Builder>() != null);

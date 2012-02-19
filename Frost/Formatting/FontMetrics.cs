@@ -79,6 +79,7 @@ namespace Frost.Formatting
 
 		public float MeasureAscent(float pointSize)
 		{
+			Contract.Requires(Check.IsPositive(pointSize));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
 			return ToPixels(this._Ascent, pointSize);
@@ -86,6 +87,7 @@ namespace Frost.Formatting
 
 		public float MeasureDescent(float pointSize)
 		{
+			Contract.Requires(Check.IsPositive(pointSize));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
 			return ToPixels(this._Descent, pointSize);
@@ -93,6 +95,7 @@ namespace Frost.Formatting
 
 		public float MeasureEm(float pointSize)
 		{
+			Contract.Requires(Check.IsPositive(pointSize));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
 			return ToPixels(this._Ascent + this._Descent, pointSize);

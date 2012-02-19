@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 using Frost.Collections;
 using Frost.Shaping;
@@ -14,14 +15,17 @@ namespace Frost.Formatting
 	{
 		public OutlineCollection(Outline[] items) : base(items)
 		{
+			Contract.Requires(items != null);
 		}
 
 		public OutlineCollection(List<Outline> items) : base(items)
 		{
+			Contract.Requires(items != null);
 		}
 
 		public OutlineCollection(IEnumerable<Outline> items) : base(items)
 		{
+			Contract.Requires(items != null);
 		}
 
 #if(UNIT_TESTING)

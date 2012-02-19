@@ -36,6 +36,7 @@ namespace Frost.Effects
 		public EffectContext(Effect<T> effect, T options)
 			: this(effect, ref options)
 		{
+			Contract.Requires(effect != null);
 		}
 
 		public Effect<T> Effect

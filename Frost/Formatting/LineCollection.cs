@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 using Frost.Collections;
 
@@ -13,14 +14,17 @@ namespace Frost.Formatting
 	{
 		public LineCollection(IndexedRange[] items) : base(items)
 		{
+			Contract.Requires(items != null);
 		}
 
 		public LineCollection(List<IndexedRange> items) : base(items)
 		{
+			Contract.Requires(items != null);
 		}
 
 		public LineCollection(IEnumerable<IndexedRange> items) : base(items)
 		{
+			Contract.Requires(items != null);
 		}
 
 #if(UNIT_TESTING)
