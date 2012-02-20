@@ -9,6 +9,8 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Text;
 
+using Frost.Collections;
+
 namespace Frost.Formatting
 {
 	public sealed class Paragraph

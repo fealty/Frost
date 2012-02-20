@@ -6,6 +6,8 @@
 using System;
 using System.Diagnostics.Contracts;
 
+using Frost.Collections;
+
 namespace Frost.Formatting
 {
 	namespace Contracts

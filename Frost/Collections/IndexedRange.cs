@@ -8,9 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
-namespace Frost
+namespace Frost.Collections
 {
-	//TODO: should this be part of collections?
 	public struct IndexedRange
 		: IEquatable<IndexedRange>, IEnumerable<int>
 	{

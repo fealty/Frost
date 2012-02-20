@@ -7,6 +7,8 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 
+using Frost.Collections;
+
 namespace Frost.Formatting
 {
 	public struct TextRun : IEquatable<TextRun>

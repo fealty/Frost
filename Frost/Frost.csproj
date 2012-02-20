@@ -141,7 +141,7 @@
     <Compile Include="Formatting\RegionCollection.cs" />
     <Compile Include="Formatting\TextRunCollection.cs" />
     <Compile Include="Formatting\TextRun.cs" />
-    <Compile Include="IndexedRange.cs" />
+    <Compile Include="Collections\IndexedRange.cs" />
     <Compile Include="HSVColor.cs" />
     <Compile Include="Matrix3x2.cs" />
     <Compile Include="Painting\Enumerations.cs" />
