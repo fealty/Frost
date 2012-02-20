@@ -15,8 +15,6 @@ namespace Frost.Atlasing
 		[ContractClassFor(typeof(ISurfaceAtlas))] internal abstract class
 			ISurfaceAtlasContract : ISurfaceAtlas
 		{
-			public abstract bool InUse { get; }
-
 			public ISurface2D Surface2D
 			{
 				get
@@ -44,22 +42,16 @@ namespace Frost.Atlasing
 
 				throw new NotSupportedException();
 			}
-
-			public abstract void Invalidate();
 		}
 	}
 
 	[ContractClass(typeof(Contracts.ISurfaceAtlasContract))] public
 		interface ISurfaceAtlas
 	{
-		bool InUse { get; }
-
 		ISurface2D Surface2D { get; }
 
 		Canvas Canvas { get; }
 
 		Canvas AcquireRegion(Size size, object owner = null);
-
-		void Invalidate();
 	}
 }
