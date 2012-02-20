@@ -1,5 +1,0 @@
-E:\Documents\Frost\Frost.DirectX\bin\Debug\Frost.DirectX.dll
-E:\Documents\Frost\Frost.DirectX\bin\Debug\Frost.DirectX.pdb
-E:\Documents\Frost\Frost.DirectX\obj\Debug\ResolveAssemblyReference.cache
-E:\Documents\Frost\Frost.DirectX\obj\Debug\Frost.DirectX.dll
-E:\Documents\Frost\Frost.DirectX\obj\Debug\Frost.DirectX.pdb
