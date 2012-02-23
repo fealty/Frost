@@ -47,9 +47,21 @@
       <HintPath>..\sharpdx\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CombinationSink.cs" />
+    <Compile Include="GeometrySinkBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimplificationSink.cs" />
+    <Compile Include="TessellationSink.cs" />
+    <Compile Include="WideningSink.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Frost\Frost.csproj">
+      <Project>{5DA3C280-5EBE-4148-BAB5-C700DA0645C2}</Project>
+      <Name>Frost</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

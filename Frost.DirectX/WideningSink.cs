@@ -5,26 +5,25 @@
 
 using System.Diagnostics.Contracts;
 
-using SharpDX.Direct2D1;
+using Frost.Shaping;
 
 using DxGeometry = SharpDX.Direct2D1.Geometry;
-using Geometry = Frost.Shaping.Geometry;
 
 namespace Frost.DirectX
 {
-	internal sealed class SimplificationSink : GeometrySinkBase
+	internal sealed class WideningSink : GeometrySinkBase
 	{
-		public Geometry CreateSimplification(
-			DxGeometry resolvedSource, float tolerance)
+		public Geometry CreateWidened(
+			DxGeometry resolvedSource, float width, float tolerance)
 		{
 			Contract.Requires(resolvedSource != null);
+			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(tolerance));
 			Contract.Ensures(Contract.Result<Geometry>() != null);
 
 			this._Builder = Geometry.Create();
 
-			resolvedSource.Simplify(
-				GeometrySimplificationOption.Lines, tolerance, this);
+			resolvedSource.Widen(width, null, null, tolerance, this);
 
 			Geometry result = this._Builder.Build();
 
