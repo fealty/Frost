@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,7 +56,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drawer.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="IPainterState.cs" />
+    <Compile Include="Painter.cs" />
+    <Compile Include="PaintingDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StateManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Frost.DirectX.Common\Frost.DirectX.Common.csproj">
+      <Project>{4F35A7DE-5B7B-4271-97C2-6059E685FBC6}</Project>
+      <Name>Frost.DirectX.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Frost\Frost.csproj">
+      <Project>{5DA3C280-5EBE-4148-BAB5-C700DA0645C2}</Project>
+      <Name>Frost</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
