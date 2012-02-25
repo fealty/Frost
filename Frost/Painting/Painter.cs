@@ -44,6 +44,54 @@ namespace Frost.Painting
 			Contract.Assert(Device2D.Equals(device2D));
 		}
 
+		protected bool IsTransformationInvalid
+		{
+			get { return this._IsTransformationInvalid; }
+			set { this._IsTransformationInvalid = value; }
+		}
+
+		protected bool IsStrokeWidthInvalid
+		{
+			get { return this._IsStrokeWidthInvalid; }
+			set { this._IsStrokeWidthInvalid = value; }
+		}
+
+		protected bool IsStrokeJoinInvalid
+		{
+			get { return this._IsStrokeJoinInvalid; }
+			set { this._IsStrokeJoinInvalid = value; }
+		}
+
+		protected bool IsStrokeCapInvalid
+		{
+			get { return this._IsStrokeCapInvalid; }
+			set { this._IsStrokeCapInvalid = value; }
+		}
+
+		protected bool IsMiterLimitInvalid
+		{
+			get { return this._IsMiterLimitInvalid; }
+			set { this._IsMiterLimitInvalid = value; }
+		}
+
+		protected bool IsLineStyleInvalid
+		{
+			get { return this._IsLineStyleInvalid; }
+			set { this._IsLineStyleInvalid = value; }
+		}
+
+		protected bool IsDashCapInvalid
+		{
+			get { return this._IsDashCapInvalid; }
+			set { this._IsDashCapInvalid = value; }
+		}
+
+		protected bool IsAntialiasingInvalid
+		{
+			get { return this._IsAntialiasingInvalid; }
+			set { this._IsAntialiasingInvalid = value; }
+		}
+
 		protected Matrix3X2 ActiveTransformation
 		{
 			get { return this._ActiveTransformation; }
@@ -82,46 +130,6 @@ namespace Frost.Painting
 		protected bool ActiveAntialiasing
 		{
 			get { return this._ActiveAntialiasing; }
-		}
-
-		protected bool IsTransformationInvalid
-		{
-			get { return this._IsTransformationInvalid; }
-		}
-
-		protected bool IsStrokeWidthInvalid
-		{
-			get { return this._IsStrokeWidthInvalid; }
-		}
-
-		protected bool IsStrokeJoinInvalid
-		{
-			get { return this._IsStrokeJoinInvalid; }
-		}
-
-		protected bool IsMiterLimitInvalid
-		{
-			get { return this._IsMiterLimitInvalid; }
-		}
-
-		protected bool IsStrokeCapInvalid
-		{
-			get { return this._IsStrokeCapInvalid; }
-		}
-
-		protected bool IsLineStyleInvalid
-		{
-			get { return this._IsLineStyleInvalid; }
-		}
-
-		protected bool IsDashCapInvalid
-		{
-			get { return this._IsDashCapInvalid; }
-		}
-
-		protected bool IsAntialiasingInvalid
-		{
-			get { return this._IsAntialiasingInvalid; }
 		}
 
 		public Device2D Device2D
