@@ -23,7 +23,7 @@ using Resource = SharpDX.Direct3D10.Resource;
 
 namespace Frost.DirectX.Common
 {
-	public class Surface2D : ISurface2D, IEquatable<Surface2D>
+	public class Surface2D : ISurface2D, IEquatable<Surface2D>, IDisposable
 	{
 		//TODO: add configuration option for surface 2d cache limit?
 		public const int CacheLimit = 5;
