@@ -16,14 +16,23 @@ namespace Frost.Painting
 		private readonly Thread _BoundThread;
 		private readonly Device2D _Device2D;
 
-		protected bool _ActiveAntialiasing;
-		protected LineCap _ActiveDashCap;
-		protected LineStyle _ActiveLineStyle;
-		protected float _ActiveMiterLimit;
-		protected LineCap _ActiveStrokeCap;
-		protected LineJoin _ActiveStrokeJoin;
-		protected float _ActiveStrokeWidth;
-		protected Matrix3X2 _ActiveTransformation;
+		private bool _ActiveAntialiasing;
+		private LineCap _ActiveDashCap;
+		private LineStyle _ActiveLineStyle;
+		private float _ActiveMiterLimit;
+		private LineCap _ActiveStrokeCap;
+		private LineJoin _ActiveStrokeJoin;
+		private float _ActiveStrokeWidth;
+		private Matrix3X2 _ActiveTransformation;
+
+		private bool _IsAntialiasingInvalid;
+		private bool _IsDashCapInvalid;
+		private bool _IsLineStyleInvalid;
+		private bool _IsMiterLimitInvalid;
+		private bool _IsStrokeCapInvalid;
+		private bool _IsStrokeJoinInvalid;
+		private bool _IsStrokeWidthInvalid;
+		private bool _IsTransformationInvalid;
 
 		protected Painter(Device2D device2D)
 		{
@@ -33,6 +42,86 @@ namespace Frost.Painting
 			this._Device2D = device2D;
 
 			Contract.Assert(Device2D.Equals(device2D));
+		}
+
+		protected Matrix3X2 ActiveTransformation
+		{
+			get { return this._ActiveTransformation; }
+		}
+
+		protected float ActiveStrokeWidth
+		{
+			get { return this._ActiveStrokeWidth; }
+		}
+
+		protected LineJoin ActiveStrokeJoin
+		{
+			get { return this._ActiveStrokeJoin; }
+		}
+
+		protected LineCap ActiveStrokeCap
+		{
+			get { return this._ActiveStrokeCap; }
+		}
+
+		protected float ActiveMiterLimit
+		{
+			get { return this._ActiveMiterLimit; }
+		}
+
+		protected LineStyle ActiveLineStyle
+		{
+			get { return this._ActiveLineStyle; }
+		}
+
+		protected LineCap ActiveDashCap
+		{
+			get { return this._ActiveDashCap; }
+		}
+
+		protected bool ActiveAntialiasing
+		{
+			get { return this._ActiveAntialiasing; }
+		}
+
+		protected bool IsTransformationInvalid
+		{
+			get { return this._IsTransformationInvalid; }
+		}
+
+		protected bool IsStrokeWidthInvalid
+		{
+			get { return this._IsStrokeWidthInvalid; }
+		}
+
+		protected bool IsStrokeJoinInvalid
+		{
+			get { return this._IsStrokeJoinInvalid; }
+		}
+
+		protected bool IsMiterLimitInvalid
+		{
+			get { return this._IsMiterLimitInvalid; }
+		}
+
+		protected bool IsStrokeCapInvalid
+		{
+			get { return this._IsStrokeCapInvalid; }
+		}
+
+		protected bool IsLineStyleInvalid
+		{
+			get { return this._IsLineStyleInvalid; }
+		}
+
+		protected bool IsDashCapInvalid
+		{
+			get { return this._IsDashCapInvalid; }
+		}
+
+		protected bool IsAntialiasingInvalid
+		{
+			get { return this._IsAntialiasingInvalid; }
 		}
 
 		public Device2D Device2D
@@ -73,7 +162,12 @@ namespace Frost.Painting
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Requires(Check.IsPositive(value));
 
-				this._ActiveMiterLimit = value;
+				if(!value.Equals(this._ActiveMiterLimit))
+				{
+					this._ActiveMiterLimit = value;
+
+					this._IsMiterLimitInvalid = true;
+				}
 			}
 		}
 
@@ -93,7 +187,12 @@ namespace Frost.Painting
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Requires(Check.IsPositive(value));
 
-				this._ActiveStrokeWidth = value;
+				if(!value.Equals(this._ActiveStrokeWidth))
+				{
+					this._ActiveStrokeWidth = value;
+
+					this._IsStrokeWidthInvalid = true;
+				}
 			}
 		}
 
@@ -111,7 +210,12 @@ namespace Frost.Painting
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 
-				this._ActiveStrokeCap = value;
+				if(value != this._ActiveStrokeCap)
+				{
+					this._ActiveStrokeCap = value;
+
+					this._IsStrokeCapInvalid = true;
+				}
 			}
 		}
 
@@ -129,7 +233,12 @@ namespace Frost.Painting
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 
-				this._ActiveStrokeJoin = value;
+				if(value != this._ActiveStrokeJoin)
+				{
+					this._ActiveStrokeJoin = value;
+
+					this._IsStrokeJoinInvalid = true;
+				}
 			}
 		}
 
@@ -147,7 +256,12 @@ namespace Frost.Painting
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 
-				this._ActiveAntialiasing = value;
+				if(value != this._ActiveAntialiasing)
+				{
+					this._ActiveAntialiasing = value;
+
+					this._IsAntialiasingInvalid = true;
+				}
 			}
 		}
 
@@ -165,7 +279,12 @@ namespace Frost.Painting
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 
-				this._ActiveDashCap = value;
+				if(value != this._ActiveDashCap)
+				{
+					this._ActiveDashCap = value;
+
+					this._IsDashCapInvalid = true;
+				}
 			}
 		}
 
@@ -183,7 +302,12 @@ namespace Frost.Painting
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 
-				this._ActiveLineStyle = value;
+				if(value != this._ActiveLineStyle)
+				{
+					this._ActiveLineStyle = value;
+
+					this._IsLineStyleInvalid = true;
+				}
 			}
 		}
 
@@ -204,6 +328,17 @@ namespace Frost.Painting
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsValid(target, Device2D));
+
+			this._IsAntialiasingInvalid = true;
+			this._IsDashCapInvalid = true;
+			this._IsLineStyleInvalid = true;
+			this._IsMiterLimitInvalid = true;
+			this._IsStrokeCapInvalid = true;
+			this._IsStrokeJoinInvalid = true;
+			this._IsStrokeWidthInvalid = true;
+			this._IsTransformationInvalid = true;
+
+			ResetState();
 
 			OnBegin(target, retention);
 		}
@@ -233,17 +368,17 @@ namespace Frost.Painting
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
-			this._ActiveAntialiasing = true;
+			IsAntialiased = true;
+			MiterLimit = 10.0f;
+			StrokeCap = LineCap.Butt;
+			StrokeJoin = LineJoin.Miter;
+			StrokeWidth = 1.0f;
+			DashCap = LineCap.Butt;
+			LineStyle = LineStyle.Solid;
 
-			this._ActiveMiterLimit = 10.0f;
-			this._ActiveStrokeCap = LineCap.Butt;
-			this._ActiveStrokeJoin = LineJoin.Miter;
-			this._ActiveStrokeWidth = 1.0f;
+			Matrix3X2 identity = Matrix3X2.Identity;
 
-			this._ActiveDashCap = LineCap.Butt;
-			this._ActiveLineStyle = LineStyle.Solid;
-
-			this._ActiveTransformation = Matrix3X2.Identity;
+			Transform(ref identity, TransformMode.Replace);
 
 			OnResetState();
 		}
@@ -519,8 +654,17 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 
-			this._ActiveTransformation.Scale(
-				width, height, out this._ActiveTransformation);
+			Matrix3X2 result;
+
+			this._ActiveTransformation.Scale(width, height, out result);
+
+			if(this._IsTransformationInvalid ||
+			   !result.Equals(this._ActiveTransformation))
+			{
+				this._ActiveTransformation = result;
+
+				this._IsTransformationInvalid = true;
+			}
 		}
 
 		public void Scale(Size size)
@@ -541,8 +685,18 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
 
+			Matrix3X2 result;
+
 			this._ActiveTransformation.Scale(
-				width, height, originX, originY, out this._ActiveTransformation);
+				width, height, originX, originY, out result);
+
+			if(this._IsTransformationInvalid ||
+			   !result.Equals(this._ActiveTransformation))
+			{
+				this._ActiveTransformation = result;
+
+				this._IsTransformationInvalid = true;
+			}
 		}
 
 		public void Skew(float angleX, float angleY)
@@ -551,8 +705,17 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsDegrees(angleX));
 			Contract.Requires(Check.IsDegrees(angleY));
 
-			this._ActiveTransformation.Skew(
-				angleX, angleY, out this._ActiveTransformation);
+			Matrix3X2 result;
+
+			this._ActiveTransformation.Skew(angleX, angleY, out result);
+
+			if(this._IsTransformationInvalid ||
+			   !result.Equals(this._ActiveTransformation))
+			{
+				this._ActiveTransformation = result;
+
+				this._IsTransformationInvalid = true;
+			}
 		}
 
 		public void Rotate(float angle)
@@ -560,8 +723,17 @@ namespace Frost.Painting
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsDegrees(angle));
 
-			this._ActiveTransformation.Rotate(
-				angle, out this._ActiveTransformation);
+			Matrix3X2 result;
+
+			this._ActiveTransformation.Rotate(angle, out result);
+
+			if(this._IsTransformationInvalid ||
+			   !result.Equals(this._ActiveTransformation))
+			{
+				this._ActiveTransformation = result;
+
+				this._IsTransformationInvalid = true;
+			}
 		}
 
 		public void Rotate(float angle, float originX, float originY)
@@ -571,8 +743,18 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
 
+			Matrix3X2 result;
+
 			this._ActiveTransformation.Rotate(
-				angle, originX, originY, out this._ActiveTransformation);
+				angle, originX, originY, out result);
+
+			if(this._IsTransformationInvalid ||
+			   !result.Equals(this._ActiveTransformation))
+			{
+				this._ActiveTransformation = result;
+
+				this._IsTransformationInvalid = true;
+			}
 		}
 
 		public void Rotate(float angle, Point origin)
@@ -589,8 +771,17 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsFinite(width));
 			Contract.Requires(Check.IsFinite(height));
 
-			this._ActiveTransformation.Translate(
-				width, height, out this._ActiveTransformation);
+			Matrix3X2 result;
+
+			this._ActiveTransformation.Translate(width, height, out result);
+
+			if(this._IsTransformationInvalid ||
+			   !result.Equals(this._ActiveTransformation))
+			{
+				this._ActiveTransformation = result;
+
+				this._IsTransformationInvalid = true;
+			}
 		}
 
 		public void Translate(Size value)
@@ -608,12 +799,28 @@ namespace Frost.Painting
 
 			if(operation == TransformMode.Replace)
 			{
-				this._ActiveTransformation = transformation;
+				if(this._IsTransformationInvalid ||
+				   !transformation.Equals(this._ActiveTransformation))
+				{
+					this._ActiveTransformation = transformation;
+
+					this._IsTransformationInvalid = true;
+				}
 			}
 			else
 			{
+				Matrix3X2 result;
+
 				transformation.Multiply(
-					ref this._ActiveTransformation, out this._ActiveTransformation);
+					ref this._ActiveTransformation, out result);
+
+				if(this._IsTransformationInvalid ||
+				   !result.Equals(this._ActiveTransformation))
+				{
+					this._ActiveTransformation = result;
+
+					this._IsTransformationInvalid = true;
+				}
 			}
 		}
 
