@@ -17,10 +17,10 @@ namespace Frost
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(Check.IsDegrees(this._H));
-			Contract.Invariant(Check.IsPercentage(this._S));
-			Contract.Invariant(Check.IsPercentage(this._V));
-			Contract.Invariant(Check.IsPercentage(this._A));
+			Contract.Invariant(Check.IsDegrees(_H));
+			Contract.Invariant(Check.IsPercentage(_S));
+			Contract.Invariant(Check.IsPercentage(_V));
+			Contract.Invariant(Check.IsPercentage(_A));
 		}
 
 		public HSVColor(
@@ -36,10 +36,10 @@ namespace Frost
 			alpha = Convert.ToSingle(Math.Round(alpha, 4));
 			saturation = Convert.ToSingle(Math.Round(saturation, 4));
 
-			this._H = hue;
-			this._S = saturation;
-			this._V = value;
-			this._A = alpha;
+			_H = hue;
+			_S = saturation;
+			_V = value;
+			_A = alpha;
 
 			Contract.Assert(H.Equals(hue));
 			Contract.Assert(S.Equals(saturation));
@@ -52,9 +52,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsPercentage(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._V));
+				Contract.Ensures(Contract.Result<float>().Equals(_V));
 
-				return this._V;
+				return _V;
 			}
 		}
 
@@ -63,9 +63,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsPercentage(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._S));
+				Contract.Ensures(Contract.Result<float>().Equals(_S));
 
-				return this._S;
+				return _S;
 			}
 		}
 
@@ -74,9 +74,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsDegrees(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._H));
+				Contract.Ensures(Contract.Result<float>().Equals(_H));
 
-				return this._H;
+				return _H;
 			}
 		}
 
@@ -85,26 +85,26 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsPercentage(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._A));
+				Contract.Ensures(Contract.Result<float>().Equals(_A));
 
-				return this._A;
+				return _A;
 			}
 		}
 
 		public bool Equals(HSVColor other)
 		{
-			return other._A.Equals(this._A) && other._H.Equals(this._H) &&
-			       other._S.Equals(this._S) && other._V.Equals(this._V);
+			return other._A.Equals(_A) && other._H.Equals(_H) &&
+			       other._S.Equals(_S) && other._V.Equals(_V);
 		}
 
 		public override string ToString()
 		{
 			return string.Format(
 				"H: {0}, S: {1}, V: {2}, A: {3}",
-				this._H,
-				this._S,
-				this._V,
-				this._A);
+				_H,
+				_S,
+				_V,
+				_A);
 		}
 
 		public override bool Equals(object obj)
@@ -121,10 +121,10 @@ namespace Frost
 		{
 			unchecked
 			{
-				int result = this._A.GetHashCode();
-				result = (result * 397) ^ this._H.GetHashCode();
-				result = (result * 397) ^ this._S.GetHashCode();
-				result = (result * 397) ^ this._V.GetHashCode();
+				int result = _A.GetHashCode();
+				result = (result * 397) ^ _H.GetHashCode();
+				result = (result * 397) ^ _S.GetHashCode();
+				result = (result * 397) ^ _V.GetHashCode();
 				return result;
 			}
 		}
@@ -135,9 +135,9 @@ namespace Frost
 			float g;
 			float b;
 
-			float h = this._H;
-			float s = this._S / 100.0f;
-			float v = this._V / 100.0f;
+			float h = _H;
+			float s = _S / 100.0f;
+			float v = _V / 100.0f;
 
 			if(s.Equals(0.0f))
 			{
@@ -201,7 +201,7 @@ namespace Frost
 				}
 			}
 
-			return new Color(r, g, b, this._A / 100.0f);
+			return new Color(r, g, b, _A / 100.0f);
 		}
 
 		public static implicit operator HSVColor(Color color)

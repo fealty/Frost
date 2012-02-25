@@ -27,11 +27,11 @@ namespace Frost.DirectX.Common
 		{
 			Contract.Requires(factory2D != null);
 
-			this._Factory2D = factory2D;
+			_Factory2D = factory2D;
 
-			this._Builder = new GeometryBuilder(this._Factory2D);
+			_Builder = new GeometryBuilder(_Factory2D);
 
-			this._Cache = new CacheDictionary<Geometry, DxGeometry>(CacheLimit);
+			_Cache = new CacheDictionary<Geometry, DxGeometry>(CacheLimit);
 		}
 
 		public void Dispose()
@@ -46,16 +46,16 @@ namespace Frost.DirectX.Common
 
 			DxGeometry newGeometry;
 
-			if(this._Cache.TryGetValue(geometry, out newGeometry))
+			if(_Cache.TryGetValue(geometry, out newGeometry))
 			{
 				return newGeometry;
 			}
 
-			this._Builder.Build(geometry, out newGeometry);
+			_Builder.Build(geometry, out newGeometry);
 
 			try
 			{
-				this._Cache.Add(geometry, newGeometry);
+				_Cache.Add(geometry, newGeometry);
 			}
 			catch
 			{
@@ -71,7 +71,7 @@ namespace Frost.DirectX.Common
 		{
 			if(disposing)
 			{
-				this._Cache.Dispose();
+				_Cache.Dispose();
 			}
 		}
 	}

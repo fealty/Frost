@@ -14,16 +14,16 @@ namespace Frost.Effects
 
 		internal EffectCollection()
 		{
-			this._Effects = new Dictionary<Type, IEffect>();
+			_Effects = new Dictionary<Type, IEffect>();
 		}
 
 		public void Register<T>() where T : Effect, new()
 		{
-			lock(this._Effects)
+			lock(_Effects)
 			{
 				Effect effect = new T();
 
-				this._Effects[effect.OptionsType] = (IEffect)effect;
+				_Effects[effect.OptionsType] = (IEffect)effect;
 			}
 		}
 
@@ -32,9 +32,9 @@ namespace Frost.Effects
 		{
 			IEffect result;
 
-			lock(this._Effects)
+			lock(_Effects)
 			{
-				this._Effects.TryGetValue(typeof(T), out result);
+				_Effects.TryGetValue(typeof(T), out result);
 			}
 
 			return result as Effect<T>;
@@ -42,9 +42,9 @@ namespace Frost.Effects
 
 		public void Unregister<T>()
 		{
-			lock(this._Effects)
+			lock(_Effects)
 			{
-				this._Effects.Remove(typeof(T));
+				_Effects.Remove(typeof(T));
 			}
 		}
 	}

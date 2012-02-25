@@ -70,12 +70,12 @@ namespace Frost.DirectX.Common
 			Contract.Requires(Check.IsPositive(surfaceDescription.Size.Width));
 			Contract.Requires(Check.IsPositive(surfaceDescription.Size.Height));
 
-			this._LinearGradientBrushes =
+			_LinearGradientBrushes =
 				new CacheDictionary<Gradient, LinearGradientBrush>(CacheLimit);
-			this._RadialGradientBrushes =
+			_RadialGradientBrushes =
 				new CacheDictionary<Gradient, RadialGradientBrush>(CacheLimit);
 
-			this._UniqueId = Interlocked.Increment(ref _AvailableUniqueId) - 1;
+			_UniqueId = Interlocked.Increment(ref _AvailableUniqueId) - 1;
 
 			textureDescription.Width =
 				Convert.ToInt32(surfaceDescription.Size.Width);
@@ -86,26 +86,26 @@ namespace Frost.DirectX.Common
 
 			Device device3D = surfaceDescription.Device3D;
 
-			this._Texture = new Texture2D(device3D, textureDescription);
+			_Texture = new Texture2D(device3D, textureDescription);
 
-			this._Surface = this._Texture.AsSurface();
+			_Surface = _Texture.AsSurface();
 
-			this._ShaderView = new ShaderResourceView(device3D, this._Texture);
+			_ShaderView = new ShaderResourceView(device3D, _Texture);
 
-			this._Usage = surfaceDescription.Usage;
-			this._Region = new Rectangle(Point.Empty, surfaceDescription.Size);
-			this._Device2D = surfaceDescription.Device2D;
-			this._Device3D = surfaceDescription.Device3D;
+			_Usage = surfaceDescription.Usage;
+			_Region = new Rectangle(Point.Empty, surfaceDescription.Size);
+			_Device2D = surfaceDescription.Device2D;
+			_Device3D = surfaceDescription.Device3D;
 
 			if(surfaceDescription.Factory2D != null)
 			{
-				this._Target2D = new RenderTarget(
+				_Target2D = new RenderTarget(
 					surfaceDescription.Factory2D,
-					this._Surface,
+					_Surface,
 					Descriptions.RenderTarget);
 			}
 
-			this._TargetView = new RenderTargetView(device3D, this._Texture);
+			_TargetView = new RenderTargetView(device3D, _Texture);
 		}
 
 		public virtual IntPtr DeviceHandle
@@ -119,9 +119,9 @@ namespace Frost.DirectX.Common
 			{
 				Contract.Ensures(Contract.Result<ShaderResourceView>() != null);
 				Contract.Ensures(
-					Contract.Result<ShaderResourceView>().Equals(this._ShaderView));
+					Contract.Result<ShaderResourceView>().Equals(_ShaderView));
 
-				return this._ShaderView;
+				return _ShaderView;
 			}
 		}
 
@@ -131,9 +131,9 @@ namespace Frost.DirectX.Common
 			{
 				Contract.Ensures(Contract.Result<RenderTarget>() != null);
 				Contract.Ensures(
-					Contract.Result<RenderTarget>().Equals(this._Target2D));
+					Contract.Result<RenderTarget>().Equals(_Target2D));
 
-				return this._Target2D;
+				return _Target2D;
 			}
 		}
 
@@ -143,9 +143,9 @@ namespace Frost.DirectX.Common
 			{
 				Contract.Ensures(Contract.Result<RenderTargetView>() != null);
 				Contract.Ensures(
-					Contract.Result<RenderTargetView>().Equals(this._TargetView));
+					Contract.Result<RenderTargetView>().Equals(_TargetView));
 
-				return this._TargetView;
+				return _TargetView;
 			}
 		}
 
@@ -155,9 +155,9 @@ namespace Frost.DirectX.Common
 			{
 				Contract.Ensures(Contract.Result<Texture2D>() != null);
 				Contract.Ensures(
-					Contract.Result<Texture2D>().Equals(this._Texture));
+					Contract.Result<Texture2D>().Equals(_Texture));
 
-				return this._Texture;
+				return _Texture;
 			}
 		}
 
@@ -173,7 +173,7 @@ namespace Frost.DirectX.Common
 				return true;
 			}
 
-			return other._UniqueId == this._UniqueId;
+			return other._UniqueId == _UniqueId;
 		}
 
 		public void CopyTo(
@@ -199,7 +199,7 @@ namespace Frost.DirectX.Common
 				AcquireLock();
 				destination.AcquireLock();
 
-				this._Device3D.CopySubresourceRegion(
+				_Device3D.CopySubresourceRegion(
 					Texture2D,
 					0,
 					sourceRegion,
@@ -226,17 +226,17 @@ namespace Frost.DirectX.Common
 
 		public Device2D Device2D
 		{
-			get { return this._Device2D; }
+			get { return _Device2D; }
 		}
 
 		public SurfaceUsage Usage
 		{
-			get { return this._Usage; }
+			get { return _Usage; }
 		}
 
 		public Rectangle Region
 		{
-			get { return this._Region; }
+			get { return _Region; }
 		}
 
 		public void DumpToFile(string file)
@@ -245,7 +245,7 @@ namespace Frost.DirectX.Common
 			{
 				AcquireLock();
 
-				Resource.ToFile(this._Texture, ImageFileFormat.Png, file + ".png");
+				Resource.ToFile(_Texture, ImageFileFormat.Png, file + ".png");
 			}
 			finally
 			{
@@ -260,8 +260,8 @@ namespace Frost.DirectX.Common
 
 		public void Clear()
 		{
-			this._Device3D.ClearRenderTargetView(
-				this._TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
+			_Device3D.ClearRenderTargetView(
+				_TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
 		}
 
 		public Brush GetRadialGradientBrush(
@@ -274,7 +274,7 @@ namespace Frost.DirectX.Common
 
 			RadialGradientBrush brush;
 
-			if(this._RadialGradientBrushes.TryGetValue(gradient, out brush))
+			if(_RadialGradientBrushes.TryGetValue(gradient, out brush))
 			{
 				brush.Center = center.ToPointF();
 				brush.GradientOriginOffset = offset.ToPointF();
@@ -287,7 +287,7 @@ namespace Frost.DirectX.Common
 			using(var stopCollection = this.CreateStopCollection(gradient))
 			{
 				brush = new RadialGradientBrush(
-					this._Target2D, Descriptions.RadialGradient, stopCollection)
+					_Target2D, Descriptions.RadialGradient, stopCollection)
 				{
 					Center = center.ToPointF(),
 					GradientOriginOffset = offset.ToPointF(),
@@ -298,7 +298,7 @@ namespace Frost.DirectX.Common
 
 			try
 			{
-				this._RadialGradientBrushes.Add(gradient, brush);
+				_RadialGradientBrushes.Add(gradient, brush);
 			}
 			catch
 			{
@@ -318,7 +318,7 @@ namespace Frost.DirectX.Common
 
 			LinearGradientBrush brush;
 
-			if(this._LinearGradientBrushes.TryGetValue(gradient, out brush))
+			if(_LinearGradientBrushes.TryGetValue(gradient, out brush))
 			{
 				brush.StartPoint = startPoint.ToPointF();
 				brush.EndPoint = endPoint.ToPointF();
@@ -329,7 +329,7 @@ namespace Frost.DirectX.Common
 			using(var stopCollection = this.CreateStopCollection(gradient))
 			{
 				brush = new LinearGradientBrush(
-					this._Target2D, Descriptions.LinearGradient, stopCollection)
+					_Target2D, Descriptions.LinearGradient, stopCollection)
 				{
 					StartPoint = startPoint.ToPointF(),
 					EndPoint = endPoint.ToPointF()
@@ -338,7 +338,7 @@ namespace Frost.DirectX.Common
 
 			try
 			{
-				this._LinearGradientBrushes.Add(gradient, brush);
+				_LinearGradientBrushes.Add(gradient, brush);
 			}
 			catch
 			{
@@ -356,15 +356,15 @@ namespace Frost.DirectX.Common
 
 			Color4 newColor = color.ToColor4();
 
-			if(this._SolidColorBrush == null)
+			if(_SolidColorBrush == null)
 			{
-				this._SolidColorBrush = new SolidColorBrush(
-					this._Target2D, newColor);
+				_SolidColorBrush = new SolidColorBrush(
+					_Target2D, newColor);
 			}
 
-			this._SolidColorBrush.Color = newColor;
+			_SolidColorBrush.Color = newColor;
 
-			return this._SolidColorBrush;
+			return _SolidColorBrush;
 		}
 
 		public Brush GetPatternBrush(
@@ -373,36 +373,36 @@ namespace Frost.DirectX.Common
 			Contract.Requires(surface != null);
 			Contract.Ensures(Contract.Result<Brush>() != null);
 
-			this._Bitmap.SafeDispose();
-			this._BitmapBrush.SafeDispose();
+			_Bitmap.SafeDispose();
+			_BitmapBrush.SafeDispose();
 
-			this._Bitmap = new Bitmap(
-				this._Target2D, surface, Descriptions.BitmapProperties);
+			_Bitmap = new Bitmap(
+				_Target2D, surface, Descriptions.BitmapProperties);
 
-			this._BitmapBrush = new BitmapBrush(
-				this._Target2D, this._Bitmap, Descriptions.BitmapBrush);
+			_BitmapBrush = new BitmapBrush(
+				_Target2D, _Bitmap, Descriptions.BitmapBrush);
 
 			switch(extension)
 			{
 				case Repetition.Repeat:
-					this._BitmapBrush.ExtendModeY = ExtendMode.Wrap;
-					this._BitmapBrush.ExtendModeX = ExtendMode.Wrap;
+					_BitmapBrush.ExtendModeY = ExtendMode.Wrap;
+					_BitmapBrush.ExtendModeX = ExtendMode.Wrap;
 					break;
 				case Repetition.Horizontal:
-					this._BitmapBrush.ExtendModeY = ExtendMode.Clamp;
-					this._BitmapBrush.ExtendModeX = ExtendMode.Wrap;
+					_BitmapBrush.ExtendModeY = ExtendMode.Clamp;
+					_BitmapBrush.ExtendModeX = ExtendMode.Wrap;
 					break;
 				case Repetition.Vertical:
-					this._BitmapBrush.ExtendModeY = ExtendMode.Wrap;
-					this._BitmapBrush.ExtendModeX = ExtendMode.Clamp;
+					_BitmapBrush.ExtendModeY = ExtendMode.Wrap;
+					_BitmapBrush.ExtendModeX = ExtendMode.Clamp;
 					break;
 				case Repetition.Clamp:
-					this._BitmapBrush.ExtendModeX = ExtendMode.Clamp;
-					this._BitmapBrush.ExtendModeY = ExtendMode.Clamp;
+					_BitmapBrush.ExtendModeX = ExtendMode.Clamp;
+					_BitmapBrush.ExtendModeY = ExtendMode.Clamp;
 					break;
 			}
 
-			return this._BitmapBrush;
+			return _BitmapBrush;
 		}
 
 		public static Surface2D FromDescription(ref Description description)
@@ -438,25 +438,25 @@ namespace Frost.DirectX.Common
 
 		public override int GetHashCode()
 		{
-			return this._UniqueId.GetHashCode();
+			return _UniqueId.GetHashCode();
 		}
 
 		protected virtual void Dispose(bool disposing)
 		{
 			if(disposing)
 			{
-				this._LinearGradientBrushes.Dispose();
-				this._RadialGradientBrushes.Dispose();
+				_LinearGradientBrushes.Dispose();
+				_RadialGradientBrushes.Dispose();
 
-				this._Bitmap.SafeDispose();
-				this._BitmapBrush.SafeDispose();
-				this._SolidColorBrush.SafeDispose();
+				_Bitmap.SafeDispose();
+				_BitmapBrush.SafeDispose();
+				_SolidColorBrush.SafeDispose();
 
-				this._ShaderView.Dispose();
-				this._Surface.Dispose();
-				this._Target2D.SafeDispose();
-				this._TargetView.Dispose();
-				this._Texture.Dispose();
+				_ShaderView.Dispose();
+				_Surface.Dispose();
+				_Target2D.SafeDispose();
+				_TargetView.Dispose();
+				_Texture.Dispose();
 			}
 		}
 
@@ -475,7 +475,7 @@ namespace Frost.DirectX.Common
 			}
 
 			return new GradientStopCollection(
-				this._Target2D, dxStops, Gamma.Linear, ExtendMode.Clamp);
+				_Target2D, dxStops, Gamma.Linear, ExtendMode.Clamp);
 		}
 
 		public struct Description
@@ -501,27 +501,27 @@ namespace Frost.DirectX.Common
 				Contract.Requires(
 					Check.IsPositive(surfaceDescription.Size.Height));
 
-				this._DeviceMutex = this._Texture.QueryInterface<KeyedMutex>();
+				_DeviceMutex = _Texture.QueryInterface<KeyedMutex>();
 
-				using(var resource = this._Texture.QueryInterface<DXGIResource>())
+				using(var resource = _Texture.QueryInterface<DXGIResource>())
 				{
-					this._DeviceHandle = resource.SharedHandle;
+					_DeviceHandle = resource.SharedHandle;
 				}
 			}
 
 			public override IntPtr DeviceHandle
 			{
-				get { return this._DeviceHandle; }
+				get { return _DeviceHandle; }
 			}
 
 			public override void AcquireLock()
 			{
-				this._DeviceMutex.Acquire(0, -1);
+				_DeviceMutex.Acquire(0, -1);
 			}
 
 			public override void ReleaseLock()
 			{
-				this._DeviceMutex.Release(0);
+				_DeviceMutex.Release(0);
 			}
 
 			protected override void Dispose(bool disposing)
@@ -530,7 +530,7 @@ namespace Frost.DirectX.Common
 
 				if(disposing)
 				{
-					this._DeviceMutex.Dispose();
+					_DeviceMutex.Dispose();
 				}
 			}
 		}

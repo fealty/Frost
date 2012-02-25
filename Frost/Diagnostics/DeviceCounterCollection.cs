@@ -18,7 +18,7 @@ namespace Frost.Diagnostics
 
 		internal DeviceCounterCollection()
 		{
-			this._Counters = new Dictionary<CounterKey, IDeviceCounter>();
+			_Counters = new Dictionary<CounterKey, IDeviceCounter>();
 		}
 
 		public bool Query(
@@ -27,11 +27,11 @@ namespace Frost.Diagnostics
 			Contract.Requires(!String.IsNullOrWhiteSpace(category));
 			Contract.Requires(!String.IsNullOrWhiteSpace(name));
 
-			lock(this._Counters)
+			lock(_Counters)
 			{
 				CounterKey key = new CounterKey(category, name);
 
-				return this._Counters.TryGetValue(key, out result);
+				return _Counters.TryGetValue(key, out result);
 			}
 		}
 
@@ -42,13 +42,13 @@ namespace Frost.Diagnostics
 			Contract.Requires(!String.IsNullOrWhiteSpace(category));
 			Contract.Requires(!String.IsNullOrWhiteSpace(name));
 
-			lock(this._Counters)
+			lock(_Counters)
 			{
 				IDeviceCounter counterResult;
 
 				CounterKey key = new CounterKey(category, name);
 
-				bool value = this._Counters.TryGetValue(key, out counterResult);
+				bool value = _Counters.TryGetValue(key, out counterResult);
 
 				result = (IDeviceCounter<T>)counterResult;
 
@@ -62,9 +62,9 @@ namespace Frost.Diagnostics
 
 			CounterKey key = new CounterKey(counter.Category, counter.Name);
 
-			lock(this._Counters)
+			lock(_Counters)
 			{
-				this._Counters.Add(key, counter);
+				_Counters.Add(key, counter);
 			}
 		}
 	}

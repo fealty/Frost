@@ -20,8 +20,8 @@ namespace Frost.Effects
 			Contract.Requires(Check.IsPositive(amount.Height));
 			Contract.Requires(Check.IsPositive(passCount));
 
-			this._Amount = amount;
-			this._PassCount = passCount;
+			_Amount = amount;
+			_PassCount = passCount;
 
 			Contract.Assert(Amount.Equals(amount));
 			Contract.Assert(PassCount.Equals(passCount));
@@ -32,9 +32,9 @@ namespace Frost.Effects
 			get
 			{
 				Contract.Ensures(Contract.Result<int>() >= 0);
-				Contract.Ensures(Contract.Result<int>().Equals(this._PassCount));
+				Contract.Ensures(Contract.Result<int>().Equals(_PassCount));
 
-				return this._PassCount;
+				return _PassCount;
 			}
 		}
 
@@ -44,16 +44,16 @@ namespace Frost.Effects
 			{
 				Contract.Ensures(Check.IsPositive(Contract.Result<Size>().Width));
 				Contract.Ensures(Check.IsPositive(Contract.Result<Size>().Height));
-				Contract.Ensures(Contract.Result<Size>().Equals(this._Amount));
+				Contract.Ensures(Contract.Result<Size>().Equals(_Amount));
 
-				return this._Amount;
+				return _Amount;
 			}
 		}
 
 		public bool Equals(BoxBlurSettings other)
 		{
-			return other._Amount.Equals(this._Amount) &&
-			       other._PassCount == this._PassCount;
+			return other._Amount.Equals(_Amount) &&
+			       other._PassCount == _PassCount;
 		}
 
 		public override bool Equals(object obj)
@@ -70,7 +70,7 @@ namespace Frost.Effects
 		{
 			unchecked
 			{
-				return (this._Amount.GetHashCode() * 397) ^ this._PassCount;
+				return (_Amount.GetHashCode() * 397) ^ _PassCount;
 			}
 		}
 

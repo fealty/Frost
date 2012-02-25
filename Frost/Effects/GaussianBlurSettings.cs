@@ -18,7 +18,7 @@ namespace Frost.Effects
 			Contract.Requires(Check.IsPositive(amount.Width));
 			Contract.Requires(Check.IsPositive(amount.Height));
 
-			this._Amount = amount;
+			_Amount = amount;
 
 			Contract.Assert(Amount.Equals(amount));
 		}
@@ -27,15 +27,15 @@ namespace Frost.Effects
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Size>().Equals(this._Amount));
+				Contract.Ensures(Contract.Result<Size>().Equals(_Amount));
 
-				return this._Amount;
+				return _Amount;
 			}
 		}
 
 		public bool Equals(GaussianBlurSettings other)
 		{
-			return other._Amount.Equals(this._Amount);
+			return other._Amount.Equals(_Amount);
 		}
 
 		public override bool Equals(object obj)
@@ -51,7 +51,7 @@ namespace Frost.Effects
 
 		public override int GetHashCode()
 		{
-			return this._Amount.GetHashCode();
+			return _Amount.GetHashCode();
 		}
 
 		public static bool operator ==(

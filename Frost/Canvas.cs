@@ -19,15 +19,15 @@ namespace Frost
 		{
 			Contract.Requires(notification != null);
 
-			this._Notification = notification;
-			this._Region = region;
+			_Notification = notification;
+			_Region = region;
 
 			Contract.Assert(Region.Equals(region));
 		}
 
 		public bool IsValid
 		{
-			get { return this._Notification.Value; }
+			get { return _Notification.Value; }
 		}
 
 		public Device2D Device2D
@@ -46,7 +46,7 @@ namespace Frost
 			{
 				Contract.Ensures(Contract.Result<ISurface2D>() != null);
 
-				return this._Notification.Atlas.Surface2D;
+				return _Notification.Atlas.Surface2D;
 			}
 		}
 
@@ -55,9 +55,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(
-					Contract.Result<Rectangle>().Equals(this._Region));
+					Contract.Result<Rectangle>().Equals(_Region));
 
-				return this._Region;
+				return _Region;
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace Frost
 			{
 				Contract.Ensures(Contract.Result<ISurfaceAtlas>() != null);
 
-				return this._Notification.Atlas;
+				return _Notification.Atlas;
 			}
 		}
 
@@ -78,7 +78,7 @@ namespace Frost
 			Contract.Requires(destination.Device2D == Device2D);
 
 			Surface2D.CopyTo(
-				this._Region, destination.Surface2D, destination.Region.Location);
+				_Region, destination.Surface2D, destination.Region.Location);
 		}
 
 		public void CopyTo(Rectangle srcRegion, Canvas destination)
@@ -93,7 +93,7 @@ namespace Frost
 
 		public override string ToString()
 		{
-			return string.Format("Region: {0}", this._Region);
+			return string.Format("Region: {0}", _Region);
 		}
 	}
 }

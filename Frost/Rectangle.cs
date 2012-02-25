@@ -33,10 +33,10 @@ namespace Frost
 		[System.Diagnostics.Contracts.ContractInvariantMethod] private void
 			Invariant()
 		{
-			Contracts.Invariant(Check.IsFinite(this._X));
-			Contracts.Invariant(Check.IsFinite(this._Y));
-			Contracts.Invariant(Check.IsPositive(this._Width));
-			Contracts.Invariant(Check.IsPositive(this._Height));
+			Contracts.Invariant(Check.IsFinite(_X));
+			Contracts.Invariant(Check.IsFinite(_Y));
+			Contracts.Invariant(Check.IsPositive(_Width));
+			Contracts.Invariant(Check.IsPositive(_Height));
 		}
 
 		public Rectangle(float left, float top, float right, float bottom)
@@ -48,15 +48,15 @@ namespace Frost
 			Contracts.Requires(Check.IsPositive(right - left));
 			Contracts.Requires(Check.IsPositive(bottom - top));
 
-			this._X = left;
-			this._Y = top;
-			this._Width = right - left;
-			this._Height = bottom - top;
+			_X = left;
+			_Y = top;
+			_Width = right - left;
+			_Height = bottom - top;
 
 			Contracts.Assert(X.Equals(left));
 			Contracts.Assert(Y.Equals(top));
-			Contracts.Assert(Width.Equals(this._Width));
-			Contracts.Assert(Height.Equals(this._Height));
+			Contracts.Assert(Width.Equals(_Width));
+			Contracts.Assert(Height.Equals(_Height));
 		}
 
 		public Rectangle(Point location, Size size)
@@ -75,9 +75,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Check.IsPositive(Contracts.Result<float>()));
-				Contracts.Ensures(Contracts.Result<float>().Equals(this._Height));
+				Contracts.Ensures(Contracts.Result<float>().Equals(_Height));
 
-				return this._Height;
+				return _Height;
 			}
 		}
 
@@ -86,9 +86,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Check.IsPositive(Contracts.Result<float>()));
-				Contracts.Ensures(Contracts.Result<float>().Equals(this._Width));
+				Contracts.Ensures(Contracts.Result<float>().Equals(_Width));
 
-				return this._Width;
+				return _Width;
 			}
 		}
 
@@ -97,9 +97,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Check.IsFinite(Contracts.Result<float>()));
-				Contracts.Ensures(Contracts.Result<float>().Equals(this._Y));
+				Contracts.Ensures(Contracts.Result<float>().Equals(_Y));
 
-				return this._Y;
+				return _Y;
 			}
 		}
 
@@ -108,9 +108,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Check.IsFinite(Contracts.Result<float>()));
-				Contracts.Ensures(Contracts.Result<float>().Equals(this._X));
+				Contracts.Ensures(Contracts.Result<float>().Equals(_X));
 
-				return this._X;
+				return _X;
 			}
 		}
 
@@ -149,9 +149,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(
-					Contracts.Result<Point>().Equals(new Point(this._X, this._Y)));
+					Contracts.Result<Point>().Equals(new Point(_X, _Y)));
 
-				return new Point(this._X, this._Y);
+				return new Point(_X, _Y);
 			}
 		}
 
@@ -161,9 +161,9 @@ namespace Frost
 			{
 				Contracts.Ensures(
 					Contracts.Result<Size>().Equals(
-						new Size(this._Width, this._Height)));
+						new Size(_Width, _Height)));
 
-				return new Size(this._Width, this._Height);
+				return new Size(_Width, _Height);
 			}
 		}
 
@@ -172,9 +172,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Check.IsFinite(Contracts.Result<float>()));
-				Contracts.Ensures(Contracts.Result<float>().Equals(this._X));
+				Contracts.Ensures(Contracts.Result<float>().Equals(_X));
 
-				return this._X;
+				return _X;
 			}
 		}
 
@@ -183,9 +183,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Check.IsFinite(Contracts.Result<float>()));
-				Contracts.Ensures(Contracts.Result<float>().Equals(this._Y));
+				Contracts.Ensures(Contracts.Result<float>().Equals(_Y));
 
-				return this._Y;
+				return _Y;
 			}
 		}
 
@@ -195,7 +195,7 @@ namespace Frost
 			{
 				Contracts.Ensures(Check.IsFinite(Contracts.Result<float>()));
 
-				return this._X + this._Width;
+				return _X + _Width;
 			}
 		}
 
@@ -205,7 +205,7 @@ namespace Frost
 			{
 				Contracts.Ensures(Check.IsFinite(Contracts.Result<float>()));
 
-				return this._Y + this._Height;
+				return _Y + _Height;
 			}
 		}
 
@@ -215,7 +215,7 @@ namespace Frost
 			{
 				Contracts.Ensures(Check.IsPositive(Contracts.Result<float>()));
 
-				return this._Width * this._Height;
+				return _Width * _Height;
 			}
 		}
 
@@ -224,7 +224,7 @@ namespace Frost
 			get
 			{
 				return new Point(
-					this._X + (this._Width / 2.0f), this._Y + (this._Height / 2.0f));
+					_X + (_Width / 2.0f), _Y + (_Height / 2.0f));
 			}
 		}
 
@@ -252,10 +252,10 @@ namespace Frost
 			Axis alignmentAxis,
 			LayoutDirection direction = LayoutDirection.LeftToRight)
 		{
-			float x = this._X;
-			float y = this._Y;
-			float width = this._Width;
-			float height = this._Height;
+			float x = _X;
+			float y = _Y;
+			float width = _Width;
+			float height = _Height;
 
 			if((alignmentAxis == Axis.Both) ||
 			   (alignmentAxis == Axis.Horizontal))
@@ -268,10 +268,10 @@ namespace Frost
 							width = container.Width;
 							break;
 						case Alignment.Trailing:
-							x = (container.Width - this._Width) + this._X;
+							x = (container.Width - _Width) + _X;
 							break;
 						case Alignment.Center:
-							x = ((container.Width / 2.0f) - (this._Width / 2.0f)) + this._X;
+							x = ((container.Width / 2.0f) - (_Width / 2.0f)) + _X;
 							break;
 						case Alignment.Leading:
 							break;
@@ -285,10 +285,10 @@ namespace Frost
 							width = container.Width;
 							break;
 						case Alignment.Center:
-							x = ((container.Width / 2.0f) - (this._Width / 2.0f)) + this._X;
+							x = ((container.Width / 2.0f) - (_Width / 2.0f)) + _X;
 							break;
 						case Alignment.Leading:
-							x = (container.Width - this._Width) + this._X;
+							x = (container.Width - _Width) + _X;
 							break;
 						case Alignment.Trailing:
 							break;
@@ -304,11 +304,11 @@ namespace Frost
 						height = container.Height;
 						break;
 					case Alignment.Center:
-						y = ((container.Height / 2.0f) - (this._Height / 2.0f)) +
-						    this._Y;
+						y = ((container.Height / 2.0f) - (_Height / 2.0f)) +
+						    _Y;
 						break;
 					case Alignment.Leading:
-						y = (container.Height - this._Height) + this._Y;
+						y = (container.Height - _Height) + _Y;
 						break;
 					case Alignment.Trailing:
 						break;
@@ -346,9 +346,9 @@ namespace Frost
 
 		public bool Equals(Rectangle other)
 		{
-			return other._Height.Equals(this._Height) &&
-			       other._Width.Equals(this._Width) && other._X.Equals(this._X) &&
-			       other._Y.Equals(this._Y);
+			return other._Height.Equals(_Height) &&
+			       other._Width.Equals(_Width) && other._X.Equals(_X) &&
+			       other._Y.Equals(_Y);
 		}
 
 		public override bool Equals(object obj)
@@ -365,10 +365,10 @@ namespace Frost
 		{
 			unchecked
 			{
-				int result = this._Height.GetHashCode();
-				result = (result * 397) ^ this._Width.GetHashCode();
-				result = (result * 397) ^ this._X.GetHashCode();
-				result = (result * 397) ^ this._Y.GetHashCode();
+				int result = _Height.GetHashCode();
+				result = (result * 397) ^ _Width.GetHashCode();
+				result = (result * 397) ^ _X.GetHashCode();
+				result = (result * 397) ^ _Y.GetHashCode();
 				return result;
 			}
 		}
@@ -387,10 +387,10 @@ namespace Frost
 		{
 			return string.Format(
 				"X: {0}, Y: {1}, Width: {2}, Height: {3}",
-				this._X,
-				this._Y,
-				this._Width,
-				this._Height);
+				_X,
+				_Y,
+				_Width,
+				_Height);
 		}
 
 #if(UNIT_TESTING)

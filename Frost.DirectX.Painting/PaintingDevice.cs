@@ -21,20 +21,20 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(device2D != null);
 			Contract.Requires(device3D != null);
 
-			this._Factory2D = new Factory(FactoryType.SingleThreaded);
+			_Factory2D = new Factory(FactoryType.SingleThreaded);
 
-			this._PainterSink = new Painter(
-				this._Factory2D, device2D, device3D);
+			_PainterSink = new Painter(
+				_Factory2D, device2D, device3D);
 		}
 
 		public Factory Factory2D
 		{
-			get { return this._Factory2D; }
+			get { return _Factory2D; }
 		}
 
 		public Frost.Painting.Painter ImmediateContext
 		{
-			get { return this._PainterSink; }
+			get { return _PainterSink; }
 		}
 
 		public void Dispose()
@@ -44,15 +44,15 @@ namespace Frost.DirectX.Painting
 
 		public void SignalUpdate()
 		{
-			this._PainterSink.FrameDuration.Reset();
+			_PainterSink.FrameDuration.Reset();
 		}
 
 		private void Dispose(bool disposing)
 		{
 			if(disposing)
 			{
-				this._PainterSink.Dispose();
-				this._Factory2D.Dispose();
+				_PainterSink.Dispose();
+				_Factory2D.Dispose();
 			}
 		}
 	}

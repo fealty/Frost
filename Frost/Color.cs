@@ -844,10 +844,10 @@ namespace Frost
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(Check.IsNormalized(this._A));
-			Contract.Invariant(Check.IsNormalized(this._B));
-			Contract.Invariant(Check.IsNormalized(this._G));
-			Contract.Invariant(Check.IsNormalized(this._R));
+			Contract.Invariant(Check.IsNormalized(_A));
+			Contract.Invariant(Check.IsNormalized(_B));
+			Contract.Invariant(Check.IsNormalized(_G));
+			Contract.Invariant(Check.IsNormalized(_R));
 		}
 
 		public Color(float red, float green, float blue, float alpha = 1.0f)
@@ -857,10 +857,10 @@ namespace Frost
 			Contract.Requires(Check.IsNormalized(alpha));
 			Contract.Requires(Check.IsNormalized(red));
 
-			this._R = red;
-			this._G = green;
-			this._B = blue;
-			this._A = alpha;
+			_R = red;
+			_G = green;
+			_B = blue;
+			_A = alpha;
 
 			Contract.Assert(R.Equals(red));
 			Contract.Assert(G.Equals(green));
@@ -873,9 +873,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._R));
+				Contract.Ensures(Contract.Result<float>().Equals(_R));
 
-				return this._R;
+				return _R;
 			}
 		}
 
@@ -884,9 +884,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._G));
+				Contract.Ensures(Contract.Result<float>().Equals(_G));
 
-				return this._G;
+				return _G;
 			}
 		}
 
@@ -895,9 +895,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._B));
+				Contract.Ensures(Contract.Result<float>().Equals(_B));
 
-				return this._B;
+				return _B;
 			}
 		}
 
@@ -906,16 +906,16 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._A));
+				Contract.Ensures(Contract.Result<float>().Equals(_A));
 
-				return this._A;
+				return _A;
 			}
 		}
 
 		public bool Equals(Color other)
 		{
-			return other._A.Equals(this._A) && other._B.Equals(this._B) &&
-			       other._G.Equals(this._G) && other._R.Equals(this._R);
+			return other._A.Equals(_A) && other._B.Equals(_B) &&
+			       other._G.Equals(_G) && other._R.Equals(_R);
 		}
 
 		public override bool Equals(object obj)
@@ -932,10 +932,10 @@ namespace Frost
 		{
 			unchecked
 			{
-				int result = this._A.GetHashCode();
-				result = (result * 397) ^ this._B.GetHashCode();
-				result = (result * 397) ^ this._G.GetHashCode();
-				result = (result * 397) ^ this._R.GetHashCode();
+				int result = _A.GetHashCode();
+				result = (result * 397) ^ _B.GetHashCode();
+				result = (result * 397) ^ _G.GetHashCode();
+				result = (result * 397) ^ _R.GetHashCode();
 				return result;
 			}
 		}
@@ -944,10 +944,10 @@ namespace Frost
 		{
 			return string.Format(
 				"R: {1}, G: {2}, B: {3}, A: {0}",
-				this._R,
-				this._G,
-				this._B,
-				this._A);
+				_R,
+				_G,
+				_B,
+				_A);
 		}
 
 		public static implicit operator Color(RGBColor color)

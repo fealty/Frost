@@ -26,12 +26,12 @@ namespace Frost
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(Check.IsFinite(this._11));
-			Contract.Invariant(Check.IsFinite(this._12));
-			Contract.Invariant(Check.IsFinite(this._21));
-			Contract.Invariant(Check.IsFinite(this._22));
-			Contract.Invariant(Check.IsFinite(this._31));
-			Contract.Invariant(Check.IsFinite(this._32));
+			Contract.Invariant(Check.IsFinite(_11));
+			Contract.Invariant(Check.IsFinite(_12));
+			Contract.Invariant(Check.IsFinite(_21));
+			Contract.Invariant(Check.IsFinite(_22));
+			Contract.Invariant(Check.IsFinite(_31));
+			Contract.Invariant(Check.IsFinite(_32));
 		}
 
 		public Matrix3X2(
@@ -44,12 +44,12 @@ namespace Frost
 			Contract.Requires(Check.IsFinite(m31));
 			Contract.Requires(Check.IsFinite(m32));
 
-			this._11 = m11;
-			this._12 = m12;
-			this._21 = m21;
-			this._22 = m22;
-			this._31 = m31;
-			this._32 = m32;
+			_11 = m11;
+			_12 = m12;
+			_21 = m21;
+			_22 = m22;
+			_31 = m31;
+			_32 = m32;
 
 			Contract.Assert(M11.Equals(m11));
 			Contract.Assert(M12.Equals(m12));
@@ -74,9 +74,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._32));
+				Contract.Ensures(Contract.Result<float>().Equals(_32));
 
-				return this._32;
+				return _32;
 			}
 		}
 
@@ -85,9 +85,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._31));
+				Contract.Ensures(Contract.Result<float>().Equals(_31));
 
-				return this._31;
+				return _31;
 			}
 		}
 
@@ -96,9 +96,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._22));
+				Contract.Ensures(Contract.Result<float>().Equals(_22));
 
-				return this._22;
+				return _22;
 			}
 		}
 
@@ -107,9 +107,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._21));
+				Contract.Ensures(Contract.Result<float>().Equals(_21));
 
-				return this._21;
+				return _21;
 			}
 		}
 
@@ -118,9 +118,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._12));
+				Contract.Ensures(Contract.Result<float>().Equals(_12));
 
-				return this._12;
+				return _12;
 			}
 		}
 
@@ -129,9 +129,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._11));
+				Contract.Ensures(Contract.Result<float>().Equals(_11));
 
-				return this._11;
+				return _11;
 			}
 		}
 
@@ -139,17 +139,17 @@ namespace Frost
 		{
 			get
 			{
-				return this._11.Equals(1.0f) && this._12.Equals(0.0f) &&
-				       this._21.Equals(0.0f) && this._22.Equals(1.0f) &&
-				       this._31.Equals(0.0f) && this._32.Equals(0.0f);
+				return _11.Equals(1.0f) && _12.Equals(0.0f) &&
+				       _21.Equals(0.0f) && _22.Equals(1.0f) &&
+				       _31.Equals(0.0f) && _32.Equals(0.0f);
 			}
 		}
 
 		public bool Equals(Matrix3X2 other)
 		{
-			return other._11.Equals(this._11) && other._12.Equals(this._12) &&
-			       other._21.Equals(this._21) && other._22.Equals(this._22) &&
-			       other._31.Equals(this._31) && other._32.Equals(this._32);
+			return other._11.Equals(_11) && other._12.Equals(_12) &&
+			       other._21.Equals(_21) && other._22.Equals(_22) &&
+			       other._31.Equals(_31) && other._32.Equals(_32);
 		}
 
 		public void Translate(
@@ -253,13 +253,13 @@ namespace Frost
 
 		public void Multiply(ref Matrix3X2 right, out Matrix3X2 result)
 		{
-			float m11 = (this._11 * right.M11) + (this._12 * right.M21);
-			float m12 = (this._11 * right.M12) + (this._12 * right.M22);
-			float m21 = (this._21 * right.M11) + (this._22 * right.M21);
-			float m22 = (this._21 * right.M12) + (this._22 * right.M22);
-			float m31 = (this._31 * right.M11) + (this._32 * right.M21) +
+			float m11 = (_11 * right.M11) + (_12 * right.M21);
+			float m12 = (_11 * right.M12) + (_12 * right.M22);
+			float m21 = (_21 * right.M11) + (_22 * right.M21);
+			float m22 = (_21 * right.M12) + (_22 * right.M22);
+			float m31 = (_31 * right.M11) + (_32 * right.M21) +
 			            right.M31;
-			float m32 = (this._31 * right.M12) + (this._32 * right.M22) +
+			float m32 = (_31 * right.M12) + (_32 * right.M22) +
 			            right.M32;
 
 			result = new Matrix3X2(m11, m12, m21, m22, m31, m32);
@@ -270,12 +270,12 @@ namespace Frost
 			return
 				string.Format(
 					"M11: {0}, M12: {1}, M21: {2}, M22: {3}, M31: {4}, M32: {5}",
-					this._11,
-					this._12,
-					this._21,
-					this._22,
-					this._31,
-					this._32);
+					_11,
+					_12,
+					_21,
+					_22,
+					_31,
+					_32);
 		}
 
 		public override bool Equals(object obj)
@@ -292,12 +292,12 @@ namespace Frost
 		{
 			unchecked
 			{
-				int result = this._11.GetHashCode();
-				result = (result * 397) ^ this._12.GetHashCode();
-				result = (result * 397) ^ this._21.GetHashCode();
-				result = (result * 397) ^ this._22.GetHashCode();
-				result = (result * 397) ^ this._31.GetHashCode();
-				result = (result * 397) ^ this._32.GetHashCode();
+				int result = _11.GetHashCode();
+				result = (result * 397) ^ _12.GetHashCode();
+				result = (result * 397) ^ _21.GetHashCode();
+				result = (result * 397) ^ _22.GetHashCode();
+				result = (result * 397) ^ _31.GetHashCode();
+				result = (result * 397) ^ _32.GetHashCode();
 				return result;
 			}
 		}

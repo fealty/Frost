@@ -63,48 +63,48 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsPositive(tracking));
 			Contract.Requires(runs != null);
 
-			this._Text = text;
-			this._Alignment = alignment;
-			this._Indentation = indentation;
-			this._Leading = leading;
-			this._Spacing = spacing;
-			this._Tracking = tracking;
-			this._Runs = runs;
+			_Text = text;
+			_Alignment = alignment;
+			_Indentation = indentation;
+			_Leading = leading;
+			_Spacing = spacing;
+			_Tracking = tracking;
+			_Runs = runs;
 		}
 
 		public float Tracking
 		{
-			get { return this._Tracking; }
+			get { return _Tracking; }
 		}
 
 		public string Text
 		{
-			get { return this._Text; }
+			get { return _Text; }
 		}
 
 		public float Spacing
 		{
-			get { return this._Spacing; }
+			get { return _Spacing; }
 		}
 
 		public TextRunCollection Runs
 		{
-			get { return this._Runs; }
+			get { return _Runs; }
 		}
 
 		public float Leading
 		{
-			get { return this._Leading; }
+			get { return _Leading; }
 		}
 
 		public float Indentation
 		{
-			get { return this._Indentation; }
+			get { return _Indentation; }
 		}
 
 		public Alignment Alignment
 		{
-			get { return this._Alignment; }
+			get { return _Alignment; }
 		}
 
 		public static float DefaultSpacing
@@ -155,12 +155,12 @@ namespace Frost.Formatting
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(this._Runs != null);
-			Contract.Invariant(this._Text != null);
-			Contract.Invariant(Check.IsPositive(this._Indentation));
-			Contract.Invariant(Check.IsPositive(this._Leading));
-			Contract.Invariant(Check.IsPositive(this._Spacing));
-			Contract.Invariant(Check.IsPositive(this._Tracking));
+			Contract.Invariant(_Runs != null);
+			Contract.Invariant(_Text != null);
+			Contract.Invariant(Check.IsPositive(_Indentation));
+			Contract.Invariant(Check.IsPositive(_Leading));
+			Contract.Invariant(Check.IsPositive(_Spacing));
+			Contract.Invariant(Check.IsPositive(_Tracking));
 		}
 
 		public sealed class Builder
@@ -202,19 +202,19 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._States.Push(
+				_States.Push(
 					new TextRun(
-						this._ActiveTextRange,
-						this._ActiveCulture,
-						this._ActiveFamily,
-						this._ActiveStretch,
-						this._ActiveStyle,
-						this._ActiveWeight,
-						this._ActivePointSize,
-						this._ActiveHAlignment,
-						this._ActiveVAlignment,
-						this._ActiveInline,
-						this._ActiveFeatures));
+						_ActiveTextRange,
+						_ActiveCulture,
+						_ActiveFamily,
+						_ActiveStretch,
+						_ActiveStyle,
+						_ActiveWeight,
+						_ActivePointSize,
+						_ActiveHAlignment,
+						_ActiveVAlignment,
+						_ActiveInline,
+						_ActiveFeatures));
 
 				return this;
 			}
@@ -223,17 +223,17 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._ActiveTextRange = IndexedRange.Empty;
-				this._ActiveCulture = DefaultCulture;
-				this._ActiveFamily = DefaultFamily;
-				this._ActiveFeatures = null;
-				this._ActivePointSize = DefaultPointSize;
-				this._ActiveStretch = FontStretch.Regular;
-				this._ActiveStyle = FontStyle.Regular;
-				this._ActiveWeight = FontWeight.Regular;
-				this._ActiveInline = Size.Empty;
-				this._ActiveHAlignment = Alignment.Stretch;
-				this._ActiveVAlignment = Alignment.Stretch;
+				_ActiveTextRange = IndexedRange.Empty;
+				_ActiveCulture = DefaultCulture;
+				_ActiveFamily = DefaultFamily;
+				_ActiveFeatures = null;
+				_ActivePointSize = DefaultPointSize;
+				_ActiveStretch = FontStretch.Regular;
+				_ActiveStyle = FontStyle.Regular;
+				_ActiveWeight = FontWeight.Regular;
+				_ActiveInline = Size.Empty;
+				_ActiveHAlignment = Alignment.Stretch;
+				_ActiveVAlignment = Alignment.Stretch;
 
 				return this;
 			}
@@ -242,19 +242,19 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				TextRun activeState = this._States.Pop();
+				TextRun activeState = _States.Pop();
 
-				this._ActiveTextRange = activeState.TextRange;
-				this._ActiveCulture = activeState.Culture;
-				this._ActiveFamily = activeState.Family;
-				this._ActiveFeatures = activeState.Features;
-				this._ActivePointSize = activeState.PointSize;
-				this._ActiveStretch = activeState.Stretch;
-				this._ActiveStyle = activeState.Style;
-				this._ActiveWeight = activeState.Weight;
-				this._ActiveInline = activeState.Inline;
-				this._ActiveHAlignment = activeState.HAlignment;
-				this._ActiveVAlignment = activeState.VAlignment;
+				_ActiveTextRange = activeState.TextRange;
+				_ActiveCulture = activeState.Culture;
+				_ActiveFamily = activeState.Family;
+				_ActiveFeatures = activeState.Features;
+				_ActivePointSize = activeState.PointSize;
+				_ActiveStretch = activeState.Stretch;
+				_ActiveStyle = activeState.Style;
+				_ActiveWeight = activeState.Weight;
+				_ActiveInline = activeState.Inline;
+				_ActiveHAlignment = activeState.HAlignment;
+				_ActiveVAlignment = activeState.VAlignment;
 
 				return this;
 			}
@@ -263,7 +263,7 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._ActiveFeatures = features;
+				_ActiveFeatures = features;
 
 				return this;
 			}
@@ -273,7 +273,7 @@ namespace Frost.Formatting
 				Contract.Requires(Check.IsPositive(leading));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Leading = leading;
+				_Leading = leading;
 
 				return this;
 			}
@@ -283,7 +283,7 @@ namespace Frost.Formatting
 				Contract.Requires(Check.IsPositive(tracking));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Tracking = tracking;
+				_Tracking = tracking;
 
 				return this;
 			}
@@ -293,7 +293,7 @@ namespace Frost.Formatting
 				Contract.Requires(Check.IsPositive(indentation));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Indentation = indentation;
+				_Indentation = indentation;
 
 				return this;
 			}
@@ -303,7 +303,7 @@ namespace Frost.Formatting
 				Contract.Requires(Check.IsPositive(spacing));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Spacing = spacing;
+				_Spacing = spacing;
 
 				return this;
 			}
@@ -312,7 +312,7 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Alignment = alignment;
+				_Alignment = alignment;
 
 				return this;
 			}
@@ -321,7 +321,7 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._ActiveCulture = culture;
+				_ActiveCulture = culture;
 
 				return this;
 			}
@@ -331,7 +331,7 @@ namespace Frost.Formatting
 				Contract.Requires(Check.IsPositive(pointSize));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._ActivePointSize = pointSize;
+				_ActivePointSize = pointSize;
 
 				return this;
 			}
@@ -340,7 +340,7 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._ActiveFamily = family;
+				_ActiveFamily = family;
 
 				return this;
 			}
@@ -349,7 +349,7 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._ActiveStretch = stretch;
+				_ActiveStretch = stretch;
 
 				return this;
 			}
@@ -358,7 +358,7 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._ActiveStyle = style;
+				_ActiveStyle = style;
 
 				return this;
 			}
@@ -367,7 +367,7 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._ActiveWeight = weight;
+				_ActiveWeight = weight;
 
 				return this;
 			}
@@ -382,28 +382,28 @@ namespace Frost.Formatting
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
 				// append a new run with a text length of one
-				this._Runs.Add(
+				_Runs.Add(
 					new TextRun(
-						new IndexedRange(this._Text.Length, 1),
-						this._ActiveCulture,
-						this._ActiveFamily,
-						this._ActiveStretch,
-						this._ActiveStyle,
-						this._ActiveWeight,
-						this._ActivePointSize,
+						new IndexedRange(_Text.Length, 1),
+						_ActiveCulture,
+						_ActiveFamily,
+						_ActiveStretch,
+						_ActiveStyle,
+						_ActiveWeight,
+						_ActivePointSize,
 						hAlignment,
 						vAlignment,
 						inline,
-						this._ActiveFeatures));
+						_ActiveFeatures));
 
 				try
 				{
-					this._Text.Append('\u00A0');
+					_Text.Append('\u00A0');
 				}
 				catch
 				{
 					// rollback the change to runs on failure
-					this._Runs.RemoveAt(this._Runs.Count - 1);
+					_Runs.RemoveAt(_Runs.Count - 1);
 
 					// rethrow the exception
 					throw;
@@ -418,21 +418,21 @@ namespace Frost.Formatting
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
 				TextRun newRun = new TextRun(
-					this._ActiveTextRange,
-					this._ActiveCulture,
-					this._ActiveFamily,
-					this._ActiveStretch,
-					this._ActiveStyle,
-					this._ActiveWeight,
-					this._ActivePointSize,
-					this._ActiveHAlignment,
-					this._ActiveVAlignment,
-					this._ActiveInline,
-					this._ActiveFeatures);
+					_ActiveTextRange,
+					_ActiveCulture,
+					_ActiveFamily,
+					_ActiveStretch,
+					_ActiveStyle,
+					_ActiveWeight,
+					_ActivePointSize,
+					_ActiveHAlignment,
+					_ActiveVAlignment,
+					_ActiveInline,
+					_ActiveFeatures);
 
-				if(this._Runs.Count > 0)
+				if(_Runs.Count > 0)
 				{
-					TextRun oldRun = this._Runs[this._Runs.Count - 1];
+					TextRun oldRun = _Runs[_Runs.Count - 1];
 
 					if((newRun.Culture == oldRun.Culture) &&
 					   (newRun.Family == oldRun.Family) &&
@@ -446,7 +446,7 @@ namespace Frost.Formatting
 					   (newRun.Features == oldRun.Features))
 					{
 						// modify the existing run to include the appended text
-						this._Runs[this._Runs.Count - 1] =
+						_Runs[_Runs.Count - 1] =
 							new TextRun(
 								new IndexedRange(
 									oldRun.TextRange.StartIndex,
@@ -464,12 +464,12 @@ namespace Frost.Formatting
 
 						try
 						{
-							this._Text.Append(text);
+							_Text.Append(text);
 						}
 						catch
 						{
 							// rollback the change to run on failure
-							this._Runs.RemoveAt(this._Runs.Count - 1);
+							_Runs.RemoveAt(_Runs.Count - 1);
 
 							// rethrow the exception
 							throw;
@@ -480,9 +480,9 @@ namespace Frost.Formatting
 				}
 
 				// append a run at the current text position
-				this._Runs.Add(
+				_Runs.Add(
 					new TextRun(
-						new IndexedRange(this._Text.Length, text.Length),
+						new IndexedRange(_Text.Length, text.Length),
 						newRun.Culture,
 						newRun.Family,
 						newRun.Stretch,
@@ -496,12 +496,12 @@ namespace Frost.Formatting
 
 				try
 				{
-					this._Text.Append(text);
+					_Text.Append(text);
 				}
 				catch
 				{
 					// rollback the change to runs on failure
-					this._Runs.RemoveAt(this._Runs.Count - 1);
+					_Runs.RemoveAt(_Runs.Count - 1);
 
 					// rethrow the exception
 					throw;
@@ -515,39 +515,39 @@ namespace Frost.Formatting
 				Contract.Ensures(Contract.Result<Paragraph>() != null);
 
 				return new Paragraph(
-					this._Text.ToString(),
-					this._Alignment,
-					this._Indentation,
-					this._Leading,
-					this._Spacing,
-					this._Tracking,
-					new TextRunCollection(this._Runs));
+					_Text.ToString(),
+					_Alignment,
+					_Indentation,
+					_Leading,
+					_Spacing,
+					_Tracking,
+					new TextRunCollection(_Runs));
 			}
 
 			internal void Reset()
 			{
-				this._Runs.Clear();
-				this._States.Clear();
+				_Runs.Clear();
+				_States.Clear();
 
-				this._Alignment = Alignment.Stretch;
-				this._Indentation = DefaultIndentation;
-				this._Leading = DefaultLeading;
-				this._Spacing = DefaultSpacing;
-				this._Tracking = DefaultTracking;
+				_Alignment = Alignment.Stretch;
+				_Indentation = DefaultIndentation;
+				_Leading = DefaultLeading;
+				_Spacing = DefaultSpacing;
+				_Tracking = DefaultTracking;
 
-				this._Text.Clear();
+				_Text.Clear();
 
-				this._ActiveCulture = DefaultCulture;
-				this._ActiveFamily = DefaultFamily;
-				this._ActivePointSize = DefaultPointSize;
-				this._ActiveHAlignment = Alignment.Stretch;
-				this._ActiveVAlignment = Alignment.Stretch;
-				this._ActiveInline = Size.Empty;
-				this._ActiveTextRange = IndexedRange.Empty;
-				this._ActiveStretch = FontStretch.Regular;
-				this._ActiveStyle = FontStyle.Regular;
-				this._ActiveWeight = FontWeight.Regular;
-				this._ActiveFeatures = null;
+				_ActiveCulture = DefaultCulture;
+				_ActiveFamily = DefaultFamily;
+				_ActivePointSize = DefaultPointSize;
+				_ActiveHAlignment = Alignment.Stretch;
+				_ActiveVAlignment = Alignment.Stretch;
+				_ActiveInline = Size.Empty;
+				_ActiveTextRange = IndexedRange.Empty;
+				_ActiveStretch = FontStretch.Regular;
+				_ActiveStyle = FontStyle.Regular;
+				_ActiveWeight = FontWeight.Regular;
+				_ActiveFeatures = null;
 			}
 
 #if(UNIT_TESTING)

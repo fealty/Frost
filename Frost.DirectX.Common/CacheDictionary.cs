@@ -20,11 +20,11 @@ namespace Frost.DirectX.Common
 		{
 			Contract.Requires(itemLimit > 0);
 
-			this._Lookup = new Dictionary<TKey, LinkedListNode<Item>>();
+			_Lookup = new Dictionary<TKey, LinkedListNode<Item>>();
 
-			this._Items = new LinkedList<Item>();
+			_Items = new LinkedList<Item>();
 
-			this._ItemLimit = itemLimit;
+			_ItemLimit = itemLimit;
 		}
 
 		public void Dispose()
@@ -34,7 +34,7 @@ namespace Frost.DirectX.Common
 
 		public void Add(TKey key, TValue value)
 		{
-			if(this._Lookup.Count + 1 > this._ItemLimit)
+			if(_Lookup.Count + 1 > _ItemLimit)
 			{
 				this.EvictLeastTouchedItem();
 			}
@@ -44,17 +44,17 @@ namespace Frost.DirectX.Common
 			item.Key = key;
 			item.Value = value;
 
-			this._Lookup[key] = this._Items.AddFirst(item);
+			_Lookup[key] = _Items.AddFirst(item);
 		}
 
 		public void Remove(TKey key)
 		{
 			LinkedListNode<Item> item;
 
-			if(this._Lookup.TryGetValue(key, out item))
+			if(_Lookup.TryGetValue(key, out item))
 			{
-				this._Items.Remove(item);
-				this._Lookup.Remove(key);
+				_Items.Remove(item);
+				_Lookup.Remove(key);
 
 				IDisposable disposable = item.Value.Value as IDisposable;
 
@@ -69,13 +69,13 @@ namespace Frost.DirectX.Common
 		{
 			LinkedListNode<Item> existingItem;
 
-			if(this._Lookup.TryGetValue(key, out existingItem))
+			if(_Lookup.TryGetValue(key, out existingItem))
 			{
-				this._Items.Remove(existingItem);
+				_Items.Remove(existingItem);
 
 				value = existingItem.Value.Value;
 
-				this._Items.AddFirst(existingItem);
+				_Items.AddFirst(existingItem);
 
 				return true;
 			}
@@ -87,9 +87,9 @@ namespace Frost.DirectX.Common
 
 		public void Clear()
 		{
-			this._Lookup.Clear();
+			_Lookup.Clear();
 
-			foreach(var item in this._Items)
+			foreach(var item in _Items)
 			{
 				IDisposable disposable = item.Value as IDisposable;
 
@@ -99,18 +99,18 @@ namespace Frost.DirectX.Common
 				}
 			}
 
-			this._Items.Clear();
+			_Items.Clear();
 		}
 
 		private void EvictLeastTouchedItem()
 		{
-			LinkedListNode<Item> leastUsedItem = this._Items.Last;
+			LinkedListNode<Item> leastUsedItem = _Items.Last;
 
-			this._Items.Remove(leastUsedItem);
+			_Items.Remove(leastUsedItem);
 
 			Item item = leastUsedItem.Value;
 
-			this._Lookup.Remove(item.Key);
+			_Lookup.Remove(item.Key);
 
 			IDisposable disposable = item.Value as IDisposable;
 

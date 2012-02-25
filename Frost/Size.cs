@@ -28,8 +28,8 @@ namespace Frost
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(Check.IsFinite(this._Width));
-			Contract.Invariant(Check.IsFinite(this._Height));
+			Contract.Invariant(Check.IsFinite(_Width));
+			Contract.Invariant(Check.IsFinite(_Height));
 		}
 
 		public Size(float width, float height)
@@ -37,8 +37,8 @@ namespace Frost
 			Contract.Requires(Check.IsFinite(width));
 			Contract.Requires(Check.IsFinite(height));
 
-			this._Width = width;
-			this._Height = height;
+			_Width = width;
+			_Height = height;
 
 			Contract.Assert(Width.Equals(width));
 			Contract.Assert(Height.Equals(height));
@@ -54,9 +54,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._Height));
+				Contract.Ensures(Contract.Result<float>().Equals(_Height));
 
-				return this._Height;
+				return _Height;
 			}
 		}
 
@@ -65,9 +65,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._Width));
+				Contract.Ensures(Contract.Result<float>().Equals(_Width));
 
-				return this._Width;
+				return _Width;
 			}
 		}
 
@@ -107,15 +107,15 @@ namespace Frost
 			{
 				Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
-				return Math.Max(0.0f, this._Width * this._Height);
+				return Math.Max(0.0f, _Width * _Height);
 			}
 		}
 
 		public Size Transform(ref Matrix3X2 transformation)
 		{
 			Point p1 = new Point(0.0f, 0.0f);
-			Point p2 = new Point(this._Width, 0.0f);
-			Point p4 = new Point(0.0f, this._Height);
+			Point p2 = new Point(_Width, 0.0f);
+			Point p4 = new Point(0.0f, _Height);
 
 			p1 = p1.Transform(ref transformation);
 			p2 = p2.Transform(ref transformation);
@@ -126,8 +126,8 @@ namespace Frost
 
 		public bool Equals(Size other)
 		{
-			return other._Width.Equals(this._Width) &&
-			       other._Height.Equals(this._Height);
+			return other._Width.Equals(_Width) &&
+			       other._Height.Equals(_Height);
 		}
 
 		public override bool Equals(object obj)
@@ -144,8 +144,8 @@ namespace Frost
 		{
 			unchecked
 			{
-				return (this._Width.GetHashCode() * 397) ^
-				       this._Height.GetHashCode();
+				return (_Width.GetHashCode() * 397) ^
+				       _Height.GetHashCode();
 			}
 		}
 
@@ -162,7 +162,7 @@ namespace Frost
 		public override string ToString()
 		{
 			return string.Format(
-				"Width: {0}, Height: {1}", this._Width, this._Height);
+				"Width: {0}, Height: {1}", _Width, _Height);
 		}
 
 #if(UNIT_TESTING)

@@ -26,57 +26,57 @@ namespace Frost.DirectX.Common.Diagnostics
 			Contract.Requires(!String.IsNullOrEmpty(category));
 			Contract.Requires(!String.IsNullOrEmpty(name));
 
-			this._Category = category;
-			this._Name = name;
+			_Category = category;
+			_Name = name;
 
 			Reset();
 		}
 
 		public string Name
 		{
-			get { return this._Name; }
+			get { return _Name; }
 		}
 
 		public string Category
 		{
-			get { return this._Category; }
+			get { return _Category; }
 		}
 
 		public TimeSpan Value
 		{
-			get { return TimeSpan.FromTicks(Interlocked.Read(ref this._Value)); }
+			get { return TimeSpan.FromTicks(Interlocked.Read(ref _Value)); }
 			set
 			{
-				long average = Interlocked.Read(ref this._Average);
-				long minimum = Interlocked.Read(ref this._Minimum);
-				long maximum = Interlocked.Read(ref this._Maximum);
+				long average = Interlocked.Read(ref _Average);
+				long minimum = Interlocked.Read(ref _Minimum);
+				long maximum = Interlocked.Read(ref _Maximum);
 
 				average = (average + value.Ticks) / 2;
 
 				minimum = Math.Min(minimum, value.Ticks);
 				maximum = Math.Max(maximum, value.Ticks);
 
-				Interlocked.Exchange(ref this._Average, average);
-				Interlocked.Exchange(ref this._Minimum, minimum);
-				Interlocked.Exchange(ref this._Maximum, maximum);
+				Interlocked.Exchange(ref _Average, average);
+				Interlocked.Exchange(ref _Minimum, minimum);
+				Interlocked.Exchange(ref _Maximum, maximum);
 
-				Interlocked.Exchange(ref this._Value, value.Ticks);
+				Interlocked.Exchange(ref _Value, value.Ticks);
 			}
 		}
 
 		public TimeSpan Average
 		{
-			get { return TimeSpan.FromTicks(Interlocked.Read(ref this._Average)); }
+			get { return TimeSpan.FromTicks(Interlocked.Read(ref _Average)); }
 		}
 
 		public TimeSpan Minimum
 		{
-			get { return TimeSpan.FromTicks(Interlocked.Read(ref this._Minimum)); }
+			get { return TimeSpan.FromTicks(Interlocked.Read(ref _Minimum)); }
 		}
 
 		public TimeSpan Maximum
 		{
-			get { return TimeSpan.FromTicks(Interlocked.Read(ref this._Maximum)); }
+			get { return TimeSpan.FromTicks(Interlocked.Read(ref _Maximum)); }
 		}
 
 		object IDeviceCounter.Average
@@ -101,12 +101,12 @@ namespace Frost.DirectX.Common.Diagnostics
 
 		public void Reset()
 		{
-			Interlocked.Exchange(ref this._Average, 0);
+			Interlocked.Exchange(ref _Average, 0);
 
-			Interlocked.Exchange(ref this._Minimum, long.MaxValue);
-			Interlocked.Exchange(ref this._Maximum, long.MinValue);
+			Interlocked.Exchange(ref _Minimum, long.MaxValue);
+			Interlocked.Exchange(ref _Maximum, long.MinValue);
 
-			Interlocked.Exchange(ref this._Value, 0);
+			Interlocked.Exchange(ref _Value, 0);
 		}
 	}
 }

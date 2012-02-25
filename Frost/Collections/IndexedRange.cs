@@ -25,8 +25,8 @@ namespace Frost.Collections
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(this._Length >= 0);
-			Contract.Invariant(this._StartIndex >= 0);
+			Contract.Invariant(_Length >= 0);
+			Contract.Invariant(_StartIndex >= 0);
 		}
 
 		public IndexedRange(int startIndex, int length)
@@ -34,8 +34,8 @@ namespace Frost.Collections
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-			this._StartIndex = startIndex;
-			this._Length = length;
+			_StartIndex = startIndex;
+			_Length = length;
 
 			Contract.Assert(StartIndex.Equals(startIndex));
 			Contract.Assert(Length.Equals(length));
@@ -43,16 +43,16 @@ namespace Frost.Collections
 
 		public IndexedRange Slice(int startIndex)
 		{
-			return Slice(0, this._Length);
+			return Slice(0, _Length);
 		}
 
 		public IndexedRange Slice(int startIndex, int length)
 		{
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
-			Contract.Assert(length <= this._Length);
+			Contract.Assert(length <= _Length);
 			Contract.Assert(
-				startIndex + length <= this._StartIndex + this._Length);
+				startIndex + length <= _StartIndex + _Length);
 
 			return new IndexedRange(startIndex, length);
 		}
@@ -63,7 +63,7 @@ namespace Frost.Collections
 			{
 				Contract.Ensures(Contract.Result<int>() >= 0);
 
-				return (this._StartIndex + this._Length) - 1;
+				return (_StartIndex + _Length) - 1;
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace Frost.Collections
 			{
 				Contract.Ensures(Contract.Result<int>() >= 0);
 
-				return this._Length;
+				return _Length;
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Frost.Collections
 			{
 				Contract.Ensures(Contract.Result<int>() >= 0);
 
-				return this._StartIndex;
+				return _StartIndex;
 			}
 		}
 
@@ -104,8 +104,8 @@ namespace Frost.Collections
 
 		public bool Equals(IndexedRange other)
 		{
-			return other._StartIndex == this._StartIndex &&
-			       other._Length == this._Length;
+			return other._StartIndex == _StartIndex &&
+			       other._Length == _Length;
 		}
 
 		public override bool Equals(object obj)
@@ -122,7 +122,7 @@ namespace Frost.Collections
 		{
 			unchecked
 			{
-				return (this._StartIndex * 397) ^ this._Length;
+				return (_StartIndex * 397) ^ _Length;
 			}
 		}
 
@@ -134,7 +134,7 @@ namespace Frost.Collections
 		public override string ToString()
 		{
 			return string.Format(
-				"StartIndex: {0}, Length: {1}", this._StartIndex, this._Length);
+				"StartIndex: {0}, Length: {1}", _StartIndex, _Length);
 		}
 
 		public struct Enumerator : IEnumerator<int>
@@ -146,10 +146,10 @@ namespace Frost.Collections
 
 			internal Enumerator(IndexedRange range)
 			{
-				this._StartIndex = range.StartIndex;
-				this._Length = range.Length;
+				_StartIndex = range.StartIndex;
+				_Length = range.Length;
 
-				this._Index = -1;
+				_Index = -1;
 			}
 
 			public void Dispose()
@@ -158,17 +158,17 @@ namespace Frost.Collections
 
 			public bool MoveNext()
 			{
-				return ++this._Index < this._Length;
+				return ++_Index < _Length;
 			}
 
 			public void Reset()
 			{
-				this._Index = -1;
+				_Index = -1;
 			}
 
 			public int Current
 			{
-				get { return this._StartIndex + this._Index; }
+				get { return _StartIndex + _Index; }
 			}
 
 			object IEnumerator.Current

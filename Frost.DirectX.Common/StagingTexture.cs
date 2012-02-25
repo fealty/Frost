@@ -22,14 +22,14 @@ namespace Frost.DirectX.Common
 		{
 			Contract.Requires(device3D != null);
 
-			this._Device3D = device3D;
+			_Device3D = device3D;
 
-			this._Description = Descriptions.StagingDescription;
+			_Description = Descriptions.StagingDescription;
 		}
 
 		public void Dispose()
 		{
-			this._Texture.SafeDispose();
+			_Texture.SafeDispose();
 		}
 
 		public void UploadData(Size size, byte[] rgbaData)
@@ -44,18 +44,18 @@ namespace Frost.DirectX.Common
 			int regionWidth = Convert.ToInt32(size.Width);
 			int regionHeight = Convert.ToInt32(size.Height);
 
-			if(regionWidth != this._Description.Width ||
-			   regionHeight != this._Description.Height)
+			if(regionWidth != _Description.Width ||
+			   regionHeight != _Description.Height)
 			{
-				this._Description.Width = regionWidth;
-				this._Description.Height = regionHeight;
+				_Description.Width = regionWidth;
+				_Description.Height = regionHeight;
 
-				this._Texture.SafeDispose();
+				_Texture.SafeDispose();
 
-				this._Texture = new Texture2D(this._Device3D, this._Description);
+				_Texture = new Texture2D(_Device3D, _Description);
 			}
 
-			DataRectangle data = this._Texture.Map(
+			DataRectangle data = _Texture.Map(
 				0, MapMode.Write, MapFlags.None);
 
 			int byteSize = (regionWidth * regionHeight) * 4;
@@ -67,7 +67,7 @@ namespace Frost.DirectX.Common
 				stream.Write(rgbaData, 0, byteSize);
 			}
 
-			this._Texture.Unmap(0);
+			_Texture.Unmap(0);
 		}
 
 		public void CopyTo(Rectangle srcRegion, Canvas destination)
@@ -93,8 +93,8 @@ namespace Frost.DirectX.Common
 			{
 				destination.Surface2D.AcquireLock();
 
-				this._Device3D.CopySubresourceRegion(
-					this._Texture,
+				_Device3D.CopySubresourceRegion(
+					_Texture,
 					0,
 					sourceRegion,
 					dstSurface.Texture2D,

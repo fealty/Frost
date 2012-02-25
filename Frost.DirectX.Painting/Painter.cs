@@ -14,9 +14,11 @@ using Frost.DirectX.Common.Diagnostics;
 using Frost.Painting;
 using Frost.Surfacing;
 
+using SharpDX;
 using SharpDX.Direct2D1;
 using SharpDX.Direct3D10;
 
+using Geometry = Frost.Shaping.Geometry;
 using LineJoin = Frost.Painting.LineJoin;
 
 namespace Frost.DirectX.Painting
@@ -48,22 +50,22 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(factory2D != null);
 			Contract.Requires(device3D != null);
 
-			this._States = new Stack<State>();
+			_States = new Stack<State>();
 
-			this._Drawer = new Drawer(factory2D);
+			_Drawer = new Drawer(factory2D);
 
-			this._Device2D = device2D;
-			this._Device3D = device3D;
-			this._Factory2D = factory2D;
+			_Device2D = device2D;
+			_Device3D = device3D;
+			_Factory2D = factory2D;
 
-			device2D.Diagnostics.Register(this._FrameDuration);
+			device2D.Diagnostics.Register(_FrameDuration);
 
-			this._Watch = new Stopwatch();
+			_Watch = new Stopwatch();
 		}
 
 		public TimeSpanCounter FrameDuration
 		{
-			get { return this._FrameDuration; }
+			get { return _FrameDuration; }
 		}
 
 		public void Dispose()
@@ -73,18 +75,18 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnBegin(Canvas target, Retention retention)
 		{
-			this._Watch.Reset();
-			this._Watch.Start();
+			_Watch.Reset();
+			_Watch.Start();
 
 			SetBrush(Color.Black);
 
-			this._IsBrushInvalid = true;
+			_IsBrushInvalid = true;
 
-			this._TargetSurface = (Surface2D)target.Surface2D;
+			_TargetSurface = (Surface2D)target.Surface2D;
 
-			this._TargetSurface.AcquireLock();
+			_TargetSurface.AcquireLock();
 
-			this._Drawer.Begin(target);
+			_Drawer.Begin(target);
 		}
 
 		protected override void OnEnd()
@@ -93,112 +95,112 @@ namespace Frost.DirectX.Painting
 			{
 				try
 				{
-					this._Drawer.End();
+					_Drawer.End();
 				}
 				finally
 				{
-					this._TargetSurface.ReleaseLock();
+					_TargetSurface.ReleaseLock();
 
-					this._ActiveBrush = null;
-					this._TargetSurface = null;
+					_ActiveBrush = null;
+					_TargetSurface = null;
 				}
 			}
 			finally
 			{
-				this._Watch.Stop();
+				_Watch.Stop();
 
-				this._FrameDuration.Value += this._Watch.Elapsed;
+				_FrameDuration.Value += _Watch.Elapsed;
 			}
 		}
 
 		protected override void OnClear()
 		{
-			this.Reconfigure();
+			Reconfigure();
 
-			this._Drawer.Clear();
+			_Drawer.Clear();
 		}
 
 		protected override void OnClear(ref Rectangle region)
 		{
-			this.Reconfigure();
+			Reconfigure();
 
-			this._Drawer.Clear(region);
+			_Drawer.Clear(region);
 		}
 
 		protected override void OnStroke(ref Rectangle rectangleRegion)
 		{
-			this.Reconfigure();
+			Reconfigure();
 
-			this._Drawer.Stroke(
+			_Drawer.Stroke(
 				rectangleRegion,
-				this._ActiveBrush,
-				this._StrokeStyle,
-				this.ActiveStrokeWidth);
+				_ActiveBrush,
+				_StrokeStyle,
+				ActiveStrokeWidth);
 		}
 
 		protected override void OnStroke(
 			ref Point lineStart, ref Point lineEnd)
 		{
-			this.Reconfigure();
+			Reconfigure();
 
-			this._Drawer.Stroke(
+			_Drawer.Stroke(
 				lineStart,
 				lineEnd,
-				this._ActiveBrush,
-				this._StrokeStyle,
-				this.ActiveStrokeWidth);
+				_ActiveBrush,
+				_StrokeStyle,
+				ActiveStrokeWidth);
 		}
 
 		protected override void OnStroke(
 			ref Rectangle rectangleRegion, ref Size roundedRadius)
 		{
-			this.Reconfigure();
+			Reconfigure();
 
-			this._Drawer.Stroke(
+			_Drawer.Stroke(
 				rectangleRegion,
 				roundedRadius,
-				this._ActiveBrush,
-				this._StrokeStyle,
-				this.ActiveStrokeWidth);
+				_ActiveBrush,
+				_StrokeStyle,
+				ActiveStrokeWidth);
 		}
 
 		protected override void OnFill(ref Rectangle rectangleRegion)
 		{
-			this.Reconfigure();
+			Reconfigure();
 
-			this._Drawer.Fill(rectangleRegion, this._ActiveBrush);
+			_Drawer.Fill(rectangleRegion, _ActiveBrush);
 		}
 
 		protected override void OnFill(
 			ref Rectangle rectangleRegion, ref Size roundedRadius)
 		{
-			this.Reconfigure();
+			Reconfigure();
 
-			this._Drawer.Fill(
-				rectangleRegion, roundedRadius, this._ActiveBrush);
+			_Drawer.Fill(
+				rectangleRegion, roundedRadius, _ActiveBrush);
 		}
 
-		protected override void OnStroke(Shaping.Geometry geometry)
+		protected override void OnStroke(Geometry geometry)
 		{
-			this.Reconfigure();
+			Reconfigure();
 
-			this._Drawer.Stroke(
+			_Drawer.Stroke(
 				geometry,
-				this._ActiveBrush,
-				this._StrokeStyle,
-				this.ActiveStrokeWidth);
+				_ActiveBrush,
+				_StrokeStyle,
+				ActiveStrokeWidth);
 		}
 
-		protected override void OnFill(Shaping.Geometry geometry)
+		protected override void OnFill(Geometry geometry)
 		{
-			this.Reconfigure();
+			Reconfigure();
 
-			this._Drawer.Fill(geometry, this._ActiveBrush);
+			_Drawer.Fill(geometry, _ActiveBrush);
 		}
 
 		protected override void OnSaveState()
 		{
-			this._States.Push(
+			_States.Push(
 				new State
 				{
 					DashCap = ActiveDashCap,
@@ -214,7 +216,7 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnRestoreState()
 		{
-			State newState = this._States.Pop();
+			State newState = _States.Pop();
 
 			IsAntialiased = newState.IsAntialiased;
 			DashCap = newState.DashCap;
@@ -233,37 +235,37 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnSetBrush(Color color)
 		{
-			this._ActiveBrushState.SolidColorColor = color;
+			_ActiveBrushState.SolidColorColor = color;
 
-			this._ActiveBrushState.BrushType = BrushType.SolidColor;
+			_ActiveBrushState.BrushType = BrushType.SolidColor;
 
-			this._IsBrushInvalid = true;
+			_IsBrushInvalid = true;
 		}
 
 		protected override void OnSetBrush(
 			Canvas source, Repetition extension)
 		{
-			this._ActiveBrushState.PatternSurface.SafeDispose();
+			_ActiveBrushState.PatternSurface.SafeDispose();
 
 			Surface2D.Description description;
 
-			description.Device2D = this._Device2D;
-			description.Device3D = this._Device3D;
+			description.Device2D = _Device2D;
+			description.Device3D = _Device3D;
 			description.Usage = SurfaceUsage.Normal;
 			description.Size = source.Region.Size;
 			description.Factory2D = null;
 
-			this._ActiveBrushState.PatternSurface =
+			_ActiveBrushState.PatternSurface =
 				Surface2D.FromDescription(ref description);
 
 			source.Surface2D.CopyTo(
-				source.Region, this._ActiveBrushState.PatternSurface, Point.Empty);
+				source.Region, _ActiveBrushState.PatternSurface, Point.Empty);
 
-			this._ActiveBrushState.PatternRepetition = extension;
+			_ActiveBrushState.PatternRepetition = extension;
 
-			this._ActiveBrushState.BrushType = BrushType.Pattern;
+			_ActiveBrushState.BrushType = BrushType.Pattern;
 
-			this._IsBrushInvalid = true;
+			_IsBrushInvalid = true;
 		}
 
 		protected override void OnSetBrush(
@@ -271,14 +273,14 @@ namespace Frost.DirectX.Painting
 			ref Point linearGradientEnd,
 			Gradient gradient)
 		{
-			this._ActiveBrushState.Stops = gradient;
+			_ActiveBrushState.Stops = gradient;
 
-			this._ActiveBrushState.LinearGradientStart = linearGradientStart;
-			this._ActiveBrushState.LinearGradientEnd = linearGradientEnd;
+			_ActiveBrushState.LinearGradientStart = linearGradientStart;
+			_ActiveBrushState.LinearGradientEnd = linearGradientEnd;
 
-			this._ActiveBrushState.BrushType = BrushType.LinearGradient;
+			_ActiveBrushState.BrushType = BrushType.LinearGradient;
 
-			this._IsBrushInvalid = true;
+			_IsBrushInvalid = true;
 		}
 
 		protected override void OnSetBrush(
@@ -287,40 +289,40 @@ namespace Frost.DirectX.Painting
 			ref Size radialGradientRadius,
 			Gradient gradient)
 		{
-			this._ActiveBrushState.Stops = gradient;
+			_ActiveBrushState.Stops = gradient;
 
-			this._ActiveBrushState.RadialGradientCenter = radialGradientCenter;
-			this._ActiveBrushState.RadialGradientOffset = radialGradientOffset;
-			this._ActiveBrushState.RadialGradientRadius = radialGradientRadius;
+			_ActiveBrushState.RadialGradientCenter = radialGradientCenter;
+			_ActiveBrushState.RadialGradientOffset = radialGradientOffset;
+			_ActiveBrushState.RadialGradientRadius = radialGradientRadius;
 
-			this._ActiveBrushState.BrushType = BrushType.RadialGradient;
+			_ActiveBrushState.BrushType = BrushType.RadialGradient;
 
-			this._IsBrushInvalid = true;
+			_IsBrushInvalid = true;
 		}
 
 		private void Dispose(bool disposing)
 		{
 			if(disposing)
 			{
-				this._Drawer.Dispose();
-				this._ActiveBrushState.PatternSurface.SafeDispose();
-				this._StrokeStyle.SafeDispose();
+				_Drawer.Dispose();
+				_ActiveBrushState.PatternSurface.SafeDispose();
+				_StrokeStyle.SafeDispose();
 			}
 		}
 
 		private void Reconfigure()
 		{
-			if(this._IsBrushInvalid)
+			if(_IsBrushInvalid)
 			{
-				this.ReconfigureBrush();
+				ReconfigureBrush();
 
-				this._IsBrushInvalid = false;
+				_IsBrushInvalid = false;
 			}
 
 			if(IsLineStyleInvalid || IsMiterLimitInvalid || IsStrokeCapInvalid ||
 			   IsStrokeJoinInvalid || IsDashCapInvalid)
 			{
-				this.ReconfigureStrokeStyle();
+				ReconfigureStrokeStyle();
 
 				IsLineStyleInvalid = false;
 				IsMiterLimitInvalid = false;
@@ -331,7 +333,7 @@ namespace Frost.DirectX.Painting
 
 			if(IsAntialiasingInvalid)
 			{
-				this.ReconfigureAntialiasing();
+				ReconfigureAntialiasing();
 
 				IsAntialiasingInvalid = false;
 			}
@@ -340,7 +342,7 @@ namespace Frost.DirectX.Painting
 			{
 				Matrix3X2 transformation = ActiveTransformation;
 
-				SharpDX.Matrix3x2 matrix = SharpDX.Matrix3x2.Identity;
+				Matrix3x2 matrix = Matrix3x2.Identity;
 
 				matrix.M11 = transformation.M11;
 				matrix.M12 = transformation.M12;
@@ -349,7 +351,7 @@ namespace Frost.DirectX.Painting
 				matrix.M31 = transformation.M31;
 				matrix.M32 = transformation.M32;
 
-				this._TargetSurface.Target2D.Transform = matrix;
+				_TargetSurface.Target2D.Transform = matrix;
 
 				IsTransformationInvalid = false;
 			}
@@ -357,45 +359,45 @@ namespace Frost.DirectX.Painting
 
 		private void ReconfigureBrush()
 		{
-			switch(this._ActiveBrushState.BrushType)
+			switch(_ActiveBrushState.BrushType)
 			{
 				case BrushType.None:
-					this._ActiveBrush =
-						this._TargetSurface.GetSolidColorBrush(
-							this._ActiveBrushState.SolidColorColor);
+					_ActiveBrush =
+						_TargetSurface.GetSolidColorBrush(
+							_ActiveBrushState.SolidColorColor);
 					break;
 				case BrushType.SolidColor:
-					this._ActiveBrush =
-						this._TargetSurface.GetSolidColorBrush(
-							this._ActiveBrushState.SolidColorColor);
+					_ActiveBrush =
+						_TargetSurface.GetSolidColorBrush(
+							_ActiveBrushState.SolidColorColor);
 					break;
 				case BrushType.LinearGradient:
-					this._ActiveBrush =
-						this._TargetSurface.GetLinearGradientBrush(
-							this._ActiveBrushState.LinearGradientStart,
-							this._ActiveBrushState.LinearGradientEnd,
-							this._ActiveBrushState.Stops);
+					_ActiveBrush =
+						_TargetSurface.GetLinearGradientBrush(
+							_ActiveBrushState.LinearGradientStart,
+							_ActiveBrushState.LinearGradientEnd,
+							_ActiveBrushState.Stops);
 					break;
 				case BrushType.RadialGradient:
-					this._ActiveBrush =
-						this._TargetSurface.GetRadialGradientBrush(
-							this._ActiveBrushState.RadialGradientCenter,
-							this._ActiveBrushState.RadialGradientOffset,
-							this._ActiveBrushState.RadialGradientRadius,
-							this._ActiveBrushState.Stops);
+					_ActiveBrush =
+						_TargetSurface.GetRadialGradientBrush(
+							_ActiveBrushState.RadialGradientCenter,
+							_ActiveBrushState.RadialGradientOffset,
+							_ActiveBrushState.RadialGradientRadius,
+							_ActiveBrushState.Stops);
 					break;
 				case BrushType.Pattern:
-					this._ActiveBrush =
-						this._TargetSurface.GetPatternBrush(
-							this._ActiveBrushState.PatternSurface,
-							this._ActiveBrushState.PatternRepetition);
+					_ActiveBrush =
+						_TargetSurface.GetPatternBrush(
+							_ActiveBrushState.PatternSurface,
+							_ActiveBrushState.PatternRepetition);
 					break;
 			}
 		}
 
 		private void ReconfigureAntialiasing()
 		{
-			this._TargetSurface.Target2D.AntialiasMode = ActiveAntialiasing ==
+			_TargetSurface.Target2D.AntialiasMode = ActiveAntialiasing ==
 			                                             Antialiasing.Default
 			                                             	? AntialiasMode.
 			                                             	  	PerPrimitive
@@ -405,7 +407,7 @@ namespace Frost.DirectX.Painting
 
 		private void ReconfigureStrokeStyle()
 		{
-			this._StrokeStyle.SafeDispose();
+			_StrokeStyle.SafeDispose();
 
 			StrokeStyleProperties newStyle = new StrokeStyleProperties
 			{
@@ -417,8 +419,8 @@ namespace Frost.DirectX.Painting
 				DashStyle = ActiveLineStyle.ToDirectWrite()
 			};
 
-			this._StrokeStyle = new StrokeStyle(
-				this._Factory2D, newStyle, new float[0]);
+			_StrokeStyle = new StrokeStyle(
+				_Factory2D, newStyle, new float[0]);
 		}
 
 		internal struct BrushState

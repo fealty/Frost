@@ -97,9 +97,9 @@ namespace Frost.Collections
 				Contract.Requires(collection != null);
 				Contract.Requires(startIndex + length <= collection.Count);
 
-				this._StartIndex = startIndex;
-				this._Length = length;
-				this._Collection = collection;
+				_StartIndex = startIndex;
+				_Length = length;
+				_Collection = collection;
 			}
 
 			public int Count
@@ -108,7 +108,7 @@ namespace Frost.Collections
 				{
 					Contract.Ensures(Contract.Result<int>() >= 0);
 
-					return this._Length;
+					return _Length;
 				}
 			}
 
@@ -118,7 +118,7 @@ namespace Frost.Collections
 				{
 					Contract.Requires(index >= 0 && index < Count);
 
-					return this._Collection[this._StartIndex + index];
+					return _Collection[_StartIndex + index];
 				}
 			}
 
@@ -140,10 +140,9 @@ namespace Frost.Collections
 				Contract.Requires(length >= 0);
 				Contract.Requires(startIndex + length <= Count);
 
-				int adjustedIndex = this._StartIndex + startIndex;
+				int adjustedIndex = _StartIndex + startIndex;
 
-				return new CollectionSlice(
-					adjustedIndex, length, this._Collection);
+				return new CollectionSlice(adjustedIndex, length, _Collection);
 			}
 
 			public Enumerator GetEnumerator()
@@ -159,9 +158,9 @@ namespace Frost.Collections
 
 				internal Enumerator(CollectionSlice slice)
 				{
-					this._Slice = slice;
+					_Slice = slice;
 
-					this._Index = -1;
+					_Index = -1;
 				}
 
 				public void Dispose()
@@ -170,17 +169,17 @@ namespace Frost.Collections
 
 				public bool MoveNext()
 				{
-					return ++this._Index < this._Slice.Count;
+					return ++_Index < _Slice.Count;
 				}
 
 				public void Reset()
 				{
-					this._Index = -1;
+					_Index = -1;
 				}
 
 				public T Current
 				{
-					get { return this._Slice[this._Index]; }
+					get { return _Slice[_Index]; }
 				}
 
 				object IEnumerator.Current
@@ -200,9 +199,9 @@ namespace Frost.Collections
 			{
 				Contract.Requires(collection != null);
 
-				this._Collection = collection;
+				_Collection = collection;
 
-				this._Index = -1;
+				_Index = -1;
 			}
 
 			public void Dispose()
@@ -211,12 +210,12 @@ namespace Frost.Collections
 
 			public bool MoveNext()
 			{
-				return ++this._Index < this._Collection._Items.Length;
+				return ++_Index < _Collection._Items.Length;
 			}
 
 			public void Reset()
 			{
-				this._Index = -1;
+				_Index = -1;
 			}
 
 			object IEnumerator.Current
@@ -226,7 +225,7 @@ namespace Frost.Collections
 
 			public T Current
 			{
-				get { return this._Collection._Items[this._Index]; }
+				get { return _Collection._Items[_Index]; }
 			}
 		}
 

@@ -28,7 +28,7 @@ namespace Frost.DirectX.Common
 		{
 			Contract.Requires(factory2D != null);
 
-			this._Factory2D = factory2D;
+			_Factory2D = factory2D;
 		}
 
 		public void Dispose()
@@ -38,80 +38,80 @@ namespace Frost.DirectX.Common
 
 		void IGeometrySink.Begin()
 		{
-			Contract.Assert(this._Path == null);
+			Contract.Assert(_Path == null);
 
-			this._Path = new PathGeometry(this._Factory2D);
+			_Path = new PathGeometry(_Factory2D);
 
-			this._IsSinkInFigure = false;
+			_IsSinkInFigure = false;
 
-			Contract.Assert(this._PathSink == null);
+			Contract.Assert(_PathSink == null);
 
-			this._PathSink = this._Path.Open();
+			_PathSink = _Path.Open();
 		}
 
 		void IGeometrySink.End()
 		{
-			Contract.Assert(this._PathSink != null);
+			Contract.Assert(_PathSink != null);
 
-			if(this._IsSinkInFigure)
+			if(_IsSinkInFigure)
 			{
-				this._PathSink.EndFigure(FigureEnd.Open);
+				_PathSink.EndFigure(FigureEnd.Open);
 			}
 
-			this._PathSink.Close();
+			_PathSink.Close();
 		}
 
 		void IGeometrySink.Close()
 		{
-			Contract.Assert(this._PathSink != null);
+			Contract.Assert(_PathSink != null);
 
-			Contract.Assert(this._IsSinkInFigure);
+			Contract.Assert(_IsSinkInFigure);
 
-			this._PathSink.EndFigure(FigureEnd.Closed);
+			_PathSink.EndFigure(FigureEnd.Closed);
 
-			this._IsSinkInFigure = false;
+			_IsSinkInFigure = false;
 		}
 
 		void IGeometrySink.MoveTo(Point point)
 		{
-			Contract.Assert(this._PathSink != null);
+			Contract.Assert(_PathSink != null);
 
-			if(this._IsSinkInFigure)
+			if(_IsSinkInFigure)
 			{
-				this._PathSink.EndFigure(FigureEnd.Open);
+				_PathSink.EndFigure(FigureEnd.Open);
 
-				this._IsSinkInFigure = false;
+				_IsSinkInFigure = false;
 			}
 
-			this._PathSink.BeginFigure(point.ToPointF(), FigureBegin.Filled);
+			_PathSink.BeginFigure(point.ToPointF(), FigureBegin.Filled);
 
-			this._IsSinkInFigure = true;
+			_IsSinkInFigure = true;
 		}
 
 		void IGeometrySink.LineTo(Point endPoint)
 		{
-			Contract.Assert(this._PathSink != null);
+			Contract.Assert(_PathSink != null);
 
-			this._PathSink.AddLine(endPoint.ToPointF());
+			_PathSink.AddLine(endPoint.ToPointF());
 		}
 
 		void IGeometrySink.QuadraticCurveTo(
 			Point controlPoint, Point endPoint)
 		{
-			Contract.Assert(this._PathSink != null);
+			Contract.Assert(_PathSink != null);
 
 			QuadraticBezierSegment segment;
 
 			segment.Point1 = controlPoint.ToPointF();
 			segment.Point2 = endPoint.ToPointF();
 
-			this._PathSink.AddQuadraticBezier(segment);
+			_PathSink.AddQuadraticBezier(segment);
 		}
 
 		void IGeometrySink.BezierCurveTo(
 			Point controlPoint1, Point controlPoint2, Point endPoint)
 		{
-			Contract.Assert(this._PathSink != null);
+			Contract.Assert(_PathSink != null);
 
 			BezierSegment segment;
 
@@ -119,15 +119,15 @@ namespace Frost.DirectX.Common
 			segment.Point2 = controlPoint2.ToPointF();
 			segment.Point3 = endPoint.ToPointF();
 
-			this._PathSink.AddBezier(segment);
+			_PathSink.AddBezier(segment);
 		}
 
 		void IGeometrySink.ArcTo(
 			Point tangentStart, Point tangentEnd, Size radius)
 		{
-			Contract.Assert(this._PathSink != null);
+			Contract.Assert(_PathSink != null);
 
-			this._PathSink.AddLine(tangentStart.ToPointF());
+			_PathSink.AddLine(tangentStart.ToPointF());
 
 			ArcSegment segment;
 
@@ -137,7 +137,7 @@ namespace Frost.DirectX.Common
 			segment.RotationAngle = 0.0f;
 			segment.ArcSize = ArcSize.Small;
 
-			this._PathSink.AddArc(segment);
+			_PathSink.AddArc(segment);
 		}
 
 		public void Build(Geometry geometry, out DxGeometry result)
@@ -157,10 +157,10 @@ namespace Frost.DirectX.Common
 			{
 				@this.End();
 
-				result = this._Path;
+				result = _Path;
 
-				this._PathSink = null;
-				this._Path = null;
+				_PathSink = null;
+				_Path = null;
 			}
 		}
 
@@ -168,8 +168,8 @@ namespace Frost.DirectX.Common
 		{
 			if(disposing)
 			{
-				this._Path.SafeDispose();
-				this._PathSink.SafeDispose();
+				_Path.SafeDispose();
+				_PathSink.SafeDispose();
 			}
 		}
 	}

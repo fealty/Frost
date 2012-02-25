@@ -22,7 +22,7 @@ namespace Frost.Painting
 			Contract.Requires(stops != null);
 			Contract.Requires(stops.Length >= 2);
 
-			this._Stops = stops;
+			_Stops = stops;
 
 			Contract.Assert(Stops.Equals(stops));
 		}
@@ -32,10 +32,10 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Ensures(
-					Contract.Result<GradientStop[]>().Equals(this._Stops));
+					Contract.Result<GradientStop[]>().Equals(_Stops));
 				Contract.Ensures(Contract.Result<GradientStop[]>() != null);
 
-				return this._Stops;
+				return _Stops;
 			}
 		}
 
@@ -52,7 +52,7 @@ namespace Frost.Painting
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(this._Stops != null);
+			Contract.Invariant(_Stops != null);
 		}
 
 		public sealed class Builder
@@ -61,7 +61,7 @@ namespace Frost.Painting
 
 			internal Builder()
 			{
-				this._Stops = new List<GradientStop>();
+				_Stops = new List<GradientStop>();
 			}
 
 			public Builder WithStop(float position, Color color)
@@ -69,13 +69,13 @@ namespace Frost.Painting
 				Contract.Requires(Check.IsNormalized(position));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				if(this._Stops.Count > 0)
+				if(_Stops.Count > 0)
 				{
 					Contract.Assert(
-						position > this._Stops[this._Stops.Count - 1].Position);
+						position > _Stops[_Stops.Count - 1].Position);
 				}
 
-				this._Stops.Add(new GradientStop(position, color));
+				_Stops.Add(new GradientStop(position, color));
 
 				return this;
 			}
@@ -84,17 +84,17 @@ namespace Frost.Painting
 			{
 				Contract.Ensures(Contract.Result<Gradient>() != null);
 
-				Trace.Assert(this._Stops.Count >= 2);
-				Trace.Assert(this._Stops[0].Position.Equals(0.0f));
+				Trace.Assert(_Stops.Count >= 2);
+				Trace.Assert(_Stops[0].Position.Equals(0.0f));
 				Trace.Assert(
-					this._Stops[this._Stops.Count - 1].Position.Equals(1.0f));
+					_Stops[_Stops.Count - 1].Position.Equals(1.0f));
 
-				return new Gradient(this._Stops.ToArray());
+				return new Gradient(_Stops.ToArray());
 			}
 
 			internal void Reset()
 			{
-				this._Stops.Clear();
+				_Stops.Clear();
 			}
 		}
 
@@ -110,7 +110,7 @@ namespace Frost.Painting
 				return true;
 			}
 
-			return other._Stops.SequenceEqual(this._Stops);
+			return other._Stops.SequenceEqual(_Stops);
 		}
 
 		public override bool Equals(object obj)
@@ -134,7 +134,7 @@ namespace Frost.Painting
 			{
 				int result = 0;
 
-				foreach(GradientStop stop in this._Stops)
+				foreach(GradientStop stop in _Stops)
 				{
 					result = (result * 397) ^ stop.GetHashCode();
 				}

@@ -17,8 +17,8 @@ namespace Frost.Atlasing
 		{
 			Contract.Requires(atlas != null);
 
-			this._Value = true;
-			this._Atlas = atlas;
+			_Value = true;
+			_Atlas = atlas;
 		}
 
 		public ISurfaceAtlas Atlas
@@ -27,18 +27,18 @@ namespace Frost.Atlasing
 			{
 				Contract.Ensures(Contract.Result<ISurfaceAtlas>() != null);
 
-				return this._Atlas;
+				return _Atlas;
 			}
 		}
 
 		public bool Value
 		{
-			get { return this._Value; }
+			get { return _Value; }
 		}
 
 		public void Invalidate()
 		{
-			this._Value = false;
+			_Value = false;
 		}
 	}
 }

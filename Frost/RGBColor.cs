@@ -17,10 +17,10 @@ namespace Frost
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(Check.IsByte(this._R));
-			Contract.Invariant(Check.IsByte(this._G));
-			Contract.Invariant(Check.IsByte(this._B));
-			Contract.Invariant(Check.IsPercentage(this._A));
+			Contract.Invariant(Check.IsByte(_R));
+			Contract.Invariant(Check.IsByte(_G));
+			Contract.Invariant(Check.IsByte(_B));
+			Contract.Invariant(Check.IsPercentage(_A));
 		}
 
 		public RGBColor(
@@ -36,10 +36,10 @@ namespace Frost
 			blue = Convert.ToSingle(Math.Round(blue, 4));
 			alpha = Convert.ToSingle(Math.Round(alpha, 4));
 
-			this._R = red;
-			this._G = green;
-			this._B = blue;
-			this._A = alpha;
+			_R = red;
+			_G = green;
+			_B = blue;
+			_A = alpha;
 
 			Contract.Assert(R.Equals(red));
 			Contract.Assert(G.Equals(green));
@@ -52,9 +52,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsByte(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._R));
+				Contract.Ensures(Contract.Result<float>().Equals(_R));
 
-				return this._R;
+				return _R;
 			}
 		}
 
@@ -63,9 +63,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsByte(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._G));
+				Contract.Ensures(Contract.Result<float>().Equals(_G));
 
-				return this._G;
+				return _G;
 			}
 		}
 
@@ -74,9 +74,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsByte(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._B));
+				Contract.Ensures(Contract.Result<float>().Equals(_B));
 
-				return this._B;
+				return _B;
 			}
 		}
 
@@ -85,26 +85,26 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsPercentage(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._A));
+				Contract.Ensures(Contract.Result<float>().Equals(_A));
 
-				return this._A;
+				return _A;
 			}
 		}
 
 		public bool Equals(RGBColor other)
 		{
-			return other._A.Equals(this._A) && other._B.Equals(this._B) &&
-			       other._G.Equals(this._G) && other._R.Equals(this._R);
+			return other._A.Equals(_A) && other._B.Equals(_B) &&
+			       other._G.Equals(_G) && other._R.Equals(_R);
 		}
 
 		public override string ToString()
 		{
 			return string.Format(
 				"R: {0}, G: {1}, B: {2}, A: {3}",
-				this._R,
-				this._G,
-				this._B,
-				this._A);
+				_R,
+				_G,
+				_B,
+				_A);
 		}
 
 		public override bool Equals(object obj)
@@ -121,10 +121,10 @@ namespace Frost
 		{
 			unchecked
 			{
-				int result = this._A.GetHashCode();
-				result = (result * 397) ^ this._B.GetHashCode();
-				result = (result * 397) ^ this._G.GetHashCode();
-				result = (result * 397) ^ this._R.GetHashCode();
+				int result = _A.GetHashCode();
+				result = (result * 397) ^ _B.GetHashCode();
+				result = (result * 397) ^ _G.GetHashCode();
+				result = (result * 397) ^ _R.GetHashCode();
 				return result;
 			}
 		}
@@ -132,10 +132,10 @@ namespace Frost
 		internal Color ToColor()
 		{
 			return new Color(
-				this._R / 255.0f,
-				this._G / 255.0f,
-				this._B / 255.0f,
-				this._A / 100.0f);
+				_R / 255.0f,
+				_G / 255.0f,
+				_B / 255.0f,
+				_A / 100.0f);
 		}
 
 		public static implicit operator RGBColor(Color color)

@@ -29,7 +29,7 @@ namespace Frost.DirectX.Painting
 		{
 			Contract.Requires(factory2D != null);
 
-			this._GeometryCache = new GeometryCache(factory2D);
+			_GeometryCache = new GeometryCache(factory2D);
 		}
 
 		public void Dispose()
@@ -44,22 +44,22 @@ namespace Frost.DirectX.Painting
 
 			Surface2D surface = (Surface2D)target.Surface2D;
 
-			this._Target = surface.Target2D;
-			this._TargetRegion = target.Region;
+			_Target = surface.Target2D;
+			_TargetRegion = target.Region;
 
-			this._Target.BeginDraw();
+			_Target.BeginDraw();
 		}
 
 		public void End()
 		{
-			this._Target.EndDraw();
+			_Target.EndDraw();
 
-			this._Target = null;
+			_Target = null;
 		}
 
 		public void Clear()
 		{
-			this._Target.Clear(Color.Transparent.ToColor4());
+			_Target.Clear(Color.Transparent.ToColor4());
 		}
 
 		public void Clear(Rectangle region)
@@ -67,7 +67,7 @@ namespace Frost.DirectX.Painting
 			// matches the effective surface region; clear everything
 			if(region.Location.Equals(Point.Empty))
 			{
-				if(region.Size == this._TargetRegion.Size)
+				if(region.Size == _TargetRegion.Size)
 				{
 					Clear();
 
@@ -77,7 +77,7 @@ namespace Frost.DirectX.Painting
 
 			Rectangle newRegion = region;
 
-			if(newRegion.Equals(this._TargetRegion))
+			if(newRegion.Equals(_TargetRegion))
 			{
 				Thickness thickness = new Thickness(1.0f);
 
@@ -93,13 +93,13 @@ namespace Frost.DirectX.Painting
 				Bottom = newRegion.Bottom
 			};
 
-			this._Target.PushAxisAlignedClip(
+			_Target.PushAxisAlignedClip(
 				roundedRegion, AntialiasMode.Aliased);
 
 			// clear only part of the surface as specified by newRegion
-			this._Target.Clear(Color.Transparent.ToColor4());
+			_Target.Clear(Color.Transparent.ToColor4());
 
-			this._Target.PopAxisAlignedClip();
+			_Target.PopAxisAlignedClip();
 		}
 
 		public void Stroke(
@@ -127,7 +127,7 @@ namespace Frost.DirectX.Painting
 				Bottom = newRegion.Bottom
 			};
 
-			this._Target.DrawRectangle(
+			_Target.DrawRectangle(
 				roundedRectangle, brush, strokeWidth, style);
 		}
 
@@ -145,7 +145,7 @@ namespace Frost.DirectX.Painting
 			PointF start = new PointF {X = lineStart.X, Y = lineStart.Y};
 			PointF end = new PointF {X = lineEnd.X, Y = lineEnd.Y};
 
-			this._Target.DrawLine(start, end, brush, strokeWidth, style);
+			_Target.DrawLine(start, end, brush, strokeWidth, style);
 		}
 
 		public void Stroke(
@@ -177,7 +177,7 @@ namespace Frost.DirectX.Painting
 				RadiusY = roundedRectangleRadius.Height
 			};
 
-			this._Target.DrawRoundedRectangle(
+			_Target.DrawRoundedRectangle(
 				roundedRectangle, brush, strokeWidth, style);
 		}
 
@@ -193,7 +193,7 @@ namespace Frost.DirectX.Painting
 				Bottom = rectangleRegion.Bottom
 			};
 
-			this._Target.FillRectangle(roundedRectangle, brush);
+			_Target.FillRectangle(roundedRectangle, brush);
 		}
 
 		public void Fill(
@@ -215,7 +215,7 @@ namespace Frost.DirectX.Painting
 				RadiusY = roundedRectangleRadius.Height
 			};
 
-			this._Target.FillRoundedRectangle(rectangle, brush);
+			_Target.FillRoundedRectangle(rectangle, brush);
 		}
 
 		public void Stroke(
@@ -229,9 +229,9 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(style != null);
 			Contract.Requires(Check.IsPositive(strokeWidth));
 
-			DxGeometry resolved = this._GeometryCache.ResolveGeometry(geometry);
+			DxGeometry resolved = _GeometryCache.ResolveGeometry(geometry);
 
-			this._Target.DrawGeometry(resolved, brush, strokeWidth, style);
+			_Target.DrawGeometry(resolved, brush, strokeWidth, style);
 		}
 
 		public void Fill(Geometry geometry, Brush brush)
@@ -239,16 +239,16 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(geometry != null);
 			Contract.Requires(brush != null);
 
-			DxGeometry resolved = this._GeometryCache.ResolveGeometry(geometry);
+			DxGeometry resolved = _GeometryCache.ResolveGeometry(geometry);
 
-			this._Target.FillGeometry(resolved, brush);
+			_Target.FillGeometry(resolved, brush);
 		}
 
 		private void Dispose(bool disposing)
 		{
 			if(disposing)
 			{
-				this._GeometryCache.Dispose();
+				_GeometryCache.Dispose();
 			}
 		}
 

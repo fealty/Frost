@@ -27,45 +27,45 @@ namespace Frost.Effects
 		{
 			Contract.Requires(canvas != null);
 
-			this._Canvas = canvas;
-			this._SourceRegion = sourceRegion;
-			this._DestinationRegion = destinationRegion;
-			this._Blend = blend;
-			this._Transformation = transformation;
+			_Canvas = canvas;
+			_SourceRegion = sourceRegion;
+			_DestinationRegion = destinationRegion;
+			_Blend = blend;
+			_Transformation = transformation;
 		}
 
 		public Matrix3X2 Transformation
 		{
-			get { return this._Transformation; }
+			get { return _Transformation; }
 		}
 
 		public Rectangle SourceRegion
 		{
-			get { return this._SourceRegion; }
+			get { return _SourceRegion; }
 		}
 
 		public Rectangle DestinationRegion
 		{
-			get { return this._DestinationRegion; }
+			get { return _DestinationRegion; }
 		}
 
 		public Canvas Canvas
 		{
-			get { return this._Canvas; }
+			get { return _Canvas; }
 		}
 
 		public BlendOperation Blend
 		{
-			get { return this._Blend; }
+			get { return _Blend; }
 		}
 
 		public bool Equals(BatchedItem other)
 		{
-			return other._Blend == this._Blend &&
-			       other._Transformation.Equals(this._Transformation) &&
-			       other._SourceRegion.Equals(this._SourceRegion) &&
-			       other._DestinationRegion.Equals(this._DestinationRegion) &&
-			       Equals(other._Canvas, this._Canvas);
+			return other._Blend == _Blend &&
+			       other._Transformation.Equals(_Transformation) &&
+			       other._SourceRegion.Equals(_SourceRegion) &&
+			       other._DestinationRegion.Equals(_DestinationRegion) &&
+			       Equals(other._Canvas, _Canvas);
 		}
 
 		public override bool Equals(object obj)
@@ -82,11 +82,11 @@ namespace Frost.Effects
 		{
 			unchecked
 			{
-				int result = ((int)this._Blend).GetHashCode();
-				result = (result * 397) ^ this._Transformation.GetHashCode();
-				result = (result * 397) ^ this._SourceRegion.GetHashCode();
-				result = (result * 397) ^ this._DestinationRegion.GetHashCode();
-				result = (result * 397) ^ this._Canvas.GetHashCode();
+				int result = ((int)_Blend).GetHashCode();
+				result = (result * 397) ^ _Transformation.GetHashCode();
+				result = (result * 397) ^ _SourceRegion.GetHashCode();
+				result = (result * 397) ^ _DestinationRegion.GetHashCode();
+				result = (result * 397) ^ _Canvas.GetHashCode();
 				return result;
 			}
 		}

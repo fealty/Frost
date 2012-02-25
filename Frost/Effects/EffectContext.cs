@@ -26,8 +26,8 @@ namespace Frost.Effects
 		{
 			Contract.Requires(effect != null);
 
-			this._Effect = effect;
-			this._Options = options;
+			_Effect = effect;
+			_Options = options;
 
 			Contract.Assert(Effect.Equals(effect));
 			Contract.Assert(Options.Equals(options));
@@ -45,13 +45,13 @@ namespace Frost.Effects
 			{
 				Contract.Ensures(Contract.Result<Effect<T>>() != null);
 
-				return this._Effect;
+				return _Effect;
 			}
 		}
 
 		public T Options
 		{
-			get { return this._Options; }
+			get { return _Options; }
 		}
 
 		bool IEquatable<IEffectContext>.Equals(IEffectContext other)
@@ -61,7 +61,7 @@ namespace Frost.Effects
 
 		IEffect IEffectContext.Effect
 		{
-			get { return this._Effect; }
+			get { return _Effect; }
 		}
 
 		public bool Equals(EffectContext<T> other)
@@ -76,8 +76,8 @@ namespace Frost.Effects
 				return true;
 			}
 
-			return other._Options.Equals(this._Options) &&
-			       Equals(other._Effect, this._Effect);
+			return other._Options.Equals(_Options) &&
+			       Equals(other._Effect, _Effect);
 		}
 
 		public override bool Equals(object obj)
@@ -99,15 +99,15 @@ namespace Frost.Effects
 		{
 			unchecked
 			{
-				return (this._Options.GetHashCode() * 397) ^
-				       (this._Effect != null ? this._Effect.GetHashCode() : 0);
+				return (_Options.GetHashCode() * 397) ^
+				       (_Effect != null ? _Effect.GetHashCode() : 0);
 			}
 		}
 
 		public override string ToString()
 		{
 			return string.Format(
-				"Effect: {0}, Options: {1}", this._Effect, this._Options);
+				"Effect: {0}, Options: {1}", _Effect, _Options);
 		}
 
 		public static bool operator ==(

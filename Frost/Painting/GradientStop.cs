@@ -17,8 +17,8 @@ namespace Frost.Painting
 		{
 			Contract.Requires(Check.IsNormalized(position));
 
-			this._Position = position;
-			this._Color = color;
+			_Position = position;
+			_Color = color;
 
 			Contract.Assert(Position.Equals(position));
 			Contract.Assert(Color.Equals(color));
@@ -28,9 +28,9 @@ namespace Frost.Painting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Color>().Equals(this._Color));
+				Contract.Ensures(Contract.Result<Color>().Equals(_Color));
 
-				return this._Color;
+				return _Color;
 			}
 		}
 
@@ -38,17 +38,17 @@ namespace Frost.Painting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<float>().Equals(this._Position));
+				Contract.Ensures(Contract.Result<float>().Equals(_Position));
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
 
-				return this._Position;
+				return _Position;
 			}
 		}
 
 		public bool Equals(GradientStop other)
 		{
-			return other._Color.Equals(this._Color) &&
-			       other._Position.Equals(this._Position);
+			return other._Color.Equals(_Color) &&
+			       other._Position.Equals(_Position);
 		}
 
 		public override bool Equals(object obj)
@@ -65,20 +65,20 @@ namespace Frost.Painting
 		{
 			unchecked
 			{
-				return (this._Color.GetHashCode() * 397) ^
-				       this._Position.GetHashCode();
+				return (_Color.GetHashCode() * 397) ^
+				       _Position.GetHashCode();
 			}
 		}
 
 		public override string ToString()
 		{
 			return string.Format(
-				"Position: {0}, Color: {1}", this._Position, this._Color);
+				"Position: {0}, Color: {1}", _Position, _Color);
 		}
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(Check.IsNormalized(this._Position));
+			Contract.Invariant(Check.IsNormalized(_Position));
 		}
 
 		public static bool operator ==(GradientStop left, GradientStop right

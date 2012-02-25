@@ -16,8 +16,8 @@ namespace Frost.Effects
 
 		public ColorOutputSettings(Color color, ColorOperation operation)
 		{
-			this._Color = color;
-			this._Operation = operation;
+			_Color = color;
+			_Operation = operation;
 
 			Contract.Assert(Color.Equals(color));
 			Contract.Assert(Operation.Equals(operation));
@@ -28,9 +28,9 @@ namespace Frost.Effects
 			get
 			{
 				Contract.Ensures(
-					Contract.Result<ColorOperation>().Equals(this._Operation));
+					Contract.Result<ColorOperation>().Equals(_Operation));
 
-				return this._Operation;
+				return _Operation;
 			}
 		}
 
@@ -38,16 +38,16 @@ namespace Frost.Effects
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Color>().Equals(this._Color));
+				Contract.Ensures(Contract.Result<Color>().Equals(_Color));
 
-				return this._Color;
+				return _Color;
 			}
 		}
 
 		public bool Equals(ColorOutputSettings other)
 		{
-			return other._Color.Equals(this._Color) &&
-			       other._Operation == this._Operation;
+			return other._Color.Equals(_Color) &&
+			       other._Operation == _Operation;
 		}
 
 		public override bool Equals(object obj)
@@ -65,8 +65,8 @@ namespace Frost.Effects
 		{
 			unchecked
 			{
-				return (this._Color.GetHashCode() * 397) ^
-				       ((int)this._Operation).GetHashCode();
+				return (_Color.GetHashCode() * 397) ^
+				       ((int)_Operation).GetHashCode();
 			}
 		}
 

@@ -28,13 +28,13 @@ namespace Frost.DirectX
 				Point point2 = new Point(triangle.Point2.X, triangle.Point2.Y);
 				Point point3 = new Point(triangle.Point3.X, triangle.Point3.Y);
 
-				this._Sink.AddTriangle(point1, point2, point3);
+				_Sink.AddTriangle(point1, point2, point3);
 			}
 		}
 
 		void SharpDX.Direct2D1.TessellationSink.Close()
 		{
-			this._Sink.End();
+			_Sink.End();
 		}
 
 		public void Tessellate(
@@ -44,13 +44,13 @@ namespace Frost.DirectX
 			Contract.Requires(sink != null);
 			Contract.Requires(Check.IsPositive(tolerance));
 
-			this._Sink = sink;
+			_Sink = sink;
 
-			this._Sink.Begin();
+			_Sink.Begin();
 
 			resolvedSource.Tessellate(tolerance, this);
 
-			this._Sink = null;
+			_Sink = null;
 		}
 	}
 }

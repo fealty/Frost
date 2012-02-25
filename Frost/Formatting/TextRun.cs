@@ -46,17 +46,17 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsPositive(inline.Width));
 			Contract.Requires(Check.IsPositive(inline.Height));
 
-			this._TextRange = textRange;
-			this._Culture = culture;
-			this._Family = family;
-			this._Stretch = stretch;
-			this._Style = style;
-			this._Weight = weight;
-			this._PointSize = pointSize;
-			this._HAlignment = hAlignment;
-			this._VAlignment = vAlignment;
-			this._Inline = inline;
-			this._Features = features;
+			_TextRange = textRange;
+			_Culture = culture;
+			_Family = family;
+			_Stretch = stretch;
+			_Style = style;
+			_Weight = weight;
+			_PointSize = pointSize;
+			_HAlignment = hAlignment;
+			_VAlignment = vAlignment;
+			_Inline = inline;
+			_Features = features;
 
 			Contract.Assert(TextRange.Equals(textRange));
 			Contract.Assert(Culture == culture);
@@ -76,9 +76,9 @@ namespace Frost.Formatting
 			get
 			{
 				Contract.Ensures(
-					Contract.Result<FontFeatureCollection>() == this._Features);
+					Contract.Result<FontFeatureCollection>() == _Features);
 
-				return this._Features;
+				return _Features;
 			}
 		}
 
@@ -86,9 +86,9 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<FontWeight>() == this._Weight);
+				Contract.Ensures(Contract.Result<FontWeight>() == _Weight);
 
-				return this._Weight;
+				return _Weight;
 			}
 		}
 
@@ -96,9 +96,9 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<FontStyle>() == this._Style);
+				Contract.Ensures(Contract.Result<FontStyle>() == _Style);
 
-				return this._Style;
+				return _Style;
 			}
 		}
 
@@ -106,15 +106,15 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<FontStretch>() == this._Stretch);
+				Contract.Ensures(Contract.Result<FontStretch>() == _Stretch);
 
-				return this._Stretch;
+				return _Stretch;
 			}
 		}
 
 		public IndexedRange TextRange
 		{
-			get { return this._TextRange; }
+			get { return _TextRange; }
 		}
 
 		public Size Inline
@@ -123,9 +123,9 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Check.IsPositive(Contract.Result<Size>().Width));
 				Contract.Ensures(Check.IsPositive(Contract.Result<Size>().Height));
-				Contract.Ensures(Contract.Result<Size>().Equals(this._Inline));
+				Contract.Ensures(Contract.Result<Size>().Equals(_Inline));
 
-				return this._Inline;
+				return _Inline;
 			}
 		}
 
@@ -133,9 +133,9 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Alignment>() == this._VAlignment);
+				Contract.Ensures(Contract.Result<Alignment>() == _VAlignment);
 
-				return this._VAlignment;
+				return _VAlignment;
 			}
 		}
 
@@ -143,9 +143,9 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Alignment>() == this._HAlignment);
+				Contract.Ensures(Contract.Result<Alignment>() == _HAlignment);
 
-				return this._HAlignment;
+				return _HAlignment;
 			}
 		}
 
@@ -153,9 +153,9 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<float>().Equals(this._PointSize));
+				Contract.Ensures(Contract.Result<float>().Equals(_PointSize));
 
-				return this._PointSize;
+				return _PointSize;
 			}
 		}
 
@@ -163,9 +163,9 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<string>() == this._Family);
+				Contract.Ensures(Contract.Result<string>() == _Family);
 
-				return this._Family;
+				return _Family;
 			}
 		}
 
@@ -173,25 +173,25 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<CultureInfo>() == this._Culture);
+				Contract.Ensures(Contract.Result<CultureInfo>() == _Culture);
 
-				return this._Culture;
+				return _Culture;
 			}
 		}
 
 		public bool Equals(TextRun other)
 		{
-			return Equals(other._Culture, this._Culture) &&
-			       Equals(other._Family, this._Family) &&
-			       Equals(other._Features, this._Features) &&
-			       other._HAlignment == this._HAlignment &&
-			       other._Inline.Equals(this._Inline) &&
-			       other._PointSize.Equals(this._PointSize) &&
-			       other._Stretch == this._Stretch &&
-			       other._Style == this._Style &&
-			       other._TextRange.Equals(this._TextRange) &&
-			       other._VAlignment == this._VAlignment &&
-			       other._Weight == this._Weight;
+			return Equals(other._Culture, _Culture) &&
+			       Equals(other._Family, _Family) &&
+			       Equals(other._Features, _Features) &&
+			       other._HAlignment == _HAlignment &&
+			       other._Inline.Equals(_Inline) &&
+			       other._PointSize.Equals(_PointSize) &&
+			       other._Stretch == _Stretch &&
+			       other._Style == _Style &&
+			       other._TextRange.Equals(_TextRange) &&
+			       other._VAlignment == _VAlignment &&
+			       other._Weight == _Weight;
 		}
 
 		public override bool Equals(object obj)
@@ -208,23 +208,23 @@ namespace Frost.Formatting
 		{
 			unchecked
 			{
-				int result = (this._Culture != null
-				              	? this._Culture.GetHashCode()
+				int result = (_Culture != null
+				              	? _Culture.GetHashCode()
 				              	: 0);
 				result = (result * 397) ^
-				         (this._Family != null ? this._Family.GetHashCode() : 0);
+				         (_Family != null ? _Family.GetHashCode() : 0);
 				result = (result * 397) ^
-				         (this._Features != null
-				          	? this._Features.GetHashCode()
+				         (_Features != null
+				          	? _Features.GetHashCode()
 				          	: 0);
-				result = (result * 397) ^ this._HAlignment.GetHashCode();
-				result = (result * 397) ^ this._Inline.GetHashCode();
-				result = (result * 397) ^ this._PointSize.GetHashCode();
-				result = (result * 397) ^ this._Stretch.GetHashCode();
-				result = (result * 397) ^ this._Style.GetHashCode();
-				result = (result * 397) ^ this._TextRange.GetHashCode();
-				result = (result * 397) ^ this._VAlignment.GetHashCode();
-				result = (result * 397) ^ this._Weight.GetHashCode();
+				result = (result * 397) ^ _HAlignment.GetHashCode();
+				result = (result * 397) ^ _Inline.GetHashCode();
+				result = (result * 397) ^ _PointSize.GetHashCode();
+				result = (result * 397) ^ _Stretch.GetHashCode();
+				result = (result * 397) ^ _Style.GetHashCode();
+				result = (result * 397) ^ _TextRange.GetHashCode();
+				result = (result * 397) ^ _VAlignment.GetHashCode();
+				result = (result * 397) ^ _Weight.GetHashCode();
 				return result;
 			}
 		}
@@ -234,24 +234,24 @@ namespace Frost.Formatting
 			return
 				string.Format(
 					"TextRange: {0}, Culture: {1}, Family: {2}, Stretch: {3}, Style: {4}, Weight: {5}, PointSize: {6}, HAlignment: {7}, VAlignment: {8}, Inline: {9}, Features: {10}",
-					this._TextRange,
-					this._Culture,
-					this._Family,
-					this._Stretch,
-					this._Style,
-					this._Weight,
-					this._PointSize,
-					this._HAlignment,
-					this._VAlignment,
-					this._Inline,
-					this._Features);
+					_TextRange,
+					_Culture,
+					_Family,
+					_Stretch,
+					_Style,
+					_Weight,
+					_PointSize,
+					_HAlignment,
+					_VAlignment,
+					_Inline,
+					_Features);
 		}
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(Check.IsPositive(this._PointSize));
-			Contract.Invariant(Check.IsPositive(this._Inline.Width));
-			Contract.Invariant(Check.IsPositive(this._Inline.Height));
+			Contract.Invariant(Check.IsPositive(_PointSize));
+			Contract.Invariant(Check.IsPositive(_Inline.Width));
+			Contract.Invariant(Check.IsPositive(_Inline.Height));
 		}
 
 		public static bool operator ==(TextRun left, TextRun right)

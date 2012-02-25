@@ -22,10 +22,10 @@ namespace Frost.Effects
 			Contract.Requires(Check.IsPositive(scale.Width));
 			Contract.Requires(Check.IsPositive(scale.Height));
 
-			this._Color = color;
-			this._Offset = offset;
-			this._Amount = amount;
-			this._Scale = scale;
+			_Color = color;
+			_Offset = offset;
+			_Amount = amount;
+			_Scale = scale;
 
 			Contract.Assert(Color.Equals(color));
 			Contract.Assert(Offset.Equals(offset));
@@ -37,9 +37,9 @@ namespace Frost.Effects
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Size>().Equals(this._Scale));
+				Contract.Ensures(Contract.Result<Size>().Equals(_Scale));
 
-				return this._Scale;
+				return _Scale;
 			}
 		}
 
@@ -47,9 +47,9 @@ namespace Frost.Effects
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Size>().Equals(this._Offset));
+				Contract.Ensures(Contract.Result<Size>().Equals(_Offset));
 
-				return this._Offset;
+				return _Offset;
 			}
 		}
 
@@ -57,9 +57,9 @@ namespace Frost.Effects
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Color>().Equals(this._Color));
+				Contract.Ensures(Contract.Result<Color>().Equals(_Color));
 
-				return this._Color;
+				return _Color;
 			}
 		}
 
@@ -67,18 +67,18 @@ namespace Frost.Effects
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<float>().Equals(this._Amount));
+				Contract.Ensures(Contract.Result<float>().Equals(_Amount));
 
-				return this._Amount;
+				return _Amount;
 			}
 		}
 
 		public bool Equals(DropShadowSettings other)
 		{
-			return other._Amount.Equals(this._Amount) &&
-			       other._Color.Equals(this._Color) &&
-			       other._Offset.Equals(this._Offset) &&
-			       other._Scale.Equals(this._Scale);
+			return other._Amount.Equals(_Amount) &&
+			       other._Color.Equals(_Color) &&
+			       other._Offset.Equals(_Offset) &&
+			       other._Scale.Equals(_Scale);
 		}
 
 		public override bool Equals(object obj)
@@ -95,10 +95,10 @@ namespace Frost.Effects
 		{
 			unchecked
 			{
-				int result = this._Amount.GetHashCode();
-				result = (result * 397) ^ this._Color.GetHashCode();
-				result = (result * 397) ^ this._Offset.GetHashCode();
-				result = (result * 397) ^ this._Scale.GetHashCode();
+				int result = _Amount.GetHashCode();
+				result = (result * 397) ^ _Color.GetHashCode();
+				result = (result * 397) ^ _Offset.GetHashCode();
+				result = (result * 397) ^ _Scale.GetHashCode();
 				return result;
 			}
 		}

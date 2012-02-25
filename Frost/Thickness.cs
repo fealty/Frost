@@ -32,10 +32,10 @@ namespace Frost
 		[System.Diagnostics.Contracts.ContractInvariantMethod] private void
 			Invariant()
 		{
-			Contracts.Invariant(Check.IsPositive(this._Left));
-			Contracts.Invariant(Check.IsPositive(this._Top));
-			Contracts.Invariant(Check.IsPositive(this._Right));
-			Contracts.Invariant(Check.IsPositive(this._Bottom));
+			Contracts.Invariant(Check.IsPositive(_Left));
+			Contracts.Invariant(Check.IsPositive(_Top));
+			Contracts.Invariant(Check.IsPositive(_Right));
+			Contracts.Invariant(Check.IsPositive(_Bottom));
 		}
 
 		public Thickness(float left, float top, float right, float bottom)
@@ -45,10 +45,10 @@ namespace Frost
 			Contracts.Requires(Check.IsPositive(right));
 			Contracts.Requires(Check.IsPositive(bottom));
 
-			this._Left = left;
-			this._Top = top;
-			this._Right = right;
-			this._Bottom = bottom;
+			_Left = left;
+			_Top = top;
+			_Right = right;
+			_Bottom = bottom;
 
 			Contracts.Assert(Left.Equals(left));
 			Contracts.Assert(Top.Equals(top));
@@ -78,9 +78,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Check.IsPositive(Contracts.Result<float>()));
-				Contracts.Ensures(Contracts.Result<float>().Equals(this._Bottom));
+				Contracts.Ensures(Contracts.Result<float>().Equals(_Bottom));
 
-				return this._Bottom;
+				return _Bottom;
 			}
 		}
 
@@ -89,9 +89,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Check.IsPositive(Contracts.Result<float>()));
-				Contracts.Ensures(Contracts.Result<float>().Equals(this._Right));
+				Contracts.Ensures(Contracts.Result<float>().Equals(_Right));
 
-				return this._Right;
+				return _Right;
 			}
 		}
 
@@ -100,9 +100,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Check.IsPositive(Contracts.Result<float>()));
-				Contracts.Ensures(Contracts.Result<float>().Equals(this._Top));
+				Contracts.Ensures(Contracts.Result<float>().Equals(_Top));
 
-				return this._Top;
+				return _Top;
 			}
 		}
 
@@ -111,9 +111,9 @@ namespace Frost
 			get
 			{
 				Contracts.Ensures(Check.IsPositive(Contracts.Result<float>()));
-				Contracts.Ensures(Contracts.Result<float>().Equals(this._Left));
+				Contracts.Ensures(Contracts.Result<float>().Equals(_Left));
 
-				return this._Left;
+				return _Left;
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace Frost
 			{
 				Contracts.Ensures(Check.IsPositive(Contracts.Result<float>()));
 
-				return this._Left + this._Right;
+				return _Left + _Right;
 			}
 		}
 
@@ -163,16 +163,16 @@ namespace Frost
 			{
 				Contracts.Ensures(Check.IsPositive(Contracts.Result<float>()));
 
-				return this._Top + this._Bottom;
+				return _Top + _Bottom;
 			}
 		}
 
 		public bool Equals(Thickness other)
 		{
-			return other._Bottom.Equals(this._Bottom) &&
-			       other._Left.Equals(this._Left) &&
-			       other._Right.Equals(this._Right) &&
-			       other._Top.Equals(this._Top);
+			return other._Bottom.Equals(_Bottom) &&
+			       other._Left.Equals(_Left) &&
+			       other._Right.Equals(_Right) &&
+			       other._Top.Equals(_Top);
 		}
 
 		public Thickness Contract(
@@ -184,10 +184,10 @@ namespace Frost
 			Contracts.Requires(Check.IsFinite(bottom));
 
 			return new Thickness(
-				this._Left - left,
-				this._Top - top,
-				this._Right - right,
-				this._Bottom - bottom);
+				_Left - left,
+				_Top - top,
+				_Right - right,
+				_Bottom - bottom);
 		}
 
 		public Thickness Contract(float leftRight, float topBottom)
@@ -218,10 +218,10 @@ namespace Frost
 			Contracts.Requires(Check.IsFinite(bottom));
 
 			return new Thickness(
-				this._Left + left,
-				this._Top + top,
-				this._Right + right,
-				this._Bottom + bottom);
+				_Left + left,
+				_Top + top,
+				_Right + right,
+				_Bottom + bottom);
 		}
 
 		public Thickness Expand(float leftRight, float topBottom)
@@ -257,10 +257,10 @@ namespace Frost
 		{
 			unchecked
 			{
-				int result = this._Bottom.GetHashCode();
-				result = (result * 397) ^ this._Left.GetHashCode();
-				result = (result * 397) ^ this._Right.GetHashCode();
-				result = (result * 397) ^ this._Top.GetHashCode();
+				int result = _Bottom.GetHashCode();
+				result = (result * 397) ^ _Left.GetHashCode();
+				result = (result * 397) ^ _Right.GetHashCode();
+				result = (result * 397) ^ _Top.GetHashCode();
 				return result;
 			}
 		}
@@ -269,10 +269,10 @@ namespace Frost
 		{
 			return string.Format(
 				"Left: {0}, Top: {1}, Right: {2}, Bottom: {3}",
-				this._Left,
-				this._Top,
-				this._Right,
-				this._Bottom);
+				_Left,
+				_Top,
+				_Right,
+				_Bottom);
 		}
 
 		public static bool operator ==(Thickness left, Thickness right)

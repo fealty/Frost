@@ -21,14 +21,14 @@ namespace Frost.DirectX
 			Contract.Requires(Check.IsPositive(tolerance));
 			Contract.Ensures(Contract.Result<Geometry>() != null);
 
-			this._Builder = Geometry.Create();
+			_Builder = Geometry.Create();
 
 			resolvedSource.Simplify(
 				GeometrySimplificationOption.Lines, tolerance, this);
 
-			Geometry result = this._Builder.Build();
+			Geometry result = _Builder.Build();
 
-			this._Builder = null;
+			_Builder = null;
 
 			return result;
 		}

@@ -17,8 +17,8 @@ namespace Frost.Formatting
 		{
 			Contract.Requires(tag != null);
 
-			this._Tag = tag;
-			this._Parameter = parameter;
+			_Tag = tag;
+			_Parameter = parameter;
 
 			Contract.Assert(Tag.Equals(tag));
 			Contract.Assert(Parameter.Equals(parameter));
@@ -26,7 +26,7 @@ namespace Frost.Formatting
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(this._Tag != null);
+			Contract.Invariant(_Tag != null);
 		}
 
 		public string Tag
@@ -34,21 +34,21 @@ namespace Frost.Formatting
 			get
 			{
 				Contract.Ensures(Contract.Result<string>() != null);
-				Contract.Ensures(Contract.Result<string>().Equals(this._Tag));
+				Contract.Ensures(Contract.Result<string>().Equals(_Tag));
 
-				return this._Tag;
+				return _Tag;
 			}
 		}
 
 		public int Parameter
 		{
-			get { return this._Parameter; }
+			get { return _Parameter; }
 		}
 
 		public bool Equals(FontFeature other)
 		{
-			return Equals(other._Tag, this._Tag) &&
-			       other._Parameter == this._Parameter;
+			return Equals(other._Tag, _Tag) &&
+			       other._Parameter == _Parameter;
 		}
 
 		public override bool Equals(object obj)
@@ -65,8 +65,8 @@ namespace Frost.Formatting
 		{
 			unchecked
 			{
-				return ((this._Tag != null ? this._Tag.GetHashCode() : 0) * 397) ^
-				       this._Parameter;
+				return ((_Tag != null ? _Tag.GetHashCode() : 0) * 397) ^
+				       _Parameter;
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Frost.Formatting
 		public override string ToString()
 		{
 			return string.Format(
-				"Tag: {0}, Parameter: {1}", this._Tag, this._Parameter);
+				"Tag: {0}, Parameter: {1}", _Tag, _Parameter);
 		}
 
 #if(UNIT_TESTING)

@@ -28,8 +28,8 @@ namespace Frost
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(Check.IsFinite(this._X));
-			Contract.Invariant(Check.IsFinite(this._Y));
+			Contract.Invariant(Check.IsFinite(_X));
+			Contract.Invariant(Check.IsFinite(_Y));
 		}
 
 		public Point(float x, float y)
@@ -37,8 +37,8 @@ namespace Frost
 			Contract.Requires(Check.IsFinite(x));
 			Contract.Requires(Check.IsFinite(y));
 
-			this._X = x;
-			this._Y = y;
+			_X = x;
+			_Y = y;
 
 			Contract.Assert(X.Equals(x));
 			Contract.Assert(Y.Equals(y));
@@ -54,9 +54,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._Y));
+				Contract.Ensures(Contract.Result<float>().Equals(_Y));
 
-				return this._Y;
+				return _Y;
 			}
 		}
 
@@ -65,9 +65,9 @@ namespace Frost
 			get
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._X));
+				Contract.Ensures(Contract.Result<float>().Equals(_X));
 
-				return this._X;
+				return _X;
 			}
 		}
 
@@ -103,15 +103,15 @@ namespace Frost
 
 		public bool Equals(Point other)
 		{
-			return other._X.Equals(this._X) && other._Y.Equals(this._Y);
+			return other._X.Equals(_X) && other._Y.Equals(_Y);
 		}
 
 		public float DistanceTo(Point point)
 		{
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
-			double dx = point.X - this._X;
-			double dy = point.Y - this._Y;
+			double dx = point.X - _X;
+			double dy = point.Y - _Y;
 
 			return Convert.ToSingle(Math.Sqrt((dx * dx) + (dy * dy)));
 		}
@@ -120,8 +120,8 @@ namespace Frost
 		{
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
-			double dx = point.X - this._X;
-			double dy = point.Y - this._Y;
+			double dx = point.X - _X;
+			double dy = point.Y - _Y;
 
 			return Convert.ToSingle((dx * dx) + (dy * dy));
 		}
@@ -130,7 +130,7 @@ namespace Frost
 		{
 			Point v = new Point(
 				lineEnd.X - lineStart.X, lineEnd.Y - lineStart.Y);
-			Point w = new Point(this._X - lineStart.X, this._Y - lineStart.Y);
+			Point w = new Point(_X - lineStart.X, _Y - lineStart.Y);
 
 			float c1 = w.X * v.X + w.Y * v.Y;
 
@@ -155,9 +155,9 @@ namespace Frost
 		{
 			return
 				new Point(
-					(this._X * transformation.M11) + (this._Y * transformation.M21) +
+					(_X * transformation.M11) + (_Y * transformation.M21) +
 					transformation.M31,
-					(this._X * transformation.M12) + (this._Y * transformation.M22) +
+					(_X * transformation.M12) + (_Y * transformation.M22) +
 					transformation.M32);
 		}
 
@@ -175,13 +175,13 @@ namespace Frost
 		{
 			unchecked
 			{
-				return (this._X.GetHashCode() * 397) ^ this._Y.GetHashCode();
+				return (_X.GetHashCode() * 397) ^ _Y.GetHashCode();
 			}
 		}
 
 		public override string ToString()
 		{
-			return string.Format("X: {0}, Y: {1}", this._X, this._Y);
+			return string.Format("X: {0}, Y: {1}", _X, _Y);
 		}
 
 		public static bool operator ==(Point left, Point right)

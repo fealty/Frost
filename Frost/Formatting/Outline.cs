@@ -23,9 +23,9 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsPositive(emSize));
 			Contract.Requires(Check.IsFinite(normalizedBaseline));
 
-			this._NormalizedOutline = normalizedOutline;
-			this._EmSize = emSize;
-			this._NormalizedBaseline = normalizedBaseline;
+			_NormalizedOutline = normalizedOutline;
+			_EmSize = emSize;
+			_NormalizedBaseline = normalizedBaseline;
 
 			Contract.Assert(NormalizedOutline.Equals(normalizedOutline));
 			Contract.Assert(NormalizedBaseline.Equals(normalizedBaseline));
@@ -37,10 +37,10 @@ namespace Frost.Formatting
 			get
 			{
 				Contract.Ensures(
-					Contract.Result<Geometry>() == this._NormalizedOutline);
+					Contract.Result<Geometry>() == _NormalizedOutline);
 				Contract.Ensures(Contract.Result<Geometry>() != null);
 
-				return this._NormalizedOutline;
+				return _NormalizedOutline;
 			}
 		}
 
@@ -49,10 +49,10 @@ namespace Frost.Formatting
 			get
 			{
 				Contract.Ensures(
-					Contract.Result<float>().Equals(this._NormalizedBaseline));
+					Contract.Result<float>().Equals(_NormalizedBaseline));
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
 
-				return this._NormalizedBaseline;
+				return _NormalizedBaseline;
 			}
 		}
 
@@ -60,18 +60,18 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<float>().Equals(this._EmSize));
-				Contract.Ensures(Check.IsPositive(this._EmSize));
+				Contract.Ensures(Contract.Result<float>().Equals(_EmSize));
+				Contract.Ensures(Check.IsPositive(_EmSize));
 
-				return this._EmSize;
+				return _EmSize;
 			}
 		}
 
 		public bool Equals(Outline other)
 		{
-			return other._EmSize.Equals(this._EmSize) &&
-			       other._NormalizedBaseline.Equals(this._NormalizedBaseline) &&
-			       Equals(other._NormalizedOutline, this._NormalizedOutline);
+			return other._EmSize.Equals(_EmSize) &&
+			       other._NormalizedBaseline.Equals(_NormalizedBaseline) &&
+			       Equals(other._NormalizedOutline, _NormalizedOutline);
 		}
 
 		public override bool Equals(object obj)
@@ -88,11 +88,11 @@ namespace Frost.Formatting
 		{
 			unchecked
 			{
-				int result = this._EmSize.GetHashCode();
-				result = (result * 397) ^ this._NormalizedBaseline.GetHashCode();
+				int result = _EmSize.GetHashCode();
+				result = (result * 397) ^ _NormalizedBaseline.GetHashCode();
 				result = (result * 397) ^
-				         (this._NormalizedOutline != null
-				          	? this._NormalizedOutline.GetHashCode()
+				         (_NormalizedOutline != null
+				          	? _NormalizedOutline.GetHashCode()
 				          	: 0);
 				return result;
 			}
@@ -103,16 +103,16 @@ namespace Frost.Formatting
 			return
 				string.Format(
 					"NormalizedOutline: {0}, EmSize: {1}, NormalizedBaseline: {2}",
-					this._NormalizedOutline,
-					this._EmSize,
-					this._NormalizedBaseline);
+					_NormalizedOutline,
+					_EmSize,
+					_NormalizedBaseline);
 		}
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(this._NormalizedOutline != null);
-			Contract.Invariant(Check.IsFinite(this._NormalizedBaseline));
-			Contract.Invariant(Check.IsPositive(this._EmSize));
+			Contract.Invariant(_NormalizedOutline != null);
+			Contract.Invariant(Check.IsFinite(_NormalizedBaseline));
+			Contract.Invariant(Check.IsPositive(_EmSize));
 		}
 
 		public static bool operator ==(Outline left, Outline right)

@@ -39,9 +39,9 @@ namespace Frost.Shaping
 			Contract.Requires(points != null);
 			Contract.Requires(commands != null);
 
-			this._Points = points;
-			this._Commands = commands;
-			this._Transform = Matrix3X2.Identity;
+			_Points = points;
+			_Commands = commands;
+			_Transform = Matrix3X2.Identity;
 		}
 
 		private Geometry(
@@ -52,9 +52,9 @@ namespace Frost.Shaping
 			Contract.Requires(points != null);
 			Contract.Requires(commands != null);
 
-			this._Points = points;
-			this._Commands = commands;
-			this._Transform = transformation;
+			_Points = points;
+			_Commands = commands;
+			_Transform = transformation;
 		}
 
 		public static Geometry Circle
@@ -69,7 +69,7 @@ namespace Frost.Shaping
 
 		public Matrix3X2 Transformation
 		{
-			get { return this._Transform; }
+			get { return _Transform; }
 		}
 
 		public static Builder Create()
@@ -91,9 +91,9 @@ namespace Frost.Shaping
 
 			Matrix3X2 result;
 
-			this._Transform.Scale(width, height, out result);
+			_Transform.Scale(width, height, out result);
 
-			return new Geometry(this._Points, this._Commands, ref result);
+			return new Geometry(_Points, _Commands, ref result);
 		}
 
 		public Geometry Scale(Size size)
@@ -116,9 +116,9 @@ namespace Frost.Shaping
 
 			Matrix3X2 result;
 
-			this._Transform.Scale(width, height, originX, originY, out result);
+			_Transform.Scale(width, height, originX, originY, out result);
 
-			return new Geometry(this._Points, this._Commands, ref result);
+			return new Geometry(_Points, _Commands, ref result);
 		}
 
 		public Geometry Skew(float angleX, float angleY)
@@ -129,9 +129,9 @@ namespace Frost.Shaping
 
 			Matrix3X2 result;
 
-			this._Transform.Skew(angleX, angleY, out result);
+			_Transform.Skew(angleX, angleY, out result);
 
-			return new Geometry(this._Points, this._Commands, ref result);
+			return new Geometry(_Points, _Commands, ref result);
 		}
 
 		public Geometry Rotate(float angle)
@@ -141,9 +141,9 @@ namespace Frost.Shaping
 
 			Matrix3X2 result;
 
-			this._Transform.Rotate(angle, out result);
+			_Transform.Rotate(angle, out result);
 
-			return new Geometry(this._Points, this._Commands, ref result);
+			return new Geometry(_Points, _Commands, ref result);
 		}
 
 		public Geometry Rotate(float angle, float originX, float originY)
@@ -155,9 +155,9 @@ namespace Frost.Shaping
 
 			Matrix3X2 result;
 
-			this._Transform.Rotate(angle, originX, originY, out result);
+			_Transform.Rotate(angle, originX, originY, out result);
 
-			return new Geometry(this._Points, this._Commands, ref result);
+			return new Geometry(_Points, _Commands, ref result);
 		}
 
 		public Geometry Rotate(float angle, Point origin)
@@ -176,9 +176,9 @@ namespace Frost.Shaping
 
 			Matrix3X2 result;
 
-			this._Transform.Translate(width, height, out result);
+			_Transform.Translate(width, height, out result);
 
-			return new Geometry(this._Points, this._Commands, ref result);
+			return new Geometry(_Points, _Commands, ref result);
 		}
 
 		public Geometry Translate(Size value)
@@ -197,14 +197,14 @@ namespace Frost.Shaping
 			if(operation == TransformMode.Replace)
 			{
 				return new Geometry(
-					this._Points, this._Commands, ref transformation);
+					_Points, _Commands, ref transformation);
 			}
 
 			Matrix3X2 result;
 
-			transformation.Multiply(ref this._Transform, out result);
+			transformation.Multiply(ref _Transform, out result);
 
-			return new Geometry(this._Points, this._Commands, ref result);
+			return new Geometry(_Points, _Commands, ref result);
 		}
 
 		public void Extract(IGeometrySink sink)
@@ -215,7 +215,7 @@ namespace Frost.Shaping
 
 			sink.Begin();
 
-			foreach(GeometryCommand command in this._Commands)
+			foreach(GeometryCommand command in _Commands)
 			{
 				switch(command)
 				{
@@ -224,40 +224,40 @@ namespace Frost.Shaping
 						continue;
 					case GeometryCommand.MoveTo:
 						sink.MoveTo(
-							this._Points[pointIndex + 0].Transform(ref this._Transform));
+							_Points[pointIndex + 0].Transform(ref _Transform));
 						pointIndex++;
 						continue;
 					case GeometryCommand.LineTo:
 						sink.LineTo(
-							this._Points[pointIndex + 0].Transform(ref this._Transform));
+							_Points[pointIndex + 0].Transform(ref _Transform));
 						pointIndex++;
 						continue;
 					case GeometryCommand.QuadraticCurveTo:
 						sink.QuadraticCurveTo(
-							this._Points[pointIndex + 0].Transform(ref this._Transform),
-							this._Points[pointIndex + 1].Transform(ref this._Transform));
+							_Points[pointIndex + 0].Transform(ref _Transform),
+							_Points[pointIndex + 1].Transform(ref _Transform));
 						pointIndex += 2;
 						continue;
 					case GeometryCommand.BezierCurveTo:
 						sink.BezierCurveTo(
-							this._Points[pointIndex + 0].Transform(ref this._Transform),
-							this._Points[pointIndex + 1].Transform(ref this._Transform),
-							this._Points[pointIndex + 2].Transform(ref this._Transform));
+							_Points[pointIndex + 0].Transform(ref _Transform),
+							_Points[pointIndex + 1].Transform(ref _Transform),
+							_Points[pointIndex + 2].Transform(ref _Transform));
 						pointIndex += 3;
 						continue;
 					case GeometryCommand.ArcTo:
 						Size radius = new Size(
-							this._Points[pointIndex + 2].X, this._Points[pointIndex + 2].Y);
+							_Points[pointIndex + 2].X, _Points[pointIndex + 2].Y);
 						sink.ArcTo(
-							this._Points[pointIndex + 0].Transform(ref this._Transform),
-							this._Points[pointIndex + 1].Transform(ref this._Transform),
-							radius.Transform(ref this._Transform));
+							_Points[pointIndex + 0].Transform(ref _Transform),
+							_Points[pointIndex + 1].Transform(ref _Transform),
+							radius.Transform(ref _Transform));
 						pointIndex += 3;
 						continue;
 				}
 			}
 
-			Debug.Assert(pointIndex == this._Points.Length);
+			Debug.Assert(pointIndex == _Points.Length);
 
 			sink.End();
 		}
@@ -289,18 +289,18 @@ namespace Frost.Shaping
 			{
 				Contract.Ensures(Contract.Result<Geometry>() != null);
 
-				Trace.Assert(this._Points.Count > 0);
-				Trace.Assert(this._Commands.Count > 0);
+				Trace.Assert(_Points.Count > 0);
+				Trace.Assert(_Commands.Count > 0);
 
 				return new Geometry(
-					this._Points.ToArray(), this._Commands.ToArray());
+					_Points.ToArray(), _Commands.ToArray());
 			}
 
 			public Builder SaveState()
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._States.Push(this._Transform);
+				_States.Push(_Transform);
 
 				return this;
 			}
@@ -309,7 +309,7 @@ namespace Frost.Shaping
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Transform = Matrix3X2.Identity;
+				_Transform = Matrix3X2.Identity;
 
 				return this;
 			}
@@ -318,7 +318,7 @@ namespace Frost.Shaping
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Transform = this._States.Pop();
+				_Transform = _States.Pop();
 
 				return this;
 			}
@@ -327,7 +327,7 @@ namespace Frost.Shaping
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Commands.Add(GeometryCommand.Close);
+				_Commands.Add(GeometryCommand.Close);
 
 				return this;
 			}
@@ -345,16 +345,16 @@ namespace Frost.Shaping
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Commands.Add(GeometryCommand.MoveTo);
+				_Commands.Add(GeometryCommand.MoveTo);
 
 				try
 				{
-					this._Points.Add(point.Transform(ref this._Transform));
+					_Points.Add(point.Transform(ref _Transform));
 				}
 				catch
 				{
 					// rollback changes to the command list on failure
-					this._Points.RemoveAt(this._Points.Count - 1);
+					_Points.RemoveAt(_Points.Count - 1);
 
 					// rethrow the exception
 					throw;
@@ -376,16 +376,16 @@ namespace Frost.Shaping
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Commands.Add(GeometryCommand.LineTo);
+				_Commands.Add(GeometryCommand.LineTo);
 
 				try
 				{
-					this._Points.Add(point.Transform(ref this._Transform));
+					_Points.Add(point.Transform(ref _Transform));
 				}
 				catch
 				{
 					// rollback changes to the command list on failure
-					this._Commands.RemoveAt(this._Commands.Count - 1);
+					_Commands.RemoveAt(_Commands.Count - 1);
 
 					// rethrow the exception
 					throw;
@@ -415,20 +415,20 @@ namespace Frost.Shaping
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Commands.Add(GeometryCommand.QuadraticCurveTo);
+				_Commands.Add(GeometryCommand.QuadraticCurveTo);
 
 				try
 				{
-					this._Points.Add(controlPoint.Transform(ref this._Transform));
+					_Points.Add(controlPoint.Transform(ref _Transform));
 
 					try
 					{
-						this._Points.Add(endPoint.Transform(ref this._Transform));
+						_Points.Add(endPoint.Transform(ref _Transform));
 					}
 					catch
 					{
 						// rollback changes to the points list on failure
-						this._Points.RemoveAt(this._Points.Count - 1);
+						_Points.RemoveAt(_Points.Count - 1);
 
 						// rethrow the exception
 						throw;
@@ -437,7 +437,7 @@ namespace Frost.Shaping
 				catch
 				{
 					// rollback changes to the command list on failure
-					this._Commands.RemoveAt(this._Commands.Count - 1);
+					_Commands.RemoveAt(_Commands.Count - 1);
 
 					// rethrow the exception
 					throw;
@@ -473,24 +473,24 @@ namespace Frost.Shaping
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Commands.Add(GeometryCommand.BezierCurveTo);
+				_Commands.Add(GeometryCommand.BezierCurveTo);
 
 				try
 				{
-					this._Points.Add(controlPoint1.Transform(ref this._Transform));
+					_Points.Add(controlPoint1.Transform(ref _Transform));
 
 					try
 					{
-						this._Points.Add(controlPoint2.Transform(ref this._Transform));
+						_Points.Add(controlPoint2.Transform(ref _Transform));
 
 						try
 						{
-							this._Points.Add(endPoint.Transform(ref this._Transform));
+							_Points.Add(endPoint.Transform(ref _Transform));
 						}
 						catch
 						{
 							// rollback changes to the points list on failure
-							this._Points.RemoveAt(this._Points.Count - 1);
+							_Points.RemoveAt(_Points.Count - 1);
 
 							// rethrow the exception
 							throw;
@@ -499,7 +499,7 @@ namespace Frost.Shaping
 					catch
 					{
 						// rollback changes to the points list on failure
-						this._Points.RemoveAt(this._Points.Count - 1);
+						_Points.RemoveAt(_Points.Count - 1);
 
 						// rethrow the exception
 						throw;
@@ -508,7 +508,7 @@ namespace Frost.Shaping
 				catch
 				{
 					// rollback changes to the command list on failure
-					this._Commands.RemoveAt(this._Commands.Count - 1);
+					_Commands.RemoveAt(_Commands.Count - 1);
 
 					// rethrow the exception
 					throw;
@@ -546,28 +546,28 @@ namespace Frost.Shaping
 				Contract.Requires(Check.IsPositive(radius.Height));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Commands.Add(GeometryCommand.ArcTo);
+				_Commands.Add(GeometryCommand.ArcTo);
 
 				try
 				{
-					this._Points.Add(tangentStart.Transform(ref this._Transform));
+					_Points.Add(tangentStart.Transform(ref _Transform));
 
 					try
 					{
-						this._Points.Add(tangentEnd.Transform(ref this._Transform));
+						_Points.Add(tangentEnd.Transform(ref _Transform));
 
 						try
 						{
 							// transform the radius by the active state
-							Size tsize = radius.Transform(ref this._Transform);
+							Size tsize = radius.Transform(ref _Transform);
 
 							// store the radius in a point
-							this._Points.Add(new Point(tsize.Width, tsize.Height));
+							_Points.Add(new Point(tsize.Width, tsize.Height));
 						}
 						catch
 						{
 							// rollback the change to the points list on failure
-							this._Points.RemoveAt(this._Points.Count - 1);
+							_Points.RemoveAt(_Points.Count - 1);
 
 							// rethrow the exception
 							throw;
@@ -576,7 +576,7 @@ namespace Frost.Shaping
 					catch
 					{
 						// rollback the change to the points list on failure
-						this._Points.RemoveAt(this._Points.Count - 1);
+						_Points.RemoveAt(_Points.Count - 1);
 
 						// rethrow the exception
 						throw;
@@ -585,7 +585,7 @@ namespace Frost.Shaping
 				catch
 				{
 					// rollback the changes to the command list on failure
-					this._Commands.RemoveAt(this._Commands.Count - 1);
+					_Commands.RemoveAt(_Commands.Count - 1);
 
 					// rethrow the exception
 					throw;
@@ -600,7 +600,7 @@ namespace Frost.Shaping
 				Contract.Requires(Check.IsPositive(height));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Transform.Scale(width, height, out this._Transform);
+				_Transform.Scale(width, height, out _Transform);
 
 				return this;
 			}
@@ -623,8 +623,8 @@ namespace Frost.Shaping
 				Contract.Requires(Check.IsFinite(originY));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Transform.Scale(
-					width, height, originX, originY, out this._Transform);
+				_Transform.Scale(
+					width, height, originX, originY, out _Transform);
 
 				return this;
 			}
@@ -635,7 +635,7 @@ namespace Frost.Shaping
 				Contract.Requires(Check.IsDegrees(angleY));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Transform.Skew(angleX, angleY, out this._Transform);
+				_Transform.Skew(angleX, angleY, out _Transform);
 
 				return this;
 			}
@@ -645,7 +645,7 @@ namespace Frost.Shaping
 				Contract.Requires(Check.IsDegrees(angle));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Transform.Rotate(angle, out this._Transform);
+				_Transform.Rotate(angle, out _Transform);
 
 				return this;
 			}
@@ -657,8 +657,8 @@ namespace Frost.Shaping
 				Contract.Requires(Check.IsFinite(originY));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Transform.Rotate(
-					angle, originX, originY, out this._Transform);
+				_Transform.Rotate(
+					angle, originX, originY, out _Transform);
 
 				return this;
 			}
@@ -677,7 +677,7 @@ namespace Frost.Shaping
 				Contract.Requires(Check.IsFinite(height));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				this._Transform.Translate(width, height, out this._Transform);
+				_Transform.Translate(width, height, out _Transform);
 
 				return this;
 			}
@@ -697,23 +697,23 @@ namespace Frost.Shaping
 
 				if(operation == TransformMode.Replace)
 				{
-					this._Transform = transformation;
+					_Transform = transformation;
 
 					return this;
 				}
 
-				transformation.Multiply(ref this._Transform, out this._Transform);
+				transformation.Multiply(ref _Transform, out _Transform);
 
 				return this;
 			}
 
 			internal void Reset()
 			{
-				this._Points.Clear();
-				this._Commands.Clear();
-				this._States.Clear();
+				_Points.Clear();
+				_Commands.Clear();
+				_States.Clear();
 
-				this._Transform = Matrix3X2.Identity;
+				_Transform = Matrix3X2.Identity;
 			}
 		}
 
@@ -729,9 +729,9 @@ namespace Frost.Shaping
 				return true;
 			}
 
-			return Equals(other._Commands, this._Commands) &&
-			       Equals(other._Points, this._Points) &&
-			       other._Transform.Equals(this._Transform);
+			return Equals(other._Commands, _Commands) &&
+			       Equals(other._Points, _Points) &&
+			       other._Transform.Equals(_Transform);
 		}
 
 		public override bool Equals(object obj)
@@ -753,9 +753,9 @@ namespace Frost.Shaping
 		{
 			unchecked
 			{
-				int result = this._Commands.GetHashCode();
-				result = (result * 397) ^ this._Points.GetHashCode();
-				result = (result * 397) ^ this._Transform.GetHashCode();
+				int result = _Commands.GetHashCode();
+				result = (result * 397) ^ _Points.GetHashCode();
+				result = (result * 397) ^ _Transform.GetHashCode();
 				return result;
 			}
 		}
@@ -778,45 +778,45 @@ namespace Frost.Shaping
 
 			public void Begin()
 			{
-				this._Builder = Create();
+				_Builder = Create();
 			}
 
 			public void End()
 			{
-				Geometry = this._Builder.Build();
+				Geometry = _Builder.Build();
 			}
 
 			public void Close()
 			{
-				this._Builder.Close();
+				_Builder.Close();
 			}
 
 			public void MoveTo(Point point)
 			{
-				this._Builder.MoveTo(point);
+				_Builder.MoveTo(point);
 			}
 
 			public void LineTo(Point point)
 			{
-				this._Builder.LineTo(point);
+				_Builder.LineTo(point);
 			}
 
 			public void QuadraticCurveTo(Point controlPoint, Point endPoint)
 			{
-				this._Builder.QuadraticCurveTo(controlPoint, endPoint);
+				_Builder.QuadraticCurveTo(controlPoint, endPoint);
 			}
 
 			public void BezierCurveTo(
 				Point controlPoint1, Point controlPoint2, Point controlPoint3)
 			{
-				this._Builder.BezierCurveTo(
+				_Builder.BezierCurveTo(
 					controlPoint1, controlPoint2, controlPoint3);
 			}
 
 			public void ArcTo(
 				Point tangentStart, Point tangentEnd, Size radius)
 			{
-				this._Builder.ArcTo(tangentStart, tangentEnd, radius);
+				_Builder.ArcTo(tangentStart, tangentEnd, radius);
 			}
 		}
 

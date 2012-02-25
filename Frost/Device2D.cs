@@ -25,8 +25,8 @@ namespace Frost
 
 		protected Device2D()
 		{
-			this._CounterCollection = new DeviceCounterCollection();
-			this._EffectCollection = new EffectCollection();
+			_CounterCollection = new DeviceCounterCollection();
+			_EffectCollection = new EffectCollection();
 		}
 
 		public static float FlatteningTolerance
@@ -36,12 +36,12 @@ namespace Frost
 
 		public DeviceCounterCollection Diagnostics
 		{
-			get { return this._CounterCollection; }
+			get { return _CounterCollection; }
 		}
 
 		public EffectCollection Effects
 		{
-			get { return this._EffectCollection; }
+			get { return _EffectCollection; }
 		}
 
 		public abstract Painter Painter { get; }

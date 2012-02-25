@@ -35,10 +35,10 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Ensures(
-					Contract.Result<Device2D>().Equals(this._Device2D));
+					Contract.Result<Device2D>().Equals(_Device2D));
 				Contract.Ensures(Contract.Result<Device2D>() != null);
 
-				return this._Device2D;
+				return _Device2D;
 			}
 		}
 
@@ -47,10 +47,10 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Ensures(
-					Contract.Result<Thread>().Equals(this._BoundThread));
+					Contract.Result<Thread>().Equals(_BoundThread));
 				Contract.Ensures(Contract.Result<Thread>() != null);
 
-				return this._BoundThread;
+				return _BoundThread;
 			}
 		}
 
@@ -60,15 +60,15 @@ namespace Frost.Composition
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Ensures(
-					Contract.Result<EffectContext>() == this._ActiveEffectContext);
+					Contract.Result<EffectContext>() == _ActiveEffectContext);
 
-				return this._ActiveEffectContext;
+				return _ActiveEffectContext;
 			}
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 
-				this._ActiveEffectContext = value;
+				_ActiveEffectContext = value;
 			}
 		}
 
@@ -78,17 +78,17 @@ namespace Frost.Composition
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Ensures(
-					Contract.Result<float>().Equals(this._ActiveOpacity));
+					Contract.Result<float>().Equals(_ActiveOpacity));
 				Contract.Ensures(Check.IsNormalized(Contract.Result<float>()));
 
-				return this._ActiveOpacity;
+				return _ActiveOpacity;
 			}
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Requires(Check.IsNormalized(value));
 
-				this._ActiveOpacity = value;
+				_ActiveOpacity = value;
 			}
 		}
 
@@ -98,15 +98,15 @@ namespace Frost.Composition
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Ensures(
-					Contract.Result<BlendOperation>() == this._ActiveBlendOperation);
+					Contract.Result<BlendOperation>() == _ActiveBlendOperation);
 
-				return this._ActiveBlendOperation;
+				return _ActiveBlendOperation;
 			}
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 
-				this._ActiveBlendOperation = value;
+				_ActiveBlendOperation = value;
 			}
 		}
 
@@ -116,9 +116,9 @@ namespace Frost.Composition
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Ensures(
-					Contract.Result<Matrix3X2>().Equals(this._ActiveTransformation));
+					Contract.Result<Matrix3X2>().Equals(_ActiveTransformation));
 
-				return this._ActiveTransformation;
+				return _ActiveTransformation;
 			}
 		}
 
@@ -140,10 +140,10 @@ namespace Frost.Composition
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
-			this._ActiveTransformation = Matrix3X2.Identity;
-			this._ActiveOpacity = 1.0f;
-			this._ActiveEffectContext = null;
-			this._ActiveBlendOperation = BlendOperation.SourceOver;
+			_ActiveTransformation = Matrix3X2.Identity;
+			_ActiveOpacity = 1.0f;
+			_ActiveEffectContext = null;
+			_ActiveBlendOperation = BlendOperation.SourceOver;
 
 			OnResetState();
 		}
@@ -488,8 +488,8 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 
-			this._ActiveTransformation.Scale(
-				width, height, out this._ActiveTransformation);
+			_ActiveTransformation.Scale(
+				width, height, out _ActiveTransformation);
 		}
 
 		public void Scale(Size size)
@@ -510,8 +510,8 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
 
-			this._ActiveTransformation.Scale(
-				width, height, originX, originY, out this._ActiveTransformation);
+			_ActiveTransformation.Scale(
+				width, height, originX, originY, out _ActiveTransformation);
 		}
 
 		public void Skew(float angleX, float angleY)
@@ -520,8 +520,8 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsDegrees(angleX));
 			Contract.Requires(Check.IsDegrees(angleY));
 
-			this._ActiveTransformation.Skew(
-				angleX, angleY, out this._ActiveTransformation);
+			_ActiveTransformation.Skew(
+				angleX, angleY, out _ActiveTransformation);
 		}
 
 		public void Rotate(float angle)
@@ -529,8 +529,8 @@ namespace Frost.Composition
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsDegrees(angle));
 
-			this._ActiveTransformation.Rotate(
-				angle, out this._ActiveTransformation);
+			_ActiveTransformation.Rotate(
+				angle, out _ActiveTransformation);
 		}
 
 		public void Rotate(float angle, float originX, float originY)
@@ -540,8 +540,8 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
 
-			this._ActiveTransformation.Rotate(
-				angle, originX, originY, out this._ActiveTransformation);
+			_ActiveTransformation.Rotate(
+				angle, originX, originY, out _ActiveTransformation);
 		}
 
 		public void Rotate(float angle, Point origin)
@@ -558,8 +558,8 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsFinite(width));
 			Contract.Requires(Check.IsFinite(height));
 
-			this._ActiveTransformation.Translate(
-				width, height, out this._ActiveTransformation);
+			_ActiveTransformation.Translate(
+				width, height, out _ActiveTransformation);
 		}
 
 		public void Translate(Size value)
@@ -577,12 +577,12 @@ namespace Frost.Composition
 
 			if(operation == TransformMode.Replace)
 			{
-				this._ActiveTransformation = transformation;
+				_ActiveTransformation = transformation;
 			}
 			else
 			{
 				transformation.Multiply(
-					ref this._ActiveTransformation, out this._ActiveTransformation);
+					ref _ActiveTransformation, out _ActiveTransformation);
 			}
 		}
 

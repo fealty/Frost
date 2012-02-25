@@ -29,14 +29,14 @@ namespace Frost.DirectX
 		void SimplifiedGeometrySink.BeginFigure(
 			PointF startPoint, FigureBegin figureBegin)
 		{
-			this._Builder.MoveTo(startPoint.X, startPoint.Y);
+			_Builder.MoveTo(startPoint.X, startPoint.Y);
 		}
 
 		void SimplifiedGeometrySink.AddLines(PointF[] ointsRef)
 		{
 			foreach(PointF point in ointsRef)
 			{
-				this._Builder.LineTo(point.X, point.Y);
+				_Builder.LineTo(point.X, point.Y);
 			}
 		}
 
@@ -44,7 +44,7 @@ namespace Frost.DirectX
 		{
 			foreach(BezierSegment bezier in beziers)
 			{
-				this._Builder.BezierCurveTo(
+				_Builder.BezierCurveTo(
 					bezier.Point1.X,
 					bezier.Point1.Y,
 					bezier.Point2.X,
@@ -58,7 +58,7 @@ namespace Frost.DirectX
 		{
 			if(figureEnd == FigureEnd.Closed)
 			{
-				this._Builder.Close();
+				_Builder.Close();
 			}
 		}
 

@@ -16,9 +16,9 @@ namespace Frost.Formatting
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(Check.IsPositive(this._Ascent));
-			Contract.Invariant(Check.IsPositive(this._Descent));
-			Contract.Invariant(Check.IsPositive(this._UnitsPerEm));
+			Contract.Invariant(Check.IsPositive(_Ascent));
+			Contract.Invariant(Check.IsPositive(_Descent));
+			Contract.Invariant(Check.IsPositive(_UnitsPerEm));
 		}
 
 		public FontMetrics(float ascent, float descent, float unitsPerEm)
@@ -27,9 +27,9 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsPositive(descent));
 			Contract.Requires(Check.IsPositive(unitsPerEm));
 
-			this._Ascent = ascent;
-			this._Descent = descent;
-			this._UnitsPerEm = unitsPerEm;
+			_Ascent = ascent;
+			_Descent = descent;
+			_UnitsPerEm = unitsPerEm;
 
 			Contract.Assert(Ascent.Equals(ascent));
 			Contract.Assert(Descent.Equals(descent));
@@ -42,9 +42,9 @@ namespace Frost.Formatting
 			{
 				Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 				Contract.Ensures(
-					Contract.Result<float>().Equals(this._UnitsPerEm));
+					Contract.Result<float>().Equals(_UnitsPerEm));
 
-				return this._UnitsPerEm;
+				return _UnitsPerEm;
 			}
 		}
 
@@ -53,9 +53,9 @@ namespace Frost.Formatting
 			get
 			{
 				Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._Descent));
+				Contract.Ensures(Contract.Result<float>().Equals(_Descent));
 
-				return this._Descent;
+				return _Descent;
 			}
 		}
 
@@ -64,17 +64,17 @@ namespace Frost.Formatting
 			get
 			{
 				Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
-				Contract.Ensures(Contract.Result<float>().Equals(this._Ascent));
+				Contract.Ensures(Contract.Result<float>().Equals(_Ascent));
 
-				return this._Ascent;
+				return _Ascent;
 			}
 		}
 
 		public bool Equals(FontMetrics other)
 		{
-			return other._Ascent.Equals(this._Ascent) &&
-			       other._Descent.Equals(this._Descent) &&
-			       other._UnitsPerEm.Equals(this._UnitsPerEm);
+			return other._Ascent.Equals(_Ascent) &&
+			       other._Descent.Equals(_Descent) &&
+			       other._UnitsPerEm.Equals(_UnitsPerEm);
 		}
 
 		public float MeasureAscent(float pointSize)
@@ -82,7 +82,7 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsPositive(pointSize));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
-			return ToPixels(this._Ascent, pointSize);
+			return ToPixels(_Ascent, pointSize);
 		}
 
 		public float MeasureDescent(float pointSize)
@@ -90,7 +90,7 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsPositive(pointSize));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
-			return ToPixels(this._Descent, pointSize);
+			return ToPixels(_Descent, pointSize);
 		}
 
 		public float MeasureEm(float pointSize)
@@ -98,7 +98,7 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsPositive(pointSize));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
-			return ToPixels(this._Ascent + this._Descent, pointSize);
+			return ToPixels(_Ascent + _Descent, pointSize);
 		}
 
 		public override bool Equals(object obj)
@@ -115,9 +115,9 @@ namespace Frost.Formatting
 		{
 			unchecked
 			{
-				int result = this._Ascent.GetHashCode();
-				result = (result * 397) ^ this._Descent.GetHashCode();
-				result = (result * 397) ^ this._UnitsPerEm.GetHashCode();
+				int result = _Ascent.GetHashCode();
+				result = (result * 397) ^ _Descent.GetHashCode();
+				result = (result * 397) ^ _UnitsPerEm.GetHashCode();
 				return result;
 			}
 		}
@@ -126,9 +126,9 @@ namespace Frost.Formatting
 		{
 			return string.Format(
 				"Ascent: {0}, Descent: {1}, UnitsPerEm: {2}",
-				this._Ascent,
-				this._Descent,
-				this._UnitsPerEm);
+				_Ascent,
+				_Descent,
+				_UnitsPerEm);
 		}
 
 		private float ToPixels(float value, float pointSize)
@@ -137,7 +137,7 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsPositive(pointSize));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
-			return (((value / this._UnitsPerEm) * pointSize) / 72.0f) * 96.0f;
+			return (((value / _UnitsPerEm) * pointSize) / 72.0f) * 96.0f;
 		}
 
 		public static bool operator ==(FontMetrics left, FontMetrics right)
