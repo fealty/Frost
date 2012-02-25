@@ -16,8 +16,7 @@ namespace Frost.Formatting
 		private readonly float _NormalizedBaseline;
 		private readonly Geometry _NormalizedOutline;
 
-		public Outline(
-			Geometry normalizedOutline, float emSize, float normalizedBaseline)
+		public Outline(Geometry normalizedOutline, float emSize, float normalizedBaseline)
 		{
 			Contract.Requires(normalizedOutline != null);
 			Contract.Requires(Check.IsPositive(emSize));
@@ -36,8 +35,7 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(
-					Contract.Result<Geometry>() == _NormalizedOutline);
+				Contract.Ensures(Contract.Result<Geometry>() == _NormalizedOutline);
 				Contract.Ensures(Contract.Result<Geometry>() != null);
 
 				return _NormalizedOutline;
@@ -48,8 +46,7 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(
-					Contract.Result<float>().Equals(_NormalizedBaseline));
+				Contract.Ensures(Contract.Result<float>().Equals(_NormalizedBaseline));
 				Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
 
 				return _NormalizedBaseline;
@@ -69,8 +66,7 @@ namespace Frost.Formatting
 
 		public bool Equals(Outline other)
 		{
-			return other._EmSize.Equals(_EmSize) &&
-			       other._NormalizedBaseline.Equals(_NormalizedBaseline) &&
+			return other._EmSize.Equals(_EmSize) && other._NormalizedBaseline.Equals(_NormalizedBaseline) &&
 			       Equals(other._NormalizedOutline, _NormalizedOutline);
 		}
 
@@ -90,22 +86,18 @@ namespace Frost.Formatting
 			{
 				int result = _EmSize.GetHashCode();
 				result = (result * 397) ^ _NormalizedBaseline.GetHashCode();
-				result = (result * 397) ^
-				         (_NormalizedOutline != null
-				          	? _NormalizedOutline.GetHashCode()
-				          	: 0);
+				result = (result * 397) ^ (_NormalizedOutline != null ? _NormalizedOutline.GetHashCode() : 0);
 				return result;
 			}
 		}
 
 		public override string ToString()
 		{
-			return
-				string.Format(
-					"NormalizedOutline: {0}, EmSize: {1}, NormalizedBaseline: {2}",
-					_NormalizedOutline,
-					_EmSize,
-					_NormalizedBaseline);
+			return string.Format(
+				"NormalizedOutline: {0}, EmSize: {1}, NormalizedBaseline: {2}",
+				_NormalizedOutline,
+				_EmSize,
+				_NormalizedBaseline);
 		}
 
 		[ContractInvariantMethod] private void Invariant()

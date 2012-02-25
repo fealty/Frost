@@ -31,8 +31,7 @@ namespace Frost.Painting
 		{
 			get
 			{
-				Contract.Ensures(
-					Contract.Result<GradientStop[]>().Equals(_Stops));
+				Contract.Ensures(Contract.Result<GradientStop[]>().Equals(_Stops));
 				Contract.Ensures(Contract.Result<GradientStop[]>() != null);
 
 				return _Stops;
@@ -71,8 +70,7 @@ namespace Frost.Painting
 
 				if(_Stops.Count > 0)
 				{
-					Contract.Assert(
-						position > _Stops[_Stops.Count - 1].Position);
+					Contract.Assert(position > _Stops[_Stops.Count - 1].Position);
 				}
 
 				_Stops.Add(new GradientStop(position, color));
@@ -86,8 +84,7 @@ namespace Frost.Painting
 
 				Trace.Assert(_Stops.Count >= 2);
 				Trace.Assert(_Stops[0].Position.Equals(0.0f));
-				Trace.Assert(
-					_Stops[_Stops.Count - 1].Position.Equals(1.0f));
+				Trace.Assert(_Stops[_Stops.Count - 1].Position.Equals(1.0f));
 
 				return new Gradient(_Stops.ToArray());
 			}
@@ -157,9 +154,8 @@ namespace Frost.Painting
 		[Fact] internal static void Test0()
 		{
 			Gradient gradient =
-				Create().WithStop(0.0f, new Color(0.0f, 0.0f, 0.0f)).WithStop(
-					0.5f, new Color(0.5f, 0.5f, 0.5f)).WithStop(
-						1.0f, new Color(1.0f, 1.0f, 1.0f)).Build();
+				Create().WithStop(0.0f, new Color(0.0f, 0.0f, 0.0f)).WithStop(0.5f, new Color(0.5f, 0.5f, 0.5f))
+					.WithStop(1.0f, new Color(1.0f, 1.0f, 1.0f)).Build();
 
 			Assert.Equal(0.0f, gradient.Stops[0].Position);
 			Assert.Equal(new Color(0.0f, 0.0f, 0.0f), gradient.Stops[0].Color);
@@ -169,8 +165,7 @@ namespace Frost.Painting
 			Assert.Equal(new Color(1.0f, 1.0f, 1.0f), gradient.Stops[2].Color);
 
 			Gradient gradient2 =
-				Create().WithStop(0.0f, Color.AliceBlue).WithStop(
-					1.0f, Color.AntiqueWhite).Build();
+				Create().WithStop(0.0f, Color.AliceBlue).WithStop(1.0f, Color.AntiqueWhite).Build();
 
 			Assert.TestObject(gradient, gradient2);
 		}

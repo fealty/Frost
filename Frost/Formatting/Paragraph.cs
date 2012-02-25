@@ -373,9 +373,7 @@ namespace Frost.Formatting
 			}
 
 			public Builder WithAdditionalInline(
-				Size inline,
-				Alignment hAlignment = Alignment.Stretch,
-				Alignment vAlignment = Alignment.Stretch)
+				Size inline, Alignment hAlignment = Alignment.Stretch, Alignment vAlignment = Alignment.Stretch)
 			{
 				Contract.Requires(Check.IsPositive(inline.Width));
 				Contract.Requires(Check.IsPositive(inline.Height));
@@ -434,23 +432,16 @@ namespace Frost.Formatting
 				{
 					TextRun oldRun = _Runs[_Runs.Count - 1];
 
-					if((newRun.Culture == oldRun.Culture) &&
-					   (newRun.Family == oldRun.Family) &&
-					   (newRun.Stretch == oldRun.Stretch) &&
-					   (newRun.Style == oldRun.Style) &&
-					   (newRun.Weight == oldRun.Weight) &&
-					   (newRun.PointSize.Equals(oldRun.PointSize)) &&
-					   (newRun.HAlignment == oldRun.HAlignment) &&
-					   (newRun.VAlignment == oldRun.VAlignment) &&
-					   (newRun.Inline == oldRun.Inline) &&
-					   (newRun.Features == oldRun.Features))
+					if((newRun.Culture == oldRun.Culture) && (newRun.Family == oldRun.Family) &&
+					   (newRun.Stretch == oldRun.Stretch) && (newRun.Style == oldRun.Style) &&
+					   (newRun.Weight == oldRun.Weight) && (newRun.PointSize.Equals(oldRun.PointSize)) &&
+					   (newRun.HAlignment == oldRun.HAlignment) && (newRun.VAlignment == oldRun.VAlignment) &&
+					   (newRun.Inline == oldRun.Inline) && (newRun.Features == oldRun.Features))
 					{
 						// modify the existing run to include the appended text
 						_Runs[_Runs.Count - 1] =
 							new TextRun(
-								new IndexedRange(
-									oldRun.TextRange.StartIndex,
-									oldRun.TextRange.Length + text.Length),
+								new IndexedRange(oldRun.TextRange.StartIndex, oldRun.TextRange.Length + text.Length),
 								oldRun.Culture,
 								oldRun.Family,
 								oldRun.Stretch,
@@ -561,8 +552,7 @@ namespace Frost.Formatting
 				builder.WithCulture(new CultureInfo("ja-JP"));
 				builder.WithFamily("georgia");
 				builder.WithFeatures(
-					new FontFeatureCollection(
-						new[] {new FontFeature("kern"), new FontFeature("liga")}));
+					new FontFeatureCollection(new[] {new FontFeature("kern"), new FontFeature("liga")}));
 				builder.WithPointSize(12.0f);
 				builder.WithStretch(FontStretch.Expanded);
 				builder.WithStyle(FontStyle.Italic);
@@ -577,8 +567,7 @@ namespace Frost.Formatting
 				Assert.Equal(builder._ActiveFamily, "georgia");
 				Assert.Equal(
 					builder._ActiveFeatures,
-					new FontFeatureCollection(
-						new[] {new FontFeature("kern"), new FontFeature("liga")}));
+					new FontFeatureCollection(new[] {new FontFeature("kern"), new FontFeature("liga")}));
 				Assert.Equal(builder._ActivePointSize, 12.0);
 				Assert.Equal(builder._ActiveStretch, FontStretch.Expanded);
 				Assert.Equal(builder._ActiveStyle, FontStyle.Italic);
@@ -622,8 +611,7 @@ namespace Frost.Formatting
 				builder.WithCulture(new CultureInfo("ja-JP"));
 				builder.WithFamily("georgia");
 				builder.WithFeatures(
-					new FontFeatureCollection(
-						new[] {new FontFeature("kern"), new FontFeature("liga")}));
+					new FontFeatureCollection(new[] {new FontFeature("kern"), new FontFeature("liga")}));
 				builder.WithPointSize(12.0f);
 				builder.WithStretch(FontStretch.Expanded);
 				builder.WithStyle(FontStyle.Italic);
@@ -656,8 +644,7 @@ namespace Frost.Formatting
 				Assert.Equal(builder._ActiveFamily, "georgia");
 				Assert.Equal(
 					builder._ActiveFeatures,
-					new FontFeatureCollection(
-						new[] {new FontFeature("kern"), new FontFeature("liga")}));
+					new FontFeatureCollection(new[] {new FontFeature("kern"), new FontFeature("liga")}));
 				Assert.Equal(builder._ActivePointSize, 12.0);
 				Assert.Equal(builder._ActiveStretch, FontStretch.Expanded);
 				Assert.Equal(builder._ActiveStyle, FontStyle.Italic);
@@ -674,12 +661,10 @@ namespace Frost.Formatting
 		[Fact] internal static void Test0()
 		{
 			Paragraph paragraph =
-				Create().WithAlignment(Alignment.Center).WithAdditionalText(
-					"para").WithCulture(new CultureInfo("en-us")).WithWeight(
-						FontWeight.Bold).WithAdditionalText("graph").WithPointSize(12).
-					WithAdditionalText("-").WithStyle(FontStyle.Regular).
-					WithAdditionalText("test").WithTracking(5).WithIndentation(1).
-					WithSpacing(3).WithLeading(7).WithAdditionalInline(
+				Create().WithAlignment(Alignment.Center).WithAdditionalText("para").WithCulture(
+					new CultureInfo("en-us")).WithWeight(FontWeight.Bold).WithAdditionalText("graph").WithPointSize
+					(12).WithAdditionalText("-").WithStyle(FontStyle.Regular).WithAdditionalText("test").
+					WithTracking(5).WithIndentation(1).WithSpacing(3).WithLeading(7).WithAdditionalInline(
 						new Size(5, 5)).Build();
 
 			Assert.Equal(paragraph.Runs.Count, 4);

@@ -136,8 +136,7 @@ namespace Frost.Painting
 		{
 			get
 			{
-				Contract.Ensures(
-					Contract.Result<Device2D>().Equals(_Device2D));
+				Contract.Ensures(Contract.Result<Device2D>().Equals(_Device2D));
 
 				return _Device2D;
 			}
@@ -147,8 +146,7 @@ namespace Frost.Painting
 		{
 			get
 			{
-				Contract.Ensures(
-					Contract.Result<Thread>().Equals(_BoundThread));
+				Contract.Ensures(Contract.Result<Thread>().Equals(_BoundThread));
 
 				return _BoundThread;
 			}
@@ -160,8 +158,7 @@ namespace Frost.Painting
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
-				Contract.Ensures(
-					Contract.Result<float>().Equals(_ActiveMiterLimit));
+				Contract.Ensures(Contract.Result<float>().Equals(_ActiveMiterLimit));
 
 				return _ActiveMiterLimit;
 			}
@@ -184,8 +181,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(
-					Contract.Result<float>().Equals(_ActiveStrokeWidth));
+				Contract.Ensures(Contract.Result<float>().Equals(_ActiveStrokeWidth));
 				Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
 				return _ActiveStrokeWidth;
@@ -209,8 +205,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(
-					Contract.Result<LineCap>() == _ActiveStrokeCap);
+				Contract.Ensures(Contract.Result<LineCap>() == _ActiveStrokeCap);
 
 				return _ActiveStrokeCap;
 			}
@@ -232,8 +227,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(
-					Contract.Result<LineJoin>() == _ActiveStrokeJoin);
+				Contract.Ensures(Contract.Result<LineJoin>() == _ActiveStrokeJoin);
 
 				return _ActiveStrokeJoin;
 			}
@@ -255,8 +249,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(
-					Contract.Result<Antialiasing>().Equals(_ActiveAntialiasing));
+				Contract.Ensures(Contract.Result<Antialiasing>().Equals(_ActiveAntialiasing));
 
 				return _ActiveAntialiasing;
 			}
@@ -278,8 +271,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(
-					Contract.Result<LineCap>() == _ActiveDashCap);
+				Contract.Ensures(Contract.Result<LineCap>() == _ActiveDashCap);
 
 				return _ActiveDashCap;
 			}
@@ -301,8 +293,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(
-					Contract.Result<LineStyle>() == _ActiveLineStyle);
+				Contract.Ensures(Contract.Result<LineStyle>() == _ActiveLineStyle);
 
 				return _ActiveLineStyle;
 			}
@@ -324,15 +315,13 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
-				Contract.Ensures(
-					Contract.Result<Matrix3X2>().Equals(_ActiveTransformation));
+				Contract.Ensures(Contract.Result<Matrix3X2>().Equals(_ActiveTransformation));
 
 				return _ActiveTransformation;
 			}
 		}
 
-		public void Begin(
-			Canvas target, Retention retention = Retention.ClearData)
+		public void Begin(Canvas target, Retention retention = Retention.ClearData)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsValid(target, Device2D));
@@ -467,16 +456,12 @@ namespace Frost.Painting
 			OnFill(geometry);
 		}
 
-		public void SetBrush(
-			Point linearGradientStart,
-			Point linearGradientEnd,
-			Gradient gradient)
+		public void SetBrush(Point linearGradientStart, Point linearGradientEnd, Gradient gradient)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(gradient != null);
 
-			OnSetBrush(
-				ref linearGradientStart, ref linearGradientEnd, gradient);
+			OnSetBrush(ref linearGradientStart, ref linearGradientEnd, gradient);
 		}
 
 		public void SetBrush(
@@ -491,10 +476,7 @@ namespace Frost.Painting
 			Contract.Requires(gradient != null);
 
 			OnSetBrush(
-				ref radialGradientCenter,
-				ref radialGradientOffset,
-				ref radialGradientRadius,
-				gradient);
+				ref radialGradientCenter, ref radialGradientOffset, ref radialGradientRadius, gradient);
 		}
 
 		public void SetBrush(Canvas source, Repetition extension)
@@ -518,8 +500,7 @@ namespace Frost.Painting
 			OnClear(ref region);
 		}
 
-		public void Stroke(
-			float lineStartX, float lineStartY, float lineEndX, float lineEndY)
+		public void Stroke(float lineStartX, float lineStartY, float lineEndX, float lineEndY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsFinite(lineStartX));
@@ -550,10 +531,7 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(roundedRadiusHeight));
 
 			Rectangle region = new Rectangle(
-				rectangleX,
-				rectangleY,
-				rectangleX + rectangleWidth,
-				rectangleY + rectangleHeight);
+				rectangleX, rectangleY, rectangleX + rectangleWidth, rectangleY + rectangleHeight);
 
 			Size radius = new Size(roundedRadiusWidth, roundedRadiusHeight);
 
@@ -584,10 +562,7 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(roundedRadiusHeight));
 
 			Rectangle region = new Rectangle(
-				rectangleX,
-				rectangleY,
-				rectangleX + rectangleWidth,
-				rectangleY + rectangleHeight);
+				rectangleX, rectangleY, rectangleX + rectangleWidth, rectangleY + rectangleHeight);
 
 			Size radius = new Size(roundedRadiusWidth, roundedRadiusHeight);
 
@@ -615,13 +590,10 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsFinite(linearGradientEndY));
 			Contract.Requires(gradient != null);
 
-			Point linearGradientStart = new Point(
-				linearGradientStartX, linearGradientStartY);
-			Point linearGradientEnd = new Point(
-				linearGradientEndX, linearGradientEndY);
+			Point linearGradientStart = new Point(linearGradientStartX, linearGradientStartY);
+			Point linearGradientEnd = new Point(linearGradientEndX, linearGradientEndY);
 
-			OnSetBrush(
-				ref linearGradientStart, ref linearGradientEnd, gradient);
+			OnSetBrush(ref linearGradientStart, ref linearGradientEnd, gradient);
 		}
 
 		public void SetBrush(
@@ -642,18 +614,12 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(radialGradientRadiusHeight));
 			Contract.Requires(gradient != null);
 
-			Point radialGradientCenter = new Point(
-				radialGradientCenterX, radialGradientCenterY);
-			Point radialGradientOffset = new Point(
-				radialGradientOffsetX, radialGradientOffsetY);
-			Size radialGradientRadius = new Size(
-				radialGradientRadiusWidth, radialGradientRadiusHeight);
+			Point radialGradientCenter = new Point(radialGradientCenterX, radialGradientCenterY);
+			Point radialGradientOffset = new Point(radialGradientOffsetX, radialGradientOffsetY);
+			Size radialGradientRadius = new Size(radialGradientRadiusWidth, radialGradientRadiusHeight);
 
 			OnSetBrush(
-				ref radialGradientCenter,
-				ref radialGradientOffset,
-				ref radialGradientRadius,
-				gradient);
+				ref radialGradientCenter, ref radialGradientOffset, ref radialGradientRadius, gradient);
 		}
 
 		public void Scale(float width, float height)
@@ -666,8 +632,7 @@ namespace Frost.Painting
 
 			_ActiveTransformation.Scale(width, height, out result);
 
-			if(_IsTransformationInvalid ||
-			   !result.Equals(_ActiveTransformation))
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
 			{
 				_ActiveTransformation = result;
 
@@ -684,8 +649,7 @@ namespace Frost.Painting
 			Scale(size.Width, size.Height);
 		}
 
-		public void Scale(
-			float width, float height, float originX, float originY)
+		public void Scale(float width, float height, float originX, float originY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsPositive(width));
@@ -695,11 +659,9 @@ namespace Frost.Painting
 
 			Matrix3X2 result;
 
-			_ActiveTransformation.Scale(
-				width, height, originX, originY, out result);
+			_ActiveTransformation.Scale(width, height, originX, originY, out result);
 
-			if(_IsTransformationInvalid ||
-			   !result.Equals(_ActiveTransformation))
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
 			{
 				_ActiveTransformation = result;
 
@@ -717,8 +679,7 @@ namespace Frost.Painting
 
 			_ActiveTransformation.Skew(angleX, angleY, out result);
 
-			if(_IsTransformationInvalid ||
-			   !result.Equals(_ActiveTransformation))
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
 			{
 				_ActiveTransformation = result;
 
@@ -735,8 +696,7 @@ namespace Frost.Painting
 
 			_ActiveTransformation.Rotate(angle, out result);
 
-			if(_IsTransformationInvalid ||
-			   !result.Equals(_ActiveTransformation))
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
 			{
 				_ActiveTransformation = result;
 
@@ -753,11 +713,9 @@ namespace Frost.Painting
 
 			Matrix3X2 result;
 
-			_ActiveTransformation.Rotate(
-				angle, originX, originY, out result);
+			_ActiveTransformation.Rotate(angle, originX, originY, out result);
 
-			if(_IsTransformationInvalid ||
-			   !result.Equals(_ActiveTransformation))
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
 			{
 				_ActiveTransformation = result;
 
@@ -783,8 +741,7 @@ namespace Frost.Painting
 
 			_ActiveTransformation.Translate(width, height, out result);
 
-			if(_IsTransformationInvalid ||
-			   !result.Equals(_ActiveTransformation))
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
 			{
 				_ActiveTransformation = result;
 
@@ -800,15 +757,13 @@ namespace Frost.Painting
 		}
 
 		public void Transform(
-			ref Matrix3X2 transformation,
-			TransformMode operation = TransformMode.Multiply)
+			ref Matrix3X2 transformation, TransformMode operation = TransformMode.Multiply)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
 			if(operation == TransformMode.Replace)
 			{
-				if(_IsTransformationInvalid ||
-				   !transformation.Equals(_ActiveTransformation))
+				if(_IsTransformationInvalid || !transformation.Equals(_ActiveTransformation))
 				{
 					_ActiveTransformation = transformation;
 
@@ -819,11 +774,9 @@ namespace Frost.Painting
 			{
 				Matrix3X2 result;
 
-				transformation.Multiply(
-					ref _ActiveTransformation, out result);
+				transformation.Multiply(ref _ActiveTransformation, out result);
 
-				if(_IsTransformationInvalid ||
-				   !result.Equals(_ActiveTransformation))
+				if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
 				{
 					_ActiveTransformation = result;
 
@@ -840,16 +793,13 @@ namespace Frost.Painting
 
 		protected abstract void OnStroke(ref Rectangle rectangleRegion);
 
-		protected abstract void OnStroke(
-			ref Point lineStart, ref Point lineEnd);
+		protected abstract void OnStroke(ref Point lineStart, ref Point lineEnd);
 
-		protected abstract void OnStroke(
-			ref Rectangle rectangleRegion, ref Size roundedRadius);
+		protected abstract void OnStroke(ref Rectangle rectangleRegion, ref Size roundedRadius);
 
 		protected abstract void OnFill(ref Rectangle rectangleRegion);
 
-		protected abstract void OnFill(
-			ref Rectangle rectangleRegion, ref Size roundedRadius);
+		protected abstract void OnFill(ref Rectangle rectangleRegion, ref Size roundedRadius);
 
 		protected abstract void OnStroke(Geometry geometry);
 		protected abstract void OnFill(Geometry geometry);
@@ -860,13 +810,10 @@ namespace Frost.Painting
 
 		protected abstract void OnSetBrush(Color color);
 
-		protected abstract void OnSetBrush(
-			Canvas source, Repetition extension);
+		protected abstract void OnSetBrush(Canvas source, Repetition extension);
 
 		protected abstract void OnSetBrush(
-			ref Point linearGradientStart,
-			ref Point linearGradientEnd,
-			Gradient gradient);
+			ref Point linearGradientStart, ref Point linearGradientEnd, Gradient gradient);
 
 		protected abstract void OnSetBrush(
 			ref Point radialGradientCenter,

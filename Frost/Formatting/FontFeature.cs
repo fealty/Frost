@@ -47,8 +47,7 @@ namespace Frost.Formatting
 
 		public bool Equals(FontFeature other)
 		{
-			return Equals(other._Tag, _Tag) &&
-			       other._Parameter == _Parameter;
+			return Equals(other._Tag, _Tag) && other._Parameter == _Parameter;
 		}
 
 		public override bool Equals(object obj)
@@ -65,8 +64,7 @@ namespace Frost.Formatting
 		{
 			unchecked
 			{
-				return ((_Tag != null ? _Tag.GetHashCode() : 0) * 397) ^
-				       _Parameter;
+				return ((_Tag != null ? _Tag.GetHashCode() : 0) * 397) ^ _Parameter;
 			}
 		}
 
@@ -82,8 +80,7 @@ namespace Frost.Formatting
 
 		public override string ToString()
 		{
-			return string.Format(
-				"Tag: {0}, Parameter: {1}", _Tag, _Parameter);
+			return string.Format("Tag: {0}, Parameter: {1}", _Tag, _Parameter);
 		}
 
 #if(UNIT_TESTING)
@@ -92,8 +89,7 @@ namespace Frost.Formatting
 			Assert.Equal(string.Empty, new FontFeature(string.Empty).Tag);
 			Assert.Equal(2, new FontFeature(string.Empty, 2).Parameter);
 
-			Assert.TestObject(
-				new FontFeature("kern"), new FontFeature("sset", 2));
+			Assert.TestObject(new FontFeature("kern"), new FontFeature("sset", 2));
 		}
 #endif
 	}

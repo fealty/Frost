@@ -23,8 +23,7 @@ namespace Frost
 			Contract.Invariant(Check.IsPercentage(_A));
 		}
 
-		public HSVColor(
-			float hue, float saturation, float value, float alpha = 100.0f)
+		public HSVColor(float hue, float saturation, float value, float alpha = 100.0f)
 		{
 			Contract.Requires(Check.IsDegrees(hue));
 			Contract.Requires(Check.IsPercentage(saturation));
@@ -93,18 +92,12 @@ namespace Frost
 
 		public bool Equals(HSVColor other)
 		{
-			return other._A.Equals(_A) && other._H.Equals(_H) &&
-			       other._S.Equals(_S) && other._V.Equals(_V);
+			return other._A.Equals(_A) && other._H.Equals(_H) && other._S.Equals(_S) && other._V.Equals(_V);
 		}
 
 		public override string ToString()
 		{
-			return string.Format(
-				"H: {0}, S: {1}, V: {2}, A: {3}",
-				_H,
-				_S,
-				_V,
-				_A);
+			return string.Format("H: {0}, S: {1}, V: {2}, A: {3}", _H, _S, _V, _A);
 		}
 
 		public override bool Equals(object obj)
@@ -274,35 +267,21 @@ namespace Frost
 			Assert.Equal(3, new HSVColor(1, 2, 3, 4).V);
 			Assert.Equal(4, new HSVColor(1, 2, 3, 4).A);
 
-			Assert.Equal<HSVColor>(
-				new HSVColor(000, 100, 100), new Color(1, 0, 0));
-			Assert.Equal<HSVColor>(
-				new HSVColor(060, 100, 100), new Color(1, 1, 0));
-			Assert.Equal<HSVColor>(
-				new HSVColor(120, 100, 100), new Color(0, 1, 0));
-			Assert.Equal<HSVColor>(
-				new HSVColor(180, 100, 100), new Color(0, 1, 1));
-			Assert.Equal<HSVColor>(
-				new HSVColor(240, 100, 100), new Color(0, 0, 1));
-			Assert.Equal<HSVColor>(
-				new HSVColor(300, 100, 100), new Color(1, 0, 1));
-			Assert.Equal<HSVColor>(
-				new HSVColor(000, 000, 100), new Color(1, 1, 1));
+			Assert.Equal<HSVColor>(new HSVColor(000, 100, 100), new Color(1, 0, 0));
+			Assert.Equal<HSVColor>(new HSVColor(060, 100, 100), new Color(1, 1, 0));
+			Assert.Equal<HSVColor>(new HSVColor(120, 100, 100), new Color(0, 1, 0));
+			Assert.Equal<HSVColor>(new HSVColor(180, 100, 100), new Color(0, 1, 1));
+			Assert.Equal<HSVColor>(new HSVColor(240, 100, 100), new Color(0, 0, 1));
+			Assert.Equal<HSVColor>(new HSVColor(300, 100, 100), new Color(1, 0, 1));
+			Assert.Equal<HSVColor>(new HSVColor(000, 000, 100), new Color(1, 1, 1));
 
-			Assert.Equal<Color>(
-				new Color(1, 0, 0), new HSVColor(000, 100, 100));
-			Assert.Equal<Color>(
-				new Color(1, 1, 0), new HSVColor(060, 100, 100));
-			Assert.Equal<Color>(
-				new Color(0, 1, 0), new HSVColor(120, 100, 100));
-			Assert.Equal<Color>(
-				new Color(0, 1, 1), new HSVColor(180, 100, 100));
-			Assert.Equal<Color>(
-				new Color(0, 0, 1), new HSVColor(240, 100, 100));
-			Assert.Equal<Color>(
-				new Color(1, 0, 1), new HSVColor(360, 100, 100));
-			Assert.Equal<Color>(
-				new Color(1, 1, 1), new HSVColor(180, 000, 100));
+			Assert.Equal<Color>(new Color(1, 0, 0), new HSVColor(000, 100, 100));
+			Assert.Equal<Color>(new Color(1, 1, 0), new HSVColor(060, 100, 100));
+			Assert.Equal<Color>(new Color(0, 1, 0), new HSVColor(120, 100, 100));
+			Assert.Equal<Color>(new Color(0, 1, 1), new HSVColor(180, 100, 100));
+			Assert.Equal<Color>(new Color(0, 0, 1), new HSVColor(240, 100, 100));
+			Assert.Equal<Color>(new Color(1, 0, 1), new HSVColor(360, 100, 100));
+			Assert.Equal<Color>(new Color(1, 1, 1), new HSVColor(180, 000, 100));
 
 			Assert.TestObject<HSVColor>(Color.Red, Color.Blue);
 		}

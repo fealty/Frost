@@ -6,14 +6,15 @@
 using System;
 using System.Diagnostics.Contracts;
 
+using Frost.Atlasing.Contracts;
 using Frost.Surfacing;
 
 namespace Frost.Atlasing
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(ISurfaceAtlas))] internal abstract class
-			ISurfaceAtlasContract : ISurfaceAtlas
+		[ContractClassFor(typeof(ISurfaceAtlas))] internal abstract class ISurfaceAtlasContract
+			: ISurfaceAtlas
 		{
 			public ISurface2D Surface2D
 			{
@@ -45,8 +46,7 @@ namespace Frost.Atlasing
 		}
 	}
 
-	[ContractClass(typeof(Contracts.ISurfaceAtlasContract))] public
-		interface ISurfaceAtlas
+	[ContractClass(typeof(ISurfaceAtlasContract))] public interface ISurfaceAtlas
 	{
 		ISurface2D Surface2D { get; }
 

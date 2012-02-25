@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System;
+using System.Diagnostics.Contracts;
 
 using Contracts = System.Diagnostics.Contracts.Contract;
 
@@ -30,8 +31,7 @@ namespace Frost
 			_Empty = new Rectangle(Point.Empty, Size.Empty);
 		}
 
-		[System.Diagnostics.Contracts.ContractInvariantMethod] private void
-			Invariant()
+		[ContractInvariantMethod] private void Invariant()
 		{
 			Contracts.Invariant(Check.IsFinite(_X));
 			Contracts.Invariant(Check.IsFinite(_Y));
@@ -60,11 +60,7 @@ namespace Frost
 		}
 
 		public Rectangle(Point location, Size size)
-			: this(
-				location.X,
-				location.Y,
-				location.X + size.Width,
-				location.Y + size.Height)
+			: this(location.X, location.Y, location.X + size.Width, location.Y + size.Height)
 		{
 			Contracts.Requires(Check.IsPositive(size.Width));
 			Contracts.Requires(Check.IsPositive(size.Height));
@@ -148,8 +144,7 @@ namespace Frost
 		{
 			get
 			{
-				Contracts.Ensures(
-					Contracts.Result<Point>().Equals(new Point(_X, _Y)));
+				Contracts.Ensures(Contracts.Result<Point>().Equals(new Point(_X, _Y)));
 
 				return new Point(_X, _Y);
 			}
@@ -159,9 +154,7 @@ namespace Frost
 		{
 			get
 			{
-				Contracts.Ensures(
-					Contracts.Result<Size>().Equals(
-						new Size(_Width, _Height)));
+				Contracts.Ensures(Contracts.Result<Size>().Equals(new Size(_Width, _Height)));
 
 				return new Size(_Width, _Height);
 			}
@@ -221,29 +214,19 @@ namespace Frost
 
 		public Point Center
 		{
-			get
-			{
-				return new Point(
-					_X + (_Width / 2.0f), _Y + (_Height / 2.0f));
-			}
+			get { return new Point(_X + (_Width / 2.0f), _Y + (_Height / 2.0f)); }
 		}
 
 		public Rectangle Contract(Thickness amount)
 		{
 			return new Rectangle(
-				Left + amount.Left,
-				Top + amount.Top,
-				Right - amount.Right,
-				Bottom - amount.Bottom);
+				Left + amount.Left, Top + amount.Top, Right - amount.Right, Bottom - amount.Bottom);
 		}
 
 		public Rectangle Expand(Thickness amount)
 		{
 			return new Rectangle(
-				Left - amount.Left,
-				Top - amount.Top,
-				Right + amount.Right,
-				Bottom + amount.Bottom);
+				Left - amount.Left, Top - amount.Top, Right + amount.Right, Bottom + amount.Bottom);
 		}
 
 		public Rectangle AlignWithin(
@@ -257,8 +240,7 @@ namespace Frost
 			float width = _Width;
 			float height = _Height;
 
-			if((alignmentAxis == Axis.Both) ||
-			   (alignmentAxis == Axis.Horizontal))
+			if((alignmentAxis == Axis.Both) || (alignmentAxis == Axis.Horizontal))
 			{
 				if(direction == LayoutDirection.RightToLeft)
 				{
@@ -304,8 +286,7 @@ namespace Frost
 						height = container.Height;
 						break;
 					case Alignment.Center:
-						y = ((container.Height / 2.0f) - (_Height / 2.0f)) +
-						    _Y;
+						y = ((container.Height / 2.0f) - (_Height / 2.0f)) + _Y;
 						break;
 					case Alignment.Leading:
 						y = (container.Height - _Height) + _Y;
@@ -346,8 +327,7 @@ namespace Frost
 
 		public bool Equals(Rectangle other)
 		{
-			return other._Height.Equals(_Height) &&
-			       other._Width.Equals(_Width) && other._X.Equals(_X) &&
+			return other._Height.Equals(_Height) && other._Width.Equals(_Width) && other._X.Equals(_X) &&
 			       other._Y.Equals(_Y);
 		}
 
@@ -385,12 +365,7 @@ namespace Frost
 
 		public override string ToString()
 		{
-			return string.Format(
-				"X: {0}, Y: {1}, Width: {2}, Height: {3}",
-				_X,
-				_Y,
-				_Width,
-				_Height);
+			return string.Format("X: {0}, Y: {1}, Width: {2}, Height: {3}", _X, _Y, _Width, _Height);
 		}
 
 #if(UNIT_TESTING)
@@ -407,38 +382,24 @@ namespace Frost
 			Assert.Equal(new Point(0, 1), new Rectangle(0, 1, 2, 3).Location);
 			Assert.Equal(new Size(2, 2), new Rectangle(0, 1, 2, 3).Size);
 
-			Assert.Equal(
-				new Rectangle(1, 1, 1, 1),
-				new Rectangle(0, 0, 2, 2).Contract(new Thickness(1)));
-			Assert.Equal(
-				new Rectangle(-1, -1, 3, 3),
-				new Rectangle(0, 0, 2, 2).Expand(new Thickness(1)));
+			Assert.Equal(new Rectangle(1, 1, 1, 1), new Rectangle(0, 0, 2, 2).Contract(new Thickness(1)));
+			Assert.Equal(new Rectangle(-1, -1, 3, 3), new Rectangle(0, 0, 2, 2).Expand(new Thickness(1)));
 
 			Assert.Equal(4, new Rectangle(0, 0, 2, 2).Area);
 
 			Assert.Equal(new Point(0.5f), new Rectangle(0, 0, 1, 1).Center);
 
-			Assert.True(
-				new Rectangle(0, 0, 1, 1).Contains(new Point(0.5f, 0.5f)));
-			Assert.True(
-				new Rectangle(0, 0, 1, 1).Contains(new Point(0.0f, 0.0f)));
-			Assert.True(
-				new Rectangle(0, 0, 1, 1).Contains(new Point(1.0f, 0.0f)));
-			Assert.True(
-				new Rectangle(0, 0, 1, 1).Contains(new Point(1.0f, 1.0f)));
-			Assert.True(
-				new Rectangle(0, 0, 1, 1).Contains(new Point(0.0f, 1.0f)));
-			Assert.False(
-				new Rectangle(0, 0, 1, 1).Contains(new Point(1.5f, 0.5f)));
+			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(0.5f, 0.5f)));
+			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(0.0f, 0.0f)));
+			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(1.0f, 0.0f)));
+			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(1.0f, 1.0f)));
+			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(0.0f, 1.0f)));
+			Assert.False(new Rectangle(0, 0, 1, 1).Contains(new Point(1.5f, 0.5f)));
 
 			Assert.True(new Rectangle(0, 0, 1, 1).Contains(Empty));
-			Assert.True(
-				new Rectangle(0, 0, 1, 1).Contains(new Rectangle(0, 0, 1, 1)));
-			Assert.True(
-				new Rectangle(0, 0, 1, 1).Contains(
-					new Rectangle(0.5f, 0, 0.5f, 1)));
-			Assert.False(
-				new Rectangle(0, 0, 1, 1).Contains(new Rectangle(-1, -1, 1, 1)));
+			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Rectangle(0, 0, 1, 1)));
+			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Rectangle(0.5f, 0, 0.5f, 1)));
+			Assert.False(new Rectangle(0, 0, 1, 1).Contains(new Rectangle(-1, -1, 1, 1)));
 
 			Assert.TestObject(MinValue, MaxValue);
 		}
@@ -452,10 +413,7 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(0, 0, 50, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Leading,
-					Axis.Horizontal,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(0, 50, 50, 100),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
@@ -463,10 +421,7 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(0, 50, 50, 100),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Leading,
-					Axis.Vertical,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Leading, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(50, 50, 100, 100),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
@@ -474,23 +429,15 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(0, 50, 50, 100),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Leading,
-					Axis.Both,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Leading, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(0, 0, 50, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Trailing,
-					Axis.Horizontal));
+					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal));
 			Assert.Equal(
 				new Rectangle(50, 0, 100, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Trailing,
-					Axis.Horizontal,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(0, 0, 50, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
@@ -498,10 +445,7 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(0, 0, 50, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Trailing,
-					Axis.Vertical,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(0, 0, 50, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
@@ -509,10 +453,7 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(50, 0, 100, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Trailing,
-					Axis.Both,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(25, 0, 75, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
@@ -520,10 +461,7 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(25, 0, 75, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Center,
-					Axis.Horizontal,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Center, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(0, 25, 50, 75),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
@@ -531,10 +469,7 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(0, 25, 50, 75),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Center,
-					Axis.Vertical,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Center, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(25, 25, 75, 75),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
@@ -542,10 +477,7 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(25, 25, 75, 75),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Center,
-					Axis.Both,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Center, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(0, 0, 100, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
@@ -553,10 +485,7 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(0, 0, 100, 50),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Stretch,
-					Axis.Horizontal,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(0, 0, 50, 100),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
@@ -564,10 +493,7 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(0, 0, 50, 100),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Stretch,
-					Axis.Vertical,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				new Rectangle(0, 0, 100, 100),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
@@ -575,10 +501,7 @@ namespace Frost
 			Assert.Equal(
 				new Rectangle(0, 0, 100, 100),
 				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100),
-					Alignment.Stretch,
-					Axis.Both,
-					LayoutDirection.RightToLeft));
+					new Rectangle(0, 0, 100, 100), Alignment.Stretch, Axis.Both, LayoutDirection.RightToLeft));
 		}
 #endif
 	}

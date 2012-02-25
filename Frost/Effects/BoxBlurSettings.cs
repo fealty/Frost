@@ -8,8 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Effects
 {
-	public struct BoxBlurSettings
-		: IEffectSettings, IEquatable<BoxBlurSettings>
+	public struct BoxBlurSettings : IEffectSettings, IEquatable<BoxBlurSettings>
 	{
 		private readonly Size _Amount;
 		private readonly int _PassCount;
@@ -52,8 +51,7 @@ namespace Frost.Effects
 
 		public bool Equals(BoxBlurSettings other)
 		{
-			return other._Amount.Equals(_Amount) &&
-			       other._PassCount == _PassCount;
+			return other._Amount.Equals(_Amount) && other._PassCount == _PassCount;
 		}
 
 		public override bool Equals(object obj)
@@ -74,14 +72,12 @@ namespace Frost.Effects
 			}
 		}
 
-		public static bool operator ==(
-			BoxBlurSettings left, BoxBlurSettings right)
+		public static bool operator ==(BoxBlurSettings left, BoxBlurSettings right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(
-			BoxBlurSettings left, BoxBlurSettings right)
+		public static bool operator !=(BoxBlurSettings left, BoxBlurSettings right)
 		{
 			return !left.Equals(right);
 		}

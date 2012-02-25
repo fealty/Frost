@@ -7,18 +7,15 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 using Frost.Composition;
+using Frost.Effects.Contracts;
 
 namespace Frost.Effects
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(IEffect))] internal abstract class
-			IEffectContract : IEffect
+		[ContractClassFor(typeof(IEffect))] internal abstract class IEffectContract : IEffect
 		{
-			public void Apply<T>(
-				T batchedItems,
-				IEffectContext effectContext,
-				Compositor compositionContext)
+			public void Apply<T>(T batchedItems, IEffectContext effectContext, Compositor compositionContext)
 				where T : class, IEnumerable<BatchedItem>
 			{
 				Contract.Requires(batchedItems != null);
@@ -28,13 +25,9 @@ namespace Frost.Effects
 		}
 	}
 
-	[ContractClass(typeof(Contracts.IEffectContract))] internal interface
-		IEffect
+	[ContractClass(typeof(IEffectContract))] internal interface IEffect
 	{
-		void Apply<T>(
-			T batchedItems,
-			IEffectContext effectContext,
-			Compositor compositionContext)
+		void Apply<T>(T batchedItems, IEffectContext effectContext, Compositor compositionContext)
 			where T : class, IEnumerable<BatchedItem>;
 	}
 }

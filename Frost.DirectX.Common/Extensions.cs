@@ -24,8 +24,7 @@ namespace Frost.DirectX.Common
 			}
 		}
 
-		public static ShaderResourceView GetShaderView(
-			this ISurface2D surface2D)
+		public static ShaderResourceView GetShaderView(this ISurface2D surface2D)
 		{
 			Contract.Requires(surface2D != null);
 
@@ -34,8 +33,7 @@ namespace Frost.DirectX.Common
 			return surfaceD3D.ShaderView;
 		}
 
-		public static RenderTargetView GetRenderTarget(
-			this ISurface2D surface2D)
+		public static RenderTargetView GetRenderTarget(this ISurface2D surface2D)
 		{
 			Contract.Requires(surface2D != null);
 
@@ -62,8 +60,7 @@ namespace Frost.DirectX.Common
 
 		public static Color4 ToColor4(this Color color)
 		{
-			Color4 result = new Color4
-			{Red = color.R, Green = color.G, Blue = color.B, Alpha = color.A};
+			Color4 result = new Color4 {Red = color.R, Green = color.G, Blue = color.B, Alpha = color.A};
 
 			return result;
 		}

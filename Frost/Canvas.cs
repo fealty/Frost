@@ -54,8 +54,7 @@ namespace Frost
 		{
 			get
 			{
-				Contract.Ensures(
-					Contract.Result<Rectangle>().Equals(_Region));
+				Contract.Ensures(Contract.Result<Rectangle>().Equals(_Region));
 
 				return _Region;
 			}
@@ -77,8 +76,7 @@ namespace Frost
 			Contract.Requires(destination.IsValid);
 			Contract.Requires(destination.Device2D == Device2D);
 
-			Surface2D.CopyTo(
-				_Region, destination.Surface2D, destination.Region.Location);
+			Surface2D.CopyTo(_Region, destination.Surface2D, destination.Region.Location);
 		}
 
 		public void CopyTo(Rectangle srcRegion, Canvas destination)
@@ -87,8 +85,7 @@ namespace Frost
 			Contract.Requires(destination.IsValid);
 			Contract.Requires(destination.Device2D == Device2D);
 
-			Surface2D.CopyTo(
-				srcRegion, destination.Surface2D, destination.Region.Location);
+			Surface2D.CopyTo(srcRegion, destination.Surface2D, destination.Region.Location);
 		}
 
 		public override string ToString()

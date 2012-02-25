@@ -33,11 +33,9 @@ namespace Frost.DirectX.Common
 		private readonly Device2D _Device2D;
 		private readonly Device _Device3D;
 
-		private readonly CacheDictionary<Gradient, LinearGradientBrush>
-			_LinearGradientBrushes;
+		private readonly CacheDictionary<Gradient, LinearGradientBrush> _LinearGradientBrushes;
 
-		private readonly CacheDictionary<Gradient, RadialGradientBrush>
-			_RadialGradientBrushes;
+		private readonly CacheDictionary<Gradient, RadialGradientBrush> _RadialGradientBrushes;
 
 		private readonly Rectangle _Region;
 		private readonly ShaderResourceView _ShaderView;
@@ -61,26 +59,20 @@ namespace Frost.DirectX.Common
 			Contract.Requires(Check.IsPositive(surfaceDescription.Size.Height));
 		}
 
-		protected Surface2D(
-			ref Description surfaceDescription,
-			Texture2DDescription textureDescription)
+		protected Surface2D(ref Description surfaceDescription, Texture2DDescription textureDescription)
 		{
 			Contract.Requires(surfaceDescription.Device2D != null);
 			Contract.Requires(surfaceDescription.Device3D != null);
 			Contract.Requires(Check.IsPositive(surfaceDescription.Size.Width));
 			Contract.Requires(Check.IsPositive(surfaceDescription.Size.Height));
 
-			_LinearGradientBrushes =
-				new CacheDictionary<Gradient, LinearGradientBrush>(CacheLimit);
-			_RadialGradientBrushes =
-				new CacheDictionary<Gradient, RadialGradientBrush>(CacheLimit);
+			_LinearGradientBrushes = new CacheDictionary<Gradient, LinearGradientBrush>(CacheLimit);
+			_RadialGradientBrushes = new CacheDictionary<Gradient, RadialGradientBrush>(CacheLimit);
 
 			_UniqueId = Interlocked.Increment(ref _AvailableUniqueId) - 1;
 
-			textureDescription.Width =
-				Convert.ToInt32(surfaceDescription.Size.Width);
-			textureDescription.Height =
-				Convert.ToInt32(surfaceDescription.Size.Height);
+			textureDescription.Width = Convert.ToInt32(surfaceDescription.Size.Width);
+			textureDescription.Height = Convert.ToInt32(surfaceDescription.Size.Height);
 
 			textureDescription.Format = Format.R8G8B8A8_UNorm;
 
@@ -99,10 +91,7 @@ namespace Frost.DirectX.Common
 
 			if(surfaceDescription.Factory2D != null)
 			{
-				_Target2D = new RenderTarget(
-					surfaceDescription.Factory2D,
-					_Surface,
-					Descriptions.RenderTarget);
+				_Target2D = new RenderTarget(surfaceDescription.Factory2D, _Surface, Descriptions.RenderTarget);
 			}
 
 			_TargetView = new RenderTargetView(device3D, _Texture);
@@ -118,8 +107,7 @@ namespace Frost.DirectX.Common
 			get
 			{
 				Contract.Ensures(Contract.Result<ShaderResourceView>() != null);
-				Contract.Ensures(
-					Contract.Result<ShaderResourceView>().Equals(_ShaderView));
+				Contract.Ensures(Contract.Result<ShaderResourceView>().Equals(_ShaderView));
 
 				return _ShaderView;
 			}
@@ -130,8 +118,7 @@ namespace Frost.DirectX.Common
 			get
 			{
 				Contract.Ensures(Contract.Result<RenderTarget>() != null);
-				Contract.Ensures(
-					Contract.Result<RenderTarget>().Equals(_Target2D));
+				Contract.Ensures(Contract.Result<RenderTarget>().Equals(_Target2D));
 
 				return _Target2D;
 			}
@@ -142,8 +129,7 @@ namespace Frost.DirectX.Common
 			get
 			{
 				Contract.Ensures(Contract.Result<RenderTargetView>() != null);
-				Contract.Ensures(
-					Contract.Result<RenderTargetView>().Equals(_TargetView));
+				Contract.Ensures(Contract.Result<RenderTargetView>().Equals(_TargetView));
 
 				return _TargetView;
 			}
@@ -154,11 +140,15 @@ namespace Frost.DirectX.Common
 			get
 			{
 				Contract.Ensures(Contract.Result<Texture2D>() != null);
-				Contract.Ensures(
-					Contract.Result<Texture2D>().Equals(_Texture));
+				Contract.Ensures(Contract.Result<Texture2D>().Equals(_Texture));
 
 				return _Texture;
 			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
 		}
 
 		public bool Equals(Surface2D other)
@@ -176,8 +166,7 @@ namespace Frost.DirectX.Common
 			return other._UniqueId == _UniqueId;
 		}
 
-		public void CopyTo(
-			Rectangle srcRegion, ISurface2D destination, Point dstLocation)
+		public void CopyTo(Rectangle srcRegion, ISurface2D destination, Point dstLocation)
 		{
 			Surface2D dstSurface = (Surface2D)destination;
 
@@ -200,14 +189,7 @@ namespace Frost.DirectX.Common
 				destination.AcquireLock();
 
 				_Device3D.CopySubresourceRegion(
-					Texture2D,
-					0,
-					sourceRegion,
-					dstSurface.Texture2D,
-					0,
-					offsetX,
-					offsetY,
-					0);
+					Texture2D, 0, sourceRegion, dstSurface.Texture2D, 0, offsetX, offsetY, 0);
 			}
 			finally
 			{
@@ -253,19 +235,12 @@ namespace Frost.DirectX.Common
 			}
 		}
 
-		public void Dispose()
-		{
-			Dispose(true);
-		}
-
 		public void Clear()
 		{
-			_Device3D.ClearRenderTargetView(
-				_TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
+			_Device3D.ClearRenderTargetView(_TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
 		}
 
-		public Brush GetRadialGradientBrush(
-			Point center, Point offset, Size radius, Gradient gradient)
+		public Brush GetRadialGradientBrush(Point center, Point offset, Size radius, Gradient gradient)
 		{
 			Contract.Requires(Check.IsPositive(radius.Width));
 			Contract.Requires(Check.IsPositive(radius.Height));
@@ -286,8 +261,7 @@ namespace Frost.DirectX.Common
 
 			using(var stopCollection = this.CreateStopCollection(gradient))
 			{
-				brush = new RadialGradientBrush(
-					_Target2D, Descriptions.RadialGradient, stopCollection)
+				brush = new RadialGradientBrush(_Target2D, Descriptions.RadialGradient, stopCollection)
 				{
 					Center = center.ToPointF(),
 					GradientOriginOffset = offset.ToPointF(),
@@ -310,8 +284,7 @@ namespace Frost.DirectX.Common
 			return brush;
 		}
 
-		public Brush GetLinearGradientBrush(
-			Point startPoint, Point endPoint, Gradient gradient)
+		public Brush GetLinearGradientBrush(Point startPoint, Point endPoint, Gradient gradient)
 		{
 			Contract.Requires(gradient != null);
 			Contract.Ensures(Contract.Result<Brush>() != null);
@@ -328,12 +301,8 @@ namespace Frost.DirectX.Common
 
 			using(var stopCollection = this.CreateStopCollection(gradient))
 			{
-				brush = new LinearGradientBrush(
-					_Target2D, Descriptions.LinearGradient, stopCollection)
-				{
-					StartPoint = startPoint.ToPointF(),
-					EndPoint = endPoint.ToPointF()
-				};
+				brush = new LinearGradientBrush(_Target2D, Descriptions.LinearGradient, stopCollection)
+				{StartPoint = startPoint.ToPointF(), EndPoint = endPoint.ToPointF()};
 			}
 
 			try
@@ -358,8 +327,7 @@ namespace Frost.DirectX.Common
 
 			if(_SolidColorBrush == null)
 			{
-				_SolidColorBrush = new SolidColorBrush(
-					_Target2D, newColor);
+				_SolidColorBrush = new SolidColorBrush(_Target2D, newColor);
 			}
 
 			_SolidColorBrush.Color = newColor;
@@ -367,8 +335,7 @@ namespace Frost.DirectX.Common
 			return _SolidColorBrush;
 		}
 
-		public Brush GetPatternBrush(
-			Surface2D surface, Repetition extension)
+		public Brush GetPatternBrush(Surface2D surface, Repetition extension)
 		{
 			Contract.Requires(surface != null);
 			Contract.Ensures(Contract.Result<Brush>() != null);
@@ -376,11 +343,9 @@ namespace Frost.DirectX.Common
 			_Bitmap.SafeDispose();
 			_BitmapBrush.SafeDispose();
 
-			_Bitmap = new Bitmap(
-				_Target2D, surface, Descriptions.BitmapProperties);
+			_Bitmap = new Bitmap(_Target2D, surface, Descriptions.BitmapProperties);
 
-			_BitmapBrush = new BitmapBrush(
-				_Target2D, _Bitmap, Descriptions.BitmapBrush);
+			_BitmapBrush = new BitmapBrush(_Target2D, _Bitmap, Descriptions.BitmapBrush);
 
 			switch(extension)
 			{
@@ -460,8 +425,7 @@ namespace Frost.DirectX.Common
 			}
 		}
 
-		private GradientStopCollection CreateStopCollection(
-			Gradient gradient)
+		private GradientStopCollection CreateStopCollection(Gradient gradient)
 		{
 			Contract.Requires(gradient != null);
 			Contract.Ensures(Contract.Result<GradientStopCollection>() != null);
@@ -474,8 +438,7 @@ namespace Frost.DirectX.Common
 				dxStops[i].Color = gradient.Stops[i].Color.ToColor4();
 			}
 
-			return new GradientStopCollection(
-				_Target2D, dxStops, Gamma.Linear, ExtendMode.Clamp);
+			return new GradientStopCollection(_Target2D, dxStops, Gamma.Linear, ExtendMode.Clamp);
 		}
 
 		public struct Description
@@ -498,8 +461,7 @@ namespace Frost.DirectX.Common
 				Contract.Requires(surfaceDescription.Device2D != null);
 				Contract.Requires(surfaceDescription.Device3D != null);
 				Contract.Requires(Check.IsPositive(surfaceDescription.Size.Width));
-				Contract.Requires(
-					Check.IsPositive(surfaceDescription.Size.Height));
+				Contract.Requires(Check.IsPositive(surfaceDescription.Size.Height));
 
 				_DeviceMutex = _Texture.QueryInterface<KeyedMutex>();
 

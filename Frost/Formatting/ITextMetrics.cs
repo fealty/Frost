@@ -7,13 +7,14 @@ using System;
 using System.Diagnostics.Contracts;
 
 using Frost.Collections;
+using Frost.Formatting.Contracts;
 
 namespace Frost.Formatting
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(ITextMetrics))] internal abstract class
-			ITextMetricsContract : ITextMetrics
+		[ContractClassFor(typeof(ITextMetrics))] internal abstract class ITextMetricsContract
+			: ITextMetrics
 		{
 			public Paragraph Paragraph
 			{
@@ -73,8 +74,7 @@ namespace Frost.Formatting
 			public bool FindIndexNear(Point position, out int textIndex)
 			{
 				Contract.Ensures(Contract.ValueAtReturn(out textIndex) >= 0);
-				Contract.Ensures(
-					Contract.ValueAtReturn(out textIndex) < Regions.Count);
+				Contract.Ensures(Contract.ValueAtReturn(out textIndex) < Regions.Count);
 
 				throw new NotSupportedException();
 			}
@@ -103,8 +103,7 @@ namespace Frost.Formatting
 				throw new NotSupportedException();
 			}
 
-			public void ComputeRegion(
-				IndexedRange textRange, out Rectangle result)
+			public void ComputeRegion(IndexedRange textRange, out Rectangle result)
 			{
 				Contract.Requires(textRange.StartIndex < Regions.Count);
 				Contract.Requires(textRange.LastIndex < Regions.Count);
@@ -114,8 +113,7 @@ namespace Frost.Formatting
 		}
 	}
 
-	[ContractClass(typeof(Contracts.ITextMetricsContract))] public
-		interface ITextMetrics
+	[ContractClass(typeof(ITextMetricsContract))] public interface ITextMetrics
 	{
 		Paragraph Paragraph { get; }
 

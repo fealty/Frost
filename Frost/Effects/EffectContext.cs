@@ -15,8 +15,7 @@ namespace Frost.Effects
 		}
 	}
 
-	public sealed class EffectContext<T>
-		: EffectContext, IEffectContext, IEquatable<EffectContext<T>>
+	public sealed class EffectContext<T> : EffectContext, IEffectContext, IEquatable<EffectContext<T>>
 		where T : struct, IEffectSettings, IEquatable<T>
 	{
 		private readonly Effect<T> _Effect;
@@ -33,8 +32,7 @@ namespace Frost.Effects
 			Contract.Assert(Options.Equals(options));
 		}
 
-		public EffectContext(Effect<T> effect, T options)
-			: this(effect, ref options)
+		public EffectContext(Effect<T> effect, T options) : this(effect, ref options)
 		{
 			Contract.Requires(effect != null);
 		}
@@ -76,8 +74,7 @@ namespace Frost.Effects
 				return true;
 			}
 
-			return other._Options.Equals(_Options) &&
-			       Equals(other._Effect, _Effect);
+			return other._Options.Equals(_Options) && Equals(other._Effect, _Effect);
 		}
 
 		public override bool Equals(object obj)
@@ -99,25 +96,21 @@ namespace Frost.Effects
 		{
 			unchecked
 			{
-				return (_Options.GetHashCode() * 397) ^
-				       (_Effect != null ? _Effect.GetHashCode() : 0);
+				return (_Options.GetHashCode() * 397) ^ (_Effect != null ? _Effect.GetHashCode() : 0);
 			}
 		}
 
 		public override string ToString()
 		{
-			return string.Format(
-				"Effect: {0}, Options: {1}", _Effect, _Options);
+			return string.Format("Effect: {0}, Options: {1}", _Effect, _Options);
 		}
 
-		public static bool operator ==(
-			EffectContext<T> left, EffectContext<T> right)
+		public static bool operator ==(EffectContext<T> left, EffectContext<T> right)
 		{
 			return Equals(left, right);
 		}
 
-		public static bool operator !=(
-			EffectContext<T> left, EffectContext<T> right)
+		public static bool operator !=(EffectContext<T> left, EffectContext<T> right)
 		{
 			return !Equals(left, right);
 		}

@@ -10,8 +10,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Collections
 {
-	public struct IndexedRange
-		: IEquatable<IndexedRange>, IEnumerable<int>
+	public struct IndexedRange : IEquatable<IndexedRange>, IEnumerable<int>
 	{
 		private static readonly IndexedRange _Empty;
 
@@ -51,8 +50,7 @@ namespace Frost.Collections
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 			Contract.Assert(length <= _Length);
-			Contract.Assert(
-				startIndex + length <= _StartIndex + _Length);
+			Contract.Assert(startIndex + length <= _StartIndex + _Length);
 
 			return new IndexedRange(startIndex, length);
 		}
@@ -104,8 +102,7 @@ namespace Frost.Collections
 
 		public bool Equals(IndexedRange other)
 		{
-			return other._StartIndex == _StartIndex &&
-			       other._Length == _Length;
+			return other._StartIndex == _StartIndex && other._Length == _Length;
 		}
 
 		public override bool Equals(object obj)
@@ -133,8 +130,7 @@ namespace Frost.Collections
 
 		public override string ToString()
 		{
-			return string.Format(
-				"StartIndex: {0}, Length: {1}", _StartIndex, _Length);
+			return string.Format("StartIndex: {0}, Length: {1}", _StartIndex, _Length);
 		}
 
 		public struct Enumerator : IEnumerator<int>
@@ -177,14 +173,12 @@ namespace Frost.Collections
 			}
 		}
 
-		public static bool operator ==(IndexedRange left, IndexedRange right
-			)
+		public static bool operator ==(IndexedRange left, IndexedRange right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(IndexedRange left, IndexedRange right
-			)
+		public static bool operator !=(IndexedRange left, IndexedRange right)
 		{
 			return !left.Equals(right);
 		}

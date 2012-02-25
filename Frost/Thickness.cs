@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System;
+using System.Diagnostics.Contracts;
 
 using Contracts = System.Diagnostics.Contracts.Contract;
 
@@ -29,8 +30,7 @@ namespace Frost
 			_Empty = new Thickness(0.0f);
 		}
 
-		[System.Diagnostics.Contracts.ContractInvariantMethod] private void
-			Invariant()
+		[ContractInvariantMethod] private void Invariant()
 		{
 			Contracts.Invariant(Check.IsPositive(_Left));
 			Contracts.Invariant(Check.IsPositive(_Top));
@@ -64,11 +64,7 @@ namespace Frost
 		}
 
 		public Thickness(float leftRightTopBottom)
-			: this(
-				leftRightTopBottom,
-				leftRightTopBottom,
-				leftRightTopBottom,
-				leftRightTopBottom)
+			: this(leftRightTopBottom, leftRightTopBottom, leftRightTopBottom, leftRightTopBottom)
 		{
 			Contracts.Requires(Check.IsPositive(leftRightTopBottom));
 		}
@@ -169,25 +165,18 @@ namespace Frost
 
 		public bool Equals(Thickness other)
 		{
-			return other._Bottom.Equals(_Bottom) &&
-			       other._Left.Equals(_Left) &&
-			       other._Right.Equals(_Right) &&
+			return other._Bottom.Equals(_Bottom) && other._Left.Equals(_Left) && other._Right.Equals(_Right) &&
 			       other._Top.Equals(_Top);
 		}
 
-		public Thickness Contract(
-			float left, float top, float right, float bottom)
+		public Thickness Contract(float left, float top, float right, float bottom)
 		{
 			Contracts.Requires(Check.IsFinite(left));
 			Contracts.Requires(Check.IsFinite(top));
 			Contracts.Requires(Check.IsFinite(right));
 			Contracts.Requires(Check.IsFinite(bottom));
 
-			return new Thickness(
-				_Left - left,
-				_Top - top,
-				_Right - right,
-				_Bottom - bottom);
+			return new Thickness(_Left - left, _Top - top, _Right - right, _Bottom - bottom);
 		}
 
 		public Thickness Contract(float leftRight, float topBottom)
@@ -202,26 +191,17 @@ namespace Frost
 		{
 			Contracts.Requires(Check.IsFinite(leftRightTopBottom));
 
-			return Contract(
-				leftRightTopBottom,
-				leftRightTopBottom,
-				leftRightTopBottom,
-				leftRightTopBottom);
+			return Contract(leftRightTopBottom, leftRightTopBottom, leftRightTopBottom, leftRightTopBottom);
 		}
 
-		public Thickness Expand(
-			float left, float top, float right, float bottom)
+		public Thickness Expand(float left, float top, float right, float bottom)
 		{
 			Contracts.Requires(Check.IsFinite(left));
 			Contracts.Requires(Check.IsFinite(top));
 			Contracts.Requires(Check.IsFinite(right));
 			Contracts.Requires(Check.IsFinite(bottom));
 
-			return new Thickness(
-				_Left + left,
-				_Top + top,
-				_Right + right,
-				_Bottom + bottom);
+			return new Thickness(_Left + left, _Top + top, _Right + right, _Bottom + bottom);
 		}
 
 		public Thickness Expand(float leftRight, float topBottom)
@@ -236,11 +216,7 @@ namespace Frost
 		{
 			Contracts.Requires(Check.IsFinite(leftRightTopBottom));
 
-			return Expand(
-				leftRightTopBottom,
-				leftRightTopBottom,
-				leftRightTopBottom,
-				leftRightTopBottom);
+			return Expand(leftRightTopBottom, leftRightTopBottom, leftRightTopBottom, leftRightTopBottom);
 		}
 
 		public override bool Equals(object obj)
@@ -268,11 +244,7 @@ namespace Frost
 		public override string ToString()
 		{
 			return string.Format(
-				"Left: {0}, Top: {1}, Right: {2}, Bottom: {3}",
-				_Left,
-				_Top,
-				_Right,
-				_Bottom);
+				"Left: {0}, Top: {1}, Right: {2}, Bottom: {3}", _Left, _Top, _Right, _Bottom);
 		}
 
 		public static bool operator ==(Thickness left, Thickness right)
@@ -307,8 +279,7 @@ namespace Frost
 			Assert.Equal(5, new Thickness(3, 2, 5, 3).Height);
 
 			Assert.Equal(Empty, new Thickness(5).Contract(5, 5, 5, 5));
-			Assert.Equal(
-				new Thickness(6), new Thickness(5).Contract(-1, -1, -1, -1));
+			Assert.Equal(new Thickness(6), new Thickness(5).Contract(-1, -1, -1, -1));
 
 			Assert.Equal(Empty, new Thickness(5).Contract(5, 5));
 			Assert.Equal(new Thickness(6), new Thickness(5).Contract(-1, -1));

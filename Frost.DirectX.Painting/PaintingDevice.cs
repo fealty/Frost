@@ -23,8 +23,7 @@ namespace Frost.DirectX.Painting
 
 			_Factory2D = new Factory(FactoryType.SingleThreaded);
 
-			_PainterSink = new Painter(
-				_Factory2D, device2D, device3D);
+			_PainterSink = new Painter(_Factory2D, device2D, device3D);
 		}
 
 		public Factory Factory2D

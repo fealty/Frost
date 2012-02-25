@@ -6,12 +6,13 @@
 using System;
 using System.Diagnostics.Contracts;
 
+using Frost.Surfacing.Contracts;
+
 namespace Frost.Surfacing
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(ISurface2D))] internal abstract class
-			ISurface2DContract : ISurface2D
+		[ContractClassFor(typeof(ISurface2D))] internal abstract class ISurface2DContract : ISurface2D
 		{
 			public Device2D Device2D
 			{
@@ -28,8 +29,7 @@ namespace Frost.Surfacing
 
 			public abstract void DumpToFile(string file);
 
-			public void CopyTo(
-				Rectangle srcRegion, ISurface2D destination, Point dstLocation)
+			public void CopyTo(Rectangle srcRegion, ISurface2D destination, Point dstLocation)
 			{
 				Contract.Requires(destination != null);
 			}
@@ -39,8 +39,7 @@ namespace Frost.Surfacing
 		}
 	}
 
-	[ContractClass(typeof(Contracts.ISurface2DContract))] public
-		interface ISurface2D
+	[ContractClass(typeof(ISurface2DContract))] public interface ISurface2D
 	{
 		Device2D Device2D { get; }
 
@@ -50,8 +49,7 @@ namespace Frost.Surfacing
 
 		void DumpToFile(string file);
 
-		void CopyTo(
-			Rectangle srcRegion, ISurface2D destination, Point dstLocation);
+		void CopyTo(Rectangle srcRegion, ISurface2D destination, Point dstLocation);
 
 		void AcquireLock();
 		void ReleaseLock();

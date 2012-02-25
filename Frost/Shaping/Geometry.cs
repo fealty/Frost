@@ -25,13 +25,12 @@ namespace Frost.Shaping
 		static Geometry()
 		{
 			_Square =
-				Create().MoveTo(0.0f, 0.0f).LineTo(1.0f, 0.0f).LineTo(1.0f, 1.0f).
-					LineTo(0.0f, 1.0f).LineTo(0.0f, 0.0f).Build();
+				Create().MoveTo(0.0f, 0.0f).LineTo(1.0f, 0.0f).LineTo(1.0f, 1.0f).LineTo(0.0f, 1.0f).LineTo(
+					0.0f, 0.0f).Build();
 
 			_Circle =
-				Create().MoveTo(0.5f, 0.0f).ArcTo(
-					0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 0.5f).ArcTo(
-						0.5f, 1.0f, 0.5f, 0.0f, 0.5f, 0.5f).Build();
+				Create().MoveTo(0.5f, 0.0f).ArcTo(0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 0.5f).ArcTo(
+					0.5f, 1.0f, 0.5f, 0.0f, 0.5f, 0.5f).Build();
 		}
 
 		private Geometry(Point[] points, GeometryCommand[] commands)
@@ -44,10 +43,7 @@ namespace Frost.Shaping
 			_Transform = Matrix3X2.Identity;
 		}
 
-		private Geometry(
-			Point[] points,
-			GeometryCommand[] commands,
-			ref Matrix3X2 transformation)
+		private Geometry(Point[] points, GeometryCommand[] commands, ref Matrix3X2 transformation)
 		{
 			Contract.Requires(points != null);
 			Contract.Requires(commands != null);
@@ -105,8 +101,7 @@ namespace Frost.Shaping
 			return Scale(size.Width, size.Height);
 		}
 
-		public Geometry Scale(
-			float width, float height, float originX, float originY)
+		public Geometry Scale(float width, float height, float originX, float originY)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
@@ -189,15 +184,13 @@ namespace Frost.Shaping
 		}
 
 		public Geometry Transform(
-			ref Matrix3X2 transformation,
-			TransformMode operation = TransformMode.Multiply)
+			ref Matrix3X2 transformation, TransformMode operation = TransformMode.Multiply)
 		{
 			Contract.Ensures(Contract.Result<Geometry>() != null);
 
 			if(operation == TransformMode.Replace)
 			{
-				return new Geometry(
-					_Points, _Commands, ref transformation);
+				return new Geometry(_Points, _Commands, ref transformation);
 			}
 
 			Matrix3X2 result;
@@ -223,13 +216,11 @@ namespace Frost.Shaping
 						sink.Close();
 						continue;
 					case GeometryCommand.MoveTo:
-						sink.MoveTo(
-							_Points[pointIndex + 0].Transform(ref _Transform));
+						sink.MoveTo(_Points[pointIndex + 0].Transform(ref _Transform));
 						pointIndex++;
 						continue;
 					case GeometryCommand.LineTo:
-						sink.LineTo(
-							_Points[pointIndex + 0].Transform(ref _Transform));
+						sink.LineTo(_Points[pointIndex + 0].Transform(ref _Transform));
 						pointIndex++;
 						continue;
 					case GeometryCommand.QuadraticCurveTo:
@@ -246,8 +237,7 @@ namespace Frost.Shaping
 						pointIndex += 3;
 						continue;
 					case GeometryCommand.ArcTo:
-						Size radius = new Size(
-							_Points[pointIndex + 2].X, _Points[pointIndex + 2].Y);
+						Size radius = new Size(_Points[pointIndex + 2].X, _Points[pointIndex + 2].Y);
 						sink.ArcTo(
 							_Points[pointIndex + 0].Transform(ref _Transform),
 							_Points[pointIndex + 1].Transform(ref _Transform),
@@ -292,8 +282,7 @@ namespace Frost.Shaping
 				Trace.Assert(_Points.Count > 0);
 				Trace.Assert(_Commands.Count > 0);
 
-				return new Geometry(
-					_Points.ToArray(), _Commands.ToArray());
+				return new Geometry(_Points.ToArray(), _Commands.ToArray());
 			}
 
 			public Builder SaveState()
@@ -395,10 +384,7 @@ namespace Frost.Shaping
 			}
 
 			public Builder QuadraticCurveTo(
-				float controlPointX,
-				float controlPointY,
-				float endPointX,
-				float endPointY)
+				float controlPointX, float controlPointY, float endPointX, float endPointY)
 			{
 				Contract.Requires(Check.IsFinite(controlPointX));
 				Contract.Requires(Check.IsFinite(controlPointY));
@@ -407,8 +393,7 @@ namespace Frost.Shaping
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
 				return QuadraticCurveTo(
-					new Point(controlPointX, controlPointY),
-					new Point(endPointX, endPointY));
+					new Point(controlPointX, controlPointY), new Point(endPointX, endPointY));
 			}
 
 			public Builder QuadraticCurveTo(Point controlPoint, Point endPoint)
@@ -468,8 +453,7 @@ namespace Frost.Shaping
 					new Point(endPointX, endPointY));
 			}
 
-			public Builder BezierCurveTo(
-				Point controlPoint1, Point controlPoint2, Point endPoint)
+			public Builder BezierCurveTo(Point controlPoint1, Point controlPoint2, Point endPoint)
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
@@ -539,8 +523,7 @@ namespace Frost.Shaping
 					new Size(radiusWidth, radiusHeight));
 			}
 
-			public Builder ArcTo(
-				Point tangentStart, Point tangentEnd, Size radius)
+			public Builder ArcTo(Point tangentStart, Point tangentEnd, Size radius)
 			{
 				Contract.Requires(Check.IsPositive(radius.Width));
 				Contract.Requires(Check.IsPositive(radius.Height));
@@ -614,8 +597,7 @@ namespace Frost.Shaping
 				return Scale(size.Width, size.Height);
 			}
 
-			public Builder Scale(
-				float width, float height, float originX, float originY)
+			public Builder Scale(float width, float height, float originX, float originY)
 			{
 				Contract.Requires(Check.IsPositive(width));
 				Contract.Requires(Check.IsPositive(height));
@@ -623,8 +605,7 @@ namespace Frost.Shaping
 				Contract.Requires(Check.IsFinite(originY));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				_Transform.Scale(
-					width, height, originX, originY, out _Transform);
+				_Transform.Scale(width, height, originX, originY, out _Transform);
 
 				return this;
 			}
@@ -657,8 +638,7 @@ namespace Frost.Shaping
 				Contract.Requires(Check.IsFinite(originY));
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
-				_Transform.Rotate(
-					angle, originX, originY, out _Transform);
+				_Transform.Rotate(angle, originX, originY, out _Transform);
 
 				return this;
 			}
@@ -690,8 +670,7 @@ namespace Frost.Shaping
 			}
 
 			public Builder Transform(
-				ref Matrix3X2 transformation,
-				TransformMode operation = TransformMode.Multiply)
+				ref Matrix3X2 transformation, TransformMode operation = TransformMode.Multiply)
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
@@ -729,8 +708,7 @@ namespace Frost.Shaping
 				return true;
 			}
 
-			return Equals(other._Commands, _Commands) &&
-			       Equals(other._Points, _Points) &&
+			return Equals(other._Commands, _Commands) && Equals(other._Points, _Points) &&
 			       other._Transform.Equals(_Transform);
 		}
 
@@ -806,15 +784,12 @@ namespace Frost.Shaping
 				_Builder.QuadraticCurveTo(controlPoint, endPoint);
 			}
 
-			public void BezierCurveTo(
-				Point controlPoint1, Point controlPoint2, Point controlPoint3)
+			public void BezierCurveTo(Point controlPoint1, Point controlPoint2, Point controlPoint3)
 			{
-				_Builder.BezierCurveTo(
-					controlPoint1, controlPoint2, controlPoint3);
+				_Builder.BezierCurveTo(controlPoint1, controlPoint2, controlPoint3);
 			}
 
-			public void ArcTo(
-				Point tangentStart, Point tangentEnd, Size radius)
+			public void ArcTo(Point tangentStart, Point tangentEnd, Size radius)
 			{
 				_Builder.ArcTo(tangentStart, tangentEnd, radius);
 			}

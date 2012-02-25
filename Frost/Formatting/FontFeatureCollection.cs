@@ -11,8 +11,7 @@ using Frost.Collections;
 
 namespace Frost.Formatting
 {
-	public sealed class FontFeatureCollection
-		: ImmutableBase<FontFeature>
+	public sealed class FontFeatureCollection : ImmutableBase<FontFeature>
 	{
 		public FontFeatureCollection(FontFeature[] items) : base(items)
 		{
@@ -24,8 +23,7 @@ namespace Frost.Formatting
 			Contract.Requires(items != null);
 		}
 
-		public FontFeatureCollection(IEnumerable<FontFeature> items)
-			: base(items)
+		public FontFeatureCollection(IEnumerable<FontFeature> items) : base(items)
 		{
 			Contract.Requires(items != null);
 		}
@@ -37,14 +35,12 @@ namespace Frost.Formatting
 
 			for(int i = 0; i < 10; ++i)
 			{
-				list.Add(
-					new FontFeature(i.ToString(CultureInfo.InvariantCulture)));
+				list.Add(new FontFeature(i.ToString(CultureInfo.InvariantCulture)));
 			}
 
 			TestDerived(new FontFeatureCollection(list.ToArray()));
 			TestDerived(new FontFeatureCollection(list));
-			TestDerived(
-				new FontFeatureCollection((IEnumerable<FontFeature>)list));
+			TestDerived(new FontFeatureCollection((IEnumerable<FontFeature>)list));
 		}
 #endif
 	}

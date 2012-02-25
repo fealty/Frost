@@ -30,8 +30,7 @@ namespace Frost.DirectX.Painting
 		private readonly Drawer _Drawer;
 		private readonly Factory _Factory2D;
 
-		private readonly TimeSpanCounter _FrameDuration =
-			new TimeSpanCounter("Painting", "FrameDuration");
+		private readonly TimeSpanCounter _FrameDuration = new TimeSpanCounter("Painting", "FrameDuration");
 
 		private readonly Stack<State> _States;
 		private readonly Stopwatch _Watch;
@@ -43,9 +42,7 @@ namespace Frost.DirectX.Painting
 		private StrokeStyle _StrokeStyle;
 		private Surface2D _TargetSurface;
 
-		public Painter(
-			Factory factory2D, Device2D device2D, Device device3D)
-			: base(device2D)
+		public Painter(Factory factory2D, Device2D device2D, Device device3D) : base(device2D)
 		{
 			Contract.Requires(factory2D != null);
 			Contract.Requires(device3D != null);
@@ -131,37 +128,21 @@ namespace Frost.DirectX.Painting
 		{
 			Reconfigure();
 
-			_Drawer.Stroke(
-				rectangleRegion,
-				_ActiveBrush,
-				_StrokeStyle,
-				ActiveStrokeWidth);
+			_Drawer.Stroke(rectangleRegion, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
 		}
 
-		protected override void OnStroke(
-			ref Point lineStart, ref Point lineEnd)
+		protected override void OnStroke(ref Point lineStart, ref Point lineEnd)
 		{
 			Reconfigure();
 
-			_Drawer.Stroke(
-				lineStart,
-				lineEnd,
-				_ActiveBrush,
-				_StrokeStyle,
-				ActiveStrokeWidth);
+			_Drawer.Stroke(lineStart, lineEnd, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
 		}
 
-		protected override void OnStroke(
-			ref Rectangle rectangleRegion, ref Size roundedRadius)
+		protected override void OnStroke(ref Rectangle rectangleRegion, ref Size roundedRadius)
 		{
 			Reconfigure();
 
-			_Drawer.Stroke(
-				rectangleRegion,
-				roundedRadius,
-				_ActiveBrush,
-				_StrokeStyle,
-				ActiveStrokeWidth);
+			_Drawer.Stroke(rectangleRegion, roundedRadius, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
 		}
 
 		protected override void OnFill(ref Rectangle rectangleRegion)
@@ -171,24 +152,18 @@ namespace Frost.DirectX.Painting
 			_Drawer.Fill(rectangleRegion, _ActiveBrush);
 		}
 
-		protected override void OnFill(
-			ref Rectangle rectangleRegion, ref Size roundedRadius)
+		protected override void OnFill(ref Rectangle rectangleRegion, ref Size roundedRadius)
 		{
 			Reconfigure();
 
-			_Drawer.Fill(
-				rectangleRegion, roundedRadius, _ActiveBrush);
+			_Drawer.Fill(rectangleRegion, roundedRadius, _ActiveBrush);
 		}
 
 		protected override void OnStroke(Geometry geometry)
 		{
 			Reconfigure();
 
-			_Drawer.Stroke(
-				geometry,
-				_ActiveBrush,
-				_StrokeStyle,
-				ActiveStrokeWidth);
+			_Drawer.Stroke(geometry, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
 		}
 
 		protected override void OnFill(Geometry geometry)
@@ -242,8 +217,7 @@ namespace Frost.DirectX.Painting
 			_IsBrushInvalid = true;
 		}
 
-		protected override void OnSetBrush(
-			Canvas source, Repetition extension)
+		protected override void OnSetBrush(Canvas source, Repetition extension)
 		{
 			_ActiveBrushState.PatternSurface.SafeDispose();
 
@@ -255,11 +229,9 @@ namespace Frost.DirectX.Painting
 			description.Size = source.Region.Size;
 			description.Factory2D = null;
 
-			_ActiveBrushState.PatternSurface =
-				Surface2D.FromDescription(ref description);
+			_ActiveBrushState.PatternSurface = Surface2D.FromDescription(ref description);
 
-			source.Surface2D.CopyTo(
-				source.Region, _ActiveBrushState.PatternSurface, Point.Empty);
+			source.Surface2D.CopyTo(source.Region, _ActiveBrushState.PatternSurface, Point.Empty);
 
 			_ActiveBrushState.PatternRepetition = extension;
 
@@ -269,9 +241,7 @@ namespace Frost.DirectX.Painting
 		}
 
 		protected override void OnSetBrush(
-			ref Point linearGradientStart,
-			ref Point linearGradientEnd,
-			Gradient gradient)
+			ref Point linearGradientStart, ref Point linearGradientEnd, Gradient gradient)
 		{
 			_ActiveBrushState.Stops = gradient;
 
@@ -319,8 +289,8 @@ namespace Frost.DirectX.Painting
 				_IsBrushInvalid = false;
 			}
 
-			if(IsLineStyleInvalid || IsMiterLimitInvalid || IsStrokeCapInvalid ||
-			   IsStrokeJoinInvalid || IsDashCapInvalid)
+			if(IsLineStyleInvalid || IsMiterLimitInvalid || IsStrokeCapInvalid || IsStrokeJoinInvalid ||
+			   IsDashCapInvalid)
 			{
 				ReconfigureStrokeStyle();
 
@@ -362,47 +332,36 @@ namespace Frost.DirectX.Painting
 			switch(_ActiveBrushState.BrushType)
 			{
 				case BrushType.None:
-					_ActiveBrush =
-						_TargetSurface.GetSolidColorBrush(
-							_ActiveBrushState.SolidColorColor);
+					_ActiveBrush = _TargetSurface.GetSolidColorBrush(_ActiveBrushState.SolidColorColor);
 					break;
 				case BrushType.SolidColor:
-					_ActiveBrush =
-						_TargetSurface.GetSolidColorBrush(
-							_ActiveBrushState.SolidColorColor);
+					_ActiveBrush = _TargetSurface.GetSolidColorBrush(_ActiveBrushState.SolidColorColor);
 					break;
 				case BrushType.LinearGradient:
-					_ActiveBrush =
-						_TargetSurface.GetLinearGradientBrush(
-							_ActiveBrushState.LinearGradientStart,
-							_ActiveBrushState.LinearGradientEnd,
-							_ActiveBrushState.Stops);
+					_ActiveBrush = _TargetSurface.GetLinearGradientBrush(
+						_ActiveBrushState.LinearGradientStart,
+						_ActiveBrushState.LinearGradientEnd,
+						_ActiveBrushState.Stops);
 					break;
 				case BrushType.RadialGradient:
-					_ActiveBrush =
-						_TargetSurface.GetRadialGradientBrush(
-							_ActiveBrushState.RadialGradientCenter,
-							_ActiveBrushState.RadialGradientOffset,
-							_ActiveBrushState.RadialGradientRadius,
-							_ActiveBrushState.Stops);
+					_ActiveBrush = _TargetSurface.GetRadialGradientBrush(
+						_ActiveBrushState.RadialGradientCenter,
+						_ActiveBrushState.RadialGradientOffset,
+						_ActiveBrushState.RadialGradientRadius,
+						_ActiveBrushState.Stops);
 					break;
 				case BrushType.Pattern:
-					_ActiveBrush =
-						_TargetSurface.GetPatternBrush(
-							_ActiveBrushState.PatternSurface,
-							_ActiveBrushState.PatternRepetition);
+					_ActiveBrush = _TargetSurface.GetPatternBrush(
+						_ActiveBrushState.PatternSurface, _ActiveBrushState.PatternRepetition);
 					break;
 			}
 		}
 
 		private void ReconfigureAntialiasing()
 		{
-			_TargetSurface.Target2D.AntialiasMode = ActiveAntialiasing ==
-			                                             Antialiasing.Default
-			                                             	? AntialiasMode.
-			                                             	  	PerPrimitive
-			                                             	: AntialiasMode.
-			                                             	  	Aliased;
+			_TargetSurface.Target2D.AntialiasMode = ActiveAntialiasing == Antialiasing.Default
+			                                        	? AntialiasMode.PerPrimitive
+			                                        	: AntialiasMode.Aliased;
 		}
 
 		private void ReconfigureStrokeStyle()
@@ -419,8 +378,7 @@ namespace Frost.DirectX.Painting
 				DashStyle = ActiveLineStyle.ToDirectWrite()
 			};
 
-			_StrokeStyle = new StrokeStyle(
-				_Factory2D, newStyle, new float[0]);
+			_StrokeStyle = new StrokeStyle(_Factory2D, newStyle, new float[0]);
 		}
 
 		internal struct BrushState

@@ -14,8 +14,7 @@ namespace Frost.DirectX
 {
 	internal sealed class SimplificationSink : GeometrySinkBase
 	{
-		public Geometry CreateSimplification(
-			DxGeometry resolvedSource, float tolerance)
+		public Geometry CreateSimplification(DxGeometry resolvedSource, float tolerance)
 		{
 			Contract.Requires(resolvedSource != null);
 			Contract.Requires(Check.IsPositive(tolerance));
@@ -23,8 +22,7 @@ namespace Frost.DirectX
 
 			_Builder = Geometry.Create();
 
-			resolvedSource.Simplify(
-				GeometrySimplificationOption.Lines, tolerance, this);
+			resolvedSource.Simplify(GeometrySimplificationOption.Lines, tolerance, this);
 
 			Geometry result = _Builder.Build();
 

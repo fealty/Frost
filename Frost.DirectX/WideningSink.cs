@@ -13,8 +13,7 @@ namespace Frost.DirectX
 {
 	internal sealed class WideningSink : GeometrySinkBase
 	{
-		public Geometry CreateWidened(
-			DxGeometry resolvedSource, float width, float tolerance)
+		public Geometry CreateWidened(DxGeometry resolvedSource, float width, float tolerance)
 		{
 			Contract.Requires(resolvedSource != null);
 			Contract.Requires(Check.IsPositive(width));

@@ -75,8 +75,7 @@ namespace Frost.Formatting
 		{
 			get
 			{
-				Contract.Ensures(
-					Contract.Result<FontFeatureCollection>() == _Features);
+				Contract.Ensures(Contract.Result<FontFeatureCollection>() == _Features);
 
 				return _Features;
 			}
@@ -181,16 +180,11 @@ namespace Frost.Formatting
 
 		public bool Equals(TextRun other)
 		{
-			return Equals(other._Culture, _Culture) &&
-			       Equals(other._Family, _Family) &&
-			       Equals(other._Features, _Features) &&
-			       other._HAlignment == _HAlignment &&
-			       other._Inline.Equals(_Inline) &&
-			       other._PointSize.Equals(_PointSize) &&
-			       other._Stretch == _Stretch &&
-			       other._Style == _Style &&
-			       other._TextRange.Equals(_TextRange) &&
-			       other._VAlignment == _VAlignment &&
+			return Equals(other._Culture, _Culture) && Equals(other._Family, _Family) &&
+			       Equals(other._Features, _Features) && other._HAlignment == _HAlignment &&
+			       other._Inline.Equals(_Inline) && other._PointSize.Equals(_PointSize) &&
+			       other._Stretch == _Stretch && other._Style == _Style &&
+			       other._TextRange.Equals(_TextRange) && other._VAlignment == _VAlignment &&
 			       other._Weight == _Weight;
 		}
 
@@ -208,15 +202,9 @@ namespace Frost.Formatting
 		{
 			unchecked
 			{
-				int result = (_Culture != null
-				              	? _Culture.GetHashCode()
-				              	: 0);
-				result = (result * 397) ^
-				         (_Family != null ? _Family.GetHashCode() : 0);
-				result = (result * 397) ^
-				         (_Features != null
-				          	? _Features.GetHashCode()
-				          	: 0);
+				int result = (_Culture != null ? _Culture.GetHashCode() : 0);
+				result = (result * 397) ^ (_Family != null ? _Family.GetHashCode() : 0);
+				result = (result * 397) ^ (_Features != null ? _Features.GetHashCode() : 0);
 				result = (result * 397) ^ _HAlignment.GetHashCode();
 				result = (result * 397) ^ _Inline.GetHashCode();
 				result = (result * 397) ^ _PointSize.GetHashCode();

@@ -86,15 +86,9 @@ namespace Frost.DirectX.Painting
 			}
 
 			RectangleF roundedRegion = new RectangleF
-			{
-				Left = newRegion.Left,
-				Top = newRegion.Top,
-				Right = newRegion.Right,
-				Bottom = newRegion.Bottom
-			};
+			{Left = newRegion.Left, Top = newRegion.Top, Right = newRegion.Right, Bottom = newRegion.Bottom};
 
-			_Target.PushAxisAlignedClip(
-				roundedRegion, AntialiasMode.Aliased);
+			_Target.PushAxisAlignedClip(roundedRegion, AntialiasMode.Aliased);
 
 			// clear only part of the surface as specified by newRegion
 			_Target.Clear(Color.Transparent.ToColor4());
@@ -102,11 +96,7 @@ namespace Frost.DirectX.Painting
 			_Target.PopAxisAlignedClip();
 		}
 
-		public void Stroke(
-			Rectangle rectangleRegion,
-			Brush brush,
-			StrokeStyle style,
-			float strokeWidth)
+		public void Stroke(Rectangle rectangleRegion, Brush brush, StrokeStyle style, float strokeWidth)
 		{
 			Contract.Requires(brush != null);
 			Contract.Requires(style != null);
@@ -114,29 +104,18 @@ namespace Frost.DirectX.Painting
 
 			Rectangle newRegion;
 
-			ToStrokeable(
-				ref rectangleRegion, strokeWidth, strokeWidth, out newRegion);
+			ToStrokeable(ref rectangleRegion, strokeWidth, strokeWidth, out newRegion);
 
 			FitStroke(ref newRegion, strokeWidth, strokeWidth, out newRegion);
 
 			RectangleF roundedRectangle = new RectangleF
-			{
-				Left = newRegion.Left,
-				Top = newRegion.Top,
-				Right = newRegion.Right,
-				Bottom = newRegion.Bottom
-			};
+			{Left = newRegion.Left, Top = newRegion.Top, Right = newRegion.Right, Bottom = newRegion.Bottom};
 
-			_Target.DrawRectangle(
-				roundedRectangle, brush, strokeWidth, style);
+			_Target.DrawRectangle(roundedRectangle, brush, strokeWidth, style);
 		}
 
 		public void Stroke(
-			Point lineStart,
-			Point lineEnd,
-			Brush brush,
-			StrokeStyle style,
-			float strokeWidth)
+			Point lineStart, Point lineEnd, Brush brush, StrokeStyle style, float strokeWidth)
 		{
 			Contract.Requires(brush != null);
 			Contract.Requires(style != null);
@@ -163,22 +142,18 @@ namespace Frost.DirectX.Painting
 
 			Rectangle newRegion;
 
-			ToStrokeable(
-				ref rectangleRegion, strokeWidth, strokeWidth, out newRegion);
+			ToStrokeable(ref rectangleRegion, strokeWidth, strokeWidth, out newRegion);
 
 			FitStroke(ref newRegion, strokeWidth, strokeWidth, out newRegion);
 
 			RoundedRect roundedRectangle = new RoundedRect
 			{
-				Rect =
-					new RectangleF(
-						newRegion.Left, newRegion.Top, newRegion.Right, newRegion.Bottom),
+				Rect = new RectangleF(newRegion.Left, newRegion.Top, newRegion.Right, newRegion.Bottom),
 				RadiusX = roundedRectangleRadius.Width,
 				RadiusY = roundedRectangleRadius.Height
 			};
 
-			_Target.DrawRoundedRectangle(
-				roundedRectangle, brush, strokeWidth, style);
+			_Target.DrawRoundedRectangle(roundedRectangle, brush, strokeWidth, style);
 		}
 
 		public void Fill(Rectangle rectangleRegion, Brush brush)
@@ -196,8 +171,7 @@ namespace Frost.DirectX.Painting
 			_Target.FillRectangle(roundedRectangle, brush);
 		}
 
-		public void Fill(
-			Rectangle rectangleRegion, Size roundedRectangleRadius, Brush brush)
+		public void Fill(Rectangle rectangleRegion, Size roundedRectangleRadius, Brush brush)
 		{
 			Contract.Requires(Check.IsPositive(roundedRectangleRadius.Width));
 			Contract.Requires(Check.IsPositive(roundedRectangleRadius.Height));
@@ -207,10 +181,7 @@ namespace Frost.DirectX.Painting
 			{
 				Rect =
 					new RectangleF(
-						rectangleRegion.Left,
-						rectangleRegion.Top,
-						rectangleRegion.Right,
-						rectangleRegion.Bottom),
+						rectangleRegion.Left, rectangleRegion.Top, rectangleRegion.Right, rectangleRegion.Bottom),
 				RadiusX = roundedRectangleRadius.Width,
 				RadiusY = roundedRectangleRadius.Height
 			};
@@ -218,11 +189,7 @@ namespace Frost.DirectX.Painting
 			_Target.FillRoundedRectangle(rectangle, brush);
 		}
 
-		public void Stroke(
-			Geometry geometry,
-			Brush brush,
-			StrokeStyle style,
-			float strokeWidth)
+		public void Stroke(Geometry geometry, Brush brush, StrokeStyle style, float strokeWidth)
 		{
 			Contract.Requires(geometry != null);
 			Contract.Requires(brush != null);
@@ -253,25 +220,17 @@ namespace Frost.DirectX.Painting
 		}
 
 		private static void FitStroke(
-			ref Rectangle region,
-			float thicknessX,
-			float thicknessY,
-			out Rectangle result)
+			ref Rectangle region, float thicknessX, float thicknessY, out Rectangle result)
 		{
-			Thickness thickness = new Thickness(
-				thicknessX / 2.0f, thicknessY / 2.0f, 0.0f, 0.0f);
+			Thickness thickness = new Thickness(thicknessX / 2.0f, thicknessY / 2.0f, 0.0f, 0.0f);
 
 			result = region.Contract(thickness);
 		}
 
 		private static void ToStrokeable(
-			ref Rectangle region,
-			float thicknessX,
-			float thicknessY,
-			out Rectangle result)
+			ref Rectangle region, float thicknessX, float thicknessY, out Rectangle result)
 		{
-			Thickness thickness = new Thickness(
-				0.0f, 0.0f, thicknessX / 2.0f, thicknessY / 2.0f);
+			Thickness thickness = new Thickness(0.0f, 0.0f, thicknessX / 2.0f, thicknessY / 2.0f);
 
 			result = region.Contract(thickness);
 		}

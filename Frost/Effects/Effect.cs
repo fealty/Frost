@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 using Frost.Composition;
+using Frost.Effects.Contracts;
 
 namespace Frost.Effects
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(Effect))] internal abstract class
-			EffectContract : Effect
+		[ContractClassFor(typeof(Effect))] internal abstract class EffectContract : Effect
 		{
 			internal override Type OptionsType
 			{
@@ -27,14 +27,11 @@ namespace Frost.Effects
 			}
 		}
 
-		[ContractClassFor(typeof(Effect<>))] internal abstract class
-			EffectContract<T> : Effect<T>
+		[ContractClassFor(typeof(Effect<>))] internal abstract class EffectContract<T> : Effect<T>
 			where T : struct, IEffectSettings, IEquatable<T>
 		{
 			public override void Apply<TEnum>(
-				TEnum batchedItems,
-				EffectContext<T> effectContext,
-				Compositor compositionContext)
+				TEnum batchedItems, EffectContext<T> effectContext, Compositor compositionContext)
 			{
 				Contract.Requires(batchedItems != null);
 				Contract.Requires(effectContext != null);
@@ -43,8 +40,7 @@ namespace Frost.Effects
 		}
 	}
 
-	[ContractClass(typeof(Contracts.EffectContract))] public abstract
-		class Effect
+	[ContractClass(typeof(EffectContract))] public abstract class Effect
 	{
 		internal Effect()
 		{
@@ -53,8 +49,7 @@ namespace Frost.Effects
 		internal abstract Type OptionsType { get; }
 	}
 
-	[ContractClass(typeof(Contracts.EffectContract<>))] public abstract
-		class Effect<T> : Effect, IEffect
+	[ContractClass(typeof(EffectContract<>))] public abstract class Effect<T> : Effect, IEffect
 		where T : struct, IEffectSettings, IEquatable<T>
 	{
 		internal override sealed Type OptionsType
@@ -63,16 +58,12 @@ namespace Frost.Effects
 		}
 
 		void IEffect.Apply<TEnum>(
-			TEnum batchedItems,
-			IEffectContext effectContext,
-			Compositor compositionContext)
+			TEnum batchedItems, IEffectContext effectContext, Compositor compositionContext)
 		{
 		}
 
 		public abstract void Apply<TEnum>(
-			TEnum batchedItems,
-			EffectContext<T> effectContext,
-			Compositor compositionContext)
+			TEnum batchedItems, EffectContext<T> effectContext, Compositor compositionContext)
 			where TEnum : class, IEnumerable<BatchedItem>;
 	}
 }

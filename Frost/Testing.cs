@@ -69,10 +69,8 @@ namespace Frost
 			}
 
 			// test the != operator if any is defined on the type
-			MethodInfo opInequality1 =
-				object1.GetType().GetMethod("op_Inequality");
-			MethodInfo opInequality2 =
-				object2.GetType().GetMethod("op_Inequality");
+			MethodInfo opInequality1 = object1.GetType().GetMethod("op_Inequality");
+			MethodInfo opInequality2 = object2.GetType().GetMethod("op_Inequality");
 
 			if(opInequality1 != null && opInequality2 != null)
 			{

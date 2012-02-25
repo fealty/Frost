@@ -14,13 +14,11 @@ using DxGeometry = SharpDX.Direct2D1.Geometry;
 
 namespace Frost.DirectX
 {
-	internal sealed class TessellationSink
-		: CallbackBase, SharpDX.Direct2D1.TessellationSink
+	internal sealed class TessellationSink : CallbackBase, SharpDX.Direct2D1.TessellationSink
 	{
 		private ITessellationSink _Sink;
 
-		void SharpDX.Direct2D1.TessellationSink.AddTriangles(
-			Triangle[] triangles)
+		void SharpDX.Direct2D1.TessellationSink.AddTriangles(Triangle[] triangles)
 		{
 			foreach(Triangle triangle in triangles)
 			{
@@ -37,8 +35,7 @@ namespace Frost.DirectX
 			_Sink.End();
 		}
 
-		public void Tessellate(
-			DxGeometry resolvedSource, ITessellationSink sink, float tolerance)
+		public void Tessellate(DxGeometry resolvedSource, ITessellationSink sink, float tolerance)
 		{
 			Contract.Requires(resolvedSource != null);
 			Contract.Requires(sink != null);

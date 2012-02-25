@@ -95,8 +95,7 @@ namespace Frost.DirectX.Common
 			_PathSink.AddLine(endPoint.ToPointF());
 		}
 
-		void IGeometrySink.QuadraticCurveTo(
-			Point controlPoint, Point endPoint)
+		void IGeometrySink.QuadraticCurveTo(Point controlPoint, Point endPoint)
 		{
 			Contract.Assert(_PathSink != null);
 
@@ -108,8 +107,7 @@ namespace Frost.DirectX.Common
 			_PathSink.AddQuadraticBezier(segment);
 		}
 
-		void IGeometrySink.BezierCurveTo(
-			Point controlPoint1, Point controlPoint2, Point endPoint)
+		void IGeometrySink.BezierCurveTo(Point controlPoint1, Point controlPoint2, Point endPoint)
 		{
 			Contract.Assert(_PathSink != null);
 
@@ -122,8 +120,7 @@ namespace Frost.DirectX.Common
 			_PathSink.AddBezier(segment);
 		}
 
-		void IGeometrySink.ArcTo(
-			Point tangentStart, Point tangentEnd, Size radius)
+		void IGeometrySink.ArcTo(Point tangentStart, Point tangentEnd, Size radius)
 		{
 			Contract.Assert(_PathSink != null);
 

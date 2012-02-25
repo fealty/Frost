@@ -6,12 +6,14 @@
 using System;
 using System.Diagnostics.Contracts;
 
+using Frost.Effects.Contracts;
+
 namespace Frost.Effects
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(IEffectContext))] internal abstract class
-			IEffectContextContract : IEffectContext
+		[ContractClassFor(typeof(IEffectContext))] internal abstract class IEffectContextContract
+			: IEffectContext
 		{
 			public abstract bool Equals(IEffectContext other);
 
@@ -27,8 +29,8 @@ namespace Frost.Effects
 		}
 	}
 
-	[ContractClass(typeof(Contracts.IEffectContextContract))] internal
-		interface IEffectContext : IEquatable<IEffectContext>
+	[ContractClass(typeof(IEffectContextContract))] internal interface IEffectContext
+		: IEquatable<IEffectContext>
 	{
 		IEffect Effect { get; }
 	}

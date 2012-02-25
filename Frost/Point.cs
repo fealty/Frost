@@ -128,8 +128,7 @@ namespace Frost
 
 		public Point FindIntersectionWith(Point lineStart, Point lineEnd)
 		{
-			Point v = new Point(
-				lineEnd.X - lineStart.X, lineEnd.Y - lineStart.Y);
+			Point v = new Point(lineEnd.X - lineStart.X, lineEnd.Y - lineStart.Y);
 			Point w = new Point(_X - lineStart.X, _Y - lineStart.Y);
 
 			float c1 = w.X * v.X + w.Y * v.Y;
@@ -153,12 +152,9 @@ namespace Frost
 
 		public Point Transform(ref Matrix3X2 transformation)
 		{
-			return
-				new Point(
-					(_X * transformation.M11) + (_Y * transformation.M21) +
-					transformation.M31,
-					(_X * transformation.M12) + (_Y * transformation.M22) +
-					transformation.M32);
+			return new Point(
+				(_X * transformation.M11) + (_Y * transformation.M21) + transformation.M31,
+				(_X * transformation.M12) + (_Y * transformation.M22) + transformation.M32);
 		}
 
 		public override bool Equals(object obj)
@@ -203,29 +199,17 @@ namespace Frost
 			Assert.Equal(0, Empty.X);
 			Assert.Equal(0, Empty.Y);
 
-			Assert.Equal(
-				1.41421, Math.Round(Empty.DistanceTo(new Point(1, 1)), 5));
-			Assert.Equal(
-				0.00000, Math.Round(Empty.DistanceTo(new Point(0, 0)), 5));
+			Assert.Equal(1.41421, Math.Round(Empty.DistanceTo(new Point(1, 1)), 5));
+			Assert.Equal(0.00000, Math.Round(Empty.DistanceTo(new Point(0, 0)), 5));
 
 			Assert.Equal(2, Empty.SquaredDistanceTo(new Point(1, 1)));
 			Assert.Equal(0, Empty.SquaredDistanceTo(new Point(0, 0)));
 
-			Assert.Equal(
-				new Point(0, 0),
-				Empty.FindIntersectionWith(new Point(-5, 5), new Point(0, +0)));
-			Assert.Equal(
-				new Point(0, 0),
-				Empty.FindIntersectionWith(new Point(+0, 0), new Point(5, -5)));
-			Assert.Equal(
-				new Point(0, 0),
-				Empty.FindIntersectionWith(new Point(+0, 0), new Point(0, +0)));
-			Assert.Equal(
-				new Point(1, 0),
-				Empty.FindIntersectionWith(new Point(+1, 5), new Point(1, -5)));
-			Assert.Equal(
-				new Point(5, 0),
-				Empty.FindIntersectionWith(new Point(+5, 5), new Point(5, -5)));
+			Assert.Equal(new Point(0, 0), Empty.FindIntersectionWith(new Point(-5, 5), new Point(0, +0)));
+			Assert.Equal(new Point(0, 0), Empty.FindIntersectionWith(new Point(+0, 0), new Point(5, -5)));
+			Assert.Equal(new Point(0, 0), Empty.FindIntersectionWith(new Point(+0, 0), new Point(0, +0)));
+			Assert.Equal(new Point(1, 0), Empty.FindIntersectionWith(new Point(+1, 5), new Point(1, -5)));
+			Assert.Equal(new Point(5, 0), Empty.FindIntersectionWith(new Point(+5, 5), new Point(5, -5)));
 
 			Matrix3X2 identity = Matrix3X2.Identity;
 

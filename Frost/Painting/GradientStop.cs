@@ -47,8 +47,7 @@ namespace Frost.Painting
 
 		public bool Equals(GradientStop other)
 		{
-			return other._Color.Equals(_Color) &&
-			       other._Position.Equals(_Position);
+			return other._Color.Equals(_Color) && other._Position.Equals(_Position);
 		}
 
 		public override bool Equals(object obj)
@@ -65,15 +64,13 @@ namespace Frost.Painting
 		{
 			unchecked
 			{
-				return (_Color.GetHashCode() * 397) ^
-				       _Position.GetHashCode();
+				return (_Color.GetHashCode() * 397) ^ _Position.GetHashCode();
 			}
 		}
 
 		public override string ToString()
 		{
-			return string.Format(
-				"Position: {0}, Color: {1}", _Position, _Color);
+			return string.Format("Position: {0}, Color: {1}", _Position, _Color);
 		}
 
 		[ContractInvariantMethod] private void Invariant()
@@ -81,14 +78,12 @@ namespace Frost.Painting
 			Contract.Invariant(Check.IsNormalized(_Position));
 		}
 
-		public static bool operator ==(GradientStop left, GradientStop right
-			)
+		public static bool operator ==(GradientStop left, GradientStop right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(GradientStop left, GradientStop right
-			)
+		public static bool operator !=(GradientStop left, GradientStop right)
 		{
 			return !left.Equals(right);
 		}
@@ -96,9 +91,7 @@ namespace Frost.Painting
 #if(UNIT_TESTING)
 		[Fact] internal static void Test0()
 		{
-			Assert.TestObject(
-				new GradientStop(0.0f, Color.Red),
-				new GradientStop(1.0f, Color.Blue));
+			Assert.TestObject(new GradientStop(0.0f, Color.Red), new GradientStop(1.0f, Color.Blue));
 		}
 #endif
 	}

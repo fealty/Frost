@@ -7,8 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
-using CounterKey =
-	System.Collections.Generic.KeyValuePair<string, string>;
+using CounterKey = System.Collections.Generic.KeyValuePair<string, string>;
 
 namespace Frost.Diagnostics
 {
@@ -21,8 +20,7 @@ namespace Frost.Diagnostics
 			_Counters = new Dictionary<CounterKey, IDeviceCounter>();
 		}
 
-		public bool Query(
-			string category, string name, out IDeviceCounter result)
+		public bool Query(string category, string name, out IDeviceCounter result)
 		{
 			Contract.Requires(!String.IsNullOrWhiteSpace(category));
 			Contract.Requires(!String.IsNullOrWhiteSpace(name));
@@ -35,9 +33,7 @@ namespace Frost.Diagnostics
 			}
 		}
 
-		public bool Query<T>(
-			string category, string name, out IDeviceCounter<T> result)
-			where T : struct
+		public bool Query<T>(string category, string name, out IDeviceCounter<T> result) where T : struct
 		{
 			Contract.Requires(!String.IsNullOrWhiteSpace(category));
 			Contract.Requires(!String.IsNullOrWhiteSpace(name));

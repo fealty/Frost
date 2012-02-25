@@ -27,8 +27,7 @@ namespace Frost.Effects
 			}
 		}
 
-		public Effect<T> Find<T>()
-			where T : struct, IEffectSettings, IEquatable<T>
+		public Effect<T> Find<T>() where T : struct, IEffectSettings, IEquatable<T>
 		{
 			IEffect result;
 

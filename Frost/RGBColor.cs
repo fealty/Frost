@@ -23,8 +23,7 @@ namespace Frost
 			Contract.Invariant(Check.IsPercentage(_A));
 		}
 
-		public RGBColor(
-			float red, float green, float blue, float alpha = 100.0f)
+		public RGBColor(float red, float green, float blue, float alpha = 100.0f)
 		{
 			Contract.Requires(Check.IsByte(red));
 			Contract.Requires(Check.IsByte(green));
@@ -93,18 +92,12 @@ namespace Frost
 
 		public bool Equals(RGBColor other)
 		{
-			return other._A.Equals(_A) && other._B.Equals(_B) &&
-			       other._G.Equals(_G) && other._R.Equals(_R);
+			return other._A.Equals(_A) && other._B.Equals(_B) && other._G.Equals(_G) && other._R.Equals(_R);
 		}
 
 		public override string ToString()
 		{
-			return string.Format(
-				"R: {0}, G: {1}, B: {2}, A: {3}",
-				_R,
-				_G,
-				_B,
-				_A);
+			return string.Format("R: {0}, G: {1}, B: {2}, A: {3}", _R, _G, _B, _A);
 		}
 
 		public override bool Equals(object obj)
@@ -131,20 +124,12 @@ namespace Frost
 
 		internal Color ToColor()
 		{
-			return new Color(
-				_R / 255.0f,
-				_G / 255.0f,
-				_B / 255.0f,
-				_A / 100.0f);
+			return new Color(_R / 255.0f, _G / 255.0f, _B / 255.0f, _A / 100.0f);
 		}
 
 		public static implicit operator RGBColor(Color color)
 		{
-			return new RGBColor(
-				color.R * 255.0f,
-				color.G * 255.0f,
-				color.B * 255.0f,
-				color.A * 100.0f);
+			return new RGBColor(color.R * 255.0f, color.G * 255.0f, color.B * 255.0f, color.A * 100.0f);
 		}
 
 		public static bool operator ==(RGBColor left, RGBColor right)
@@ -165,15 +150,11 @@ namespace Frost
 			Assert.Equal(3, new RGBColor(1, 2, 3, 4).B);
 			Assert.Equal(4, new RGBColor(1, 2, 3, 4).A);
 
-			Assert.Equal<RGBColor>(
-				new RGBColor(000, 000, 000), new Color(0, 0, 0));
-			Assert.Equal<RGBColor>(
-				new RGBColor(255, 255, 255), new Color(1, 1, 1));
+			Assert.Equal<RGBColor>(new RGBColor(000, 000, 000), new Color(0, 0, 0));
+			Assert.Equal<RGBColor>(new RGBColor(255, 255, 255), new Color(1, 1, 1));
 
-			Assert.Equal<Color>(
-				new Color(0, 0, 0), new RGBColor(000, 000, 000));
-			Assert.Equal<Color>(
-				new Color(1, 1, 1), new RGBColor(255, 255, 255));
+			Assert.Equal<Color>(new Color(0, 0, 0), new RGBColor(000, 000, 000));
+			Assert.Equal<Color>(new Color(1, 1, 1), new RGBColor(255, 255, 255));
 
 			Assert.TestObject<RGBColor>(Color.Red, Color.Blue);
 		}

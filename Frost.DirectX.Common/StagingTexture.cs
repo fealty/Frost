@@ -38,14 +38,12 @@ namespace Frost.DirectX.Common
 			Contract.Requires(Check.IsPositive(size.Height));
 			Contract.Requires(rgbaData != null);
 			Contract.Requires(
-				rgbaData.Length >=
-				(Convert.ToInt32(size.Width) * Convert.ToInt32(size.Height)) * 4);
+				rgbaData.Length >= (Convert.ToInt32(size.Width) * Convert.ToInt32(size.Height)) * 4);
 
 			int regionWidth = Convert.ToInt32(size.Width);
 			int regionHeight = Convert.ToInt32(size.Height);
 
-			if(regionWidth != _Description.Width ||
-			   regionHeight != _Description.Height)
+			if(regionWidth != _Description.Width || regionHeight != _Description.Height)
 			{
 				_Description.Width = regionWidth;
 				_Description.Height = regionHeight;
@@ -55,14 +53,11 @@ namespace Frost.DirectX.Common
 				_Texture = new Texture2D(_Device3D, _Description);
 			}
 
-			DataRectangle data = _Texture.Map(
-				0, MapMode.Write, MapFlags.None);
+			DataRectangle data = _Texture.Map(0, MapMode.Write, MapFlags.None);
 
 			int byteSize = (regionWidth * regionHeight) * 4;
 
-			using(
-				DataStream stream = new DataStream(
-					data.DataPointer, byteSize, false, true))
+			using(DataStream stream = new DataStream(data.DataPointer, byteSize, false, true))
 			{
 				stream.Write(rgbaData, 0, byteSize);
 			}
@@ -94,14 +89,7 @@ namespace Frost.DirectX.Common
 				destination.Surface2D.AcquireLock();
 
 				_Device3D.CopySubresourceRegion(
-					_Texture,
-					0,
-					sourceRegion,
-					dstSurface.Texture2D,
-					0,
-					offsetX,
-					offsetY,
-					0);
+					_Texture, 0, sourceRegion, dstSurface.Texture2D, 0, offsetX, offsetY, 0);
 			}
 			finally
 			{

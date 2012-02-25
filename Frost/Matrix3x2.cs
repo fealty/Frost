@@ -34,8 +34,7 @@ namespace Frost
 			Contract.Invariant(Check.IsFinite(_32));
 		}
 
-		public Matrix3X2(
-			float m11, float m12, float m21, float m22, float m31, float m32)
+		public Matrix3X2(float m11, float m12, float m21, float m22, float m31, float m32)
 		{
 			Contract.Requires(Check.IsFinite(m11));
 			Contract.Requires(Check.IsFinite(m12));
@@ -139,21 +138,18 @@ namespace Frost
 		{
 			get
 			{
-				return _11.Equals(1.0f) && _12.Equals(0.0f) &&
-				       _21.Equals(0.0f) && _22.Equals(1.0f) &&
+				return _11.Equals(1.0f) && _12.Equals(0.0f) && _21.Equals(0.0f) && _22.Equals(1.0f) &&
 				       _31.Equals(0.0f) && _32.Equals(0.0f);
 			}
 		}
 
 		public bool Equals(Matrix3X2 other)
 		{
-			return other._11.Equals(_11) && other._12.Equals(_12) &&
-			       other._21.Equals(_21) && other._22.Equals(_22) &&
-			       other._31.Equals(_31) && other._32.Equals(_32);
+			return other._11.Equals(_11) && other._12.Equals(_12) && other._21.Equals(_21) &&
+			       other._22.Equals(_22) && other._31.Equals(_31) && other._32.Equals(_32);
 		}
 
-		public void Translate(
-			float width, float height, out Matrix3X2 result)
+		public void Translate(float width, float height, out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsFinite(width));
 			Contract.Requires(Check.IsFinite(height));
@@ -192,12 +188,7 @@ namespace Frost
 			result.Multiply(ref this, out result);
 		}
 
-		public void Scale(
-			float width,
-			float height,
-			float originX,
-			float originY,
-			out Matrix3X2 result)
+		public void Scale(float width, float height, float originX, float originY, out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
@@ -207,8 +198,7 @@ namespace Frost
 			float translationX = originX - (width * originX);
 			float translationY = originY - (height * originY);
 
-			result = new Matrix3X2(
-				width, 0.0f, 0.0f, height, translationX, translationY);
+			result = new Matrix3X2(width, 0.0f, 0.0f, height, translationX, translationY);
 
 			result.Multiply(ref this, out result);
 		}
@@ -227,8 +217,7 @@ namespace Frost
 			result.Multiply(ref this, out result);
 		}
 
-		public void Rotate(
-			float angle, float originX, float originY, out Matrix3X2 result)
+		public void Rotate(float angle, float originX, float originY, out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsDegrees(angle));
 			Contract.Requires(Check.IsFinite(originX));
@@ -257,25 +246,16 @@ namespace Frost
 			float m12 = (_11 * right.M12) + (_12 * right.M22);
 			float m21 = (_21 * right.M11) + (_22 * right.M21);
 			float m22 = (_21 * right.M12) + (_22 * right.M22);
-			float m31 = (_31 * right.M11) + (_32 * right.M21) +
-			            right.M31;
-			float m32 = (_31 * right.M12) + (_32 * right.M22) +
-			            right.M32;
+			float m31 = (_31 * right.M11) + (_32 * right.M21) + right.M31;
+			float m32 = (_31 * right.M12) + (_32 * right.M22) + right.M32;
 
 			result = new Matrix3X2(m11, m12, m21, m22, m31, m32);
 		}
 
 		public override string ToString()
 		{
-			return
-				string.Format(
-					"M11: {0}, M12: {1}, M21: {2}, M22: {3}, M31: {4}, M32: {5}",
-					_11,
-					_12,
-					_21,
-					_22,
-					_31,
-					_32);
+			return string.Format(
+				"M11: {0}, M12: {1}, M21: {2}, M22: {3}, M31: {4}, M32: {5}", _11, _12, _21, _22, _31, _32);
 		}
 
 		public override bool Equals(object obj)

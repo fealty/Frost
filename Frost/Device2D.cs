@@ -65,9 +65,7 @@ namespace Frost
 		public abstract void SignalUpdate();
 
 		public Canvas CreateCanvas(
-			Size size,
-			SurfaceUsage usage = SurfaceUsage.Normal,
-			object owner = null)
+			Size size, SurfaceUsage usage = SurfaceUsage.Normal, object owner = null)
 		{
 			Contract.Requires(Check.IsPositive(size.Width));
 			Contract.Requires(Check.IsPositive(size.Height));
@@ -76,10 +74,7 @@ namespace Frost
 		}
 
 		public Canvas CreateCanvas(
-			Size size,
-			byte[] data,
-			SurfaceUsage usage = SurfaceUsage.Normal,
-			object owner = null)
+			Size size, byte[] data, SurfaceUsage usage = SurfaceUsage.Normal, object owner = null)
 		{
 			Contract.Requires(Check.IsPositive(size.Width));
 			Contract.Requires(Check.IsPositive(size.Height));
@@ -88,8 +83,7 @@ namespace Frost
 			return OnCreateCanvas(size, data, usage, owner);
 		}
 
-		public bool ContainsPoint(
-			Geometry path, Point point, float tolerance = _FlatteningTolerance)
+		public bool ContainsPoint(Geometry path, Point point, float tolerance = _FlatteningTolerance)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(tolerance));
@@ -97,8 +91,7 @@ namespace Frost
 			return OnContainsPoint(path, point, tolerance);
 		}
 
-		public Geometry Simplify(
-			Geometry path, float tolerance = _FlatteningTolerance)
+		public Geometry Simplify(Geometry path, float tolerance = _FlatteningTolerance)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(tolerance));
@@ -107,8 +100,7 @@ namespace Frost
 			return OnSimplify(path, tolerance);
 		}
 
-		public Geometry Widen(
-			Geometry path, float width, float tolerance = _FlatteningTolerance)
+		public Geometry Widen(Geometry path, float width, float tolerance = _FlatteningTolerance)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsFinite(width));
@@ -125,11 +117,7 @@ namespace Frost
 			return OnComputeRegion(path);
 		}
 
-		public FontMetrics Measure(
-			string family,
-			FontWeight weight,
-			FontStyle style,
-			FontStretch stretch)
+		public FontMetrics Measure(string family, FontWeight weight, FontStyle style, FontStretch stretch)
 		{
 			if(string.IsNullOrWhiteSpace(family))
 			{
@@ -154,9 +142,7 @@ namespace Frost
 		}
 
 		public void Tessellate(
-			Geometry path,
-			ITessellationSink sink,
-			float tolerance = _FlatteningTolerance)
+			Geometry path, ITessellationSink sink, float tolerance = _FlatteningTolerance)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(tolerance));
@@ -166,9 +152,7 @@ namespace Frost
 		}
 
 		public ITextMetrics Measure(
-			Paragraph paragraph,
-			Rectangle region,
-			params Rectangle[] obstructions)
+			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions)
 		{
 			Contract.Requires(paragraph != null);
 			Contract.Ensures(Contract.Result<ITextMetrics>() != null);
@@ -176,8 +160,7 @@ namespace Frost
 			return OnMeasure(paragraph, region, obstructions);
 		}
 
-		public float ComputeArea(
-			Geometry path, float tolerance = _FlatteningTolerance)
+		public float ComputeArea(Geometry path, float tolerance = _FlatteningTolerance)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(tolerance));
@@ -186,8 +169,7 @@ namespace Frost
 			return OnComputeArea(path, tolerance);
 		}
 
-		public float ComputeLength(
-			Geometry path, float tolerance = _FlatteningTolerance)
+		public float ComputeLength(Geometry path, float tolerance = _FlatteningTolerance)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(tolerance));
@@ -209,73 +191,48 @@ namespace Frost
 		}
 
 		public Point ComputePointAlongPath(
-			Geometry path,
-			float length,
-			out Point tangentVector,
-			float tolerance = _FlatteningTolerance)
+			Geometry path, float length, out Point tangentVector, float tolerance = _FlatteningTolerance)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(length));
 			Contract.Requires(Check.IsPositive(tolerance));
 
-			return OnComputePointAlongPath(
-				path, length, tolerance, out tangentVector);
+			return OnComputePointAlongPath(path, length, tolerance, out tangentVector);
 		}
 
 		protected abstract Point OnComputePointAlongPath(
-			Geometry path,
-			float length,
-			float tolerance,
-			out Point tangentVector);
+			Geometry path, float length, float tolerance, out Point tangentVector);
 
-		protected abstract float OnComputeLength(
-			Geometry path, float tolerance);
+		protected abstract float OnComputeLength(Geometry path, float tolerance);
 
-		protected abstract float OnComputeArea(
-			Geometry path, float tolerance);
+		protected abstract float OnComputeArea(Geometry path, float tolerance);
 
 		protected abstract ITextMetrics OnMeasure(
-			Paragraph paragraph,
-			Rectangle region,
-			params Rectangle[] obstructions);
+			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions);
 
-		protected abstract void OnTessellate(
-			Geometry path, float tolerance, ITessellationSink sink);
+		protected abstract void OnTessellate(Geometry path, float tolerance, ITessellationSink sink);
 
 		protected abstract Geometry OnCombine(
-			Geometry sourcePath,
-			Geometry destinationPath,
-			float tolerance,
-			CombinationOperation operation);
+			Geometry sourcePath, Geometry destinationPath, float tolerance, CombinationOperation operation);
 
 		protected abstract FontMetrics OnMeasure(
-			string family,
-			FontWeight weight,
-			FontStyle style,
-			FontStretch stretch);
+			string family, FontWeight weight, FontStyle style, FontStretch stretch);
 
 		protected abstract Rectangle OnComputeRegion(Geometry path);
 
-		protected abstract Geometry OnWiden(
-			Geometry path, float width, float tolerance);
+		protected abstract Geometry OnWiden(Geometry path, float width, float tolerance);
 
-		protected abstract Geometry OnSimplify(
-			Geometry path, float tolerance);
+		protected abstract Geometry OnSimplify(Geometry path, float tolerance);
 
-		protected abstract bool OnContainsPoint(
-			Geometry path, Point point, float tolerance);
+		protected abstract bool OnContainsPoint(Geometry path, Point point, float tolerance);
 
-		protected abstract Canvas OnCreateCanvas(
-			Size size, byte[] data, SurfaceUsage usage, object owner);
+		protected abstract Canvas OnCreateCanvas(Size size, byte[] data, SurfaceUsage usage, object owner);
 
-		protected abstract Canvas OnCreateCanvas(
-			Size size, SurfaceUsage usage, object owner);
+		protected abstract Canvas OnCreateCanvas(Size size, SurfaceUsage usage, object owner);
 
-		protected abstract void OnResizeSurfaces(
-			Size size, SurfaceUsage usage);
+		protected abstract void OnResizeSurfaces(Size size, SurfaceUsage usage);
 
-		protected abstract void OnDumpSurfaces(
-			string path, SurfaceUsage usage);
+		protected abstract void OnDumpSurfaces(string path, SurfaceUsage usage);
 
 		public abstract event Action<object> CanvasInvalidated;
 	}

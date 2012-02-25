@@ -26,8 +26,7 @@ namespace Frost.DirectX
 		{
 		}
 
-		void SimplifiedGeometrySink.BeginFigure(
-			PointF startPoint, FigureBegin figureBegin)
+		void SimplifiedGeometrySink.BeginFigure(PointF startPoint, FigureBegin figureBegin)
 		{
 			_Builder.MoveTo(startPoint.X, startPoint.Y);
 		}
@@ -81,8 +80,7 @@ namespace Frost.DirectX
 			throw new NotSupportedException();
 		}
 
-		void GeometrySink.AddQuadraticBeziers(
-			QuadraticBezierSegment[] beziers)
+		void GeometrySink.AddQuadraticBeziers(QuadraticBezierSegment[] beziers)
 		{
 			throw new NotSupportedException();
 		}

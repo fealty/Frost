@@ -41,8 +41,7 @@ namespace Frost.Formatting
 			get
 			{
 				Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
-				Contract.Ensures(
-					Contract.Result<float>().Equals(_UnitsPerEm));
+				Contract.Ensures(Contract.Result<float>().Equals(_UnitsPerEm));
 
 				return _UnitsPerEm;
 			}
@@ -72,8 +71,7 @@ namespace Frost.Formatting
 
 		public bool Equals(FontMetrics other)
 		{
-			return other._Ascent.Equals(_Ascent) &&
-			       other._Descent.Equals(_Descent) &&
+			return other._Ascent.Equals(_Ascent) && other._Descent.Equals(_Descent) &&
 			       other._UnitsPerEm.Equals(_UnitsPerEm);
 		}
 
@@ -125,10 +123,7 @@ namespace Frost.Formatting
 		public override string ToString()
 		{
 			return string.Format(
-				"Ascent: {0}, Descent: {1}, UnitsPerEm: {2}",
-				_Ascent,
-				_Descent,
-				_UnitsPerEm);
+				"Ascent: {0}, Descent: {1}, UnitsPerEm: {2}", _Ascent, _Descent, _UnitsPerEm);
 		}
 
 		private float ToPixels(float value, float pointSize)
@@ -161,8 +156,7 @@ namespace Frost.Formatting
 			Assert.Equal(24, new FontMetrics(5, 10, 5).MeasureDescent(9));
 			Assert.Equal(36, new FontMetrics(5, 10, 5).MeasureEm(9));
 
-			Assert.TestObject(
-				new FontMetrics(0, 1, 2), new FontMetrics(2, 1, 0));
+			Assert.TestObject(new FontMetrics(0, 1, 2), new FontMetrics(2, 1, 0));
 		}
 #endif
 	}

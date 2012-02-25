@@ -6,19 +6,20 @@
 using System;
 using System.Diagnostics.Contracts;
 
+using Frost.Diagnostics.Contracts;
+
 namespace Frost.Diagnostics
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(IDeviceCounter))] internal abstract class
-			IDeviceCounterContract : IDeviceCounter
+		[ContractClassFor(typeof(IDeviceCounter))] internal abstract class IDeviceCounterContract
+			: IDeviceCounter
 		{
 			public string Name
 			{
 				get
 				{
-					Contract.Ensures(
-						!String.IsNullOrWhiteSpace(Contract.Result<string>()));
+					Contract.Ensures(!String.IsNullOrWhiteSpace(Contract.Result<string>()));
 
 					throw new NotSupportedException();
 				}
@@ -28,8 +29,7 @@ namespace Frost.Diagnostics
 			{
 				get
 				{
-					Contract.Ensures(
-						!String.IsNullOrWhiteSpace(Contract.Result<string>()));
+					Contract.Ensures(!String.IsNullOrWhiteSpace(Contract.Result<string>()));
 
 					throw new NotSupportedException();
 				}
@@ -77,8 +77,7 @@ namespace Frost.Diagnostics
 		}
 	}
 
-	[ContractClass(typeof(Contracts.IDeviceCounterContract))] public
-		interface IDeviceCounter
+	[ContractClass(typeof(IDeviceCounterContract))] public interface IDeviceCounter
 	{
 		string Name { get; }
 		string Category { get; }

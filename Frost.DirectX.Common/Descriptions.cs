@@ -50,8 +50,7 @@ namespace Frost.DirectX.Common
 			ConfigureStagingDescription(out StagingDescription);
 		}
 
-		private static void ConfigureStagingDescription(
-			out Texture2D description)
+		private static void ConfigureStagingDescription(out Texture2D description)
 		{
 			description.Width = 0;
 			description.ArraySize = 1;
@@ -65,43 +64,37 @@ namespace Frost.DirectX.Common
 			description.Height = 0;
 		}
 
-		private static void ConfigureRadialGradient(
-			out RadialGradientBrushProperties description)
+		private static void ConfigureRadialGradient(out RadialGradientBrushProperties description)
 		{
 			description = new RadialGradientBrushProperties();
 		}
 
-		private static void ConfigureLinearGradient(
-			out LinearGradientBrushProperties description)
+		private static void ConfigureLinearGradient(out LinearGradientBrushProperties description)
 		{
 			description = new LinearGradientBrushProperties();
 		}
 
-		private static void ConfigureBitmapBrush(
-			out BitmapBrushProperties description)
+		private static void ConfigureBitmapBrush(out BitmapBrushProperties description)
 		{
 			description.InterpolationMode = BitmapInterpolationMode.Linear;
 			description.ExtendModeX = ExtendMode.Wrap;
 			description.ExtendModeY = ExtendMode.Wrap;
 		}
 
-		private static void ConfigureBitmap(
-			out BitmapProperties description)
+		private static void ConfigureBitmap(out BitmapProperties description)
 		{
 			description.DpiX = 96.0f;
 			description.DpiY = 96.0f;
 			description.PixelFormat = PixelFormat;
 		}
 
-		private static void ConfigurePixelFormat(
-			out PixelFormat description)
+		private static void ConfigurePixelFormat(out PixelFormat description)
 		{
 			description.Format = Format.R8G8B8A8_UNorm;
 			description.AlphaMode = AlphaMode.Premultiplied;
 		}
 
-		private static void ConfigureRenderTarget(
-			out RenderTarget description)
+		private static void ConfigureRenderTarget(out RenderTarget description)
 		{
 			description.Type = RenderTargetType.Hardware;
 			description.PixelFormat = PixelFormat;
@@ -111,15 +104,13 @@ namespace Frost.DirectX.Common
 			description.MinLevel = FeatureLevel.Level_10;
 		}
 
-		private static void ConfigureSample(
-			out SampleDescription description)
+		private static void ConfigureSample(out SampleDescription description)
 		{
 			description.Count = 1;
 			description.Quality = 0;
 		}
 
-		private static void ConfigurePrivateTexture(
-			out Texture2D description)
+		private static void ConfigurePrivateTexture(out Texture2D description)
 		{
 			BindFlags binding = BindFlags.None;
 
@@ -138,8 +129,7 @@ namespace Frost.DirectX.Common
 			description.Width = 0;
 		}
 
-		private static void ConfigureSharedTexture(
-			out Texture2D description)
+		private static void ConfigureSharedTexture(out Texture2D description)
 		{
 			BindFlags binding = BindFlags.None;
 

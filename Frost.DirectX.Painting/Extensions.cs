@@ -1,52 +1,60 @@
-﻿using Frost.Painting;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using Frost.Painting;
+
+using SharpDX.Direct2D1;
+
+using LineJoin = SharpDX.Direct2D1.LineJoin;
 
 namespace Frost.DirectX.Painting
 {
 	internal static class Extensions
 	{
-		internal static SharpDX.Direct2D1.DashStyle ToDirectWrite(
-			this LineStyle value)
+		internal static DashStyle ToDirectWrite(this LineStyle value)
 		{
-			switch (value)
+			switch(value)
 			{
 				case LineStyle.Solid:
-					return SharpDX.Direct2D1.DashStyle.Solid;
+					return DashStyle.Solid;
 				case LineStyle.Dot:
-					return SharpDX.Direct2D1.DashStyle.Dot;
+					return DashStyle.Dot;
 				case LineStyle.Dash:
-					return SharpDX.Direct2D1.DashStyle.Dash;
+					return DashStyle.Dash;
 				default:
-					return SharpDX.Direct2D1.DashStyle.Solid;
+					return DashStyle.Solid;
 			}
 		}
 
-		internal static SharpDX.Direct2D1.CapStyle ToDirectWrite(this LineCap value)
+		internal static CapStyle ToDirectWrite(this LineCap value)
 		{
-			switch (value)
+			switch(value)
 			{
 				case LineCap.Butt:
-					return SharpDX.Direct2D1.CapStyle.Flat;
+					return CapStyle.Flat;
 				case LineCap.Round:
-					return SharpDX.Direct2D1.CapStyle.Round;
+					return CapStyle.Round;
 				case LineCap.Square:
-					return SharpDX.Direct2D1.CapStyle.Square;
+					return CapStyle.Square;
 				default:
-					return SharpDX.Direct2D1.CapStyle.Flat;
+					return CapStyle.Flat;
 			}
 		}
 
-		internal static SharpDX.Direct2D1.LineJoin ToDirectWrite(this LineJoin value)
+		internal static LineJoin ToDirectWrite(this Frost.Painting.LineJoin value)
 		{
-			switch (value)
+			switch(value)
 			{
-				case LineJoin.Miter:
-					return SharpDX.Direct2D1.LineJoin.Miter;
-				case LineJoin.Bevel:
-					return SharpDX.Direct2D1.LineJoin.Bevel;
-				case LineJoin.Round:
-					return SharpDX.Direct2D1.LineJoin.Round;
+				case Frost.Painting.LineJoin.Miter:
+					return LineJoin.Miter;
+				case Frost.Painting.LineJoin.Bevel:
+					return LineJoin.Bevel;
+				case Frost.Painting.LineJoin.Round:
+					return LineJoin.Round;
 				default:
-					return SharpDX.Direct2D1.LineJoin.Miter;
+					return LineJoin.Miter;
 			}
 		}
 	}
