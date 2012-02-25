@@ -16,7 +16,7 @@ namespace Frost.Painting
 		private readonly Thread _BoundThread;
 		private readonly Device2D _Device2D;
 
-		private bool _ActiveAntialiasing;
+		private Antialiasing _ActiveAntialiasing;
 		private LineCap _ActiveDashCap;
 		private LineStyle _ActiveLineStyle;
 		private float _ActiveMiterLimit;
@@ -127,7 +127,7 @@ namespace Frost.Painting
 			get { return this._ActiveDashCap; }
 		}
 
-		protected bool ActiveAntialiasing
+		protected Antialiasing ActiveAntialiasing
 		{
 			get { return this._ActiveAntialiasing; }
 		}
@@ -250,13 +250,13 @@ namespace Frost.Painting
 			}
 		}
 
-		public bool IsAntialiased
+		public Antialiasing IsAntialiased
 		{
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Ensures(
-					Contract.Result<bool>().Equals(this._ActiveAntialiasing));
+					Contract.Result<Antialiasing>().Equals(this._ActiveAntialiasing));
 
 				return this._ActiveAntialiasing;
 			}
@@ -376,7 +376,7 @@ namespace Frost.Painting
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
-			IsAntialiased = true;
+			IsAntialiased = Antialiasing.Default;
 			MiterLimit = 10.0f;
 			StrokeCap = LineCap.Butt;
 			StrokeJoin = LineJoin.Miter;

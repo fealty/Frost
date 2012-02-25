@@ -31,4 +31,10 @@ namespace Frost
 		Multiply,
 		Replace
 	}
+
+	public enum Antialiasing
+	{
+		Default,
+		Aliased
+	}
 }
