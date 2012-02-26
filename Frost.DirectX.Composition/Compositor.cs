@@ -127,11 +127,11 @@ namespace Frost.DirectX.Composition
 			Dispose(true);
 		}
 
-		void IShaderCompiler.CompileDefaultShader(string text, string function, ref ShaderHandle result)
+		void IShaderCompiler.Compile(string text, string function, ref ShaderHandle result)
 		{
 			IShaderCompiler compiler = _Shaders;
 
-			compiler.CompileDefaultShader(text, function, ref result);
+			compiler.Compile(text, function, ref result);
 		}
 
 		protected override void OnSaveState()

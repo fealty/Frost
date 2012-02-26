@@ -45,7 +45,7 @@ namespace Frost.DirectX.Composition
 			Dispose(true);
 		}
 
-		void IShaderCompiler.CompileDefaultShader(string text, string function, ref ShaderHandle result)
+		void IShaderCompiler.Compile(string text, string function, ref ShaderHandle result)
 		{
 			if(!result.IsValid || result.Reference != this)
 			{
