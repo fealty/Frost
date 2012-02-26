@@ -347,6 +347,13 @@ namespace Frost.Composition
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsValid(target, Device2D));
 
+			_IsBlendOperationInvalid = true;
+			_IsEffectContextInvalid = true;
+			_IsOpacityInvalid = true;
+			_IsTransformationInvalid = true;
+
+			ResetState();
+
 			OnBegin(target, retention);
 		}
 
