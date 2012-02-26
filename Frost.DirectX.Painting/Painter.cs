@@ -200,8 +200,7 @@ namespace Frost.DirectX.Painting
 			StrokeCap = newState.StrokeCap;
 			StrokeJoin = newState.StrokeJoin;
 			StrokeWidth = newState.StrokeWidth;
-
-			Transform(ref newState.Transformation, TransformMode.Replace);
+			Transformation = newState.Transformation;
 		}
 
 		protected override void OnResetState()
