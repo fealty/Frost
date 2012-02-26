@@ -16,7 +16,7 @@ namespace Frost.DirectX.Composition
 {
 	internal sealed class ColorOutputEffect : Effect<ColorOutputSettings>, IShaderEffect
 	{
-		private const string ShaderText =
+		private const string _ShaderText =
 			@"
 			Texture2D mTexture : register(t0);
 			SamplerState mSampler : register(s0);
@@ -55,19 +55,19 @@ namespace Frost.DirectX.Composition
 			}
 			";
 
-		private ShaderHandle mModulateShader;
-		private ShaderHandle mReplaceShader;
+		private ShaderHandle _ModulateShader;
+		private ShaderHandle _ReplaceShader;
 
 		public void Compile(IShaderCompiler compiler)
 		{
-			compiler.Compile(ShaderText, "ReplaceColor", ref mReplaceShader);
-			compiler.Compile(ShaderText, "ModulateColor", ref mModulateShader);
+			compiler.Compile(_ShaderText, "ReplaceColor", ref _ReplaceShader);
+			compiler.Compile(_ShaderText, "ModulateColor", ref _ModulateShader);
 		}
 
 		public override void Apply<TEnum>(
 			TEnum batchedItems,
 			EffectContext<ColorOutputSettings> effectContext,
-			Cabbage.Compositor compositionContext)
+			Frost.Composition.Compositor compositionContext)
 		{
 			Constants constants;
 
@@ -76,7 +76,7 @@ namespace Frost.DirectX.Composition
 			compositionContext.WriteConstants(ConstantRegister.One, constants);
 
 			compositionContext.SetShader(
-				effectContext.Options.Operation == ColorOperation.Replace ? mReplaceShader : mModulateShader);
+				effectContext.Options.Operation == ColorOperation.Replace ? _ReplaceShader : _ModulateShader);
 
 			foreach(BatchedItem item in batchedItems)
 			{
@@ -86,14 +86,14 @@ namespace Frost.DirectX.Composition
 				{
 					compositionContext.Blend = item.Blend;
 
-					Matrix3x2 transform = item.Transformation;
+					Matrix3X2 transform = item.Transformation;
 
 					compositionContext.Transform(ref transform);
 
 					Rectangle srcRegion = item.SourceRegion;
 					Rectangle dstRegion = item.DestinationRegion;
 
-					compositionContext.Composite(item.Canvas, ref srcRegion, ref dstRegion);
+					compositionContext.Composite(item.Canvas, srcRegion, dstRegion);
 				}
 				finally
 				{

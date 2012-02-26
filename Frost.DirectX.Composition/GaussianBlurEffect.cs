@@ -6,6 +6,7 @@
 using System;
 using System.Runtime.InteropServices;
 
+using Frost.Composition;
 using Frost.Effects;
 
 using SharpDX;
@@ -16,7 +17,7 @@ namespace Frost.DirectX.Composition
 {
 	internal sealed class GaussianBlurEffect : Effect<GaussianBlurSettings>, IShaderEffect
 	{
-		private const string ShaderText =
+		private const string _ShaderText =
 			@"
 			Texture2D mTexture : register(t0);
 			SamplerState mSampler : register(s0);
@@ -72,19 +73,19 @@ namespace Frost.DirectX.Composition
 			}
 			";
 
-		private ShaderHandle mHorizontalBlur;
-		private ShaderHandle mVerticalBlur;
+		private ShaderHandle _HorizontalBlur;
+		private ShaderHandle _VerticalBlur;
 
 		public void Compile(IShaderCompiler compiler)
 		{
-			compiler.Compile(ShaderText, "HorizontalBlur", ref mHorizontalBlur);
-			compiler.Compile(ShaderText, "VerticalBlur", ref mVerticalBlur);
+			compiler.Compile(_ShaderText, "HorizontalBlur", ref _HorizontalBlur);
+			compiler.Compile(_ShaderText, "VerticalBlur", ref _VerticalBlur);
 		}
 
 		public override void Apply<TEnum>(
 			TEnum batchedItems,
 			EffectContext<GaussianBlurSettings> effectContext,
-			Cabbage.Compositor compositionContext)
+			Frost.Composition.Compositor compositionContext)
 		{
 			GaussianBlurSettings settings = effectContext.Options;
 
@@ -99,9 +100,9 @@ namespace Frost.DirectX.Composition
 			constants.BlurSigmaX = Convert.ToSingle(settings.Amount.Width);
 			constants.BlurSigmaY = Convert.ToSingle(settings.Amount.Height);
 
-			Matrix3x2 originalTransform = compositionContext.Transformation;
+			Matrix3X2 originalTransform = compositionContext.Transformation;
 
-			compositionContext.Transform(ref Matrix3x2.Identity, TransformMode.Replace);
+			compositionContext.Transformation = Matrix3X2.Identity;
 
 			compositionContext.PushLayer();
 			compositionContext.ResetState();
@@ -111,16 +112,16 @@ namespace Frost.DirectX.Composition
 			{
 				compositionContext.Blend = item.Blend;
 
-				compositionContext.Transform(ref originalTransform, TransformMode.Replace);
+				compositionContext.Transformation = originalTransform;
 
-				Matrix3x2 transform = item.Transformation;
+				Matrix3X2 transform = item.Transformation;
 
 				compositionContext.Transform(ref transform);
 
 				Rectangle srcRegion = item.SourceRegion;
 				Rectangle dstRegion = item.DestinationRegion;
 
-				compositionContext.Composite(item.Canvas, ref srcRegion, ref dstRegion);
+				compositionContext.Composite(item.Canvas, srcRegion, dstRegion);
 			}
 			///////////////////////////////////////////////////////////
 
@@ -137,7 +138,7 @@ namespace Frost.DirectX.Composition
 			if(settings.Amount.Width > 0.0)
 			{
 				compositionContext.Blend = BlendOperation.Copy;
-				compositionContext.SetShader(mHorizontalBlur);
+				compositionContext.SetShader(_HorizontalBlur);
 
 				// composite the entire result to account for any transformation
 				compositionContext.CompositeResult();
@@ -146,7 +147,7 @@ namespace Frost.DirectX.Composition
 			if(settings.Amount.Height > 0.0)
 			{
 				compositionContext.Blend = BlendOperation.Copy;
-				compositionContext.SetShader(mVerticalBlur);
+				compositionContext.SetShader(_VerticalBlur);
 
 				// composite the entire result to account for any transformation
 				compositionContext.CompositeResult();

@@ -3,10 +3,9 @@
 // 
 // See LICENSE for more information.
 
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
-using Frost.Effects;
+using Frost.DirectX.Composition.Contracts;
 
 namespace Frost.DirectX.Composition
 {
@@ -19,14 +18,10 @@ namespace Frost.DirectX.Composition
 			{
 				Contract.Requires(compiler != null);
 			}
-
-			public abstract void Apply<T>(
-				T batchedItems, IEffectContext effectContext, Cabbage.Compositor compositionContext)
-				where T : class, IEnumerable<BatchedItem>;
 		}
 	}
 
-	[ContractClass(typeof(Contracts.IShaderEffectContract))] public interface IShaderEffect : IEffect
+	[ContractClass(typeof(IShaderEffectContract))] public interface IShaderEffect
 	{
 		void Compile(IShaderCompiler compiler);
 	}

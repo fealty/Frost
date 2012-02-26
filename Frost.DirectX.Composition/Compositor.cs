@@ -157,8 +157,7 @@ namespace Frost.DirectX.Composition
 			Effect = newState.Effect;
 			_ActiveSurface = newState.Surface;
 			Opacity = newState.Opacity;
-
-			Transform(ref newState.Transformation, TransformMode.Replace);
+			Transformation = newState.Transformation;
 		}
 
 		protected override void OnResetState()
@@ -237,7 +236,7 @@ namespace Frost.DirectX.Composition
 				{
 					Effect = null;
 
-					_BatchedEffect.Effect.Apply(items, _BatchedEffect, this);
+					_BatchedEffect.EffectBase.Apply(items, _BatchedEffect, this);
 				}
 				finally
 				{
@@ -388,7 +387,7 @@ namespace Frost.DirectX.Composition
 
 			if(effect != null)
 			{
-				IShaderEffect shader = effect.Effect as IShaderEffect;
+				IShaderEffect shader = effect.EffectBase as IShaderEffect;
 
 				if(shader != null)
 				{

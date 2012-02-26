@@ -8,14 +8,17 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 
+using Frost.Atlasing;
 using Frost.DirectX.Common;
 using Frost.DirectX.Composition.Properties;
+using Frost.Surfacing;
 
 using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D10;
 
+using BlendOperation = Frost.Composition.BlendOperation;
 using Buffer = SharpDX.Direct3D10.Buffer;
 
 namespace Frost.DirectX.Composition
@@ -27,24 +30,24 @@ namespace Frost.DirectX.Composition
 
 		public static readonly PrimitiveTopology Topology;
 
-		private readonly BlendState[] mBlendStates;
+		private readonly BlendState[] _BlendStates;
 
-		private readonly Device2D mDevice2D;
-		private readonly Device mDevice3D;
-		private readonly DynamicBuffer[] mDynamicBuffers;
-		private readonly Buffer mFrameConstants;
-		private readonly Stack<Canvas> mLayers;
+		private readonly Device2D _Device2D;
+		private readonly Device _Device3D;
+		private readonly DynamicBuffer[] _DynamicBuffers;
+		private readonly Buffer _FrameConstants;
+		private readonly Stack<Canvas> _Layers;
 
-		private readonly SamplerState mLinearSampler;
-		private readonly RasterizerState mRasterizer;
-		private readonly Buffer mRenderConstants;
+		private readonly SamplerState _LinearSampler;
+		private readonly RasterizerState _Rasterizer;
+		private readonly Buffer _RenderConstants;
 
-		private readonly Stack<PrivateAtlas<Surface2D>> mSurfaces;
+		private readonly Stack<PrivateAtlas<Surface2D>> _Surfaces;
 
-		private readonly VertexBufferBinding mVertexBinding;
-		private readonly InputLayout mVertexLayout;
-		private readonly VertexShader mVertexShader;
-		private readonly Buffer mVertices;
+		private readonly VertexBufferBinding _VertexBinding;
+		private readonly InputLayout _VertexLayout;
+		private readonly VertexShader _VertexShader;
+		private readonly Buffer _Vertices;
 
 		static Renderer()
 		{
@@ -56,74 +59,74 @@ namespace Frost.DirectX.Composition
 			Contract.Requires(device3D != null);
 			Contract.Requires(device2D != null);
 
-			mLayers = new Stack<Canvas>();
-			mSurfaces = new Stack<PrivateAtlas<Surface2D>>();
+			_Layers = new Stack<Canvas>();
+			_Surfaces = new Stack<PrivateAtlas<Surface2D>>();
 
-			mDevice3D = device3D;
-			mDevice2D = device2D;
+			_Device3D = device3D;
+			_Device2D = device2D;
 
 			// compile the default shaders
-			_Compile(out mVertexShader, out mVertexLayout);
+			Compile(out _VertexShader, out _VertexLayout);
 
 			// initialize the constant buffers
 			int dynamicCount = Enum.GetValues(typeof(ConstantRegister)).Length;
 
-			mDynamicBuffers = new DynamicBuffer[dynamicCount];
+			_DynamicBuffers = new DynamicBuffer[dynamicCount];
 
-			mFrameConstants = new Buffer(mDevice3D, Descriptions.ConstantsPerFrame);
-			mRenderConstants = new Buffer(mDevice3D, Descriptions.ConstantsPerRender);
+			_FrameConstants = new Buffer(_Device3D, Descriptions.ConstantsPerFrame);
+			_RenderConstants = new Buffer(_Device3D, Descriptions.ConstantsPerRender);
 
 			int blendStatesCount = Enum.GetValues(typeof(BlendOperation)).Length;
 
-			mBlendStates = new BlendState[blendStatesCount];
+			_BlendStates = new BlendState[blendStatesCount];
 
 			// initialize all of the blend states
-			mBlendStates[(int)BlendOperation.Copy] = new BlendState(mDevice3D, Descriptions.CopyBlend);
-			mBlendStates[(int)BlendOperation.DestinationAtop] = new BlendState(
-				mDevice3D, Descriptions.DestinationAtopBlend);
-			mBlendStates[(int)BlendOperation.DestinationIn] = new BlendState(
-				mDevice3D, Descriptions.DestinationInBlend);
-			mBlendStates[(int)BlendOperation.DestinationOut] = new BlendState(
-				mDevice3D, Descriptions.DestinationOutBlend);
-			mBlendStates[(int)BlendOperation.DestinationOver] = new BlendState(
-				mDevice3D, Descriptions.DestinationOverBlend);
-			mBlendStates[(int)BlendOperation.Lighter] = new BlendState(mDevice3D, Descriptions.LighterBlend);
-			mBlendStates[(int)BlendOperation.SourceAtop] = new BlendState(
-				mDevice3D, Descriptions.SourceAtopBlend);
-			mBlendStates[(int)BlendOperation.SourceIn] = new BlendState(
-				mDevice3D, Descriptions.SourceInBlend);
-			mBlendStates[(int)BlendOperation.SourceOut] = new BlendState(
-				mDevice3D, Descriptions.SourceOutBlend);
-			mBlendStates[(int)BlendOperation.SourceOver] = new BlendState(
-				mDevice3D, Descriptions.SourceOverBlend);
+			_BlendStates[(int)BlendOperation.Copy] = new BlendState(_Device3D, Descriptions.CopyBlend);
+			_BlendStates[(int)BlendOperation.DestinationAtop] = new BlendState(
+				_Device3D, Descriptions.DestinationAtopBlend);
+			_BlendStates[(int)BlendOperation.DestinationIn] = new BlendState(
+				_Device3D, Descriptions.DestinationInBlend);
+			_BlendStates[(int)BlendOperation.DestinationOut] = new BlendState(
+				_Device3D, Descriptions.DestinationOutBlend);
+			_BlendStates[(int)BlendOperation.DestinationOver] = new BlendState(
+				_Device3D, Descriptions.DestinationOverBlend);
+			_BlendStates[(int)BlendOperation.Lighter] = new BlendState(_Device3D, Descriptions.LighterBlend);
+			_BlendStates[(int)BlendOperation.SourceAtop] = new BlendState(
+				_Device3D, Descriptions.SourceAtopBlend);
+			_BlendStates[(int)BlendOperation.SourceIn] = new BlendState(
+				_Device3D, Descriptions.SourceInBlend);
+			_BlendStates[(int)BlendOperation.SourceOut] = new BlendState(
+				_Device3D, Descriptions.SourceOutBlend);
+			_BlendStates[(int)BlendOperation.SourceOver] = new BlendState(
+				_Device3D, Descriptions.SourceOverBlend);
 
 			// initialize other device states
-			mLinearSampler = new SamplerState(mDevice3D, Descriptions.LinearSampler);
-			mRasterizer = new RasterizerState(mDevice3D, Descriptions.Rasterizer);
+			_LinearSampler = new SamplerState(_Device3D, Descriptions.LinearSampler);
+			_Rasterizer = new RasterizerState(_Device3D, Descriptions.Rasterizer);
 
 			// initialize the default vertex buffer
-			_CreateVertexBuffer(out mVertices);
+			CreateVertexBuffer(out _Vertices);
 
-			mVertexBinding.Buffer = mVertices;
-			mVertexBinding.Offset = VertexPositionTexture.LayoutOffset;
-			mVertexBinding.Stride = VertexPositionTexture.LayoutStride;
+			_VertexBinding.Buffer = _Vertices;
+			_VertexBinding.Offset = VertexPositionTexture.LayoutOffset;
+			_VertexBinding.Stride = VertexPositionTexture.LayoutStride;
 
-			_InitializeDeviceState();
+			InitializeDeviceState();
 		}
 
 		public bool HasExtraLayers
 		{
-			get { return mLayers.Count > 1; }
+			get { return _Layers.Count > 1; }
 		}
 
 		public Canvas ActiveLayer
 		{
-			get { return mLayers.Peek(); }
+			get { return _Layers.Peek(); }
 		}
 
 		public PixelShader ActiveShader
 		{
-			set { mDevice3D.PixelShader.Set(value); }
+			set { _Device3D.PixelShader.Set(value); }
 		}
 
 		public void Dispose()
@@ -144,7 +147,7 @@ namespace Frost.DirectX.Composition
 		{
 			Buffer constantBuffer;
 
-			_GetDynamicBuffer(register, value.ByteSize, out constantBuffer);
+			GetDynamicBuffer(register, value.ByteSize, out constantBuffer);
 
 			using(DataStream stream = constantBuffer.Map(MapMode.WriteDiscard))
 			{
@@ -160,38 +163,38 @@ namespace Frost.DirectX.Composition
 			Contract.Requires(surface != null);
 
 			// update the vertex shader constant buffers for each item in the batch
-			using(DataStream stream = mRenderConstants.Map(MapMode.WriteDiscard))
+			using(DataStream stream = _RenderConstants.Map(MapMode.WriteDiscard))
 			{
 				foreach(RenderConstants item in items)
 				{
 					stream.Write(item);
 				}
 
-				mRenderConstants.Unmap();
+				_RenderConstants.Unmap();
 			}
 
 			if(blendOperation == BlendOperation.Copy)
 			{
 				Surface2D dstSurface = (Surface2D)ActiveLayer.Surface2D;
 
-				mDevice3D.ClearRenderTargetView(dstSurface.TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
+				_Device3D.ClearRenderTargetView(dstSurface.TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
 			}
 
 			try
 			{
 				surface.AcquireLock();
 
-				mDevice3D.OutputMerger.BlendState = mBlendStates[(int)blendOperation];
+				_Device3D.OutputMerger.BlendState = _BlendStates[(int)blendOperation];
 
 				ShaderResourceView shaderView = surface.ShaderView;
 
-				mDevice3D.PixelShader.SetShaderResource(0, shaderView);
+				_Device3D.PixelShader.SetShaderResource(0, shaderView);
 
-				mDevice3D.DrawInstanced(ActiveVertices, items.Count, 0, 0);
+				_Device3D.DrawInstanced(ActiveVertices, items.Count, 0, 0);
 			}
 			finally
 			{
-				mDevice3D.PixelShader.SetShaderResource(0, null);
+				_Device3D.PixelShader.SetShaderResource(0, null);
 
 				surface.ReleaseLock();
 			}
@@ -202,22 +205,23 @@ namespace Frost.DirectX.Composition
 			Contract.Requires(layerSize.Width >= 0.0 && layerSize.Width <= double.MaxValue);
 			Contract.Requires(layerSize.Height >= 0.0 && layerSize.Height <= double.MaxValue);
 
-			if(mLayers.Count > 0)
+			if(_Layers.Count > 0)
 			{
-				layerSize.Width = Math.Max(layerSize.Width, ActiveLayer.Region.Width);
-				layerSize.Height = Math.Max(layerSize.Height, ActiveLayer.Region.Height);
+				layerSize = new Size(
+					Math.Max(layerSize.Width, ActiveLayer.Region.Width),
+					Math.Max(layerSize.Height, ActiveLayer.Region.Height));
 			}
 
-			Canvas availableLayer = _GetFreeLayer(layerSize);
+			Canvas availableLayer = GetFreeLayer(layerSize);
 
 			try
 			{
-				if(retentionMode == Retention.RetainImage)
+				if(retentionMode == Retention.RetainData)
 				{
 					ActiveLayer.CopyTo(availableLayer);
 				}
 
-				mLayers.Push(availableLayer);
+				_Layers.Push(availableLayer);
 			}
 			catch
 			{
@@ -226,27 +230,27 @@ namespace Frost.DirectX.Composition
 				throw;
 			}
 
-			_ReconfigureRenderTarget(retentionMode);
+			ReconfigureRenderTarget(retentionMode);
 		}
 
 		public void FreeLayer(Canvas previousLayer)
 		{
-			mSurfaces.Push((PrivateAtlas<Surface2D>)previousLayer.Atlas);
+			_Surfaces.Push((PrivateAtlas<Surface2D>)previousLayer.Atlas);
 		}
 
 		public void PopLayer(out Canvas previousLayer)
 		{
-			previousLayer = mLayers.Pop();
+			previousLayer = _Layers.Pop();
 
 			try
 			{
-				if(mLayers.Count > 0)
+				if(_Layers.Count > 0)
 				{
-					_ReconfigureRenderTarget(Retention.RetainImage);
+					ReconfigureRenderTarget(Retention.RetainData);
 				}
 				else
 				{
-					mDevice3D.OutputMerger.SetTargets((RenderTargetView)null);
+					_Device3D.OutputMerger.SetTargets((RenderTargetView)null);
 				}
 			}
 			catch
@@ -266,41 +270,41 @@ namespace Frost.DirectX.Composition
 			FreeLayer(temporary);
 		}
 
-		private void _GetDynamicBuffer(ConstantRegister register, int byteSize, out Buffer result)
+		private void GetDynamicBuffer(ConstantRegister register, int byteSize, out Buffer result)
 		{
 			Contract.Requires(byteSize >= 0);
 
 			int resolvedRegister = (int)register;
 
 			// invalidate buffers that are too small
-			if(mDynamicBuffers[resolvedRegister].ByteSize < byteSize)
+			if(_DynamicBuffers[resolvedRegister].ByteSize < byteSize)
 			{
-				mDynamicBuffers[resolvedRegister].Buffer.SafeDispose();
-				mDynamicBuffers[resolvedRegister].Buffer = null;
+				_DynamicBuffers[resolvedRegister].Buffer.SafeDispose();
+				_DynamicBuffers[resolvedRegister].Buffer = null;
 			}
 
 			// recreate invalid buffers
-			if(mDynamicBuffers[resolvedRegister].Buffer == null)
+			if(_DynamicBuffers[resolvedRegister].Buffer == null)
 			{
 				BufferDescription description = Descriptions.CustomConstants;
 
 				// align the size in bytes to 128 bit boundaries
-				mDynamicBuffers[resolvedRegister].ByteSize = byteSize % 16 == 0
+				_DynamicBuffers[resolvedRegister].ByteSize = byteSize % 16 == 0
 				                                             	? byteSize
 				                                             	: 16 * ((byteSize / 16) + 1);
 
-				description.SizeInBytes = mDynamicBuffers[resolvedRegister].ByteSize;
+				description.SizeInBytes = _DynamicBuffers[resolvedRegister].ByteSize;
 
-				mDynamicBuffers[resolvedRegister].Buffer = new Buffer(mDevice3D, description);
+				_DynamicBuffers[resolvedRegister].Buffer = new Buffer(_Device3D, description);
 
-				mDevice3D.PixelShader.SetConstantBuffer(
-					resolvedRegister, mDynamicBuffers[resolvedRegister].Buffer);
+				_Device3D.PixelShader.SetConstantBuffer(
+					resolvedRegister, _DynamicBuffers[resolvedRegister].Buffer);
 			}
 
-			result = mDynamicBuffers[resolvedRegister].Buffer;
+			result = _DynamicBuffers[resolvedRegister].Buffer;
 		}
 
-		private void _ReconfigureRenderTarget(Retention retentionMode)
+		private void ReconfigureRenderTarget(Retention retentionMode)
 		{
 			Canvas activeLayer = ActiveLayer;
 
@@ -315,12 +319,12 @@ namespace Frost.DirectX.Composition
 
 			Surface2D surface = (Surface2D)activeLayer.Surface2D;
 
-			if(retentionMode == Retention.ClearImage)
+			if(retentionMode == Retention.ClearData)
 			{
-				mDevice3D.ClearRenderTargetView(surface.TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
+				_Device3D.ClearRenderTargetView(surface.TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
 			}
 
-			using(DataStream stream = mFrameConstants.Map(MapMode.WriteDiscard))
+			using(DataStream stream = _FrameConstants.Map(MapMode.WriteDiscard))
 			{
 				stream.Write(
 					new FrameConstants
@@ -330,7 +334,7 @@ namespace Frost.DirectX.Composition
 						Matrix.OrthoLH(viewport.Width, -viewport.Height, viewport.MinDepth, viewport.MaxDepth)
 					});
 
-				mFrameConstants.Unmap();
+				_FrameConstants.Unmap();
 			}
 
 			PredefinedConstants constants;
@@ -343,12 +347,12 @@ namespace Frost.DirectX.Composition
 
 			SetConstants(ConstantRegister.Predefined, ref constants);
 
-			mDevice3D.Rasterizer.SetViewports(viewport);
+			_Device3D.Rasterizer.SetViewports(viewport);
 
-			mDevice3D.OutputMerger.SetTargets(surface.TargetView);
+			_Device3D.OutputMerger.SetTargets(surface.TargetView);
 		}
 
-		private Canvas _GetFreeLayer(Size size)
+		private Canvas GetFreeLayer(Size size)
 		{
 			Contract.Requires(size.Width >= 0.0 && size.Width <= double.MaxValue);
 			Contract.Requires(size.Height >= 0.0 && size.Height <= double.MaxValue);
@@ -356,18 +360,17 @@ namespace Frost.DirectX.Composition
 
 			Size surfaceSize = size;
 
-			surfaceSize.Width += 2;
-			surfaceSize.Height += 2;
+			surfaceSize = new Size(surfaceSize.Width + 2, surfaceSize.Height + 2);
 
 			PrivateAtlas<Surface2D> atlas;
 
-			if(mSurfaces.Count == 0)
+			if(_Surfaces.Count == 0)
 			{
-				atlas = _CreateSurface(surfaceSize);
+				atlas = CreateSurface(surfaceSize);
 
 				try
 				{
-					atlas.Id = mLayers.Count;
+					atlas.Id = _Layers.Count;
 
 					return atlas.AcquireRegion(size);
 				}
@@ -379,20 +382,20 @@ namespace Frost.DirectX.Composition
 				}
 			}
 
-			atlas = mSurfaces.Pop();
+			atlas = _Surfaces.Pop();
 
 			if(size.Width > atlas.Surface2D.Region.Width || size.Height > atlas.Surface2D.Region.Height)
 			{
 				atlas.Dispose();
 
-				atlas = _CreateSurface(surfaceSize);
+				atlas = CreateSurface(surfaceSize);
 			}
 
 			try
 			{
-				atlas.Id = mLayers.Count;
+				atlas.Id = _Layers.Count;
 
-				mDevice3D.ClearRenderTargetView(atlas.Surface2D.TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
+				_Device3D.ClearRenderTargetView(atlas.Surface2D.TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
 
 				return atlas.AcquireRegion(size);
 			}
@@ -404,20 +407,17 @@ namespace Frost.DirectX.Composition
 			}
 		}
 
-		private PrivateAtlas<Surface2D> _CreateSurface(Size size)
+		private PrivateAtlas<Surface2D> CreateSurface(Size size)
 		{
 			Contract.Requires(size.Width >= 0.0 && size.Width <= double.MaxValue);
 			Contract.Requires(size.Height >= 0.0 && size.Height <= double.MaxValue);
 
 			Surface2D.Description description;
 
-			description.Device2D = mDevice2D;
-			description.Device3D = mDevice3D;
+			description.Device2D = _Device2D;
+			description.Device3D = _Device3D;
 			description.Factory2D = null;
-			description.Format = SurfaceFormat.Standard;
-
-			description.Usage = SurfaceUsage.Default;
-
+			description.Usage = SurfaceUsage.Normal;
 			description.Size = size;
 
 			Surface2D newSurface = Surface2D.FromDescription(ref description);
@@ -434,24 +434,24 @@ namespace Frost.DirectX.Composition
 			}
 		}
 
-		private void _InitializeDeviceState()
+		private void InitializeDeviceState()
 		{
-			mDevice3D.InputAssembler.SetVertexBuffers(0, mVertexBinding);
+			_Device3D.InputAssembler.SetVertexBuffers(0, _VertexBinding);
 
-			mDevice3D.InputAssembler.PrimitiveTopology = Topology;
-			mDevice3D.InputAssembler.InputLayout = mVertexLayout;
+			_Device3D.InputAssembler.PrimitiveTopology = Topology;
+			_Device3D.InputAssembler.InputLayout = _VertexLayout;
 
-			mDevice3D.Rasterizer.State = mRasterizer;
+			_Device3D.Rasterizer.State = _Rasterizer;
 
-			mDevice3D.VertexShader.SetConstantBuffer(0, mFrameConstants);
-			mDevice3D.VertexShader.SetConstantBuffer(1, mRenderConstants);
+			_Device3D.VertexShader.SetConstantBuffer(0, _FrameConstants);
+			_Device3D.VertexShader.SetConstantBuffer(1, _RenderConstants);
 
-			mDevice3D.VertexShader.Set(mVertexShader);
+			_Device3D.VertexShader.Set(_VertexShader);
 
-			mDevice3D.PixelShader.SetSampler(0, mLinearSampler);
+			_Device3D.PixelShader.SetSampler(0, _LinearSampler);
 		}
 
-		private void _CreateVertexBuffer(out Buffer vertices)
+		private void CreateVertexBuffer(out Buffer vertices)
 		{
 			int byteSize = VertexPositionTexture.LayoutStride * ActiveVertices;
 
@@ -470,21 +470,21 @@ namespace Frost.DirectX.Composition
 
 				description.SizeInBytes = byteSize;
 
-				vertices = new Buffer(mDevice3D, stream, description);
+				vertices = new Buffer(_Device3D, stream, description);
 			}
 		}
 
-		private void _Compile(out VertexShader shader, out InputLayout layout)
+		private void Compile(out VertexShader shader, out InputLayout layout)
 		{
 			using(ShaderBytecode code = ShaderBytecode.Compile(Resources.VertexShader, "Main", "vs_4_0"))
 			{
-				shader = new VertexShader(mDevice3D, code);
+				shader = new VertexShader(_Device3D, code);
 
 				InputElement[] elements = VertexPositionTexture.InputElements;
 
 				try
 				{
-					layout = new InputLayout(mDevice3D, code, elements);
+					layout = new InputLayout(_Device3D, code, elements);
 				}
 				catch
 				{
@@ -499,36 +499,36 @@ namespace Frost.DirectX.Composition
 		{
 			if(disposing)
 			{
-				mDevice3D.ClearState();
+				_Device3D.ClearState();
 
-				mFrameConstants.Dispose();
-				mRenderConstants.Dispose();
+				_FrameConstants.Dispose();
+				_RenderConstants.Dispose();
 
-				Array.ForEach(mBlendStates, item => item.Dispose());
-				Array.ForEach(mDynamicBuffers, item => item.Buffer.SafeDispose());
+				Array.ForEach(_BlendStates, item => item.Dispose());
+				Array.ForEach(_DynamicBuffers, item => item.Buffer.SafeDispose());
 
-				mVertexLayout.Dispose();
-				mRasterizer.Dispose();
-				mLinearSampler.Dispose();
-				mVertices.Dispose();
+				_VertexLayout.Dispose();
+				_Rasterizer.Dispose();
+				_LinearSampler.Dispose();
+				_Vertices.Dispose();
 
-				mVertexShader.Dispose();
+				_VertexShader.Dispose();
 
-				mDevice3D.InputAssembler.PrimitiveTopology = Topology;
+				_Device3D.InputAssembler.PrimitiveTopology = Topology;
 
-				foreach(Canvas item in mLayers)
+				foreach(Canvas item in _Layers)
 				{
 					item.Atlas.Surface2D.Dispose();
 				}
 
-				mLayers.Clear();
+				_Layers.Clear();
 
-				foreach(PrivateAtlas<Surface2D> item in mSurfaces)
+				foreach(PrivateAtlas<Surface2D> item in _Surfaces)
 				{
 					item.Dispose();
 				}
 
-				mSurfaces.Clear();
+				_Surfaces.Clear();
 			}
 		}
 

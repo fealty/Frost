@@ -91,6 +91,7 @@
     <Compile Include="Compositor.cs" />
     <Compile Include="ConstantRegister.cs" />
     <Compile Include="Descriptions.cs" />
+    <Compile Include="DropShadowEffect.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FrameConstants.cs" />
     <Compile Include="GaussianBlurEffect.cs" />

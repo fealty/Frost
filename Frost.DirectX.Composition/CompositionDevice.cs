@@ -6,8 +6,6 @@
 using System;
 using System.Diagnostics.Contracts;
 
-using Frost.DirectX.Composition.Effects;
-
 using SharpDX.DXGI;
 using SharpDX.Direct3D10;
 
@@ -18,30 +16,25 @@ namespace Frost.DirectX.Composition
 {
 	public sealed class CompositionDevice : IDisposable
 	{
-		private readonly BoxBlurEffect mBoxBlurEffect;
-		private readonly ColorOutputEffect mColorOutputEffect;
-		private readonly Compositor2 mCompositorSink;
-		private readonly Device mDevice3D;
+		private readonly Device _Device3D;
 
-		private readonly DropShadow mDropShadowEffect;
-		private readonly Lazy<Factory1> mDxgiFactory;
-		private readonly GaussianBlurEffect mGaussianBlurEffect;
-		private readonly Cabbage.Compositor mImmediateCompositor;
+		private readonly Lazy<Factory1> _DxgiFactory;
+		private readonly Compositor _ImmediateContext;
 
 		public CompositionDevice(Adapter1 adapter, Device2D device2D)
 		{
 			Contract.Requires(device2D != null);
 
-			mDxgiFactory = new Lazy<Factory1>();
+			_DxgiFactory = new Lazy<Factory1>();
 
 			Adapter1 newAdapter = adapter;
 
 			if(adapter == null)
 			{
-				newAdapter = mDxgiFactory.Value.GetAdapter1(0);
+				newAdapter = _DxgiFactory.Value.GetAdapter1(0);
 			}
 #if DEBUG
-			mDevice3D = new Device1(
+			_Device3D = new Device1(
 				newAdapter, DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug, FeatureLevel.Level_10_0);
 #else
 			mDevice3D = new Device1(
@@ -54,28 +47,22 @@ namespace Frost.DirectX.Composition
 				newAdapter.Dispose();
 			}
 
-			mCompositorSink = new Compositor2(mDevice3D, device2D);
-			mImmediateCompositor = new Cabbage.Compositor(mCompositorSink, device2D);
+			_ImmediateContext = new Compositor(_Device3D, device2D);
 
-			mColorOutputEffect = new ColorOutputEffect();
-			mGaussianBlurEffect = new GaussianBlurEffect();
-			mDropShadowEffect = new DropShadow();
-			mBoxBlurEffect = new BoxBlurEffect();
-
-			device2D.RegisterEffect(mColorOutputEffect);
-			device2D.RegisterEffect(mGaussianBlurEffect);
-			device2D.RegisterEffect(mDropShadowEffect);
-			device2D.RegisterEffect(mBoxBlurEffect);
+			device2D.Effects.Register<ColorOutputEffect>();
+			device2D.Effects.Register<GaussianBlurEffect>();
+			device2D.Effects.Register<DropShadowEffect>();
+			device2D.Effects.Register<BoxBlurEffect>();
 		}
 
 		public Device Device3D
 		{
-			get { return mDevice3D; }
+			get { return _Device3D; }
 		}
 
-		public Cabbage.Compositor ImmediateContext
+		public Frost.Composition.Compositor ImmediateContext
 		{
-			get { return mImmediateCompositor; }
+			get { return _ImmediateContext; }
 		}
 
 		public void Dispose()
@@ -85,19 +72,19 @@ namespace Frost.DirectX.Composition
 
 		public void SignalUpdate()
 		{
-			mCompositorSink.FrameBatchCount.Reset();
-			mCompositorSink.FrameDuration.Reset();
+			_ImmediateContext.FrameBatchCount.Reset();
+			_ImmediateContext.FrameDuration.Reset();
 		}
 
 		private void Dispose(bool disposing)
 		{
 			if(disposing)
 			{
-				mCompositorSink.Dispose();
+				_ImmediateContext.Dispose();
 
-				if(mDxgiFactory.IsValueCreated)
+				if(_DxgiFactory.IsValueCreated)
 				{
-					mDxgiFactory.Value.Dispose();
+					_DxgiFactory.Value.Dispose();
 				}
 			}
 		}
