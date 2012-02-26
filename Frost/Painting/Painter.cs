@@ -319,6 +319,17 @@ namespace Frost.Painting
 
 				return _ActiveTransformation;
 			}
+			set
+			{
+				Contract.Requires(Thread.CurrentThread == BoundThread);
+
+				if(_IsTransformationInvalid || !value.Equals(_ActiveTransformation))
+				{
+					_ActiveTransformation = value;
+
+					IsTransformationInvalid = true;
+				}
+			}
 		}
 
 		public void Begin(Canvas target, Retention retention = Retention.ClearData)
@@ -372,10 +383,7 @@ namespace Frost.Painting
 			StrokeWidth = 1.0f;
 			DashCap = LineCap.Butt;
 			LineStyle = LineStyle.Solid;
-
-			Matrix3X2 identity = Matrix3X2.Identity;
-
-			Transform(ref identity, TransformMode.Replace);
+			Transformation = Matrix3X2.Identity;
 
 			OnResetState();
 		}
@@ -756,32 +764,19 @@ namespace Frost.Painting
 			Translate(value.Width, value.Height);
 		}
 
-		public void Transform(
-			ref Matrix3X2 transformation, TransformMode operation = TransformMode.Multiply)
+		public void Transform(ref Matrix3X2 transformation)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
-			if(operation == TransformMode.Replace)
+			Matrix3X2 result;
+
+			transformation.Multiply(ref _ActiveTransformation, out result);
+
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
 			{
-				if(_IsTransformationInvalid || !transformation.Equals(_ActiveTransformation))
-				{
-					_ActiveTransformation = transformation;
+				_ActiveTransformation = result;
 
-					_IsTransformationInvalid = true;
-				}
-			}
-			else
-			{
-				Matrix3X2 result;
-
-				transformation.Multiply(ref _ActiveTransformation, out result);
-
-				if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
-				{
-					_ActiveTransformation = result;
-
-					_IsTransformationInvalid = true;
-				}
+				_IsTransformationInvalid = true;
 			}
 		}
 

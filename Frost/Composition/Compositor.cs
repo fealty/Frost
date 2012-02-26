@@ -178,6 +178,17 @@ namespace Frost.Composition
 
 				return _ActiveTransformation;
 			}
+			set
+			{
+				Contract.Requires(Thread.CurrentThread == BoundThread);
+
+				if(_IsTransformationInvalid || !value.Equals(_ActiveTransformation))
+				{
+					_ActiveTransformation = value;
+
+					_IsTransformationInvalid = true;
+				}
+			}
 		}
 
 		public void SaveState()
@@ -201,10 +212,7 @@ namespace Frost.Composition
 			Opacity = 1.0f;
 			Effect = null;
 			Blend = BlendOperation.SourceOver;
-
-			Matrix3X2 identity = Matrix3X2.Identity;
-
-			Transform(ref identity, TransformMode.Replace);
+			Transformation = Matrix3X2.Identity;
 
 			OnResetState();
 		}
@@ -657,32 +665,19 @@ namespace Frost.Composition
 			Translate(value.Width, value.Height);
 		}
 
-		public void Transform(
-			ref Matrix3X2 transformation, TransformMode operation = TransformMode.Multiply)
+		public void Transform(ref Matrix3X2 transformation)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
-			if(operation == TransformMode.Replace)
+			Matrix3X2 result;
+
+			transformation.Multiply(ref _ActiveTransformation, out result);
+
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
 			{
-				if(_IsTransformationInvalid || !transformation.Equals(_ActiveTransformation))
-				{
-					_ActiveTransformation = transformation;
+				_ActiveTransformation = result;
 
-					_IsTransformationInvalid = true;
-				}
-			}
-			else
-			{
-				Matrix3X2 result;
-
-				transformation.Multiply(ref _ActiveTransformation, out result);
-
-				if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
-				{
-					_ActiveTransformation = result;
-
-					_IsTransformationInvalid = true;
-				}
+				_IsTransformationInvalid = true;
 			}
 		}
 
