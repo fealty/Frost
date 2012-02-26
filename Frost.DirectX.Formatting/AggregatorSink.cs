@@ -1,16 +1,21 @@
-﻿using System.Diagnostics.Contracts;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
 	internal sealed class AggregatorSink
 	{
-		private CharacterFormat[] mCharacters;
+		private CharacterFormat[] _Characters;
 
-		private string mFullText;
+		private string _FullText;
 
 		public AggregatorSink()
 		{
-			mCharacters = new CharacterFormat[0];
+			_Characters = new CharacterFormat[0];
 		}
 
 		public string FullText
@@ -19,13 +24,13 @@ namespace Frost.DirectX.Formatting
 			{
 				Contract.Ensures(Contract.Result<string>() != null);
 
-				return mFullText;
+				return _FullText;
 			}
 			set
 			{
 				Contract.Requires(!string.IsNullOrEmpty(value));
 
-				mFullText = value;
+				_FullText = value;
 			}
 		}
 
@@ -35,22 +40,22 @@ namespace Frost.DirectX.Formatting
 			{
 				Contract.Ensures(Contract.Result<int>() >= 0);
 
-				return mCharacters.Length;
+				return _Characters.Length;
 			}
 			set
 			{
 				Contract.Requires(value >= 0);
 
-				if(value > mCharacters.Length)
+				if(value > _Characters.Length)
 				{
-					mCharacters = new CharacterFormat[value * 2];
+					_Characters = new CharacterFormat[value * 2];
 				}
 			}
 		}
 
 		public CharacterFormat[] Characters
 		{
-			get { return mCharacters; }
+			get { return _Characters; }
 		}
 	}
 }
