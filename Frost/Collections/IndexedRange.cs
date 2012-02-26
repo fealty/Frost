@@ -12,6 +12,11 @@ namespace Frost.Collections
 {
 	public struct IndexedRange : IEquatable<IndexedRange>, IEnumerable<int>
 	{
+		public static implicit operator IndexedRange(string str)
+		{
+			return str != null ? new IndexedRange(0, str.Length) : Empty;
+		}
+
 		private static readonly IndexedRange _Empty;
 
 		private readonly int _Length;
@@ -63,6 +68,11 @@ namespace Frost.Collections
 
 				return (_StartIndex + _Length) - 1;
 			}
+		}
+
+		public bool IsWithin(IndexedRange range)
+		{
+			return range.StartIndex >= StartIndex && range.LastIndex <= LastIndex;
 		}
 
 		public int Length
