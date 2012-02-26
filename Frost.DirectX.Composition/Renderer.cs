@@ -42,7 +42,7 @@ namespace Frost.DirectX.Composition
 		private readonly RasterizerState _Rasterizer;
 		private readonly Buffer _RenderConstants;
 
-		private readonly Stack<PrivateAtlas<Surface2D>> _Surfaces;
+		private readonly Stack<TargetLayerAtlas<Surface2D>> _Surfaces;
 
 		private readonly VertexBufferBinding _VertexBinding;
 		private readonly InputLayout _VertexLayout;
@@ -60,7 +60,7 @@ namespace Frost.DirectX.Composition
 			Contract.Requires(device2D != null);
 
 			_Layers = new Stack<Canvas>();
-			_Surfaces = new Stack<PrivateAtlas<Surface2D>>();
+			_Surfaces = new Stack<TargetLayerAtlas<Surface2D>>();
 
 			_Device3D = device3D;
 			_Device2D = device2D;
@@ -225,7 +225,9 @@ namespace Frost.DirectX.Composition
 			}
 			catch
 			{
-				availableLayer.Surface2D.Dispose();
+				IDisposable disposable = availableLayer.Surface2D as IDisposable;
+
+				disposable.SafeDispose();
 
 				throw;
 			}
@@ -235,7 +237,7 @@ namespace Frost.DirectX.Composition
 
 		public void FreeLayer(Canvas previousLayer)
 		{
-			_Surfaces.Push((PrivateAtlas<Surface2D>)previousLayer.Atlas);
+			_Surfaces.Push((TargetLayerAtlas<Surface2D>)previousLayer.Atlas);
 		}
 
 		public void PopLayer(out Canvas previousLayer)
@@ -362,7 +364,7 @@ namespace Frost.DirectX.Composition
 
 			surfaceSize = new Size(surfaceSize.Width + 2, surfaceSize.Height + 2);
 
-			PrivateAtlas<Surface2D> atlas;
+			TargetLayerAtlas<Surface2D> atlas;
 
 			if(_Surfaces.Count == 0)
 			{
@@ -370,8 +372,6 @@ namespace Frost.DirectX.Composition
 
 				try
 				{
-					atlas.Id = _Layers.Count;
-
 					return atlas.AcquireRegion(size);
 				}
 				catch
@@ -393,8 +393,6 @@ namespace Frost.DirectX.Composition
 
 			try
 			{
-				atlas.Id = _Layers.Count;
-
 				_Device3D.ClearRenderTargetView(atlas.Surface2D.TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
 
 				return atlas.AcquireRegion(size);
@@ -407,7 +405,7 @@ namespace Frost.DirectX.Composition
 			}
 		}
 
-		private PrivateAtlas<Surface2D> CreateSurface(Size size)
+		private TargetLayerAtlas<Surface2D> CreateSurface(Size size)
 		{
 			Contract.Requires(size.Width >= 0.0 && size.Width <= double.MaxValue);
 			Contract.Requires(size.Height >= 0.0 && size.Height <= double.MaxValue);
@@ -424,7 +422,7 @@ namespace Frost.DirectX.Composition
 
 			try
 			{
-				return new PrivateAtlas<Surface2D>(newSurface);
+				return new TargetLayerAtlas<Surface2D>(newSurface);
 			}
 			catch
 			{
@@ -518,12 +516,14 @@ namespace Frost.DirectX.Composition
 
 				foreach(Canvas item in _Layers)
 				{
-					item.Atlas.Surface2D.Dispose();
+					IDisposable disposable = item.Atlas.Surface2D as IDisposable;
+
+					disposable.SafeDispose();
 				}
 
 				_Layers.Clear();
 
-				foreach(PrivateAtlas<Surface2D> item in _Surfaces)
+				foreach(TargetLayerAtlas<Surface2D> item in _Surfaces)
 				{
 					item.Dispose();
 				}
