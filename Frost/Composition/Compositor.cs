@@ -17,10 +17,15 @@ namespace Frost.Composition
 		private readonly Thread _BoundThread;
 		private readonly Device2D _Device2D;
 
-		protected BlendOperation _ActiveBlendOperation;
-		protected EffectContext _ActiveEffectContext;
-		protected float _ActiveOpacity;
-		protected Matrix3X2 _ActiveTransformation;
+		private BlendOperation _ActiveBlendOperation;
+		private EffectContext _ActiveEffectContext;
+		private float _ActiveOpacity;
+		private Matrix3X2 _ActiveTransformation;
+
+		private bool _IsBlendOperationInvalid;
+		private bool _IsEffectContextInvalid;
+		private bool _IsOpacityInvalid;
+		private bool _IsTransformationInvalid;
 
 		protected Compositor(Device2D device2D)
 		{
@@ -28,6 +33,50 @@ namespace Frost.Composition
 
 			_BoundThread = Thread.CurrentThread;
 			_Device2D = device2D;
+		}
+
+		protected bool IsTransformationInvalid
+		{
+			get { return _IsTransformationInvalid; }
+			set { _IsTransformationInvalid = value; }
+		}
+
+		protected bool IsOpacityInvalid
+		{
+			get { return _IsOpacityInvalid; }
+			set { _IsOpacityInvalid = value; }
+		}
+
+		protected bool IsEffectContextInvalid
+		{
+			get { return _IsEffectContextInvalid; }
+			set { _IsEffectContextInvalid = value; }
+		}
+
+		protected bool IsBlendOperationInvalid
+		{
+			get { return _IsBlendOperationInvalid; }
+			set { _IsBlendOperationInvalid = value; }
+		}
+
+		protected Matrix3X2 ActiveTransformation
+		{
+			get { return _ActiveTransformation; }
+		}
+
+		protected float ActiveOpacity
+		{
+			get { return _ActiveOpacity; }
+		}
+
+		protected EffectContext ActiveEffectContext
+		{
+			get { return _ActiveEffectContext; }
+		}
+
+		protected BlendOperation ActiveBlendOperation
+		{
+			get { return _ActiveBlendOperation; }
 		}
 
 		public Device2D Device2D
@@ -65,7 +114,12 @@ namespace Frost.Composition
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 
-				_ActiveEffectContext = value;
+				if(_IsEffectContextInvalid || !Equals(value, _ActiveEffectContext))
+				{
+					_ActiveEffectContext = value;
+
+					_IsEffectContextInvalid = true;
+				}
 			}
 		}
 
@@ -84,7 +138,12 @@ namespace Frost.Composition
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Requires(Check.IsNormalized(value));
 
-				_ActiveOpacity = value;
+				if(!value.Equals(_ActiveOpacity))
+				{
+					_ActiveOpacity = value;
+
+					_IsOpacityInvalid = true;
+				}
 			}
 		}
 
@@ -101,7 +160,12 @@ namespace Frost.Composition
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 
-				_ActiveBlendOperation = value;
+				if(value != _ActiveBlendOperation)
+				{
+					_ActiveBlendOperation = value;
+
+					_IsBlendOperationInvalid = true;
+				}
 			}
 		}
 
@@ -134,10 +198,13 @@ namespace Frost.Composition
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
-			_ActiveTransformation = Matrix3X2.Identity;
-			_ActiveOpacity = 1.0f;
-			_ActiveEffectContext = null;
-			_ActiveBlendOperation = BlendOperation.SourceOver;
+			Opacity = 1.0f;
+			Effect = null;
+			Blend = BlendOperation.SourceOver;
+
+			Matrix3X2 identity = Matrix3X2.Identity;
+
+			Transform(ref identity, TransformMode.Replace);
 
 			OnResetState();
 		}
@@ -455,7 +522,16 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 
-			_ActiveTransformation.Scale(width, height, out _ActiveTransformation);
+			Matrix3X2 result;
+
+			_ActiveTransformation.Scale(width, height, out result);
+
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
+			{
+				_ActiveTransformation = result;
+
+				_IsTransformationInvalid = true;
+			}
 		}
 
 		public void Scale(Size size)
@@ -475,7 +551,16 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
 
-			_ActiveTransformation.Scale(width, height, originX, originY, out _ActiveTransformation);
+			Matrix3X2 result;
+
+			_ActiveTransformation.Scale(width, height, originX, originY, out result);
+
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
+			{
+				_ActiveTransformation = result;
+
+				_IsTransformationInvalid = true;
+			}
 		}
 
 		public void Skew(float angleX, float angleY)
@@ -484,7 +569,16 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsDegrees(angleX));
 			Contract.Requires(Check.IsDegrees(angleY));
 
-			_ActiveTransformation.Skew(angleX, angleY, out _ActiveTransformation);
+			Matrix3X2 result;
+
+			_ActiveTransformation.Skew(angleX, angleY, out result);
+
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
+			{
+				_ActiveTransformation = result;
+
+				_IsTransformationInvalid = true;
+			}
 		}
 
 		public void Rotate(float angle)
@@ -492,7 +586,16 @@ namespace Frost.Composition
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsDegrees(angle));
 
-			_ActiveTransformation.Rotate(angle, out _ActiveTransformation);
+			Matrix3X2 result;
+
+			_ActiveTransformation.Rotate(angle, out result);
+
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
+			{
+				_ActiveTransformation = result;
+
+				_IsTransformationInvalid = true;
+			}
 		}
 
 		public void Rotate(float angle, float originX, float originY)
@@ -502,7 +605,16 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
 
-			_ActiveTransformation.Rotate(angle, originX, originY, out _ActiveTransformation);
+			Matrix3X2 result;
+
+			_ActiveTransformation.Rotate(angle, originX, originY, out result);
+
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
+			{
+				_ActiveTransformation = result;
+
+				_IsTransformationInvalid = true;
+			}
 		}
 
 		public void Rotate(float angle, Point origin)
@@ -519,7 +631,16 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsFinite(width));
 			Contract.Requires(Check.IsFinite(height));
 
-			_ActiveTransformation.Translate(width, height, out _ActiveTransformation);
+			Matrix3X2 result;
+
+			_ActiveTransformation.Translate(width, height, out result);
+
+			if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
+			{
+				_ActiveTransformation = result;
+
+				_IsTransformationInvalid = true;
+			}
 		}
 
 		public void Translate(Size value)
@@ -536,11 +657,25 @@ namespace Frost.Composition
 
 			if(operation == TransformMode.Replace)
 			{
-				_ActiveTransformation = transformation;
+				if(_IsTransformationInvalid || !transformation.Equals(_ActiveTransformation))
+				{
+					_ActiveTransformation = transformation;
+
+					_IsTransformationInvalid = true;
+				}
 			}
 			else
 			{
-				transformation.Multiply(ref _ActiveTransformation, out _ActiveTransformation);
+				Matrix3X2 result;
+
+				transformation.Multiply(ref _ActiveTransformation, out result);
+
+				if(_IsTransformationInvalid || !result.Equals(_ActiveTransformation))
+				{
+					_ActiveTransformation = result;
+
+					_IsTransformationInvalid = true;
+				}
 			}
 		}
 
@@ -558,7 +693,7 @@ namespace Frost.Composition
 
 			Effect<T> effect = Device2D.Effects.Find<T>();
 
-			this.Effect = effect != null ? new EffectContext<T>(effect, options) : null;
+			Effect = effect != null ? new EffectContext<T>(effect, options) : null;
 		}
 
 		protected abstract void OnSaveState();
