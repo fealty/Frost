@@ -124,8 +124,6 @@
     <Compile Include="Effects\EffectContext.cs" />
     <Compile Include="Effects\Enumerations.cs" />
     <Compile Include="Effects\GaussianBlurSettings.cs" />
-    <Compile Include="Effects\IEffect.cs" />
-    <Compile Include="Effects\IEffectContext.cs" />
     <Compile Include="Effects\IEffectSettings.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="Check.cs" />

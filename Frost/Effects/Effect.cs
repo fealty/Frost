@@ -16,7 +16,7 @@ namespace Frost.Effects
 	{
 		[ContractClassFor(typeof(Effect))] internal abstract class EffectContract : Effect
 		{
-			internal override Type OptionsType
+			public override Type OptionsType
 			{
 				get
 				{
@@ -46,24 +46,29 @@ namespace Frost.Effects
 		{
 		}
 
-		internal abstract Type OptionsType { get; }
+		public abstract Type OptionsType { get; }
+
+		public abstract void Apply<TEnum>(
+			TEnum batchedItems, EffectContext effectContext, Compositor compositionContext)
+			where TEnum : class, IEnumerable<BatchedItem>;
 	}
 
-	[ContractClass(typeof(EffectContract<>))] public abstract class Effect<T> : Effect, IEffect
+	[ContractClass(typeof(EffectContract<>))] public abstract class Effect<T> : Effect
 		where T : struct, IEffectSettings, IEquatable<T>
 	{
-		internal override sealed Type OptionsType
+		public override sealed Type OptionsType
 		{
 			get { return typeof(T); }
-		}
-
-		void IEffect.Apply<TEnum>(
-			TEnum batchedItems, IEffectContext effectContext, Compositor compositionContext)
-		{
 		}
 
 		public abstract void Apply<TEnum>(
 			TEnum batchedItems, EffectContext<T> effectContext, Compositor compositionContext)
 			where TEnum : class, IEnumerable<BatchedItem>;
+
+		public override void Apply<T1>(
+			T1 batchedItems, EffectContext effectContext, Compositor compositionContext)
+		{
+			Apply(batchedItems, (EffectContext<T>)effectContext, compositionContext);
+		}
 	}
 }

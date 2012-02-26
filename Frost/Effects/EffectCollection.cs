@@ -10,11 +10,11 @@ namespace Frost.Effects
 {
 	public sealed class EffectCollection
 	{
-		private readonly Dictionary<Type, IEffect> _Effects;
+		private readonly Dictionary<Type, Effect> _Effects;
 
 		internal EffectCollection()
 		{
-			_Effects = new Dictionary<Type, IEffect>();
+			_Effects = new Dictionary<Type, Effect>();
 		}
 
 		public void Register<T>() where T : Effect, new()
@@ -23,13 +23,13 @@ namespace Frost.Effects
 			{
 				Effect effect = new T();
 
-				_Effects[effect.OptionsType] = (IEffect)effect;
+				_Effects[effect.OptionsType] = effect;
 			}
 		}
 
 		public Effect<T> Find<T>() where T : struct, IEffectSettings, IEquatable<T>
 		{
-			IEffect result;
+			Effect result;
 
 			lock(_Effects)
 			{

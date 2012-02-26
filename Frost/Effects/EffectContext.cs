@@ -8,14 +8,20 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Effects
 {
-	public abstract class EffectContext
+	public abstract class EffectContext : IEquatable<EffectContext>
 	{
 		internal EffectContext()
 		{
 		}
+
+		public abstract Effect EffectBase { get; }
+
+		public abstract object OptionsBase { get; }
+
+		public abstract bool Equals(EffectContext other);
 	}
 
-	public sealed class EffectContext<T> : EffectContext, IEffectContext, IEquatable<EffectContext<T>>
+	public sealed class EffectContext<T> : EffectContext, IEquatable<EffectContext<T>>
 		where T : struct, IEffectSettings, IEquatable<T>
 	{
 		private readonly Effect<T> _Effect;
@@ -28,7 +34,7 @@ namespace Frost.Effects
 			_Effect = effect;
 			_Options = options;
 
-			Contract.Assert(Effect.Equals(effect));
+			Contract.Assert(EffectBase.Equals(effect));
 			Contract.Assert(Options.Equals(options));
 		}
 
@@ -47,19 +53,24 @@ namespace Frost.Effects
 			}
 		}
 
-		public T Options
+		public override Effect EffectBase
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<Effect>() != null);
+
+				return _Effect;
+			}
+		}
+
+		public override object OptionsBase
 		{
 			get { return _Options; }
 		}
 
-		bool IEquatable<IEffectContext>.Equals(IEffectContext other)
+		public T Options
 		{
-			return Equals(other);
-		}
-
-		IEffect IEffectContext.Effect
-		{
-			get { return _Effect; }
+			get { return _Options; }
 		}
 
 		public bool Equals(EffectContext<T> other)
@@ -75,6 +86,11 @@ namespace Frost.Effects
 			}
 
 			return other._Options.Equals(_Options) && Equals(other._Effect, _Effect);
+		}
+
+		public override bool Equals(EffectContext other)
+		{
+			return Equals((object)other);
 		}
 
 		public override bool Equals(object obj)
