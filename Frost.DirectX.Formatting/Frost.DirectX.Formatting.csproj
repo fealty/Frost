@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,7 +56,60 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aggregator.cs" />
+    <Compile Include="AggregatorSink.cs" />
+    <Compile Include="AnalysisException.cs" />
+    <Compile Include="Analyzer.cs" />
+    <Compile Include="BreakCondition.cs" />
+    <Compile Include="BreakIndex.cs" />
+    <Compile Include="Breakpoint.cs" />
+    <Compile Include="CharacterFormat.cs" />
+    <Compile Include="ClusterRange.cs" />
+    <Compile Include="ContentType.cs" />
+    <Compile Include="Demerits.cs" />
+    <Compile Include="DisplayMode.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="FeatureRange.cs" />
+    <Compile Include="FontDevice.cs" />
+    <Compile Include="FontHandle.cs" />
+    <Compile Include="FormattedCluster.cs" />
+    <Compile Include="FormattedGlyph.cs" />
+    <Compile Include="FormattedRun.cs" />
+    <Compile Include="Formatter.cs" />
+    <Compile Include="FormatterSink.cs" />
+    <Compile Include="GlyphRange.cs" />
+    <Compile Include="IBreakingPointList.cs" />
+    <Compile Include="IBreakingPointListContract.cs" />
+    <Compile Include="ILineItemList.cs" />
+    <Compile Include="ILineItemListContract.cs" />
+    <Compile Include="ILineProvider.cs" />
+    <Compile Include="ILineProviderContract.cs" />
+    <Compile Include="IndexingHelpers.cs" />
+    <Compile Include="LineBreaker.cs" />
+    <Compile Include="LineBreakpoint.cs" />
+    <Compile Include="LineFitness.cs" />
+    <Compile Include="LineItem.cs" />
+    <Compile Include="ParagraphMetrics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShapedCluster.cs" />
+    <Compile Include="ShapedGlyph.cs" />
+    <Compile Include="Shaper.cs" />
+    <Compile Include="ShaperSink.cs" />
+    <Compile Include="ShapingException.cs" />
+    <Compile Include="TextGeometryCache.cs" />
+    <Compile Include="TextGeometryKey.cs" />
+    <Compile Include="TextGeometrySink.cs" />
+    <Compile Include="TextPipeline.cs" />
+    <Compile Include="TypesetCluster.cs" />
+    <Compile Include="TypesetGlyph.cs" />
+    <Compile Include="Typesetter.cs" />
+    <Compile Include="TypesetterSink.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Frost\Frost.csproj">
+      <Project>{5DA3C280-5EBE-4148-BAB5-C700DA0645C2}</Project>
+      <Name>Frost</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
