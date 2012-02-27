@@ -4,10 +4,10 @@
 // See LICENSE for more information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
+using Frost.Collections;
 using Frost.Formatting;
 using Frost.Shaping;
 
@@ -15,30 +15,31 @@ using SharpDX.DirectWrite;
 
 namespace Frost.DirectX.Formatting
 {
-	public sealed class ParagraphMetrics
-		: ITextMetrics,
-		  ILightweightList<Rectangle>,
-		  ILightweightList<TextRange>,
-		  ILightweightList<Outline>
+	public sealed class ParagraphMetrics : ITextMetrics
 	{
-		private static readonly List<TextRange> mLineBuilder;
+		private static readonly List<Outline> _OutlineListBuilder;
+		private static readonly List<Rectangle> _RegionListBuilder;
+		private static readonly List<IndexedRange> _LineListBuilder;
 
-		private readonly double mBaselineOffset;
-		private readonly byte[] mClusterBidiLevels;
+		private readonly float _BaselineOffset;
+		private readonly byte[] _ClusterBidiLevels;
 
-		private readonly FormattedCluster[] mClusters;
-		private readonly Rectangle mLayoutRegion;
-		private readonly double mLeading;
-		private readonly TextRange[] mLines;
-		private readonly Outline[] mOutlines;
-		private readonly Paragraph mParagraph;
+		private readonly FormattedCluster[] _Clusters;
+		private readonly Rectangle _LayoutRegion;
+		private readonly float _Leading;
+		private readonly LineCollection _Lines;
+		private readonly OutlineCollection _Outlines;
+		private readonly Paragraph _Paragraph;
+		private readonly RegionCollection _Regions;
 
-		private readonly Rectangle mTextRegion;
-		private readonly int[] mTextToCluster;
+		private readonly Rectangle _TextRegion;
+		private readonly int[] _TextToCluster;
 
 		static ParagraphMetrics()
 		{
-			mLineBuilder = new List<TextRange>();
+			_LineListBuilder = new List<IndexedRange>();
+			_RegionListBuilder = new List<Rectangle>();
+			_OutlineListBuilder = new List<Outline>();
 		}
 
 		internal ParagraphMetrics(
@@ -48,70 +49,46 @@ namespace Frost.DirectX.Formatting
 			Contract.Requires(formattedData != null);
 			Contract.Requires(geometryCache != null);
 
-			mLineBuilder.Clear();
+			_LineListBuilder.Clear();
 
-			mParagraph = paragraph;
+			_Paragraph = paragraph;
 
-			mLeading = formattedData.Leading;
-			mLayoutRegion = formattedData.LayoutRegion;
-			mBaselineOffset = formattedData.BaselineOffset;
+			_Leading = formattedData.Leading;
+			_LayoutRegion = formattedData.LayoutRegion;
+			_BaselineOffset = formattedData.BaselineOffset;
 
-			mClusters = formattedData.Clusters.ToArray();
+			_Clusters = formattedData.Clusters.ToArray();
 
-			mClusterBidiLevels = new byte[formattedData.Clusters.Count];
+			_ClusterBidiLevels = new byte[formattedData.Clusters.Count];
 
-			mOutlines = new Outline[formattedData.Clusters.Count];
+			_Outlines = CreateOutlineList(formattedData, geometryCache, out _ClusterBidiLevels);
 
-			int geometryClusterIndex = 0;
+			_TextToCluster = new int[formattedData.FullText.Length];
 
-			for(int i = 0; i < formattedData.Runs.Count; ++i)
+			for(int i = 0; i < _Clusters.Length; ++i)
 			{
-				FormattedRun run = formattedData.Runs[i];
+				IndexedRange characters = _Clusters[i].Characters;
 
-				FontFace face = run.Font.ResolveFace();
-
-				double emSize = face.Metrics.Ascent + face.Metrics.Descent;
-
-				double baseline = face.Metrics.Ascent / emSize;
-
-				for(int j = run.Clusters.Start; j <= run.Clusters.End; ++j)
+				for(int j = characters.StartIndex; j <= characters.LastIndex; ++j)
 				{
-					Geometry geometry = geometryCache.Retrieve(j, run.BidiLevel, run.Font, formattedData);
-
-					mOutlines[geometryClusterIndex] = new Outline(geometry, run.EmSize, baseline);
-
-					mClusterBidiLevels[geometryClusterIndex] = run.BidiLevel;
-
-					geometryClusterIndex++;
+					_TextToCluster[j] = i;
 				}
 			}
 
-			mTextToCluster = new int[formattedData.FullText.Length];
+			float left = float.MaxValue;
+			float top = float.MaxValue;
+			float right = float.MinValue;
+			float bottom = float.MinValue;
 
-			for(int i = 0; i < mClusters.Length; ++i)
+			for(int i = 0; i < _Clusters.Length; ++i)
 			{
-				TextRange characters = mClusters[i].Characters;
-
-				for(int j = characters.Start; j <= characters.End; ++j)
-				{
-					mTextToCluster[j] = i;
-				}
+				left = Math.Min(left, _Clusters[i].Region.Left);
+				top = Math.Min(top, _Clusters[i].Region.Top);
+				right = Math.Max(right, _Clusters[i].Region.Right);
+				bottom = Math.Max(bottom, _Clusters[i].Region.Bottom);
 			}
 
-			double left = double.MaxValue;
-			double top = double.MaxValue;
-			double right = double.MinValue;
-			double bottom = double.MinValue;
-
-			for(int i = 0; i < mClusters.Length; ++i)
-			{
-				left = Math.Min(left, mClusters[i].Region.Left);
-				top = Math.Min(top, mClusters[i].Region.Top);
-				right = Math.Max(right, mClusters[i].Region.Right);
-				bottom = Math.Max(bottom, mClusters[i].Region.Bottom);
-			}
-
-			mTextRegion = new Rectangle(left, top, right - left, bottom - top);
+			_TextRegion = new Rectangle(left, top, right, bottom);
 
 			int lastLine = 0;
 
@@ -121,7 +98,7 @@ namespace Frost.DirectX.Formatting
 			{
 				if(formattedData.Runs[i].LineNumber > lastLine)
 				{
-					mLineBuilder.Add(ToTextRange(range));
+					_LineListBuilder.Add(ToTextRange(range));
 
 					range = new ClusterRange(formattedData.Runs[i].Clusters.Start, 0);
 
@@ -133,143 +110,75 @@ namespace Frost.DirectX.Formatting
 
 			if(range.Length > 0)
 			{
-				mLineBuilder.Add(ToTextRange(range));
+				_LineListBuilder.Add(ToTextRange(range));
 			}
 
-			mLines = mLineBuilder.ToArray();
+			_Lines = new LineCollection(_LineListBuilder);
+
+			_RegionListBuilder.Clear();
+
+			for(int i = 0; i < paragraph.Text.Length; ++i)
+			{
+				_RegionListBuilder.Add(_Clusters[_TextToCluster[i]].Region);
+			}
+
+			_Regions = new RegionCollection(_RegionListBuilder);
 		}
 
-		Outline ILightweightList<Outline>.this[int index]
+		public float Leading
 		{
-			get { return mOutlines[index]; }
-		}
-
-		int ILightweightList<Outline>.Count
-		{
-			get { return mOutlines.Length; }
-		}
-
-		int ILightweightList<Rectangle>.Count
-		{
-			get { return mTextToCluster.Length; }
-		}
-
-		Rectangle ILightweightList<Rectangle>.this[int index]
-		{
-			get { return mClusters[mTextToCluster[index]].Region; }
-		}
-
-		TextRange ILightweightList<TextRange>.this[int index]
-		{
-			get { return mLines[index]; }
-		}
-
-		int ILightweightList<TextRange>.Count
-		{
-			get { return mLines.Length; }
-		}
-
-		public ILightweightList<Rectangle> Regions
-		{
-			get { return this; }
-		}
-
-		public ILightweightList<Outline> Outlines
-		{
-			get { return this; }
-		}
-
-		public double Leading
-		{
-			get { return mLeading; }
-		}
-
-		ILightweightList<TextRange> ITextMetrics.Lines
-		{
-			get { return this; }
+			get { return _Leading; }
 		}
 
 		public Paragraph Paragraph
 		{
-			get { return mParagraph; }
+			get { return _Paragraph; }
 		}
 
 		public Rectangle TextRegion
 		{
-			get { return mTextRegion; }
+			get { return _TextRegion; }
 		}
 
 		public Rectangle LayoutRegion
 		{
-			get { return mLayoutRegion; }
+			get { return _LayoutRegion; }
 		}
 
 		public Size BaselineOffset
 		{
-			get { return new Size(0.0, mBaselineOffset); }
+			get { return new Size(0.0f, _BaselineOffset); }
 		}
 
-		public bool IsRightToLeft(int textIndex)
+		public LineCollection Lines
 		{
-			int clusterIndex = mTextToCluster[textIndex];
-
-			return Convert.ToBoolean(mClusterBidiLevels[clusterIndex] & 1);
+			get { return _Lines; }
 		}
 
-		public bool IsClusterStart(int textIndex)
+		public RegionCollection Regions
 		{
-			if(textIndex > 0)
-			{
-				if(mTextToCluster[textIndex] == mTextToCluster[textIndex - 1])
-				{
-					return false;
-				}
-			}
-
-			return true;
+			get { return _Regions; }
 		}
 
-		public bool IsClusterVisible(int textIndex)
+		public OutlineCollection Outlines
 		{
-			int clusterIndex = mTextToCluster[textIndex];
-
-			if(mClusters[clusterIndex].Display != DisplayMode.Suppressed)
-			{
-				if(mClusters[clusterIndex].Display == DisplayMode.Neutral)
-				{
-					if(!mClusters[clusterIndex].Region.IsEmpty)
-					{
-						return true;
-					}
-				}
-				else
-				{
-					return true;
-				}
-			}
-
-			return false;
+			get { return _Outlines; }
 		}
 
-		public IEnumerator GetEnumerator()
-		{
-			throw new NotSupportedException();
-		}
-
-		public bool FindIndexForPoint(Point position, out int textIndex)
+		public bool FindIndexNear(Point position, out int textIndex)
 		{
 			int nearestCluster = 0;
 
-			for(int i = 0; i < mClusters.Length; ++i)
+			for(int i = 0; i < _Clusters.Length; ++i)
 			{
-				if(mClusters[i].Region.Contains(position))
+				if(_Clusters[i].Region.Contains(position))
 				{
-					textIndex = mClusters[i].Characters.Start;
+					textIndex = _Clusters[i].Characters.StartIndex;
 
 					return true;
 				}
 
-				Point reference = mClusters[i].Region.FindCenter();
+				Point reference = _Clusters[i].Region.Center;
 
 				double referenceX = position.X - reference.X;
 				double referenceY = position.Y - reference.Y;
@@ -277,7 +186,7 @@ namespace Frost.DirectX.Formatting
 				referenceX *= referenceX;
 				referenceY *= referenceY;
 
-				Point nearest = mClusters[nearestCluster].Region.FindCenter();
+				Point nearest = _Clusters[nearestCluster].Region.Center;
 
 				double nearestX = position.X - nearest.X;
 				double nearestY = position.Y - nearest.Y;
@@ -291,72 +200,121 @@ namespace Frost.DirectX.Formatting
 				nearestCluster = referenceTotal > nearestTotal ? i : nearestCluster;
 			}
 
-			textIndex = mClusters[nearestCluster].Characters.Start;
+			textIndex = _Clusters[nearestCluster].Characters.StartIndex;
 
 			return false;
 		}
 
-		public void ComputeRegion(TextRange range, out Rectangle region)
+		public bool IsRightToLeft(int textIndex)
 		{
-			double left = double.MaxValue;
-			double top = double.MaxValue;
-			double right = double.MinValue;
-			double bottom = double.MinValue;
+			int clusterIndex = _TextToCluster[textIndex];
 
-			for(int i = range.Start; i <= range.End; ++i)
+			return Convert.ToBoolean(_ClusterBidiLevels[clusterIndex] & 1);
+		}
+
+		public bool IsClusterStart(int textIndex)
+		{
+			if(textIndex > 0)
+			{
+				if(_TextToCluster[textIndex] == _TextToCluster[textIndex - 1])
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public bool IsClusterVisible(int textIndex)
+		{
+			int clusterIndex = _TextToCluster[textIndex];
+
+			if(_Clusters[clusterIndex].Display != DisplayMode.Suppressed)
+			{
+				if(_Clusters[clusterIndex].Display == DisplayMode.Neutral)
+				{
+					if(_Clusters[clusterIndex].Region.Area > 0)
+					{
+						return true;
+					}
+				}
+				else
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public void ComputeRegion(IndexedRange range, out Rectangle region)
+		{
+			float left = float.MaxValue;
+			float top = float.MaxValue;
+			float right = float.MinValue;
+			float bottom = float.MinValue;
+
+			for(int i = range.StartIndex; i <= range.LastIndex; ++i)
 			{
 				// exclude invisible clusters from consideration
 				if(IsClusterVisible(i))
 				{
-					int cluster = mTextToCluster[i];
+					int cluster = _TextToCluster[i];
 
-					left = Math.Min(left, mClusters[cluster].Region.Left);
-					top = Math.Min(top, mClusters[cluster].Region.Top);
-					right = Math.Max(right, mClusters[cluster].Region.Right);
-					bottom = Math.Max(bottom, mClusters[cluster].Region.Bottom);
+					left = Math.Min(left, _Clusters[cluster].Region.Left);
+					top = Math.Min(top, _Clusters[cluster].Region.Top);
+					right = Math.Max(right, _Clusters[cluster].Region.Right);
+					bottom = Math.Max(bottom, _Clusters[cluster].Region.Bottom);
 				}
 			}
 
-			region = new Rectangle(left, top, right - left, bottom - top);
+			region = new Rectangle(left, top, right, bottom);
 		}
 
-		IEnumerator<Outline> IEnumerable<Outline>.GetEnumerator()
+		private static OutlineCollection CreateOutlineList(
+			FormatterSink formattedData, TextGeometryCache geometryCache, out byte[] clusterBidiLevels)
 		{
-			ILightweightList<Outline> @this = this;
+			_OutlineListBuilder.Clear();
 
-			return @this.GetEnumerator();
-		}
+			clusterBidiLevels = new byte[formattedData.Clusters.Count];
 
-		IEnumerator<Rectangle> IEnumerable<Rectangle>.GetEnumerator()
-		{
-			ILightweightList<Rectangle> @this = this;
+			int geometryClusterIndex = 0;
 
-			for(int i = 0; i < @this.Count; ++i)
+			for(int i = 0; i < formattedData.Runs.Count; ++i)
 			{
-				yield return @this[i];
+				FormattedRun run = formattedData.Runs[i];
+
+				FontFace face = run.Font.ResolveFace();
+
+				float emSize = face.Metrics.Ascent + face.Metrics.Descent;
+
+				float baseline = face.Metrics.Ascent / emSize;
+
+				for(int j = run.Clusters.Start; j <= run.Clusters.End; ++j)
+				{
+					Geometry geometry = geometryCache.Retrieve(j, run.BidiLevel, run.Font, formattedData);
+
+					_OutlineListBuilder.Add(new Outline(geometry, run.EmSize, baseline));
+
+					clusterBidiLevels[geometryClusterIndex] = run.BidiLevel;
+
+					geometryClusterIndex++;
+				}
 			}
+
+			return new OutlineCollection(_OutlineListBuilder);
 		}
 
-		IEnumerator<TextRange> IEnumerable<TextRange>.GetEnumerator()
-		{
-			ILightweightList<TextRange> @this = this;
-
-			for(int i = 0; i < @this.Count; ++i)
-			{
-				yield return @this[i];
-			}
-		}
-
-		private TextRange ToTextRange(ClusterRange clusters)
+		private IndexedRange ToTextRange(ClusterRange clusters)
 		{
 			int textLength = 0;
 
 			for(int i = clusters.Start; i <= clusters.End; ++i)
 			{
-				textLength += mClusters[i].Characters.Length;
+				textLength += _Clusters[i].Characters.Length;
 			}
 
-			return new TextRange(mClusters[clusters.Start].Characters.Start, textLength);
+			return new IndexedRange(_Clusters[clusters.Start].Characters.StartIndex, textLength);
 		}
 	}
 }

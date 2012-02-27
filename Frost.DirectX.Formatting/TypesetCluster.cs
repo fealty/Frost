@@ -4,33 +4,26 @@
 // See LICENSE for more information.
 
 using System;
-using System.Runtime.InteropServices;
 
 using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
-	[StructLayout(LayoutKind.Explicit)] internal struct TypesetCluster : IEquatable<TypesetCluster>
+	internal struct TypesetCluster : IEquatable<TypesetCluster>
 	{
-		public ContentType ContentType;
-
 		public Size Advance;
-
-		public Rectangle Floater;
-
-		public DisplayMode Display;
+		public byte BidiLevel;
 
 		public IndexedRange Characters;
+		public ContentType ContentType;
+		public DisplayMode Display;
+		public Rectangle Floater;
+		public FontHandle Font;
 
 		public GlyphRange Glyphs;
 
-		public float PointSize;
-
 		public int LineNumber;
-
-		public byte BidiLevel;
-
-		public FontHandle Font;
+		public float PointSize;
 
 		public bool Equals(TypesetCluster other)
 		{

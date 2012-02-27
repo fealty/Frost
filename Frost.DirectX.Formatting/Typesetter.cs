@@ -337,8 +337,7 @@ namespace Frost.DirectX.Formatting
 			foreach(Segment segment in _FreeSegments)
 			{
 				Rectangle newRegion = new Rectangle(
-					new Point(segment.Position, lineRegion.Y),
-					new Size(segment.Length, lineRegion.Height));
+					new Point(segment.Position, lineRegion.Y), new Size(segment.Length, lineRegion.Height));
 
 				// reject lines that occupy less space than the line height
 				if(newRegion.Width > _LineHeight)
@@ -633,7 +632,8 @@ namespace Frost.DirectX.Formatting
 						else
 						{
 							// breaking on a penalty enables that cluster
-							newCluster.Advance = new Size(Convert.ToSingle(item.ComputeWidth(ratio, true)), newCluster.Advance.Height);
+							newCluster.Advance = new Size(
+								Convert.ToSingle(item.ComputeWidth(ratio, true)), newCluster.Advance.Height);
 
 							newCluster.Display = DisplayMode.Neutral;
 						}
@@ -650,7 +650,8 @@ namespace Frost.DirectX.Formatting
 						else
 						{
 							// penalties cannot display at the start of the line
-							newCluster.Advance = new Size(Convert.ToSingle(item.ComputeWidth(ratio, false)), newCluster.Advance.Height);
+							newCluster.Advance = new Size(
+								Convert.ToSingle(item.ComputeWidth(ratio, false)), newCluster.Advance.Height);
 
 							newCluster.Display = DisplayMode.Neutral;
 						}
@@ -660,7 +661,8 @@ namespace Frost.DirectX.Formatting
 						if(alignment == Alignment.Stretch)
 						{
 							// spacing length within the line depends on the line ratio
-							newCluster.Advance = new Size(Convert.ToSingle(item.ComputeWidth(ratio, false)), newCluster.Advance.Height);
+							newCluster.Advance = new Size(
+								Convert.ToSingle(item.ComputeWidth(ratio, false)), newCluster.Advance.Height);
 
 							newCluster.Display = DisplayMode.Neutral;
 						}
