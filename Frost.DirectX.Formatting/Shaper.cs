@@ -9,11 +9,18 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 
+using Frost.Collections;
+
 using SharpDX;
 using SharpDX.DirectWrite;
 
 using DxFontMetrics = SharpDX.DirectWrite.FontMetrics;
 using DxFontFeature = SharpDX.DirectWrite.FontFeature;
+using FontFeature = Frost.Formatting.FontFeature;
+using FontMetrics = Frost.Formatting.FontMetrics;
+using FontStretch = Frost.Formatting.FontStretch;
+using FontStyle = Frost.Formatting.FontStyle;
+using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX.Formatting
 {
@@ -24,26 +31,26 @@ namespace Frost.DirectX.Formatting
 	{
 		public static readonly Result InsufficientBufferError;
 
-		private readonly List<DxFontFeature> mFeatureList;
-		private readonly List<FeatureRange> mFeatureRanges;
-		private readonly FontDevice mFontDevice;
-		private readonly ShaperSink mOutputSink;
-		private readonly TextAnalyzer mTextAnalyzer;
+		private readonly List<DxFontFeature> _FeatureList;
+		private readonly List<FeatureRange> _FeatureRanges;
+		private readonly FontDevice _FontDevice;
+		private readonly ShaperSink _OutputSink;
+		private readonly TextAnalyzer _TextAnalyzer;
 
-		private short[] mClusterMap;
+		private short[] _ClusterMap;
 
-		private int[] mFeatureRangeLengths;
+		private int[] _FeatureRangeLengths;
 
-		private DxFontFeature[][] mFeatures;
-		private float[] mGlyphAdvances;
-		private short[] mGlyphIndices;
-		private GlyphOffset[] mGlyphOffsets;
+		private DxFontFeature[][] _Features;
+		private float[] _GlyphAdvances;
+		private short[] _GlyphIndices;
+		private GlyphOffset[] _GlyphOffsets;
 
-		private int mInternalBufferLengths;
-		private bool mIsDisposed;
+		private int _InternalBufferLengths;
+		private bool _IsDisposed;
 
-		private ShapingGlyphProperties[] mShapedGlyphProperties;
-		private ShapingTextProperties[] mShapedTextProperties;
+		private ShapingGlyphProperties[] _ShapedGlyphProperties;
+		private ShapingTextProperties[] _ShapedTextProperties;
 
 		static Shaper()
 		{
@@ -55,36 +62,34 @@ namespace Frost.DirectX.Formatting
 			Contract.Requires(fontDevice != null);
 			Contract.Requires(outputSink != null);
 
-			mFontDevice = fontDevice;
+			_FontDevice = fontDevice;
 
-			mOutputSink = outputSink;
+			_OutputSink = outputSink;
 
-			mFeatures = new DxFontFeature[0][];
+			_Features = new DxFontFeature[0][];
 
-			mFeatureRangeLengths = new int[0];
+			_FeatureRangeLengths = new int[0];
 
-			mFeatureList = new List<DxFontFeature>();
+			_FeatureList = new List<DxFontFeature>();
 
-			mTextAnalyzer = new TextAnalyzer(mFontDevice.Factory);
+			_TextAnalyzer = new TextAnalyzer(_FontDevice.Factory);
 
-			mFeatureRanges = new List<FeatureRange>();
+			_FeatureRanges = new List<FeatureRange>();
 		}
 
 		public void Dispose()
 		{
 			Dispose(true);
-
-			GC.SuppressFinalize(this);
 		}
 
 		public void Shape(AggregatorSink input)
 		{
 			Contract.Requires(input != null);
 
-			Contract.Ensures(mOutputSink.Glyphs.Count > 0);
-			Contract.Ensures(mOutputSink.Clusters.Count > 0);
+			Contract.Ensures(_OutputSink.Glyphs.Count > 0);
+			Contract.Ensures(_OutputSink.Clusters.Count > 0);
 
-			mOutputSink.Reset(input.FullText);
+			_OutputSink.Reset(input.FullText);
 
 			// shape each run produced from the aggregated characters
 			foreach(InternalRun textRun in ProduceRuns(input))
@@ -99,14 +104,14 @@ namespace Frost.DirectX.Formatting
 
 		private void Dispose(bool disposing)
 		{
-			if(!mIsDisposed)
+			if(!_IsDisposed)
 			{
 				if(disposing)
 				{
-					mTextAnalyzer.Dispose();
+					_TextAnalyzer.Dispose();
 				}
 
-				mIsDisposed = true;
+				_IsDisposed = true;
 			}
 		}
 
@@ -114,7 +119,7 @@ namespace Frost.DirectX.Formatting
 		{
 			Contract.Requires(input != null);
 
-			FontHandle fontHandle = mFontDevice.FindFont(run.Family, run.Style, run.Weight, run.Stretch);
+			FontHandle fontHandle = _FontDevice.FindFont(run.Family, run.Style, run.Weight, run.Stretch);
 
 			ExtractTextFeatures(run.Features);
 
@@ -124,13 +129,13 @@ namespace Frost.DirectX.Formatting
 
 			PositionGlyphs(fontHandle, ref run, actualGlyphCount);
 
-			mOutputSink.PreallocateGlyphs(actualGlyphCount);
+			_OutputSink.PreallocateGlyphs(actualGlyphCount);
 
-			int glyphsIndex = mOutputSink.Glyphs.Count;
+			int glyphsIndex = _OutputSink.Glyphs.Count;
 
 			OutputGlyphs(actualGlyphCount);
 
-			mOutputSink.PreallocateClusters(run.Text.Length);
+			_OutputSink.PreallocateClusters(run.Text.Length);
 
 			OutputClusters(glyphsIndex, ref run, fontHandle, input);
 		}
@@ -143,12 +148,12 @@ namespace Frost.DirectX.Formatting
 
 			for(int i = 0; i < textLength; ++i)
 			{
-				if(i + 1 == textLength || mClusterMap[i + 1] != mClusterMap[lastIndex])
+				if(i + 1 == textLength || _ClusterMap[i + 1] != _ClusterMap[lastIndex])
 				{
 					ClusterMapping mapping;
 
-					int glyphIndex = mClusterMap[lastIndex];
-					int glyphsLength = mClusterMap[i + 1] - glyphIndex;
+					int glyphIndex = _ClusterMap[lastIndex];
+					int glyphsLength = _ClusterMap[i + 1] - glyphIndex;
 
 					Debug.Assert(glyphIndex >= 0);
 
@@ -164,7 +169,7 @@ namespace Frost.DirectX.Formatting
 
 					charactersLength = Math.Max(charactersLength, 1);
 
-					mapping.Characters = new TextRange(characterIndex, charactersLength);
+					mapping.Characters = new IndexedRange(characterIndex, charactersLength);
 
 					yield return mapping;
 
@@ -181,12 +186,12 @@ namespace Frost.DirectX.Formatting
 			{
 				ShapedGlyph shapedGlyph;
 
-				shapedGlyph.Advance = mGlyphAdvances[i];
-				shapedGlyph.GlyphProperties = mShapedGlyphProperties[i];
-				shapedGlyph.Index = mGlyphIndices[i];
-				shapedGlyph.Offset = mGlyphOffsets[i];
+				shapedGlyph.Advance = _GlyphAdvances[i];
+				shapedGlyph.GlyphProperties = _ShapedGlyphProperties[i];
+				shapedGlyph.Index = _GlyphIndices[i];
+				shapedGlyph.Offset = _GlyphOffsets[i];
 
-				mOutputSink.Glyphs.Add(shapedGlyph);
+				_OutputSink.Glyphs.Add(shapedGlyph);
 			}
 		}
 
@@ -212,23 +217,23 @@ namespace Frost.DirectX.Formatting
 
 				cluster.Glyphs = new GlyphRange(glyphIndex, glyphsLength);
 
-				int characterIndex = mapping.Characters.Start + run.Range.Start;
+				int characterIndex = mapping.Characters.StartIndex + run.Range.StartIndex;
 				int charactersLength = mapping.Characters.Length;
 
 				Debug.Assert(characterIndex >= 0);
 				Debug.Assert(charactersLength > 0);
 
-				cluster.Characters = new TextRange(characterIndex, charactersLength);
+				cluster.Characters = new IndexedRange(characterIndex, charactersLength);
 
 				CharacterFormat character = input.Characters[characterIndex];
 
 				cluster.BidiLevel = run.BidiLevel;
 				cluster.PointSize = run.PointSize;
 
-				if(character.Inline.IsEmpty)
+				if(character.Inline.Area.Equals(0.0f))
 				{
 					// identify clusters representing formatting characters
-					switch(CharUnicodeInfo.GetUnicodeCategory(mOutputSink.FullText[cluster.Characters.Start]))
+					switch(CharUnicodeInfo.GetUnicodeCategory(_OutputSink.FullText[cluster.Characters.StartIndex]))
 					{
 						case UnicodeCategory.Format:
 							cluster.ContentType = ContentType.Format;
@@ -238,8 +243,8 @@ namespace Frost.DirectX.Formatting
 							break;
 					}
 
-					cluster.Advance.Width = mOutputSink.Glyphs[cluster.Glyphs.Start].Advance;
-					cluster.Advance.Height = ComputeEmHeight(run.PointSize, ref metrics);
+					cluster.Advance = new Size(
+						_OutputSink.Glyphs[cluster.Glyphs.Start].Advance, ComputeEmHeight(run.PointSize, ref metrics));
 				}
 				else
 				{
@@ -247,13 +252,13 @@ namespace Frost.DirectX.Formatting
 					{
 						case Alignment.Stretch:
 							cluster.ContentType = ContentType.Inline;
-							cluster.Advance.Width = character.Inline.Width;
-							cluster.Advance.Height = character.Inline.Height;
+
+							cluster.Advance = new Size(character.Inline.Width, character.Inline.Height);
 							break;
 						default:
 							cluster.ContentType = ContentType.Floater;
-							cluster.Floater.Width = character.Inline.Width;
-							cluster.Floater.Height = character.Inline.Height;
+							cluster.Floater = new Rectangle(
+								cluster.Floater.Location, new Size(character.Inline.Width, character.Inline.Height));
 							break;
 					}
 				}
@@ -263,18 +268,18 @@ namespace Frost.DirectX.Formatting
 				cluster.VAlignment = character.VAlignment;
 				cluster.Breakpoint = character.Breakpoint;
 
-				mOutputSink.Clusters.Add(cluster);
+				_OutputSink.Clusters.Add(cluster);
 			}
 		}
 
-		private static float ComputeEmHeight(double pointSize, ref DxFontMetrics metrics)
+		private static float ComputeEmHeight(float pointSize, ref DxFontMetrics dxMetrics)
 		{
 			Contract.Requires(pointSize >= 0.0 && pointSize <= double.MaxValue);
 
-			double height = FontMetrics.ToPixels(
-				metrics.Ascent + metrics.Descent + metrics.LineGap, pointSize, metrics.DesignUnitsPerEm);
+			FontMetrics metrics = new FontMetrics(
+				dxMetrics.Ascent, dxMetrics.Descent, dxMetrics.DesignUnitsPerEm);
 
-			return Convert.ToSingle(height);
+			return metrics.Measure(dxMetrics.Ascent + dxMetrics.Descent + dxMetrics.LineGap, pointSize);
 		}
 
 		private void PositionGlyphs(FontHandle fontHandle, ref InternalRun run, int actualGlyphCount)
@@ -289,13 +294,13 @@ namespace Frost.DirectX.Formatting
 			try
 			{
 				if(
-					mTextAnalyzer.GetGlyphPlacements(
+					_TextAnalyzer.GetGlyphPlacements(
 						run.Text,
-						mClusterMap,
-						mShapedTextProperties,
+						_ClusterMap,
+						_ShapedTextProperties,
 						run.Text.Length,
-						mGlyphIndices,
-						mShapedGlyphProperties,
+						_GlyphIndices,
+						_ShapedGlyphProperties,
 						actualGlyphCount,
 						fontHandle.ResolveFace(),
 						ComputeEmHeight(run.PointSize, ref metrics),
@@ -303,10 +308,10 @@ namespace Frost.DirectX.Formatting
 						Convert.ToBoolean(run.BidiLevel & 1),
 						run.ScriptAnalysis,
 						run.Culture.Name,
-						mFeatures,
-						mFeatureRangeLengths,
-						mGlyphAdvances,
-						mGlyphOffsets).Failure)
+						_Features,
+						_FeatureRangeLengths,
+						_GlyphAdvances,
+						_GlyphOffsets).Failure)
 				{
 					throw new ShapingException(null);
 				}
@@ -332,7 +337,7 @@ namespace Frost.DirectX.Formatting
 
 				try
 				{
-					result = mTextAnalyzer.GetGlyphs(
+					result = _TextAnalyzer.GetGlyphs(
 						run.Text,
 						run.Text.Length,
 						fontHandle.ResolveFace(),
@@ -341,13 +346,13 @@ namespace Frost.DirectX.Formatting
 						run.ScriptAnalysis,
 						run.Culture.Name,
 						run.NumberSubstitution,
-						mFeatures,
-						mFeatureRangeLengths,
-						mInternalBufferLengths,
-						mClusterMap,
-						mShapedTextProperties,
-						mGlyphIndices,
-						mShapedGlyphProperties,
+						_Features,
+						_FeatureRangeLengths,
+						_InternalBufferLengths,
+						_ClusterMap,
+						_ShapedTextProperties,
+						_GlyphIndices,
+						_ShapedGlyphProperties,
 						out glyphCount);
 
 					if(result.Failure)
@@ -364,7 +369,7 @@ namespace Frost.DirectX.Formatting
 						throw new ShapingException(e);
 					}
 
-					ResizeInternalBuffers(mInternalBufferLengths * 2);
+					ResizeInternalBuffers(_InternalBufferLengths * 2);
 				}
 			} while(result == InsufficientBufferError);
 		}
@@ -377,48 +382,288 @@ namespace Frost.DirectX.Formatting
 
 			textLength = (3 * textLength / 2 + 16);
 
-			if(mInternalBufferLengths < textLength)
+			if(_InternalBufferLengths < textLength)
 			{
-				mClusterMap = new short[textLength];
-				mGlyphIndices = new short[textLength];
+				_ClusterMap = new short[textLength];
+				_GlyphIndices = new short[textLength];
 
-				mShapedTextProperties = new ShapingTextProperties[textLength];
-				mShapedGlyphProperties = new ShapingGlyphProperties[textLength];
+				_ShapedTextProperties = new ShapingTextProperties[textLength];
+				_ShapedGlyphProperties = new ShapingGlyphProperties[textLength];
 
-				mGlyphAdvances = new float[textLength];
-				mGlyphOffsets = new GlyphOffset[textLength];
+				_GlyphAdvances = new float[textLength];
+				_GlyphOffsets = new GlyphOffset[textLength];
 
-				mInternalBufferLengths = textLength;
+				_InternalBufferLengths = textLength;
 			}
 
-			mClusterMap[originalTextLength] = -1;
+			_ClusterMap[originalTextLength] = -1;
 		}
 
 		private void ExtractTextFeatures(List<FeatureRange> features)
 		{
 			Contract.Requires(features != null);
 
-			if(mFeatures.Length != features.Count)
+			if(_Features.Length != features.Count)
 			{
-				mFeatures = new DxFontFeature[features.Count][];
+				_Features = new DxFontFeature[features.Count][];
 
-				mFeatureRangeLengths = new int[features.Count];
+				_FeatureRangeLengths = new int[features.Count];
 			}
 
 			for(int i = 0; i < features.Count; ++i)
 			{
-				mFeatureList.Clear();
+				_FeatureList.Clear();
 
 				if(features[i].Features != null)
 				{
-					foreach(TextFeature feature in features[i].Features)
+					foreach(FontFeature feature in features[i].Features)
 					{
 						DxFontFeature newFeature;
 
-						newFeature.NameTag = (FontFeatureTag)feature.Feature;
+						switch(feature.Tag)
+						{
+							case "afrc":
+								newFeature.NameTag = FontFeatureTag.AlternativeFractions;
+								break;
+							case "calt":
+								newFeature.NameTag = FontFeatureTag.ContextualAlternates;
+								break;
+							case "case":
+								newFeature.NameTag = FontFeatureTag.CaseSensitiveForms;
+								break;
+							case "ccmp":
+								newFeature.NameTag = FontFeatureTag.GlyphCompositionDecomposition;
+								break;
+							case "clig":
+								newFeature.NameTag = FontFeatureTag.ContextualLigatures;
+								break;
+							case "cpsp":
+								newFeature.NameTag = FontFeatureTag.CapitalSpacing;
+								break;
+							case "cswh":
+								newFeature.NameTag = FontFeatureTag.ContextualSwash;
+								break;
+							case "curs":
+								newFeature.NameTag = FontFeatureTag.CursivePositioning;
+								break;
+							case "c2pc":
+								newFeature.NameTag = FontFeatureTag.PetiteCapitalsFromCapitals;
+								break;
+							case "c2sc":
+								newFeature.NameTag = FontFeatureTag.SmallCapitalsFromCapitals;
+								break;
+							case "dlig":
+								newFeature.NameTag = FontFeatureTag.DiscretionaryLigatures;
+								break;
+							case "expt":
+								newFeature.NameTag = FontFeatureTag.ExpertForms;
+								break;
+							case "frac":
+								newFeature.NameTag = FontFeatureTag.Fractions;
+								break;
+							case "fwid":
+								newFeature.NameTag = FontFeatureTag.FullWidth;
+								break;
+							case "half":
+								newFeature.NameTag = FontFeatureTag.HalfForms;
+								break;
+							case "haln":
+								newFeature.NameTag = FontFeatureTag.HalantForms;
+								break;
+							case "halt":
+								newFeature.NameTag = FontFeatureTag.AlternateHalfWidth;
+								break;
+							case "hist":
+								newFeature.NameTag = FontFeatureTag.HistoricalForms;
+								break;
+							case "hkna":
+								newFeature.NameTag = FontFeatureTag.HorizontalKanaAlternates;
+								break;
+							case "hlig":
+								newFeature.NameTag = FontFeatureTag.HistoricalLigatures;
+								break;
+							case "hojo":
+								newFeature.NameTag = FontFeatureTag.HojoKanjiForms;
+								break;
+							case "hwid":
+								newFeature.NameTag = FontFeatureTag.HalfWidth;
+								break;
+							case "jp78":
+								newFeature.NameTag = FontFeatureTag.Jis78Forms;
+								break;
+							case "jp83":
+								newFeature.NameTag = FontFeatureTag.Jis83Forms;
+								break;
+							case "jp90":
+								newFeature.NameTag = FontFeatureTag.Jis90Forms;
+								break;
+							case "jp04":
+								newFeature.NameTag = FontFeatureTag.Jis04Forms;
+								break;
+							case "kern":
+								newFeature.NameTag = FontFeatureTag.Kerning;
+								break;
+							case "liga":
+								newFeature.NameTag = FontFeatureTag.StandardLigatures;
+								break;
+							case "lnum":
+								newFeature.NameTag = FontFeatureTag.LiningFigures;
+								break;
+							case "locl":
+								newFeature.NameTag = FontFeatureTag.LocalizedForms;
+								break;
+							case "mark":
+								newFeature.NameTag = FontFeatureTag.MarkPositioning;
+								break;
+							case "mgrk":
+								newFeature.NameTag = FontFeatureTag.MathematicalGreek;
+								break;
+							case "mkmk":
+								newFeature.NameTag = FontFeatureTag.MarkToMarkPositioning;
+								break;
+							case "nalt":
+								newFeature.NameTag = FontFeatureTag.AlternateAnnotationForms;
+								break;
+							case "nlck":
+								newFeature.NameTag = FontFeatureTag.NlcKanjiForms;
+								break;
+							case "onum":
+								newFeature.NameTag = FontFeatureTag.OldStyleFigures;
+								break;
+							case "ordn":
+								newFeature.NameTag = FontFeatureTag.Ordinals;
+								break;
+							case "palt":
+								newFeature.NameTag = FontFeatureTag.ProportionalAlternateWidth;
+								break;
+							case "pcap":
+								newFeature.NameTag = FontFeatureTag.PetiteCapitals;
+								break;
+							case "pnum":
+								newFeature.NameTag = FontFeatureTag.ProportionalFigures;
+								break;
+							case "pwid":
+								newFeature.NameTag = FontFeatureTag.ProportionalWidths;
+								break;
+							case "qwid":
+								newFeature.NameTag = FontFeatureTag.QuarterWidths;
+								break;
+							case "rlig":
+								newFeature.NameTag = FontFeatureTag.RequiredLigatures;
+								break;
+							case "ruby":
+								newFeature.NameTag = FontFeatureTag.RubyNotationForms;
+								break;
+							case "salt":
+								newFeature.NameTag = FontFeatureTag.StylisticAlternates;
+								break;
+							case "sinf":
+								newFeature.NameTag = FontFeatureTag.ScientificInferiors;
+								break;
+							case "smcp":
+								newFeature.NameTag = FontFeatureTag.SmallCapitals;
+								break;
+							case "smpl":
+								newFeature.NameTag = FontFeatureTag.SimplifiedForms;
+								break;
+							case "ss01":
+								newFeature.NameTag = FontFeatureTag.StylisticSet1;
+								break;
+							case "ss02":
+								newFeature.NameTag = FontFeatureTag.StylisticSet2;
+								break;
+							case "ss03":
+								newFeature.NameTag = FontFeatureTag.StylisticSet3;
+								break;
+							case "ss04":
+								newFeature.NameTag = FontFeatureTag.StylisticSet4;
+								break;
+							case "ss05":
+								newFeature.NameTag = FontFeatureTag.StylisticSet5;
+								break;
+							case "ss06":
+								newFeature.NameTag = FontFeatureTag.StylisticSet6;
+								break;
+							case "ss07":
+								newFeature.NameTag = FontFeatureTag.StylisticSet7;
+								break;
+							case "ss08":
+								newFeature.NameTag = FontFeatureTag.StylisticSet8;
+								break;
+							case "ss09":
+								newFeature.NameTag = FontFeatureTag.StylisticSet9;
+								break;
+							case "ss10":
+								newFeature.NameTag = FontFeatureTag.StylisticSet10;
+								break;
+							case "ss11":
+								newFeature.NameTag = FontFeatureTag.StylisticSet11;
+								break;
+							case "ss12":
+								newFeature.NameTag = FontFeatureTag.StylisticSet12;
+								break;
+							case "ss13":
+								newFeature.NameTag = FontFeatureTag.StylisticSet13;
+								break;
+							case "ss14":
+								newFeature.NameTag = FontFeatureTag.StylisticSet14;
+								break;
+							case "ss15":
+								newFeature.NameTag = FontFeatureTag.StylisticSet15;
+								break;
+							case "ss16":
+								newFeature.NameTag = FontFeatureTag.StylisticSet16;
+								break;
+							case "ss17":
+								newFeature.NameTag = FontFeatureTag.StylisticSet17;
+								break;
+							case "ss18":
+								newFeature.NameTag = FontFeatureTag.StylisticSet18;
+								break;
+							case "ss19":
+								newFeature.NameTag = FontFeatureTag.StylisticSet19;
+								break;
+							case "ss20":
+								newFeature.NameTag = FontFeatureTag.StylisticSet20;
+								break;
+							case "subs":
+								newFeature.NameTag = FontFeatureTag.Subscript;
+								break;
+							case "sups":
+								newFeature.NameTag = FontFeatureTag.Superscript;
+								break;
+							case "swsh":
+								newFeature.NameTag = FontFeatureTag.Swash;
+								break;
+							case "titl":
+								newFeature.NameTag = FontFeatureTag.Titling;
+								break;
+							case "tnam":
+								newFeature.NameTag = FontFeatureTag.TraditionalNameForms;
+								break;
+							case "tnum":
+								newFeature.NameTag = FontFeatureTag.TabularFigures;
+								break;
+							case "trad":
+								newFeature.NameTag = FontFeatureTag.TraditionalForms;
+								break;
+							case "twid":
+								newFeature.NameTag = FontFeatureTag.ThirdWidths;
+								break;
+							case "unic":
+								newFeature.NameTag = FontFeatureTag.Unicase;
+								break;
+							case "zero":
+								newFeature.NameTag = FontFeatureTag.SlashedZero;
+								break;
+							default:
+								throw new InvalidOperationException(
+									string.Format("Unsupported font tag: {0} - {1}", feature.Tag, feature.Parameter));
+						}
+
 						newFeature.Parameter = feature.Parameter;
 
-						mFeatureList.Add(newFeature);
+						_FeatureList.Add(newFeature);
 					}
 				}
 				else
@@ -428,12 +673,12 @@ namespace Frost.DirectX.Formatting
 					newFeature.NameTag = FontFeatureTag.Kerning;
 					newFeature.Parameter = 1;
 
-					mFeatureList.Add(newFeature);
+					_FeatureList.Add(newFeature);
 				}
 
-				mFeatures[i] = mFeatureList.ToArray();
+				_Features[i] = _FeatureList.ToArray();
 
-				mFeatureRangeLengths[i] = features[i].Range.Length;
+				_FeatureRangeLengths[i] = features[i].Range.Length;
 			}
 		}
 
@@ -443,7 +688,7 @@ namespace Frost.DirectX.Formatting
 
 			InternalRun activeRun;
 
-			activeRun.Range = TextRange.Empty;
+			activeRun.Range = IndexedRange.Empty;
 			activeRun.Text = null;
 			activeRun.Family = input.Characters[0].Family;
 			activeRun.PointSize = input.Characters[0].PointSize;
@@ -454,12 +699,9 @@ namespace Frost.DirectX.Formatting
 			activeRun.BidiLevel = input.Characters[0].BidiLevel;
 			activeRun.Culture = input.Characters[0].Culture;
 			activeRun.NumberSubstitution = input.Characters[0].NumberSubstitution;
-			activeRun.Features = mFeatureRanges;
+			activeRun.Features = _FeatureRanges;
 
-			FeatureRange activeFeatures;
-
-			activeFeatures.Range = TextRange.Empty;
-			activeFeatures.Features = input.Characters[0].Features;
+			FeatureRange activeFeatures = new FeatureRange(IndexedRange.Empty, input.Characters[0].Features);
 
 			for(int i = 0; i < input.FullText.Length; ++i)
 			{
@@ -476,39 +718,38 @@ namespace Frost.DirectX.Formatting
 				currentRun.BidiLevel = input.Characters[i].BidiLevel;
 				currentRun.Culture = input.Characters[i].Culture;
 				currentRun.NumberSubstitution = input.Characters[i].NumberSubstitution;
-				currentRun.Features = mFeatureRanges;
+				currentRun.Features = _FeatureRanges;
 
-				FeatureRange currentFeatures;
-
-				currentFeatures.Range = activeFeatures.Range;
-				currentFeatures.Features = input.Characters[i].Features;
+				FeatureRange currentFeatures = new FeatureRange(
+					activeFeatures.Range, input.Characters[i].Features);
 
 				if(currentRun == activeRun)
 				{
-					TextRange range = activeRun.Range;
+					IndexedRange range = activeRun.Range;
 
-					activeRun.Range = new TextRange(range.Start, range.Length + 1);
+					activeRun.Range = new IndexedRange(range.StartIndex, range.Length + 1);
 
 					if(currentFeatures == activeFeatures)
 					{
 						range = activeFeatures.Range;
 
-						activeFeatures.Range = new TextRange(range.Start, range.Length + 1);
+						activeFeatures = new FeatureRange(
+							new IndexedRange(range.StartIndex, range.Length + 1), activeFeatures.Features);
 					}
 					else
 					{
-						mFeatureRanges.Add(activeFeatures);
+						_FeatureRanges.Add(activeFeatures);
 
 						activeFeatures = currentFeatures;
 
-						activeFeatures.Range = new TextRange(i, 1);
+						activeFeatures = new FeatureRange(new IndexedRange(i, 1), activeFeatures.Features);
 					}
 				}
 				else
 				{
-					mFeatureRanges.Add(activeFeatures);
+					_FeatureRanges.Add(activeFeatures);
 
-					activeRun.Text = input.FullText.Substring(activeRun.Range.Start, activeRun.Range.Length);
+					activeRun.Text = input.FullText.Substring(activeRun.Range.StartIndex, activeRun.Range.Length);
 
 					yield return activeRun;
 
@@ -517,27 +758,28 @@ namespace Frost.DirectX.Formatting
 					activeRun = currentRun;
 					activeFeatures = currentFeatures;
 
-					activeRun.Range = new TextRange(i, 1);
-					activeFeatures.Range = new TextRange(i, 1);
+					activeRun.Range = new IndexedRange(i, 1);
 
-					mFeatureRanges.Clear();
+					activeFeatures = new FeatureRange(new IndexedRange(i, 1), activeFeatures.Features);
+
+					_FeatureRanges.Clear();
 				}
 			}
 
-			mFeatureRanges.Add(activeFeatures);
+			_FeatureRanges.Add(activeFeatures);
 
-			activeRun.Text = input.FullText.Substring(activeRun.Range.Start, activeRun.Range.Length);
+			activeRun.Text = input.FullText.Substring(activeRun.Range.StartIndex, activeRun.Range.Length);
 
 			yield return activeRun;
 
 			activeRun.Text = null;
 
-			mFeatureRanges.Clear();
+			_FeatureRanges.Clear();
 		}
 
 		private struct ClusterMapping : IEquatable<ClusterMapping>
 		{
-			public TextRange Characters;
+			public IndexedRange Characters;
 			public GlyphRange Glyphs;
 
 			public bool Equals(ClusterMapping other)
@@ -581,8 +823,8 @@ namespace Frost.DirectX.Formatting
 			public string Family;
 			public List<FeatureRange> Features;
 			public NumberSubstitution NumberSubstitution;
-			public double PointSize;
-			public TextRange Range;
+			public float PointSize;
+			public IndexedRange Range;
 			public ScriptAnalysis ScriptAnalysis;
 			public FontStretch Stretch;
 			public FontStyle Style;
@@ -638,11 +880,6 @@ namespace Frost.DirectX.Formatting
 			{
 				return !left.Equals(right);
 			}
-		}
-
-		~Shaper()
-		{
-			Dispose(false);
 		}
 	}
 }
