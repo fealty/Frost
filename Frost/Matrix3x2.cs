@@ -154,9 +154,9 @@ namespace Frost
 			Contract.Requires(Check.IsFinite(width));
 			Contract.Requires(Check.IsFinite(height));
 
-			result = new Matrix3X2(1.0f, 0.0f, 0.0f, 1.0f, width, height);
+			Matrix3X2 translation = new Matrix3X2(1.0f, 0.0f, 0.0f, 1.0f, width, height);
 
-			result.Multiply(ref this, out result);
+			translation.Multiply(ref this, out result);
 		}
 
 		public void Skew(float angleX, float angleY, out Matrix3X2 result)
@@ -167,7 +167,7 @@ namespace Frost
 			double radiansX = (Math.PI * angleX) / 180.0;
 			double radiansY = (Math.PI * angleY) / 180.0;
 
-			result = new Matrix3X2(
+			Matrix3X2 skew = new Matrix3X2(
 				1.0f,
 				Convert.ToSingle(Math.Tan(radiansX)),
 				Convert.ToSingle(Math.Tan(radiansY)),
@@ -175,7 +175,7 @@ namespace Frost
 				0.0f,
 				0.0f);
 
-			result.Multiply(ref this, out result);
+			skew.Multiply(ref this, out result);
 		}
 
 		public void Scale(float width, float height, out Matrix3X2 result)
@@ -183,9 +183,9 @@ namespace Frost
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 
-			result = new Matrix3X2(width, 0.0f, 0.0f, height, 0.0f, 0.0f);
+			Matrix3X2 scaling = new Matrix3X2(width, 0.0f, 0.0f, height, 0.0f, 0.0f);
 
-			result.Multiply(ref this, out result);
+			scaling.Multiply(ref this, out result);
 		}
 
 		public void Scale(float width, float height, float originX, float originY, out Matrix3X2 result)
@@ -198,9 +198,9 @@ namespace Frost
 			float translationX = originX - (width * originX);
 			float translationY = originY - (height * originY);
 
-			result = new Matrix3X2(width, 0.0f, 0.0f, height, translationX, translationY);
+			Matrix3X2 scaling = new Matrix3X2(width, 0.0f, 0.0f, height, translationX, translationY);
 
-			result.Multiply(ref this, out result);
+			scaling.Multiply(ref this, out result);
 		}
 
 		public void Rotate(float angle, out Matrix3X2 result)
@@ -212,9 +212,9 @@ namespace Frost
 			float rcos = Convert.ToSingle(Math.Cos(radians));
 			float rsin = Convert.ToSingle(Math.Sin(radians));
 
-			result = new Matrix3X2(rcos, rsin, -rsin, rcos, 0.0f, 0.0f);
+			Matrix3X2 rotation = new Matrix3X2(rcos, rsin, -rsin, rcos, 0.0f, 0.0f);
 
-			result.Multiply(ref this, out result);
+			rotation.Multiply(ref this, out result);
 		}
 
 		public void Rotate(float angle, float originX, float originY, out Matrix3X2 result)
@@ -233,11 +233,11 @@ namespace Frost
 
 			Identity.Rotate(angle, out rotation);
 
-			result = nTranslate;
+			Matrix3X2 temporary = nTranslate;
 
-			result.Multiply(ref rotation, out result);
-			result.Multiply(ref pTranslate, out result);
-			result.Multiply(ref this, out result);
+			temporary.Multiply(ref rotation, out temporary);
+			temporary.Multiply(ref pTranslate, out temporary);
+			temporary.Multiply(ref this, out result);
 		}
 
 		public void Multiply(ref Matrix3X2 right, out Matrix3X2 result)
