@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 
 using DxBreakCondition = SharpDX.DirectWrite.BreakCondition;
 using DxLineBreakpoint = SharpDX.DirectWrite.LineBreakpoint;
@@ -10,10 +15,9 @@ namespace Frost.DirectX.Formatting
 		public readonly BreakCondition BreakConditionAfter;
 		public readonly BreakCondition BreakConditionBefore;
 
-		private readonly BreakType mBreakType;
+		private readonly BreakType _BreakType;
 
-		public LineBreakpoint(DxLineBreakpoint breakpoint)
-			: this()
+		public LineBreakpoint(DxLineBreakpoint breakpoint) : this()
 		{
 			switch(breakpoint.BreakConditionBefore)
 			{
@@ -49,33 +53,32 @@ namespace Frost.DirectX.Formatting
 
 			if(breakpoint.IsSoftHyphen)
 			{
-				mBreakType = BreakType.SoftHyphen;
+				_BreakType = BreakType.SoftHyphen;
 			}
 			else if(breakpoint.IsWhitespace)
 			{
-				mBreakType = BreakType.Whitespace;
+				_BreakType = BreakType.Whitespace;
 			}
 			else
 			{
-				mBreakType = BreakType.None;
+				_BreakType = BreakType.None;
 			}
 		}
 
 		public bool IsWhitespace
 		{
-			get { return mBreakType == BreakType.Whitespace; }
+			get { return _BreakType == BreakType.Whitespace; }
 		}
 
 		public bool IsSoftHyphen
 		{
-			get { return mBreakType == BreakType.SoftHyphen; }
+			get { return _BreakType == BreakType.SoftHyphen; }
 		}
 
 		public bool Equals(LineBreakpoint other)
 		{
 			return other.BreakConditionAfter == BreakConditionAfter &&
-			       other.BreakConditionBefore == BreakConditionBefore &&
-			       Equals(other.mBreakType, mBreakType);
+			       other.BreakConditionBefore == BreakConditionBefore && Equals(other._BreakType, _BreakType);
 		}
 
 		public override bool Equals(object obj)
@@ -94,7 +97,7 @@ namespace Frost.DirectX.Formatting
 			{
 				int result = BreakConditionAfter.GetHashCode();
 				result = (result * 397) ^ BreakConditionBefore.GetHashCode();
-				result = (result * 397) ^ mBreakType.GetHashCode();
+				result = (result * 397) ^ _BreakType.GetHashCode();
 				return result;
 			}
 		}
