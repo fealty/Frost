@@ -72,7 +72,7 @@ namespace Frost.Collections
 
 		public bool IsWithin(IndexedRange range)
 		{
-			return range.StartIndex >= StartIndex && range.LastIndex <= LastIndex;
+			return StartIndex >= range.StartIndex && LastIndex <= range.LastIndex;
 		}
 
 		public int Length
