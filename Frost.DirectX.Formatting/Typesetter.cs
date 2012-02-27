@@ -1,9 +1,14 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-using Cabbage.Formatting;
+using Frost.Formatting;
 
 using DxFontMetrics = SharpDX.DirectWrite.FontMetrics;
 
@@ -55,8 +60,7 @@ namespace Frost.DirectX.Formatting
 			return GetLineRegion(lineIndex).Width;
 		}
 
-		public void Break<T>(
-			ShaperSink input, Paragraph paragraph, Rectangle region, T boxes)
+		public void Break<T>(ShaperSink input, Paragraph paragraph, Rectangle region, T boxes)
 			where T : class, IEnumerable<Rectangle>
 		{
 			Contract.Requires(input != null);
@@ -86,17 +90,11 @@ namespace Frost.DirectX.Formatting
 			mOutputSink.LineHeight = mLineHeight;
 
 			// determine the amount of indentation in pixels
-			double indentation = Math.Min(
-				mLayoutRegion.Width / 2.0, paragraph.Indentation * mLineHeight);
+			double indentation = Math.Min(mLayoutRegion.Width / 2.0, paragraph.Indentation * mLineHeight);
 
 			mOutputSink.Indentation = indentation;
 
-			AnalyzeItems(
-				input,
-				paragraph.Alignment,
-				paragraph.Spacing,
-				paragraph.Tracking,
-				indentation);
+			AnalyzeItems(input, paragraph.Alignment, paragraph.Spacing, paragraph.Tracking, indentation);
 
 			DetermineBreakingPoints(boxes);
 
@@ -117,15 +115,13 @@ namespace Frost.DirectX.Formatting
 				{
 					Rectangle floaterRegion = Rectangle.Empty;
 
-					double occupiedHeight =
-						Math.Ceiling(cluster.Floater.Height / (mLineHeight + mLeading)) *
-						(mLineHeight + mLeading);
+					double occupiedHeight = Math.Ceiling(cluster.Floater.Height / (mLineHeight + mLeading)) *
+					                        (mLineHeight + mLeading);
 
 					switch(cluster.VAlignment)
 					{
 						case Alignment.Stretch:
-							floaterRegion.Width = cluster.Floater.Width +
-							                      (occupiedHeight - cluster.Floater.Height);
+							floaterRegion.Width = cluster.Floater.Width + (occupiedHeight - cluster.Floater.Height);
 							floaterRegion.Height = occupiedHeight;
 							floaterRegion.Y = mLayoutRegion.Top + mLineOffset;
 							break;
@@ -137,14 +133,13 @@ namespace Frost.DirectX.Formatting
 						case Alignment.Center:
 							floaterRegion.Width = cluster.Floater.Width;
 							floaterRegion.Height = cluster.Floater.Height;
-							floaterRegion.Y = ((mLayoutRegion.Top + mLineOffset) +
-							                   (occupiedHeight / 2.0)) - (floaterRegion.Height / 2.0);
+							floaterRegion.Y = ((mLayoutRegion.Top + mLineOffset) + (occupiedHeight / 2.0)) -
+							                  (floaterRegion.Height / 2.0);
 							break;
 						case Alignment.Leading:
 							floaterRegion.Width = cluster.Floater.Width;
 							floaterRegion.Height = cluster.Floater.Height;
-							floaterRegion.Y = (mLayoutRegion.Top + mLineOffset + occupiedHeight) -
-							                  floaterRegion.Height;
+							floaterRegion.Y = (mLayoutRegion.Top + mLineOffset + occupiedHeight) - floaterRegion.Height;
 							break;
 					}
 
@@ -208,13 +203,9 @@ namespace Frost.DirectX.Formatting
 					double units = metrics.DesignUnitsPerEm;
 
 					// find the maximum line gap in the paragraph
-					gap = Math.Max(
-						gap,
-						FontMetrics.ToPixels(
-							metrics.LineGap, cluster.PointSize, units));
+					gap = Math.Max(gap, FontMetrics.ToPixels(metrics.LineGap, cluster.PointSize, units));
 
-					double height = FontMetrics.ToPixels(
-						metrics.Descent, cluster.PointSize, units);
+					double height = FontMetrics.ToPixels(metrics.Descent, cluster.PointSize, units);
 
 					// find the maximum line height in the paragraph
 					mLineHeight = Math.Max(mLineHeight, cluster.Advance.Height + height);
@@ -310,14 +301,10 @@ namespace Frost.DirectX.Formatting
 
 		private void IdentifyFreeSegments(Rectangle lineRegion)
 		{
-			Contract.Requires(
-				lineRegion.X >= double.MinValue && lineRegion.X <= double.MaxValue);
-			Contract.Requires(
-				lineRegion.Y >= double.MinValue && lineRegion.Y <= double.MaxValue);
-			Contract.Requires(
-				lineRegion.Width >= 0.0 && lineRegion.Width <= double.MaxValue);
-			Contract.Requires(
-				lineRegion.Height >= 0.0 && lineRegion.Height <= double.MaxValue);
+			Contract.Requires(lineRegion.X >= double.MinValue && lineRegion.X <= double.MaxValue);
+			Contract.Requires(lineRegion.Y >= double.MinValue && lineRegion.Y <= double.MaxValue);
+			Contract.Requires(lineRegion.Width >= 0.0 && lineRegion.Width <= double.MaxValue);
+			Contract.Requires(lineRegion.Height >= 0.0 && lineRegion.Height <= double.MaxValue);
 
 			mFreeSegments.Clear();
 
@@ -374,29 +361,23 @@ namespace Frost.DirectX.Formatting
 			mComputedLines.Clear();
 		}
 
-		private void AddObstructions<T>(T boxes)
-			where T : class, IEnumerable<Rectangle>
+		private void AddObstructions<T>(T boxes) where T : class, IEnumerable<Rectangle>
 		{
 			if(boxes != null)
 			{
 				foreach(Rectangle box in boxes)
 				{
-					Contract.Assert(
-						box.X >= double.MinValue && box.X <= double.MaxValue);
-					Contract.Assert(
-						box.Y >= double.MinValue && box.Y <= double.MaxValue);
-					Contract.Assert(
-						box.Width >= 0.0 && box.Width <= double.MaxValue);
-					Contract.Assert(
-						box.Height >= 0.0 && box.Height <= double.MaxValue);
+					Contract.Assert(box.X >= double.MinValue && box.X <= double.MaxValue);
+					Contract.Assert(box.Y >= double.MinValue && box.Y <= double.MaxValue);
+					Contract.Assert(box.Width >= 0.0 && box.Width <= double.MaxValue);
+					Contract.Assert(box.Height >= 0.0 && box.Height <= double.MaxValue);
 
 					mObstructions.Add(box);
 				}
 			}
 		}
 
-		private void DetermineBreakingPoints<T>(T boxes)
-			where T : class, IEnumerable<Rectangle>
+		private void DetermineBreakingPoints<T>(T boxes) where T : class, IEnumerable<Rectangle>
 		{
 			AddObstructions(boxes);
 
@@ -432,10 +413,7 @@ namespace Frost.DirectX.Formatting
 		}
 
 		private static bool IsBrokenBefore(
-			int index,
-			List<ShapedCluster> clusters,
-			ref bool isForced,
-			bool isAlone = true)
+			int index, List<ShapedCluster> clusters, ref bool isForced, bool isAlone = true)
 		{
 			Contract.Requires(index >= 0);
 			Contract.Requires(clusters != null);
@@ -451,12 +429,10 @@ namespace Frost.DirectX.Formatting
 						return true;
 					case BreakCondition.CanBreak:
 						// check the neighboring break condition
-						return !isAlone ||
-						       IsBrokenAfter(index - 1, clusters, ref isForced, false);
+						return !isAlone || IsBrokenAfter(index - 1, clusters, ref isForced, false);
 					case BreakCondition.Neutral:
 						// check the neighboring break condition
-						return !isAlone ||
-						       IsBrokenAfter(index + 1, clusters, ref isForced, false);
+						return !isAlone || IsBrokenAfter(index + 1, clusters, ref isForced, false);
 				}
 			}
 
@@ -464,10 +440,7 @@ namespace Frost.DirectX.Formatting
 		}
 
 		private static bool IsBrokenAfter(
-			int index,
-			List<ShapedCluster> clusters,
-			ref bool isForced,
-			bool isAlone = true)
+			int index, List<ShapedCluster> clusters, ref bool isForced, bool isAlone = true)
 		{
 			Contract.Requires(index >= 0);
 			Contract.Requires(clusters != null);
@@ -483,12 +456,10 @@ namespace Frost.DirectX.Formatting
 						return true;
 					case BreakCondition.CanBreak:
 						// check the neighboring break condition
-						return !isAlone ||
-						       IsBrokenBefore(index + 1, clusters, ref isForced, false);
+						return !isAlone || IsBrokenBefore(index + 1, clusters, ref isForced, false);
 					case BreakCondition.Neutral:
 						// check the neighboring break condition
-						return !isAlone ||
-						       IsBrokenBefore(index + 1, clusters, ref isForced, false);
+						return !isAlone || IsBrokenBefore(index + 1, clusters, ref isForced, false);
 				}
 			}
 
@@ -545,8 +516,7 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
-		private void AddWhitespace(
-			int index, double length, ShaperSink input, bool isRagged)
+		private void AddWhitespace(int index, double length, ShaperSink input, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
 			Contract.Requires(length >= 0.0 && length <= double.MaxValue);
@@ -573,8 +543,7 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
-		private void AddCluster(
-			int index, double advance, ShaperSink input, bool isRagged)
+		private void AddCluster(int index, double advance, ShaperSink input, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
 			Contract.Requires(advance >= 0.0 && advance <= double.MaxValue);
@@ -772,11 +741,7 @@ namespace Frost.DirectX.Formatting
 		}
 
 		private void AnalyzeItems(
-			ShaperSink input,
-			Alignment alignment,
-			double spacingEm,
-			double trackingEm,
-			double indentation)
+			ShaperSink input, Alignment alignment, double spacingEm, double trackingEm, double indentation)
 		{
 			Contract.Requires(input != null);
 			Contract.Requires(spacingEm >= 0.0 && spacingEm <= double.MaxValue);
@@ -846,8 +811,7 @@ namespace Frost.DirectX.Formatting
 				}
 				else
 				{
-					if(cluster.ContentType != ContentType.Format
-					   && cluster.ContentType != ContentType.Floater)
+					if(cluster.ContentType != ContentType.Format && cluster.ContentType != ContentType.Floater)
 					{
 						double advance = ComputeAdvance(ref cluster);
 
@@ -911,8 +875,7 @@ namespace Frost.DirectX.Formatting
 
 			public bool Equals(Segment other)
 			{
-				return other.Length.Equals(Length) &&
-				       other.Position.Equals(Position);
+				return other.Length.Equals(Length) && other.Position.Equals(Position);
 			}
 
 			public bool Contains(double position)

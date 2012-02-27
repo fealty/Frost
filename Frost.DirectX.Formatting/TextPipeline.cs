@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
@@ -63,8 +68,7 @@ namespace Frost.DirectX.Formatting
 				mAggregator.SetCulture(run.Range, run.Culture);
 				mAggregator.SetFamily(run.Range, run.Family);
 				mAggregator.SetFeatures(run.Range, run.Features);
-				mAggregator.SetInline(
-					run.Range, run.Inline, run.HAlignment, run.VAlignment);
+				mAggregator.SetInline(run.Range, run.Inline, run.HAlignment, run.VAlignment);
 				mAggregator.SetPointSize(run.Range, run.PointSize);
 				mAggregator.SetStretch(run.Range, run.Stretch);
 				mAggregator.SetStyle(run.Range, run.Style);
@@ -77,8 +81,7 @@ namespace Frost.DirectX.Formatting
 
 			mFormatter.Format(mTypesetterSink);
 
-			return new ParagraphMetrics(
-				paragraph, mFormatterSink, mGeometryCache);
+			return new ParagraphMetrics(paragraph, mFormatterSink, mGeometryCache);
 		}
 
 		private void Dispose(bool disposing)

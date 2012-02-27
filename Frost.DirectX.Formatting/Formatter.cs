@@ -1,6 +1,13 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+
+using Frost.Formatting;
 
 using DxFontMetrics = SharpDX.DirectWrite.FontMetrics;
 
@@ -8,34 +15,34 @@ namespace Frost.DirectX.Formatting
 {
 	internal sealed class Formatter
 	{
-		private readonly FormatterSink mOutputSink;
+		private readonly FormatterSink _OutputSink;
 
-		private FormattedCluster[] mClusters;
+		private FormattedCluster[] _Clusters;
 
 		public Formatter(FormatterSink outputSink)
 		{
 			Contract.Requires(outputSink != null);
 
-			mOutputSink = outputSink;
+			_OutputSink = outputSink;
 		}
 
 		public void Format(TypesetterSink input)
 		{
 			Contract.Requires(input != null);
 
-			Contract.Ensures(mOutputSink.Clusters.Count == input.Clusters.Count);
-			Contract.Ensures(mOutputSink.Glyphs.Count == input.Glyphs.Count);
+			Contract.Ensures(_OutputSink.Clusters.Count == input.Clusters.Count);
+			Contract.Ensures(_OutputSink.Glyphs.Count == input.Glyphs.Count);
 
-			mClusters = new FormattedCluster[input.Clusters.Count];
+			_Clusters = new FormattedCluster[input.Clusters.Count];
 
-			mOutputSink.Reset(input.FullText);
+			_OutputSink.Reset(input.FullText);
 
-			mOutputSink.LayoutRegion = input.LayoutRegion;
-			mOutputSink.LineHeight = input.LineHeight;
-			mOutputSink.Leading = input.Leading;
+			_OutputSink.LayoutRegion = input.LayoutRegion;
+			_OutputSink.LineHeight = input.LineHeight;
+			_OutputSink.Leading = input.Leading;
 
-			mOutputSink.PreallocateGlyphs(input.Glyphs.Count);
-			mOutputSink.PreallocateClusters(input.Clusters.Count);
+			_OutputSink.PreallocateGlyphs(input.Glyphs.Count);
+			_OutputSink.PreallocateClusters(input.Clusters.Count);
 
 			OutputGlyphs(input);
 
@@ -44,8 +51,7 @@ namespace Frost.DirectX.Formatting
 			DetermineBaselines();
 		}
 
-		private static IEnumerable<FormattedRun> ProduceFinalRuns(
-			TypesetterSink input)
+		private static IEnumerable<FormattedRun> ProduceFinalRuns(TypesetterSink input)
 		{
 			Contract.Requires(input != null);
 
@@ -103,8 +109,7 @@ namespace Frost.DirectX.Formatting
 			yield return activeRun;
 		}
 
-		private static IEnumerable<FormattedRun> ProduceBidiRuns(
-			TypesetterSink input)
+		private static IEnumerable<FormattedRun> ProduceBidiRuns(TypesetterSink input)
 		{
 			Contract.Requires(input != null);
 
@@ -157,7 +162,7 @@ namespace Frost.DirectX.Formatting
 
 			int lineBidiLevel = -1;
 
-			double penPosition = 0.0;
+			float penPosition = 0.0f;
 
 			foreach(FormattedRun run in ProduceBidiRuns(input))
 			{
@@ -184,36 +189,31 @@ namespace Frost.DirectX.Formatting
 							// indent only the first line
 							penPosition = lineBidiLevel % 2 == 0
 							              	? input.Indentation
-							              	: input.Lines[lineNumber].Right -
-							              	  input.Indentation;
+							              	: input.Lines[lineNumber].Right - input.Indentation;
 						}
 						else
 						{
-							penPosition = lineBidiLevel % 2 == 0
-							              	? 0.0
-							              	: input.Lines[lineNumber].Right;
+							penPosition = lineBidiLevel % 2 == 0 ? 0.0f : input.Lines[lineNumber].Right;
 						}
 					}
 					else
 					{
-						double lineWidth = input.Lines[lineNumber].Width;
+						float lineWidth = input.Lines[lineNumber].Width;
 
 						lineWidth -= input.LineLengths[lineNumber];
 
-						lineWidth /= 2.0;
+						lineWidth /= 2.0f;
 
-						penPosition = lineBidiLevel % 2 == 0
-						              	? lineWidth
-						              	: input.Lines[lineNumber].Right - lineWidth;
+						penPosition = lineBidiLevel % 2 == 0 ? lineWidth : input.Lines[lineNumber].Right - lineWidth;
 					}
 				}
 
 				ProduceClusters(run, lineBidiLevel, ref penPosition, input);
 			}
 
-			mOutputSink.Clusters.AddRange(mClusters);
+			_OutputSink.Clusters.AddRange(_Clusters);
 
-			mOutputSink.Runs.AddRange(ProduceFinalRuns(input));
+			_OutputSink.Runs.AddRange(ProduceFinalRuns(input));
 		}
 
 		private void OutputGlyphs(TypesetterSink input)
@@ -228,15 +228,12 @@ namespace Frost.DirectX.Formatting
 				newGlyph.Index = glyph.Index;
 				newGlyph.Offset = glyph.Offset;
 
-				mOutputSink.Glyphs.Add(newGlyph);
+				_OutputSink.Glyphs.Add(newGlyph);
 			}
 		}
 
 		private void ProduceClusters(
-			FormattedRun run,
-			int lineBidiLevel,
-			ref double penPosition,
-			TypesetterSink input)
+			FormattedRun run, int lineBidiLevel, ref float penPosition, TypesetterSink input)
 		{
 			Contract.Requires(input != null);
 
@@ -254,19 +251,26 @@ namespace Frost.DirectX.Formatting
 					newCluster.Characters = cluster.Characters;
 					newCluster.Glyphs = cluster.Glyphs;
 					newCluster.Display = cluster.Display;
-					newCluster.Region.Width = cluster.Advance.Width;
+
+					newCluster.Region = new Rectangle(
+						newCluster.Region.Location, new Size(cluster.Advance.Width, newCluster.Region.Height));
 
 					// the line reads from left to right
 					if(lineBidiLevel % 2 == 0)
 					{
-						newCluster.Region.X += penPosition;
+						newCluster.Region =
+							new Rectangle(
+								new Point(newCluster.Region.X + penPosition, newCluster.Region.Y), newCluster.Region.Size);
 
 						penPosition += newCluster.Region.Width;
 					}
 						// the line reads from right to left
 					else
 					{
-						newCluster.Region.X = penPosition - newCluster.Region.Width;
+						newCluster.Region =
+							new Rectangle(
+								new Point(penPosition - newCluster.Region.Width, newCluster.Region.Y),
+								newCluster.Region.Size);
 
 						penPosition -= newCluster.Region.Width;
 					}
@@ -276,7 +280,7 @@ namespace Frost.DirectX.Formatting
 						newCluster.Region = cluster.Floater;
 					}
 
-					mClusters[i] = newCluster;
+					_Clusters[i] = newCluster;
 				}
 			}
 			else
@@ -293,12 +297,16 @@ namespace Frost.DirectX.Formatting
 					newCluster.Characters = cluster.Characters;
 					newCluster.Glyphs = cluster.Glyphs;
 					newCluster.Display = cluster.Display;
-					newCluster.Region.Width = cluster.Advance.Width;
+
+					newCluster.Region = new Rectangle(
+						newCluster.Region.Location, new Size(cluster.Advance.Width, newCluster.Region.Height));
 
 					// the line reads from left to right
 					if(lineBidiLevel % 2 == 0)
 					{
-						newCluster.Region.X += penPosition;
+						newCluster.Region =
+							new Rectangle(
+								new Point(newCluster.Region.X + penPosition, newCluster.Region.Y), newCluster.Region.Size);
 
 						penPosition += newCluster.Region.Width;
 					}
@@ -306,7 +314,10 @@ namespace Frost.DirectX.Formatting
 						// the line reads from right to left
 					else
 					{
-						newCluster.Region.X = penPosition - newCluster.Region.Width;
+						newCluster.Region =
+							new Rectangle(
+								new Point(penPosition - newCluster.Region.Width, newCluster.Region.Y),
+								newCluster.Region.Size);
 
 						penPosition -= newCluster.Region.Width;
 					}
@@ -316,12 +327,12 @@ namespace Frost.DirectX.Formatting
 						newCluster.Region = cluster.Floater;
 					}
 
-					mClusters[i] = newCluster;
+					_Clusters[i] = newCluster;
 				}
 			}
 		}
 
-		private static double TakeAbsMax(double n1, double n2)
+		private static float TakeAbsMax(float n1, float n2)
 		{
 			double n1Abs = Math.Abs(n1);
 			double n2Abs = Math.Abs(n2);
@@ -331,29 +342,25 @@ namespace Frost.DirectX.Formatting
 
 		private void DetermineBaselines()
 		{
-			double baselineOffset = 0.0;
-			double strikethroughOffset = 0.0;
-			double underlineOffset = 0.0;
+			float baselineOffset = 0.0f;
+			float strikethroughOffset = 0.0f;
+			float underlineOffset = 0.0f;
 
-			double strikethroughThickness = 0.0;
-			double underlineThickness = 0.0;
+			float strikethroughThickness = 0.0f;
+			float underlineThickness = 0.0f;
 
-			foreach(FormattedRun run in mOutputSink.Runs)
+			foreach(FormattedRun run in _OutputSink.Runs)
 			{
-				DxFontMetrics metrics = run.Font.ResolveFace().Metrics;
+				DxFontMetrics dxMetrics = run.Font.ResolveFace().Metrics;
 
-				double unitsPerEm = metrics.DesignUnitsPerEm;
+				FontMetrics metrics = new FontMetrics(
+					dxMetrics.Ascent, dxMetrics.Descent, dxMetrics.DesignUnitsPerEm);
 
-				double blo = FontMetrics.ToPixels(
-					metrics.Ascent + metrics.Descent, run.PointSize, unitsPerEm);
-				double sto = FontMetrics.ToPixels(
-					metrics.StrikethroughPosition, run.PointSize, unitsPerEm);
-				double ulo = FontMetrics.ToPixels(
-					metrics.UnderlinePosition, run.PointSize, unitsPerEm);
-				double stt = FontMetrics.ToPixels(
-					metrics.StrikethroughThickness, run.PointSize, unitsPerEm);
-				double ult = FontMetrics.ToPixels(
-					metrics.UnderlineThickness, run.PointSize, unitsPerEm);
+				float blo = metrics.Measure(dxMetrics.Ascent + dxMetrics.Descent, run.PointSize);
+				float sto = metrics.Measure(dxMetrics.StrikethroughPosition, run.PointSize);
+				float ulo = metrics.Measure(dxMetrics.UnderlinePosition, run.PointSize);
+				float stt = metrics.Measure(dxMetrics.StrikethroughThickness, run.PointSize);
+				float ult = metrics.Measure(dxMetrics.UnderlineThickness, run.PointSize);
 
 				baselineOffset = TakeAbsMax(baselineOffset, blo);
 				strikethroughOffset = TakeAbsMax(strikethroughOffset, sto);
@@ -362,11 +369,11 @@ namespace Frost.DirectX.Formatting
 				underlineThickness = TakeAbsMax(underlineThickness, ult);
 			}
 
-			mOutputSink.BaselineOffset = baselineOffset;
-			mOutputSink.StrikethroughOffset = strikethroughOffset;
-			mOutputSink.StrikethroughThickness = Convert.ToSingle(strikethroughThickness);
-			mOutputSink.UnderlineOffset = underlineOffset;
-			mOutputSink.UnderlineThickness = Convert.ToSingle(underlineThickness);
+			_OutputSink.BaselineOffset = baselineOffset;
+			_OutputSink.StrikethroughOffset = strikethroughOffset;
+			_OutputSink.StrikethroughThickness = strikethroughThickness;
+			_OutputSink.UnderlineOffset = underlineOffset;
+			_OutputSink.UnderlineThickness = underlineThickness;
 		}
 	}
 }

@@ -8,12 +8,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
+using Frost.DirectX.Formatting.Contracts;
+
 namespace Frost.DirectX.Formatting
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(ILineItemList))]
-		internal abstract class ILineItemListContract
+		[ContractClassFor(typeof(ILineItemList))] internal abstract class ILineItemListContract
 			: ILineItemList
 		{
 			public int Count
@@ -53,7 +54,7 @@ namespace Frost.DirectX.Formatting
 		}
 	}
 
-	[ContractClass(typeof(Contracts.ILineItemListContract))] public interface ILineItemList
+	[ContractClass(typeof(ILineItemListContract))] public interface ILineItemList
 		: IEnumerable<LineItem>
 	{
 		int Count { get; }

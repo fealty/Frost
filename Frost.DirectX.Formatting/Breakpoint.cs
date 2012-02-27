@@ -43,7 +43,8 @@ namespace Frost.DirectX.Formatting
 			double totalShrink,
 			Demerits demerits,
 			double ratio)
-			: this(position, line, fitnessClass, totalWidth, totalShrink, totalStretch, demerits, ratio, null)
+			: this(position, line, fitnessClass, totalWidth, totalShrink, totalStretch, demerits, ratio, null
+				)
 		{
 			Contract.Requires(position >= 0);
 			Contract.Requires(line >= 0);

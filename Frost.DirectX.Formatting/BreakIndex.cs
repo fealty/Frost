@@ -28,7 +28,7 @@ namespace Frost.DirectX.Formatting
 			{
 				Contract.Ensures(Check.IsFinite(Contract.Result<double>()));
 				Contract.Ensures(Contract.Result<double>().Equals(_Ratio));
-				
+
 				return _Ratio;
 			}
 		}
@@ -39,7 +39,7 @@ namespace Frost.DirectX.Formatting
 			{
 				Contract.Ensures(Contract.Result<int>() >= 0);
 				Contract.Ensures(Contract.Result<int>().Equals(_Index));
-				
+
 				return _Index;
 			}
 		}

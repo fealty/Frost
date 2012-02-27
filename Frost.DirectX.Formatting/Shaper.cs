@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -109,8 +114,7 @@ namespace Frost.DirectX.Formatting
 		{
 			Contract.Requires(input != null);
 
-			FontHandle fontHandle = mFontDevice.FindFont(
-				run.Family, run.Style, run.Weight, run.Stretch);
+			FontHandle fontHandle = mFontDevice.FindFont(run.Family, run.Style, run.Weight, run.Stretch);
 
 			ExtractTextFeatures(run.Features);
 
@@ -187,10 +191,7 @@ namespace Frost.DirectX.Formatting
 		}
 
 		private void OutputClusters(
-			int glyphsIndex,
-			ref InternalRun run,
-			FontHandle fontHandle,
-			AggregatorSink input)
+			int glyphsIndex, ref InternalRun run, FontHandle fontHandle, AggregatorSink input)
 		{
 			Contract.Requires(glyphsIndex >= 0);
 			Contract.Requires(fontHandle != null);
@@ -227,8 +228,7 @@ namespace Frost.DirectX.Formatting
 				if(character.Inline.IsEmpty)
 				{
 					// identify clusters representing formatting characters
-					switch(CharUnicodeInfo.GetUnicodeCategory(
-						mOutputSink.FullText[cluster.Characters.Start]))
+					switch(CharUnicodeInfo.GetUnicodeCategory(mOutputSink.FullText[cluster.Characters.Start]))
 					{
 						case UnicodeCategory.Format:
 							cluster.ContentType = ContentType.Format;
@@ -238,10 +238,8 @@ namespace Frost.DirectX.Formatting
 							break;
 					}
 
-					cluster.Advance.Width =
-						mOutputSink.Glyphs[cluster.Glyphs.Start].Advance;
-					cluster.Advance.Height =
-						ComputeEmHeight(run.PointSize, ref metrics);
+					cluster.Advance.Width = mOutputSink.Glyphs[cluster.Glyphs.Start].Advance;
+					cluster.Advance.Height = ComputeEmHeight(run.PointSize, ref metrics);
 				}
 				else
 				{
@@ -269,21 +267,17 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
-		private static float ComputeEmHeight(
-			double pointSize, ref DxFontMetrics metrics)
+		private static float ComputeEmHeight(double pointSize, ref DxFontMetrics metrics)
 		{
 			Contract.Requires(pointSize >= 0.0 && pointSize <= double.MaxValue);
 
 			double height = FontMetrics.ToPixels(
-				metrics.Ascent + metrics.Descent + metrics.LineGap,
-				pointSize,
-				metrics.DesignUnitsPerEm);
+				metrics.Ascent + metrics.Descent + metrics.LineGap, pointSize, metrics.DesignUnitsPerEm);
 
 			return Convert.ToSingle(height);
 		}
 
-		private void PositionGlyphs(
-			FontHandle fontHandle, ref InternalRun run, int actualGlyphCount)
+		private void PositionGlyphs(FontHandle fontHandle, ref InternalRun run, int actualGlyphCount)
 		{
 			Contract.Requires(fontHandle != null);
 			Contract.Requires(!string.IsNullOrEmpty(run.Text));
@@ -294,24 +288,25 @@ namespace Frost.DirectX.Formatting
 
 			try
 			{
-				if(mTextAnalyzer.GetGlyphPlacements(
-					run.Text,
-					mClusterMap,
-					mShapedTextProperties,
-					run.Text.Length,
-					mGlyphIndices,
-					mShapedGlyphProperties,
-					actualGlyphCount,
-					fontHandle.ResolveFace(),
-					ComputeEmHeight(run.PointSize, ref metrics),
-					false,
-					Convert.ToBoolean(run.BidiLevel & 1),
-					run.ScriptAnalysis,
-					run.Culture.Name,
-					mFeatures,
-					mFeatureRangeLengths,
-					mGlyphAdvances,
-					mGlyphOffsets).Failure)
+				if(
+					mTextAnalyzer.GetGlyphPlacements(
+						run.Text,
+						mClusterMap,
+						mShapedTextProperties,
+						run.Text.Length,
+						mGlyphIndices,
+						mShapedGlyphProperties,
+						actualGlyphCount,
+						fontHandle.ResolveFace(),
+						ComputeEmHeight(run.PointSize, ref metrics),
+						false,
+						Convert.ToBoolean(run.BidiLevel & 1),
+						run.ScriptAnalysis,
+						run.Culture.Name,
+						mFeatures,
+						mFeatureRangeLengths,
+						mGlyphAdvances,
+						mGlyphOffsets).Failure)
 				{
 					throw new ShapingException(null);
 				}
@@ -322,8 +317,7 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
-		private void ProduceGlyphs(
-			FontHandle fontHandle, ref InternalRun run, out int glyphCount)
+		private void ProduceGlyphs(FontHandle fontHandle, ref InternalRun run, out int glyphCount)
 		{
 			Contract.Requires(fontHandle != null);
 			Contract.Requires(!string.IsNullOrEmpty(run.Text));
@@ -481,8 +475,7 @@ namespace Frost.DirectX.Formatting
 				currentRun.ScriptAnalysis = input.Characters[i].ScriptAnalysis;
 				currentRun.BidiLevel = input.Characters[i].BidiLevel;
 				currentRun.Culture = input.Characters[i].Culture;
-				currentRun.NumberSubstitution =
-					input.Characters[i].NumberSubstitution;
+				currentRun.NumberSubstitution = input.Characters[i].NumberSubstitution;
 				currentRun.Features = mFeatureRanges;
 
 				FeatureRange currentFeatures;
@@ -515,8 +508,7 @@ namespace Frost.DirectX.Formatting
 				{
 					mFeatureRanges.Add(activeFeatures);
 
-					activeRun.Text = input.FullText.Substring(
-						activeRun.Range.Start, activeRun.Range.Length);
+					activeRun.Text = input.FullText.Substring(activeRun.Range.Start, activeRun.Range.Length);
 
 					yield return activeRun;
 
@@ -534,8 +526,7 @@ namespace Frost.DirectX.Formatting
 
 			mFeatureRanges.Add(activeFeatures);
 
-			activeRun.Text = input.FullText.Substring(
-				activeRun.Range.Start, activeRun.Range.Length);
+			activeRun.Text = input.FullText.Substring(activeRun.Range.Start, activeRun.Range.Length);
 
 			yield return activeRun;
 
@@ -600,17 +591,11 @@ namespace Frost.DirectX.Formatting
 
 			public bool Equals(InternalRun other)
 			{
-				return other.Range.Equals(Range) &&
-				       Equals(other.Culture, Culture) &&
-				       Equals(other.Family, Family) &&
-				       other.PointSize.Equals(PointSize) &&
-				       Equals(other.NumberSubstitution, NumberSubstitution) &&
-				       other.BidiLevel == BidiLevel &&
-				       other.ScriptAnalysis.Equals(ScriptAnalysis) &&
-				       other.Stretch == Stretch &&
-				       other.Style == Style &&
-				       other.Weight == Weight &&
-				       other.Features == Features &&
+				return other.Range.Equals(Range) && Equals(other.Culture, Culture) &&
+				       Equals(other.Family, Family) && other.PointSize.Equals(PointSize) &&
+				       Equals(other.NumberSubstitution, NumberSubstitution) && other.BidiLevel == BidiLevel &&
+				       other.ScriptAnalysis.Equals(ScriptAnalysis) && other.Stretch == Stretch &&
+				       other.Style == Style && other.Weight == Weight && other.Features == Features &&
 				       other.Text == Text;
 			}
 
@@ -632,8 +617,7 @@ namespace Frost.DirectX.Formatting
 					result = (result * 397) ^ (Culture != null ? Culture.GetHashCode() : 0);
 					result = (result * 397) ^ (Family != null ? Family.GetHashCode() : 0);
 					result = (result * 397) ^ PointSize.GetHashCode();
-					result = (result * 397) ^
-					         (NumberSubstitution != null ? NumberSubstitution.GetHashCode() : 0);
+					result = (result * 397) ^ (NumberSubstitution != null ? NumberSubstitution.GetHashCode() : 0);
 					result = (result * 397) ^ BidiLevel.GetHashCode();
 					result = (result * 397) ^ ScriptAnalysis.GetHashCode();
 					result = (result * 397) ^ Stretch.GetHashCode();

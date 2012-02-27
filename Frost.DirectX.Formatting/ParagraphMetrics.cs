@@ -1,7 +1,15 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+
+using Frost.Formatting;
+using Frost.Shaping;
 
 using SharpDX.DirectWrite;
 
@@ -17,12 +25,12 @@ namespace Frost.DirectX.Formatting
 
 		private readonly double mBaselineOffset;
 		private readonly byte[] mClusterBidiLevels;
-		private readonly Outline[] mOutlines;
 
 		private readonly FormattedCluster[] mClusters;
 		private readonly Rectangle mLayoutRegion;
 		private readonly double mLeading;
 		private readonly TextRange[] mLines;
+		private readonly Outline[] mOutlines;
 		private readonly Paragraph mParagraph;
 
 		private readonly Rectangle mTextRegion;
@@ -34,9 +42,7 @@ namespace Frost.DirectX.Formatting
 		}
 
 		internal ParagraphMetrics(
-			Paragraph paragraph,
-			FormatterSink formattedData,
-			TextGeometryCache geometryCache)
+			Paragraph paragraph, FormatterSink formattedData, TextGeometryCache geometryCache)
 		{
 			Contract.Requires(paragraph != null);
 			Contract.Requires(formattedData != null);
@@ -70,11 +76,9 @@ namespace Frost.DirectX.Formatting
 
 				for(int j = run.Clusters.Start; j <= run.Clusters.End; ++j)
 				{
-					Geometry geometry = geometryCache.Retrieve(
-						j, run.BidiLevel, run.Font, formattedData);
+					Geometry geometry = geometryCache.Retrieve(j, run.BidiLevel, run.Font, formattedData);
 
-					mOutlines[geometryClusterIndex] =
-						new Outline(geometry, run.EmSize, baseline);
+					mOutlines[geometryClusterIndex] = new Outline(geometry, run.EmSize, baseline);
 
 					mClusterBidiLevels[geometryClusterIndex] = run.BidiLevel;
 
@@ -124,8 +128,7 @@ namespace Frost.DirectX.Formatting
 					lastLine = formattedData.Runs[i].LineNumber;
 				}
 
-				range = new ClusterRange(
-					range.Start, range.Length + formattedData.Runs[i].Clusters.Length);
+				range = new ClusterRange(range.Start, range.Length + formattedData.Runs[i].Clusters.Length);
 			}
 
 			if(range.Length > 0)
@@ -146,13 +149,6 @@ namespace Frost.DirectX.Formatting
 			get { return mOutlines.Length; }
 		}
 
-		IEnumerator<Outline> IEnumerable<Outline>.GetEnumerator()
-		{
-			ILightweightList<Outline> @this = this;
-
-			return @this.GetEnumerator();
-		}
-
 		int ILightweightList<Rectangle>.Count
 		{
 			get { return mTextToCluster.Length; }
@@ -161,21 +157,6 @@ namespace Frost.DirectX.Formatting
 		Rectangle ILightweightList<Rectangle>.this[int index]
 		{
 			get { return mClusters[mTextToCluster[index]].Region; }
-		}
-
-		IEnumerator<Rectangle> IEnumerable<Rectangle>.GetEnumerator()
-		{
-			ILightweightList<Rectangle> @this = this;
-
-			for(int i = 0; i < @this.Count; ++i)
-			{
-				yield return @this[i];
-			}
-		}
-
-		public IEnumerator GetEnumerator()
-		{
-			throw new NotSupportedException();
 		}
 
 		TextRange ILightweightList<TextRange>.this[int index]
@@ -188,27 +169,22 @@ namespace Frost.DirectX.Formatting
 			get { return mLines.Length; }
 		}
 
-		IEnumerator<TextRange> IEnumerable<TextRange>.GetEnumerator()
-		{
-			ILightweightList<TextRange> @this = this;
-
-			for(int i = 0; i < @this.Count; ++i)
-			{
-				yield return @this[i];
-			}
-		}
-
-		ILightweightList<TextRange> ITextMetrics.Lines
-		{
-			get { return this; }
-		}
-
 		public ILightweightList<Rectangle> Regions
 		{
 			get { return this; }
 		}
 
 		public ILightweightList<Outline> Outlines
+		{
+			get { return this; }
+		}
+
+		public double Leading
+		{
+			get { return mLeading; }
+		}
+
+		ILightweightList<TextRange> ITextMetrics.Lines
 		{
 			get { return this; }
 		}
@@ -226,11 +202,6 @@ namespace Frost.DirectX.Formatting
 		public Rectangle LayoutRegion
 		{
 			get { return mLayoutRegion; }
-		}
-
-		public double Leading
-		{
-			get { return mLeading; }
 		}
 
 		public Size BaselineOffset
@@ -278,6 +249,11 @@ namespace Frost.DirectX.Formatting
 			}
 
 			return false;
+		}
+
+		public IEnumerator GetEnumerator()
+		{
+			throw new NotSupportedException();
 		}
 
 		public bool FindIndexForPoint(Point position, out int textIndex)
@@ -344,6 +320,33 @@ namespace Frost.DirectX.Formatting
 			region = new Rectangle(left, top, right - left, bottom - top);
 		}
 
+		IEnumerator<Outline> IEnumerable<Outline>.GetEnumerator()
+		{
+			ILightweightList<Outline> @this = this;
+
+			return @this.GetEnumerator();
+		}
+
+		IEnumerator<Rectangle> IEnumerable<Rectangle>.GetEnumerator()
+		{
+			ILightweightList<Rectangle> @this = this;
+
+			for(int i = 0; i < @this.Count; ++i)
+			{
+				yield return @this[i];
+			}
+		}
+
+		IEnumerator<TextRange> IEnumerable<TextRange>.GetEnumerator()
+		{
+			ILightweightList<TextRange> @this = this;
+
+			for(int i = 0; i < @this.Count; ++i)
+			{
+				yield return @this[i];
+			}
+		}
+
 		private TextRange ToTextRange(ClusterRange clusters)
 		{
 			int textLength = 0;
@@ -353,8 +356,7 @@ namespace Frost.DirectX.Formatting
 				textLength += mClusters[i].Characters.Length;
 			}
 
-			return new TextRange(
-				mClusters[clusters.Start].Characters.Start, textLength);
+			return new TextRange(mClusters[clusters.Start].Characters.Start, textLength);
 		}
 	}
 }
