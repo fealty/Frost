@@ -1,7 +1,18 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Globalization;
 
+using Frost.Formatting;
+
 using SharpDX.DirectWrite;
+
+using FontStretch = SharpDX.DirectWrite.FontStretch;
+using FontStyle = SharpDX.DirectWrite.FontStyle;
+using FontWeight = SharpDX.DirectWrite.FontWeight;
 
 namespace Frost.DirectX.Formatting
 {
@@ -11,11 +22,11 @@ namespace Frost.DirectX.Formatting
 		public LineBreakpoint Breakpoint;
 		public CultureInfo Culture;
 		public string Family;
-		public TextFeature[] Features;
+		public FontFeatureCollection Features;
 		public Alignment HAlignment;
 		public Size Inline;
 		public NumberSubstitution NumberSubstitution;
-		public double PointSize;
+		public float PointSize;
 		public ScriptAnalysis ScriptAnalysis;
 		public FontStretch Stretch;
 		public FontStyle Style;
@@ -24,17 +35,12 @@ namespace Frost.DirectX.Formatting
 
 		public bool Equals(CharacterFormat other)
 		{
-			return other.BidiLevel == BidiLevel &&
-			       Equals(other.Culture, Culture) && Equals(other.Family, Family) &&
-			       Equals(other.Features, Features) &&
-			       other.Inline.Equals(Inline) &&
-			       other.Breakpoint.Equals(Breakpoint) &&
-			       Equals(other.NumberSubstitution, NumberSubstitution) &&
-			       other.PointSize.Equals(PointSize) &&
-			       other.ScriptAnalysis.Equals(ScriptAnalysis) &&
-			       other.Stretch == Stretch &&
-			       other.Style == Style &&
-			       other.Weight == Weight && other.HAlignment == HAlignment &&
+			return other.BidiLevel == BidiLevel && Equals(other.Culture, Culture) &&
+			       Equals(other.Family, Family) && Equals(other.Features, Features) &&
+			       other.Inline.Equals(Inline) && other.Breakpoint.Equals(Breakpoint) &&
+			       Equals(other.NumberSubstitution, NumberSubstitution) && other.PointSize.Equals(PointSize) &&
+			       other.ScriptAnalysis.Equals(ScriptAnalysis) && other.Stretch == Stretch &&
+			       other.Style == Style && other.Weight == Weight && other.HAlignment == HAlignment &&
 			       other.VAlignment == VAlignment;
 		}
 
@@ -58,8 +64,7 @@ namespace Frost.DirectX.Formatting
 				result = (result * 397) ^ (Features != null ? Features.GetHashCode() : 0);
 				result = (result * 397) ^ Inline.GetHashCode();
 				result = (result * 397) ^ Breakpoint.GetHashCode();
-				result = (result * 397) ^
-				         (NumberSubstitution != null ? NumberSubstitution.GetHashCode() : 0);
+				result = (result * 397) ^ (NumberSubstitution != null ? NumberSubstitution.GetHashCode() : 0);
 				result = (result * 397) ^ PointSize.GetHashCode();
 				result = (result * 397) ^ ScriptAnalysis.GetHashCode();
 
