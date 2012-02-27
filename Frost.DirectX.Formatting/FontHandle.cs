@@ -1,16 +1,26 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
+using System.Diagnostics.Contracts;
 
 using SharpDX.DirectWrite;
+
+using FontStretch = Frost.Formatting.FontStretch;
+using FontStyle = Frost.Formatting.FontStyle;
+using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX.Formatting
 {
 	public sealed class FontHandle : IEquatable<FontHandle>
 	{
-		private readonly string mFamily;
-		private readonly Func<FontHandle, FontInfo> mResolver;
-		private readonly FontStretch mStretch;
-		private readonly FontStyle mStyle;
-		private readonly FontWeight mWeight;
+		private readonly string _Family;
+		private readonly Func<FontHandle, FontInfo> _Resolver;
+		private readonly FontStretch _Stretch;
+		private readonly FontStyle _Style;
+		private readonly FontWeight _Weight;
 
 		internal FontHandle(
 			Func<FontHandle, FontInfo> resolver,
@@ -19,31 +29,34 @@ namespace Frost.DirectX.Formatting
 			FontWeight weight,
 			FontStretch stretch)
 		{
-			mResolver = resolver;
-			mFamily = family;
-			mStyle = style;
-			mWeight = weight;
-			mStretch = stretch;
+			Contract.Requires(resolver != null);
+			Contract.Requires(!String.IsNullOrEmpty(family));
+
+			_Resolver = resolver;
+			_Family = family;
+			_Style = style;
+			_Weight = weight;
+			_Stretch = stretch;
 		}
 
 		public string Family
 		{
-			get { return mFamily; }
+			get { return _Family; }
 		}
 
 		public FontStretch Stretch
 		{
-			get { return mStretch; }
+			get { return _Stretch; }
 		}
 
 		public FontStyle Style
 		{
-			get { return mStyle; }
+			get { return _Style; }
 		}
 
 		public FontWeight Weight
 		{
-			get { return mWeight; }
+			get { return _Weight; }
 		}
 
 		public bool Equals(FontHandle other)
@@ -52,26 +65,30 @@ namespace Frost.DirectX.Formatting
 			{
 				return false;
 			}
-			
+
 			if(ReferenceEquals(this, other))
 			{
 				return true;
 			}
 
-			return Equals(other.mFamily, mFamily) && Equals(other.mStretch, mStretch) &&
-			       Equals(other.mStyle, mStyle) && Equals(other.mWeight, mWeight);
+			return Equals(other._Family, _Family) && Equals(other._Stretch, _Stretch) &&
+			       Equals(other._Style, _Style) && Equals(other._Weight, _Weight);
 		}
 
 		public Font ResolveFont()
 		{
-			FontInfo fontInfo = mResolver(this);
+			Contract.Ensures(Contract.Result<Font>() != null);
+
+			FontInfo fontInfo = _Resolver(this);
 
 			return fontInfo.Font;
 		}
 
 		public FontFace ResolveFace()
 		{
-			FontInfo fontInfo = mResolver(this);
+			Contract.Ensures(Contract.Result<FontFace>() != null);
+
+			FontInfo fontInfo = _Resolver(this);
 
 			return fontInfo.FontFace;
 		}
@@ -95,64 +112,71 @@ namespace Frost.DirectX.Formatting
 		{
 			unchecked
 			{
-				int result = (mFamily != null ? mFamily.GetHashCode() : 0);
+				int result = (_Family != null ? _Family.GetHashCode() : 0);
 
-				int stretch = (int)mStretch;
-				
+				int stretch = (int)_Stretch;
+
 				result = (result * 397) ^ stretch.GetHashCode();
 
-				int style = (int)mStyle;
+				int style = (int)_Style;
 
 				result = (result * 397) ^ style.GetHashCode();
 
-				int weight = (int)mWeight;
+				int weight = (int)_Weight;
 
 				result = (result * 397) ^ weight.GetHashCode();
-				
+
 				return result;
 			}
 		}
 
 		internal sealed class FontInfo : IDisposable
 		{
-			private readonly FontFace mFace;
-			private readonly Font mFont;
+			private readonly FontFace _Face;
+			private readonly Font _Font;
 
 			public FontInfo(Font font)
 			{
-				mFont = font;
-				mFace = new FontFace(font);
+				Contract.Requires(font != null);
+
+				_Font = font;
+				_Face = new FontFace(font);
 			}
 
 			public Font Font
 			{
-				get { return mFont; }
+				get
+				{
+					Contract.Ensures(Contract.Result<Font>() != null);
+					Contract.Ensures(Contract.Result<Font>().Equals(_Font));
+
+					return _Font;
+				}
 			}
 
 			public FontFace FontFace
 			{
-				get { return mFace; }
+				get
+				{
+					Contract.Ensures(Contract.Result<FontFace>() != null);
+					Contract.Ensures(Contract.Result<FontFace>().Equals(_Face));
+
+					return _Face;
+				}
 			}
 
 			public void Dispose()
 			{
 				Dispose(true);
-
-				GC.SuppressFinalize(this);
 			}
 
 			private void Dispose(bool disposing)
 			{
 				if(disposing)
 				{
-					mFace.Dispose();
-					mFont.Dispose();
+					_Face.Dispose();
+					_Font.Dispose();
 				}
-			}
-
-			~FontInfo()
-			{
-				Dispose(false);
 			}
 		}
 
