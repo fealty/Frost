@@ -1,6 +1,12 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
 using System.Diagnostics.Contracts;
 using System.Globalization;
+
+using Frost.Collections;
 
 using SharpDX;
 using SharpDX.DirectWrite;
@@ -9,81 +15,82 @@ namespace Frost.DirectX.Formatting
 {
 	internal sealed class Analyzer : CallbackBase, TextAnalysisSource
 	{
-		private readonly TextAnalyzer mTextAnalyzer;
+		private readonly TextAnalyzer _TextAnalyzer;
 
-		private CharacterProperties[] mCharacters;
-		private string mFullText;
-		private ReadingDirection mReadingDirection;
+		private CharacterProperties[] _Characters;
+		private string _FullText;
+		private ReadingDirection _ReadingDirection;
 
 		public Analyzer(Factory factory)
 		{
 			Contract.Requires(factory != null);
 
-			mCharacters = new CharacterProperties[0];
+			_Characters = new CharacterProperties[0];
 
-			mTextAnalyzer = new TextAnalyzer(factory);
+			_TextAnalyzer = new TextAnalyzer(factory);
 		}
 
 		string TextAnalysisSource.GetTextAtPosition(int textPosition)
 		{
-			if(textPosition >= mFullText.Length)
+			if(textPosition >= _FullText.Length)
 			{
 				return null;
 			}
 
-			return mFullText.Substring(textPosition, mFullText.Length - textPosition);
+			return _FullText.Substring(textPosition, _FullText.Length - textPosition);
 		}
 
 		string TextAnalysisSource.GetTextBeforePosition(int textPosition)
 		{
-			if(textPosition == 0 || textPosition > mFullText.Length)
+			if(textPosition == 0 || textPosition > _FullText.Length)
 			{
 				return null;
 			}
 
-			return mFullText.Substring(0, textPosition);
+			return _FullText.Substring(0, textPosition);
 		}
 
-		string TextAnalysisSource.GetLocaleName(
-			int textPosition, out int textLength)
+		string TextAnalysisSource.GetLocaleName(int textPosition, out int textLength)
 		{
-			for(int i = textPosition; i < mFullText.Length; ++i)
-			{
-				if(mCharacters[i].Culture != mCharacters[textPosition].Culture)
-				{
-					textLength = i - textPosition;
+			IndexedRange range = new IndexedRange(textPosition, _FullText.Length);
 
-					return mCharacters[textPosition].Culture.Name;
+			foreach(int index in range)
+			{
+				if(_Characters[index].Culture != _Characters[textPosition].Culture)
+				{
+					textLength = index - textPosition;
+
+					return _Characters[textPosition].Culture.Name;
 				}
 			}
 
-			textLength = mFullText.Length - textPosition;
+			textLength = _FullText.Length - textPosition;
 
-			return mCharacters[textPosition].Culture.Name;
+			return _Characters[textPosition].Culture.Name;
 		}
 
-		NumberSubstitution TextAnalysisSource.GetNumberSubstitution(
-			int textPosition, out int textLength)
+		NumberSubstitution TextAnalysisSource.GetNumberSubstitution(int textPosition, out int textLength)
 		{
-			for(int i = textPosition; i < mFullText.Length; ++i)
-			{
-				if(mCharacters[i].NumberSubstitution !=
-				   mCharacters[textPosition].NumberSubstitution)
-				{
-					textLength = i - textPosition;
+			IndexedRange range = new IndexedRange(textPosition, _FullText.Length);
 
-					return mCharacters[textPosition].NumberSubstitution;
+			foreach(int index in range)
+			{
+				if(_Characters[index].NumberSubstitution != _Characters[textPosition].NumberSubstitution)
+				{
+					textLength = index - textPosition;
+
+					return _Characters[textPosition].NumberSubstitution;
 				}
 			}
 
-			textLength = mFullText.Length - textPosition;
+			textLength = _FullText.Length - textPosition;
 
-			return mCharacters[textPosition].NumberSubstitution;
+			return _Characters[textPosition].NumberSubstitution;
 		}
 
 		ReadingDirection TextAnalysisSource.ReadingDirection
 		{
-			get { return mReadingDirection; }
+			get { return _ReadingDirection; }
 		}
 
 		public void BeginAnalysis(string text, CultureInfo paragraphCulture)
@@ -91,45 +98,40 @@ namespace Frost.DirectX.Formatting
 			Contract.Requires(!string.IsNullOrEmpty(text));
 			Contract.Requires(paragraphCulture != null);
 
-			mFullText = text;
+			_FullText = text;
 
-			if(text.Length > mCharacters.Length)
+			if(text.Length > _Characters.Length)
 			{
-				mCharacters = new CharacterProperties[text.Length * 2];
+				_Characters = new CharacterProperties[text.Length * 2];
 			}
 
 			if(paragraphCulture.TextInfo.IsRightToLeft)
 			{
-				mReadingDirection = ReadingDirection.RightToLeft;
+				_ReadingDirection = ReadingDirection.RightToLeft;
 			}
 			else
 			{
-				mReadingDirection = ReadingDirection.LeftToRight;
+				_ReadingDirection = ReadingDirection.LeftToRight;
 			}
 		}
 
-		public void SetCulture(TextRange range, CultureInfo culture)
+		public void SetCulture(IndexedRange textRange, CultureInfo culture)
 		{
-			Contract.Assert(range.Start < mFullText.Length);
+			Contract.Assert(textRange.IsWithin(_FullText));
 
-			int rangeEnd = Math.Min(range.End, mFullText.Length - 1);
-
-			for(int i = range.Start; i <= rangeEnd; ++i)
+			foreach(int index in textRange)
 			{
-				mCharacters[i].Culture = culture;
+				_Characters[index].Culture = culture;
 			}
 		}
 
-		public void SetNumberSubstitution(
-			TextRange range, NumberSubstitution numberSubstitution)
+		public void SetNumberSubstitution(IndexedRange textRange, NumberSubstitution numberSubstitution)
 		{
-			Contract.Assert(range.Start < mFullText.Length);
+			Contract.Assert(textRange.IsWithin(_FullText));
 
-			int rangeEnd = Math.Min(range.End, mFullText.Length - 1);
-
-			for(int i = range.Start; i <= rangeEnd; ++i)
+			foreach(int index in textRange)
 			{
-				mCharacters[i].NumberSubstitution = numberSubstitution;
+				_Characters[index].NumberSubstitution = numberSubstitution;
 			}
 		}
 
@@ -137,30 +139,26 @@ namespace Frost.DirectX.Formatting
 		{
 			Contract.Requires(formatter != null);
 
-			formatter.BeginAggregation(mFullText);
+			formatter.BeginAggregation(_FullText);
 
 			try
 			{
-				if(mTextAnalyzer.AnalyzeLineBreakpoints(
-					this, 0, mFullText.Length, formatter).Failure)
+				if(_TextAnalyzer.AnalyzeLineBreakpoints(this, 0, _FullText.Length, formatter).Failure)
 				{
 					throw new AnalysisException(null);
 				}
 
-				if(mTextAnalyzer.AnalyzeBidi(
-					this, 0, mFullText.Length, formatter).Failure)
+				if(_TextAnalyzer.AnalyzeBidi(this, 0, _FullText.Length, formatter).Failure)
 				{
 					throw new AnalysisException(null);
 				}
 
-				if(mTextAnalyzer.AnalyzeScript(
-					this, 0, mFullText.Length, formatter).Failure)
+				if(_TextAnalyzer.AnalyzeScript(this, 0, _FullText.Length, formatter).Failure)
 				{
 					throw new AnalysisException(null);
 				}
 
-				if(mTextAnalyzer.AnalyzeNumberSubstitution(
-					this, 0, mFullText.Length, formatter).Failure)
+				if(_TextAnalyzer.AnalyzeNumberSubstitution(this, 0, _FullText.Length, formatter).Failure)
 				{
 					throw new AnalysisException(null);
 				}
@@ -175,7 +173,7 @@ namespace Frost.DirectX.Formatting
 		{
 			if(disposing)
 			{
-				mTextAnalyzer.Dispose();
+				_TextAnalyzer.Dispose();
 			}
 
 			base.Dispose(disposing);
