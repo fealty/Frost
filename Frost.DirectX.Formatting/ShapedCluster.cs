@@ -1,54 +1,40 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
+
+using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
-	[StructLayout(LayoutKind.Explicit)]
 	internal struct ShapedCluster : IEquatable<ShapedCluster>
 	{
-		[FieldOffset(0)]
-		public ContentType ContentType;
-
-		[FieldOffset(4)]
 		public Size Advance;
-
-		[FieldOffset(20)]
-		public Rectangle Floater;
-
-		[FieldOffset(52)]
-		public Alignment HAlignment;
-
-		[FieldOffset(60)]
-		public TextRange Characters;
-
-		[FieldOffset(72)]
-		public GlyphRange Glyphs;
-
-		[FieldOffset(84)]
+		public byte BidiLevel;
 		public LineBreakpoint Breakpoint;
 
-		[FieldOffset(96)]
-		public double PointSize;
-
-		[FieldOffset(104)]
-		public byte BidiLevel;
-
-		[FieldOffset(108)]
-		public Alignment VAlignment;
-
-		[FieldOffset(112)]
+		public IndexedRange Characters;
+		public ContentType ContentType;
+		public Rectangle Floater;
 		public FontHandle Font;
+
+		public GlyphRange Glyphs;
+		public Alignment HAlignment;
+
+		public float PointSize;
+
+		public Alignment VAlignment;
 
 		public bool Equals(ShapedCluster other)
 		{
-			return other.BidiLevel == BidiLevel &&
-			       Equals(other.Font, Font) &&
-			       other.Characters.Equals(Characters) &&
-			       other.Glyphs.Equals(Glyphs) && other.Advance.Equals(Advance) &&
-			       other.Breakpoint.Equals(Breakpoint) &&
-			       other.ContentType == ContentType &&
-			       other.PointSize.Equals(PointSize) && other.HAlignment == HAlignment &&
-			       other.Floater.Equals(Floater) && other.VAlignment == VAlignment;
+			return other.BidiLevel == BidiLevel && Equals(other.Font, Font) &&
+			       other.Characters.Equals(Characters) && other.Glyphs.Equals(Glyphs) &&
+			       other.Advance.Equals(Advance) && other.Breakpoint.Equals(Breakpoint) &&
+			       other.ContentType == ContentType && other.PointSize.Equals(PointSize) &&
+			       other.HAlignment == HAlignment && other.Floater.Equals(Floater) &&
+			       other.VAlignment == VAlignment;
 		}
 
 		public override bool Equals(object obj)
