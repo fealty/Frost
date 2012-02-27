@@ -1,8 +1,18 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 using SharpDX.DirectWrite;
+
+using FontStretch = Frost.Formatting.FontStretch;
+using FontStyle = Frost.Formatting.FontStyle;
+using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX.Formatting
 {
@@ -10,36 +20,35 @@ namespace Frost.DirectX.Formatting
 	{
 		public const int CacheLimit = 20;
 
-		private readonly Dictionary<FontHandle, FontHandle.FontInfo> mCache;
-		private readonly Factory mFontDevice;
-		private readonly Dictionary<FontKey, FontHandle> mHandleCache;
-		private readonly FontCollection mSystemCollection;
+		private readonly Dictionary<FontHandle, FontHandle.FontInfo> _Cache;
+		private readonly Factory _FontDevice;
+		private readonly Dictionary<FontKey, FontHandle> _HandleCache;
+		private readonly FontCollection _SystemCollection;
 
 		public FontDevice()
 		{
-			mFontDevice = new Factory(FactoryType.Isolated);
+			_FontDevice = new Factory(FactoryType.Isolated);
 
-			mSystemCollection = mFontDevice.GetSystemFontCollection(false);
+			_SystemCollection = _FontDevice.GetSystemFontCollection(false);
 
-			mCache = new Dictionary<FontHandle, FontHandle.FontInfo>();
-			mHandleCache = new Dictionary<FontKey, FontHandle>();
+			_Cache = new Dictionary<FontHandle, FontHandle.FontInfo>();
+			_HandleCache = new Dictionary<FontKey, FontHandle>();
 		}
 
 		public Factory Factory
 		{
-			get { return mFontDevice; }
+			get { return _FontDevice; }
 		}
 
 		public void Dispose()
 		{
 			Dispose(true);
-
-			GC.SuppressFinalize(this);
 		}
 
-		public FontHandle FindFont(
-			string family, FontStyle style, FontWeight weight, FontStretch stretch)
+		public FontHandle FindFont(string family, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
+			Contract.Requires(!String.IsNullOrEmpty(family));
+
 			FontKey key;
 
 			key.Family = family;
@@ -49,64 +58,63 @@ namespace Frost.DirectX.Formatting
 
 			FontHandle handle;
 
-			if(mHandleCache.TryGetValue(key, out handle))
+			if(_HandleCache.TryGetValue(key, out handle))
 			{
 				return handle;
 			}
 
-			handle = new FontHandle(
-				ResolveHandle, family, style, weight, stretch);
+			handle = new FontHandle(ResolveHandle, family, style, weight, stretch);
 
-			if(mHandleCache.Count == CacheLimit)
+			if(_HandleCache.Count == CacheLimit)
 			{
-				var item = mHandleCache.First();
+				var item = _HandleCache.First();
 
-				mHandleCache.Remove(item.Key);
+				_HandleCache.Remove(item.Key);
 			}
 
-			mHandleCache.Add(key, handle);
+			_HandleCache.Add(key, handle);
 
 			return handle;
 		}
 
 		private FontHandle.FontInfo ResolveHandle(FontHandle handle)
 		{
+			Contract.Requires(handle != null);
+
 			FontHandle.FontInfo info;
 
-			if(mCache.TryGetValue(handle, out info))
+			if(_Cache.TryGetValue(handle, out info))
 			{
 				return info;
 			}
 
 			int familyIndex;
 
-			mSystemCollection.FindFamilyName(handle.Family, out familyIndex);
+			_SystemCollection.FindFamilyName(handle.Family, out familyIndex);
 
 			if(familyIndex == int.MaxValue)
 			{
 				familyIndex = 0;
 			}
 
-			using(var family = mSystemCollection.GetFontFamily(familyIndex))
+			using(var family = _SystemCollection.GetFontFamily(familyIndex))
 			{
 				Font font = family.GetFirstMatchingFont(
-					handle.Weight.ToDirectWrite(),
-					handle.Stretch.ToDirectWrite(),
-					handle.Style.ToDirectWrite());
+					handle.Weight.ToDirectWrite(), handle.Stretch.ToDirectWrite(), handle.Style.ToDirectWrite());
 
 				info = new FontHandle.FontInfo(font);
 			}
 
-			if(mCache.Count == CacheLimit)
+			if(_Cache.Count == CacheLimit)
 			{
-				var firstItem = mCache.First();
+				var firstItem = _Cache.First();
 
-				mCache.Remove(firstItem.Key);
+				_Cache.Remove(firstItem.Key);
 
 				firstItem.Value.Dispose();
 			}
 
-			mCache.Add(handle, info);
+			_Cache.Add(handle, info);
 
 			return info;
 		}
@@ -115,15 +123,15 @@ namespace Frost.DirectX.Formatting
 		{
 			if(disposing)
 			{
-				foreach(var item in mCache)
+				foreach(var item in _Cache)
 				{
 					item.Value.Dispose();
 				}
 
-				mCache.Clear();
+				_Cache.Clear();
 
-				mSystemCollection.Dispose();
-				mFontDevice.Dispose();
+				_SystemCollection.Dispose();
+				_FontDevice.Dispose();
 			}
 		}
 
@@ -171,11 +179,6 @@ namespace Frost.DirectX.Formatting
 			{
 				return !left.Equals(right);
 			}
-		}
-
-		~FontDevice()
-		{
-			Dispose(false);
 		}
 	}
 }
