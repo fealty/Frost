@@ -6,46 +6,46 @@
 using System;
 using System.Diagnostics.Contracts;
 
+using Frost.Formatting;
+
 namespace Frost.DirectX.Formatting
 {
 	public sealed class TextPipeline : IDisposable
 	{
-		private readonly Aggregator mAggregator;
-		private readonly AggregatorSink mAggregatorSink;
-		private readonly FontDevice mFontDevice;
-		private readonly Formatter mFormatter;
-		private readonly FormatterSink mFormatterSink;
-		private readonly TextGeometryCache mGeometryCache;
-		private readonly Shaper mShaper;
-		private readonly ShaperSink mShaperSink;
+		private readonly Aggregator _Aggregator;
+		private readonly AggregatorSink _AggregatorSink;
+		private readonly FontDevice _FontDevice;
+		private readonly Formatter _Formatter;
+		private readonly FormatterSink _FormatterSink;
+		private readonly TextGeometryCache _GeometryCache;
+		private readonly Shaper _Shaper;
+		private readonly ShaperSink _ShaperSink;
 
-		private readonly Analyzer mTextAnalyzer;
-		private readonly Typesetter mTypesetter;
-		private readonly TypesetterSink mTypesetterSink;
+		private readonly Analyzer _TextAnalyzer;
+		private readonly Typesetter _Typesetter;
+		private readonly TypesetterSink _TypesetterSink;
 
 		public TextPipeline(FontDevice fontDevice)
 		{
 			Contract.Requires(fontDevice != null);
 
-			mFontDevice = fontDevice;
+			_FontDevice = fontDevice;
 
-			mTextAnalyzer = new Analyzer(mFontDevice.Factory);
-			mAggregatorSink = new AggregatorSink();
-			mAggregator = new Aggregator(mAggregatorSink);
-			mShaperSink = new ShaperSink();
-			mShaper = new Shaper(mFontDevice, mShaperSink);
-			mFormatterSink = new FormatterSink();
-			mFormatter = new Formatter(mFormatterSink);
-			mTypesetterSink = new TypesetterSink();
-			mTypesetter = new Typesetter(mTypesetterSink);
-			mGeometryCache = new TextGeometryCache();
+			_TextAnalyzer = new Analyzer(_FontDevice.Factory);
+			_AggregatorSink = new AggregatorSink();
+			_Aggregator = new Aggregator(_AggregatorSink);
+			_ShaperSink = new ShaperSink();
+			_Shaper = new Shaper(_FontDevice, _ShaperSink);
+			_FormatterSink = new FormatterSink();
+			_Formatter = new Formatter(_FormatterSink);
+			_TypesetterSink = new TypesetterSink();
+			_Typesetter = new Typesetter(_TypesetterSink);
+			_GeometryCache = new TextGeometryCache();
 		}
 
 		public void Dispose()
 		{
 			Dispose(true);
-
-			GC.SuppressFinalize(this);
 		}
 
 		public ITextMetrics Measure(
@@ -53,51 +53,46 @@ namespace Frost.DirectX.Formatting
 		{
 			Contract.Requires(paragraph != null);
 
-			mTextAnalyzer.BeginAnalysis(paragraph.Text, paragraph.Culture);
+			_TextAnalyzer.BeginAnalysis(paragraph.Text, paragraph.Culture);
 
-			foreach(TextRun run in paragraph)
+			foreach(TextRun run in paragraph.Runs)
 			{
-				mTextAnalyzer.SetCulture(run.Range, run.Culture);
-				mTextAnalyzer.SetNumberSubstitution(run.Range, null);
+				_TextAnalyzer.SetCulture(run.TextRange, run.Culture);
+				_TextAnalyzer.SetNumberSubstitution(run.TextRange, null);
 			}
 
-			mTextAnalyzer.Analyze(mAggregator);
+			_TextAnalyzer.Analyze(_Aggregator);
 
-			foreach(TextRun run in paragraph)
+			foreach(TextRun run in paragraph.Runs)
 			{
-				mAggregator.SetCulture(run.Range, run.Culture);
-				mAggregator.SetFamily(run.Range, run.Family);
-				mAggregator.SetFeatures(run.Range, run.Features);
-				mAggregator.SetInline(run.Range, run.Inline, run.HAlignment, run.VAlignment);
-				mAggregator.SetPointSize(run.Range, run.PointSize);
-				mAggregator.SetStretch(run.Range, run.Stretch);
-				mAggregator.SetStyle(run.Range, run.Style);
-				mAggregator.SetWeight(run.Range, run.Weight);
+				_Aggregator.SetCulture(run.TextRange, run.Culture);
+				_Aggregator.SetFamily(run.TextRange, run.Family);
+				_Aggregator.SetFeatures(run.TextRange, run.Features);
+				_Aggregator.SetInline(run.TextRange, run.Inline, run.HAlignment, run.VAlignment);
+				_Aggregator.SetPointSize(run.TextRange, run.PointSize);
+				_Aggregator.SetStretch(run.TextRange, run.Stretch);
+				_Aggregator.SetStyle(run.TextRange, run.Style);
+				_Aggregator.SetWeight(run.TextRange, run.Weight);
 			}
 
-			mShaper.Shape(mAggregatorSink);
+			_Shaper.Shape(_AggregatorSink);
 
-			mTypesetter.Break(mShaperSink, paragraph, region, obstructions);
+			_Typesetter.Break(_ShaperSink, paragraph, region, obstructions);
 
-			mFormatter.Format(mTypesetterSink);
+			_Formatter.Format(_TypesetterSink);
 
-			return new ParagraphMetrics(paragraph, mFormatterSink, mGeometryCache);
+			return new ParagraphMetrics(paragraph, _FormatterSink, _GeometryCache);
 		}
 
 		private void Dispose(bool disposing)
 		{
 			if(disposing)
 			{
-				mGeometryCache.Dispose();
-				mTextAnalyzer.Dispose();
-				mShaper.Dispose();
-				mAggregator.Dispose();
+				_GeometryCache.Dispose();
+				_TextAnalyzer.Dispose();
+				_Shaper.Dispose();
+				_Aggregator.Dispose();
 			}
-		}
-
-		~TextPipeline()
-		{
-			Dispose(false);
 		}
 	}
 }

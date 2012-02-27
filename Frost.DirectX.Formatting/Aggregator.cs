@@ -13,9 +13,9 @@ using SharpDX;
 using SharpDX.DirectWrite;
 
 using DxLineBreakpoint = SharpDX.DirectWrite.LineBreakpoint;
-using FontStretch = SharpDX.DirectWrite.FontStretch;
-using FontStyle = SharpDX.DirectWrite.FontStyle;
-using FontWeight = SharpDX.DirectWrite.FontWeight;
+using FontStretch = Frost.Formatting.FontStretch;
+using FontStyle = Frost.Formatting.FontStyle;
+using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX.Formatting
 {
