@@ -1,99 +1,96 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
 	internal sealed class TypesetterSink
 	{
-		private readonly List<TypesetCluster> mClusters;
-		private readonly List<TypesetGlyph> mGlyphs;
-		private readonly List<double> mLineLengths;
-		private readonly List<Rectangle> mLines;
+		private readonly List<TypesetCluster> _Clusters;
+		private readonly List<TypesetGlyph> _Glyphs;
+		private readonly List<float> _LineLengths;
+		private readonly List<Rectangle> _Lines;
 
-		private string mFullText;
-		private double mIndentation;
-		private Rectangle mLayoutRegion;
-		private double mLeading;
-		private double mLineHeight;
+		private string _FullText;
+		private float _Indentation;
+		private Rectangle _LayoutRegion;
+		private float _Leading;
+		private float _LineHeight;
 
 		public TypesetterSink()
 		{
-			mLines = new List<Rectangle>();
+			_Lines = new List<Rectangle>();
 
-			mGlyphs = new List<TypesetGlyph>();
+			_Glyphs = new List<TypesetGlyph>();
 
-			mClusters = new List<TypesetCluster>();
+			_Clusters = new List<TypesetCluster>();
 
-			mLineLengths = new List<double>();
+			_LineLengths = new List<float>();
 		}
 
 		public List<TypesetGlyph> Glyphs
 		{
-			get { return mGlyphs; }
+			get { return _Glyphs; }
 		}
 
 		public List<TypesetCluster> Clusters
 		{
-			get { return mClusters; }
+			get { return _Clusters; }
 		}
 
 		public List<Rectangle> Lines
 		{
-			get { return mLines; }
+			get { return _Lines; }
 		}
 
 		public Alignment Alignment { get; set; }
 
 		public Rectangle LayoutRegion
 		{
-			get { return mLayoutRegion; }
+			get { return _LayoutRegion; }
+			set { _LayoutRegion = value; }
+		}
+
+		public float LineHeight
+		{
+			get { return _LineHeight; }
 			set
 			{
-				Contract.Requires(value.X >= double.MinValue && value.X <= double.MaxValue);
-				Contract.Requires(value.Y >= double.MinValue && value.Y <= double.MaxValue);
-				Contract.Requires(value.Width >= 0.0 && value.Width <= double.MaxValue);
-				Contract.Requires(value.Height >= 0.0 && value.Height <= double.MaxValue);
+				Contract.Requires(Check.IsPositive(value));
 
-				mLayoutRegion = value;
+				_LineHeight = value;
 			}
 		}
 
-		public double LineHeight
+		public float Indentation
 		{
-			get { return mLineHeight; }
+			get { return _Indentation; }
 			set
 			{
-				Contract.Requires(value >= 0.0 && value <= double.MaxValue);
+				Contract.Requires(Check.IsPositive(value));
 
-				mLineHeight = value;
+				_Indentation = value;
 			}
 		}
 
-		public double Indentation
+		public float Leading
 		{
-			get { return mIndentation; }
+			get { return _Leading; }
 			set
 			{
-				Contract.Requires(value >= 0.0 && value <= double.MaxValue);
+				Contract.Requires(Check.IsPositive(value));
 
-				mIndentation = value;
+				_Leading = value;
 			}
 		}
 
-		public double Leading
+		public List<float> LineLengths
 		{
-			get { return mLeading; }
-			set
-			{
-				Contract.Requires(value >= 0.0 && value <= double.MaxValue);
-
-				mLeading = value;
-			}
-		}
-
-		public List<double> LineLengths
-		{
-			get { return mLineLengths; }
+			get { return _LineLengths; }
 		}
 
 		public string FullText
@@ -102,13 +99,13 @@ namespace Frost.DirectX.Formatting
 			{
 				Contract.Ensures(Contract.Result<string>() != null);
 
-				return mFullText;
+				return _FullText;
 			}
 			set
 			{
 				Contract.Requires(!string.IsNullOrEmpty(value));
 
-				mFullText = value;
+				_FullText = value;
 			}
 		}
 
@@ -136,12 +133,12 @@ namespace Frost.DirectX.Formatting
 		{
 			Contract.Requires(!string.IsNullOrEmpty(fullText));
 
-			mLines.Clear();
-			mGlyphs.Clear();
-			mClusters.Clear();
-			mLineLengths.Clear();
+			_Lines.Clear();
+			_Glyphs.Clear();
+			_Clusters.Clear();
+			_LineLengths.Clear();
 
-			mFullText = fullText;
+			_FullText = fullText;
 		}
 	}
 }
