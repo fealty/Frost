@@ -1,80 +1,78 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
 	internal sealed class FormatterSink
 	{
-		private readonly List<FormattedCluster> mClusters;
-		private readonly List<FormattedGlyph> mGlyphs;
-		private readonly List<FormattedRun> mRuns;
-		private double mBaselineOffset;
-		private string mFullText;
-		private Rectangle mLayoutRegion;
-		private double mLeading;
-		private double mLineHeight;
-		private double mStrikethroughOffset;
-		private float mStrikethroughThickness;
-		private double mUnderlineOffset;
-		private float mUnderlineThickness;
+		private readonly List<FormattedCluster> _Clusters;
+		private readonly List<FormattedGlyph> _Glyphs;
+		private readonly List<FormattedRun> _Runs;
+
+		private float _BaselineOffset;
+		private string _FullText;
+		private Rectangle _LayoutRegion;
+		private float _Leading;
+		private float _LineHeight;
+		private float _StrikethroughOffset;
+		private float _StrikethroughThickness;
+		private float _UnderlineOffset;
+		private float _UnderlineThickness;
 
 		public FormatterSink()
 		{
-			mRuns = new List<FormattedRun>();
+			_Runs = new List<FormattedRun>();
 
-			mGlyphs = new List<FormattedGlyph>();
+			_Glyphs = new List<FormattedGlyph>();
 
-			mClusters = new List<FormattedCluster>();
+			_Clusters = new List<FormattedCluster>();
 		}
 
 		public List<FormattedRun> Runs
 		{
-			get { return mRuns; }
+			get { return _Runs; }
 		}
 
 		public List<FormattedGlyph> Glyphs
 		{
-			get { return mGlyphs; }
+			get { return _Glyphs; }
 		}
 
 		public List<FormattedCluster> Clusters
 		{
-			get { return mClusters; }
+			get { return _Clusters; }
 		}
 
 		public Rectangle LayoutRegion
 		{
-			get { return mLayoutRegion; }
+			get { return _LayoutRegion; }
+			set { _LayoutRegion = value; }
+		}
+
+		public float LineHeight
+		{
+			get { return _LineHeight; }
 			set
 			{
-				Contract.Requires(value.X >= double.MinValue && value.X <= double.MaxValue);
-				Contract.Requires(value.Y >= double.MinValue && value.Y <= double.MaxValue);
-				Contract.Requires(value.Width >= 0.0 && value.Width <= double.MaxValue);
-				Contract.Requires(value.Height >= 0.0 && value.Height <= double.MaxValue);
+				Contract.Requires(Check.IsPositive(value));
 
-				mLayoutRegion = value;
+				_LineHeight = value;
 			}
 		}
 
-		public double LineHeight
+		public float Leading
 		{
-			get { return mLineHeight; }
+			get { return _Leading; }
 			set
 			{
-				Contract.Requires(value >= 0.0 && value <= double.MaxValue);
+				Contract.Requires(Check.IsPositive(value));
 
-				mLineHeight = value;
-			}
-		}
-
-		public double Leading
-		{
-			get { return mLeading; }
-			set
-			{
-				Contract.Requires(value >= 0.0 && value <= double.MaxValue);
-
-				mLeading = value;
+				_Leading = value;
 			}
 		}
 
@@ -84,68 +82,68 @@ namespace Frost.DirectX.Formatting
 			{
 				Contract.Ensures(Contract.Result<string>() != null);
 
-				return mFullText;
+				return _FullText;
 			}
 			set
 			{
 				Contract.Requires(!string.IsNullOrEmpty(value));
 
-				mFullText = value;
+				_FullText = value;
 			}
 		}
 
-		public double BaselineOffset
+		public float BaselineOffset
 		{
-			get { return mBaselineOffset; }
+			get { return _BaselineOffset; }
 			set
 			{
-				Contract.Requires(value >= double.MinValue && value <= double.MaxValue);
+				Contract.Requires(Check.IsFinite(value));
 
-				mBaselineOffset = value;
+				_BaselineOffset = value;
 			}
 		}
 
-		public double StrikethroughOffset
+		public float StrikethroughOffset
 		{
-			get { return mStrikethroughOffset; }
+			get { return _StrikethroughOffset; }
 			set
 			{
-				Contract.Requires(value >= double.MinValue && value <= double.MaxValue);
+				Contract.Requires(Check.IsFinite(value));
 
-				mStrikethroughOffset = value;
+				_StrikethroughOffset = value;
 			}
 		}
 
-		public double UnderlineOffset
+		public float UnderlineOffset
 		{
-			get { return mUnderlineOffset; }
+			get { return _UnderlineOffset; }
 			set
 			{
-				Contract.Requires(value >= double.MinValue && value <= double.MaxValue);
+				Contract.Requires(Check.IsFinite(value));
 
-				mUnderlineOffset = value;
+				_UnderlineOffset = value;
 			}
 		}
 
 		public float StrikethroughThickness
 		{
-			get { return mStrikethroughThickness; }
+			get { return _StrikethroughThickness; }
 			set
 			{
-				Contract.Requires(value >= 0.0f && value <= float.MaxValue);
+				Contract.Requires(Check.IsPositive(value));
 
-				mStrikethroughThickness = value;
+				_StrikethroughThickness = value;
 			}
 		}
 
 		public float UnderlineThickness
 		{
-			get { return mUnderlineThickness; }
+			get { return _UnderlineThickness; }
 			set
 			{
-				Contract.Requires(value >= 0.0f && value <= float.MaxValue);
+				Contract.Requires(Check.IsPositive(value));
 
-				mUnderlineThickness = value;
+				_UnderlineThickness = value;
 			}
 		}
 
@@ -173,11 +171,11 @@ namespace Frost.DirectX.Formatting
 		{
 			Contract.Requires(!string.IsNullOrEmpty(fullText));
 
-			mRuns.Clear();
-			mGlyphs.Clear();
-			mClusters.Clear();
+			_Runs.Clear();
+			_Glyphs.Clear();
+			_Clusters.Clear();
 
-			mFullText = fullText;
+			_FullText = fullText;
 		}
 	}
 }
