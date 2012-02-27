@@ -124,7 +124,9 @@ namespace Frost.DirectX
 
 			ComputeOffsetRegion(size, out offsetRegion);
 
-			region = new Rectangle(offsetRegion.Location, size);
+			region = new Rectangle(
+				offsetRegion.Location,
+				new Size(offsetRegion.Width + size.Width, offsetRegion.Height + size.Height));
 
 			Invalidate();
 
