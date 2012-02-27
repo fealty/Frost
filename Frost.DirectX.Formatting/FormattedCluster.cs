@@ -1,10 +1,17 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
+
+using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
 	public struct FormattedCluster : IEquatable<FormattedCluster>
 	{
-		public TextRange Characters;
+		public IndexedRange Characters;
 		public DisplayMode Display;
 		public GlyphRange Glyphs;
 		public Rectangle Region;
@@ -12,8 +19,7 @@ namespace Frost.DirectX.Formatting
 		public bool Equals(FormattedCluster other)
 		{
 			return other.Characters.Equals(Characters) && other.Region.Equals(Region) &&
-			       other.Glyphs.Equals(Glyphs) &&
-			       other.Display == Display;
+			       other.Glyphs.Equals(Glyphs) && other.Display == Display;
 		}
 
 		public override bool Equals(object obj)
