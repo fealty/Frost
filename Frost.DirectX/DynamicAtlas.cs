@@ -9,13 +9,14 @@ using System.Diagnostics.Contracts;
 using System.Threading;
 
 using Frost.Atlasing;
+using Frost.DirectX.Common;
 using Frost.Surfacing;
 
 namespace Frost.DirectX
 {
 	//TODO: add support for canvas-object association
-	public sealed class DynamicAtlas<T> : ISurfaceAtlas, IDisposable
-		where T : class, ISurface2D, IDisposable
+	public sealed class DynamicAtlas<T> : ISurfaceAtlas
+		where T : class, ISurface2D
 	{
 		private readonly Canvas _AtlasCanvas;
 		private readonly LinkedList<Rectangle> _FreeRegions;
@@ -85,10 +86,12 @@ namespace Frost.DirectX
 			_ChildReference = null;
 			_AtlasReference = null;
 
-			_Surface2D.Dispose();
+			IDisposable disposable = _Surface2D as IDisposable;
+
+			disposable.SafeDispose();
 		}
 
-		ISurface2D ISurfaceAtlas.Surface2D
+		ISurface2D Atlasing.ISurfaceAtlas.Surface2D
 		{
 			get { return _Surface2D; }
 		}
