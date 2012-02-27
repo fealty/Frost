@@ -7,11 +7,15 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 
 using Frost.Collections;
+using Frost.Formatting;
 
 using SharpDX;
 using SharpDX.DirectWrite;
 
 using DxLineBreakpoint = SharpDX.DirectWrite.LineBreakpoint;
+using FontStretch = SharpDX.DirectWrite.FontStretch;
+using FontStyle = SharpDX.DirectWrite.FontStyle;
+using FontWeight = SharpDX.DirectWrite.FontWeight;
 
 namespace Frost.DirectX.Formatting
 {
@@ -99,7 +103,7 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
-		public void SetFeatures(IndexedRange textRange, FontFeature[] features)
+		public void SetFeatures(IndexedRange textRange, FontFeatureCollection features)
 		{
 			Contract.Assert(textRange.IsWithin(_OutputSink.FullText));
 
