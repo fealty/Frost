@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System.Collections.Generic;
 
 namespace Frost.DirectX.Formatting
 {
 	internal static class IndexingHelpers
 	{
-		public static bool TryGetNextItem<T>(
-			this List<T> @this, int currentIndex, out T item)
+		public static bool TryGetNextItem<T>(this List<T> @this, int currentIndex, out T item)
 		{
 			if(currentIndex >= -1 && currentIndex + 1 < @this.Count)
 			{
@@ -19,8 +23,7 @@ namespace Frost.DirectX.Formatting
 			return false;
 		}
 
-		public static bool TryGetPreviousItem<T>(
-			this List<T> @this, int currentIndex, out T item)
+		public static bool TryGetPreviousItem<T>(this List<T> @this, int currentIndex, out T item)
 		{
 			if(currentIndex >= 1 && currentIndex - 1 < @this.Count)
 			{
@@ -34,8 +37,7 @@ namespace Frost.DirectX.Formatting
 			return false;
 		}
 
-		public static bool TryCurrentOrDefault<T>(
-			this List<T> @this, int currentIndex, out T item)
+		public static bool TryCurrentOrDefault<T>(this List<T> @this, int currentIndex, out T item)
 		{
 			if(currentIndex >= 0 && currentIndex < @this.Count)
 			{
