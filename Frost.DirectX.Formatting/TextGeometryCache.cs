@@ -1,6 +1,10 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 using Frost.Shaping;
@@ -11,38 +15,33 @@ namespace Frost.DirectX.Formatting
 {
 	internal sealed class TextGeometryCache : IDisposable
 	{
-		private readonly Dictionary<FontHandle, Dictionary<TextGeometryKey, Geometry>>
-			mCache;
+		private readonly Dictionary<FontHandle, Dictionary<TextGeometryKey, Geometry>> _Cache;
 
-		private readonly TextGeometrySink mSink;
+		private readonly TextGeometrySink _Sink;
 
-		private float[] mGlyphAdvances;
-		private short[] mGlyphIndices;
+		private float[] _GlyphAdvances;
+		private short[] _GlyphIndices;
 
-		private GlyphOffset[] mGlyphOffsets;
+		private GlyphOffset[] _GlyphOffsets;
 
 		public TextGeometryCache()
 		{
-			mGlyphIndices = new short[0];
-			mGlyphAdvances = new float[0];
+			_GlyphIndices = new short[0];
+			_GlyphAdvances = new float[0];
 
-			mGlyphOffsets = new GlyphOffset[0];
+			_GlyphOffsets = new GlyphOffset[0];
 
-			mCache = new Dictionary<FontHandle, Dictionary<TextGeometryKey, Geometry>>();
+			_Cache = new Dictionary<FontHandle, Dictionary<TextGeometryKey, Geometry>>();
 
-			mSink = new TextGeometrySink();
+			_Sink = new TextGeometrySink();
 		}
 
 		public void Dispose()
 		{
-			mSink.Dispose();
+			_Sink.Dispose();
 		}
 
-		public Geometry Retrieve(
-			int clusterIndex,
-			byte bidiLevel,
-			FontHandle font,
-			FormatterSink input)
+		public Geometry Retrieve(int clusterIndex, byte bidiLevel, FontHandle font, FormatterSink input)
 		{
 			Contract.Requires(clusterIndex >= 0);
 			Contract.Requires(font != null);
@@ -50,29 +49,29 @@ namespace Frost.DirectX.Formatting
 
 			FormattedCluster cluster = input.Clusters[clusterIndex];
 
-			_ResizeInternalBuffers(cluster.Glyphs.Length);
+			ResizeInternalBuffers(cluster.Glyphs.Length);
 
 			int index = 0;
 
 			for(int i = cluster.Glyphs.Start; i <= cluster.Glyphs.End; ++i)
 			{
-				mGlyphAdvances[index] = Convert.ToSingle(cluster.Region.Width);
+				_GlyphAdvances[index] = Convert.ToSingle(cluster.Region.Width);
 
-				mGlyphIndices[index] = input.Glyphs[i].Index;
-				mGlyphOffsets[index] = input.Glyphs[i].Offset;
+				_GlyphIndices[index] = input.Glyphs[i].Index;
+				_GlyphOffsets[index] = input.Glyphs[i].Offset;
 
 				++index;
 			}
 
 			TextGeometryKey key;
 
-			key.Advances = mGlyphAdvances;
-			key.Indices = mGlyphIndices;
-			key.Offsets = mGlyphOffsets;
+			key.Advances = _GlyphAdvances;
+			key.Indices = _GlyphIndices;
+			key.Offsets = _GlyphOffsets;
 
 			Dictionary<TextGeometryKey, Geometry> cacheForFont;
 
-			if(mCache.TryGetValue(font, out cacheForFont))
+			if(_Cache.TryGetValue(font, out cacheForFont))
 			{
 				Geometry result;
 
@@ -85,10 +84,10 @@ namespace Frost.DirectX.Formatting
 			{
 				cacheForFont = new Dictionary<TextGeometryKey, Geometry>();
 
-				mCache.Add(font, cacheForFont);
+				_Cache.Add(font, cacheForFont);
 			}
 
-			Geometry geometry = mSink.CreateGeometry(key, bidiLevel, font);
+			Geometry geometry = _Sink.CreateGeometry(key, bidiLevel, font);
 
 			TextGeometryKey newKey;
 
@@ -101,16 +100,16 @@ namespace Frost.DirectX.Formatting
 			return geometry;
 		}
 
-		private void _ResizeInternalBuffers(int count)
+		private void ResizeInternalBuffers(int count)
 		{
 			Contract.Requires(count >= 0);
 
-			if(count != mGlyphIndices.Length)
+			if(count != _GlyphIndices.Length)
 			{
-				mGlyphIndices = new short[count];
-				mGlyphAdvances = new float[count];
+				_GlyphIndices = new short[count];
+				_GlyphAdvances = new float[count];
 
-				mGlyphOffsets = new GlyphOffset[count];
+				_GlyphOffsets = new GlyphOffset[count];
 			}
 		}
 	}
