@@ -1,7 +1,12 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Diagnostics.Contracts;
 
-namespace Cabbage.Formatting
+namespace Frost.DirectX.Formatting
 {
 	public struct LineFitness : IEquatable<LineFitness>
 	{
@@ -10,7 +15,7 @@ namespace Cabbage.Formatting
 		public static readonly LineFitness Loose;
 		public static readonly LineFitness VeryLoose;
 
-		private readonly int mFitnessClass;
+		private readonly int _FitnessClass;
 
 		static LineFitness()
 		{
@@ -24,17 +29,17 @@ namespace Cabbage.Formatting
 		{
 			Contract.Requires(fitness >= 0 && fitness < 4);
 
-			mFitnessClass = fitness;
+			_FitnessClass = fitness;
 		}
 
 		public bool Equals(LineFitness other)
 		{
-			return other.mFitnessClass == mFitnessClass;
+			return other._FitnessClass == _FitnessClass;
 		}
 
 		public override string ToString()
 		{
-			switch(mFitnessClass)
+			switch(_FitnessClass)
 			{
 				case 0:
 					return "VeryTight";
@@ -49,12 +54,12 @@ namespace Cabbage.Formatting
 
 		public int MeasureFitnessGap(LineFitness other)
 		{
-			return Math.Abs(mFitnessClass - other.mFitnessClass);
+			return Math.Abs(_FitnessClass - other._FitnessClass);
 		}
 
 		public static LineFitness FromLineRatio(double ratio)
 		{
-			Contract.Requires(ratio >= double.MinValue && ratio <= double.MaxValue);
+			Contract.Requires(Check.IsFinite(ratio));
 
 			if(ratio < -0.5)
 			{
@@ -81,12 +86,12 @@ namespace Cabbage.Formatting
 
 		public override int GetHashCode()
 		{
-			return mFitnessClass;
+			return _FitnessClass;
 		}
 
 		public static implicit operator int(LineFitness fitness)
 		{
-			return fitness.mFitnessClass;
+			return fitness._FitnessClass;
 		}
 
 		public static bool operator ==(LineFitness left, LineFitness right)
