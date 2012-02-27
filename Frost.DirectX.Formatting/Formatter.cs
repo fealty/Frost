@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
+using Frost.Collections;
 using Frost.Formatting;
 
 using DxFontMetrics = SharpDX.DirectWrite.FontMetrics;
@@ -61,7 +62,7 @@ namespace Frost.DirectX.Formatting
 			activeRun.Clusters = ClusterRange.Empty;
 			activeRun.EmSize = Convert.ToSingle(input.Clusters[0].Advance.Height);
 			activeRun.Font = input.Clusters[0].Font;
-			activeRun.TextRange = TextRange.Empty;
+			activeRun.TextRange = IndexedRange.Empty;
 			activeRun.PointSize = input.Clusters[0].PointSize;
 			activeRun.LineNumber = input.Clusters[0].LineNumber;
 
@@ -88,10 +89,10 @@ namespace Frost.DirectX.Formatting
 				}
 				else
 				{
-					start = input.Clusters[activeRun.Clusters.Start].Characters.Start;
-					end = input.Clusters[activeRun.Clusters.End].Characters.End;
+					start = input.Clusters[activeRun.Clusters.Start].Characters.StartIndex;
+					end = input.Clusters[activeRun.Clusters.End].Characters.LastIndex;
 
-					activeRun.TextRange = new TextRange(start, (end - start) + 1);
+					activeRun.TextRange = new IndexedRange(start, (end - start) + 1);
 
 					yield return activeRun;
 
@@ -101,10 +102,10 @@ namespace Frost.DirectX.Formatting
 				}
 			}
 
-			start = input.Clusters[activeRun.Clusters.Start].Characters.Start;
-			end = input.Clusters[activeRun.Clusters.End].Characters.End;
+			start = input.Clusters[activeRun.Clusters.Start].Characters.StartIndex;
+			end = input.Clusters[activeRun.Clusters.End].Characters.LastIndex;
 
-			activeRun.TextRange = new TextRange(start, (end - start) + 1);
+			activeRun.TextRange = new IndexedRange(start, (end - start) + 1);
 
 			yield return activeRun;
 		}
@@ -120,7 +121,7 @@ namespace Frost.DirectX.Formatting
 			activeRun.EmSize = Convert.ToSingle(input.Clusters[0].Advance.Height);
 			activeRun.Font = input.Clusters[0].Font;
 			activeRun.PointSize = input.Clusters[0].PointSize;
-			activeRun.TextRange = TextRange.Empty;
+			activeRun.TextRange = IndexedRange.Empty;
 			activeRun.LineNumber = input.Clusters[0].LineNumber;
 
 			for(int i = 0; i < input.Clusters.Count; ++i)
