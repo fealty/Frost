@@ -142,18 +142,12 @@ namespace Frost.DirectX.Common
 			Contract.Requires(geometry != null);
 			Contract.Ensures(Contract.ValueAtReturn(out result) != null);
 
-			IGeometrySink @this = this;
-
 			try
 			{
-				@this.Begin();
-
 				geometry.Extract(this);
 			}
 			finally
 			{
-				@this.End();
-
 				result = _Path;
 
 				_PathSink = null;
