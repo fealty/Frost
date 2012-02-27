@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
