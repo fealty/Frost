@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 
 using SharpDX.DirectWrite;
 
@@ -13,9 +18,8 @@ namespace Frost.DirectX.Formatting
 
 		public bool Equals(ShapedGlyph other)
 		{
-			return other.Advance.Equals(Advance) &&
-			       other.GlyphProperties.Equals(GlyphProperties) && other.Index == Index &&
-			       other.Offset.Equals(Offset);
+			return other.Advance.Equals(Advance) && other.GlyphProperties.Equals(GlyphProperties) &&
+			       other.Index == Index && other.Offset.Equals(Offset);
 		}
 
 		public override bool Equals(object obj)
