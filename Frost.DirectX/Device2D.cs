@@ -495,8 +495,9 @@ namespace Frost.DirectX
 
 		private void DumpAtlases<T>(string path, SafeList<T> atlasCollections) where T : ISurfaceAtlas
 		{
-			Contract.Requires(path != null);
 			Contract.Requires(atlasCollections != null);
+
+			path = path ?? string.Empty;
 
 			int index = 0;
 

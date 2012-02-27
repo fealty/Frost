@@ -57,8 +57,6 @@ namespace Frost
 
 		public void DumpSurfaces(string path, SurfaceUsage usage)
 		{
-			Contract.Requires(!string.IsNullOrWhiteSpace(path));
-
 			OnDumpSurfaces(path, usage);
 		}
 
