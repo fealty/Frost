@@ -1,55 +1,46 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.Runtime.InteropServices;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
 
-namespace Cabbage.Formatting
+using System;
+using System.Diagnostics.Contracts;
+
+namespace Frost.DirectX.Formatting
 {
-	[StructLayout(LayoutKind.Explicit)]
 	public struct LineItem
 	{
 		public static readonly double Infinity = 10000.0;
 
-		[FieldOffset(0)]
 		public readonly Demerits Flagged;
 
-		[FieldOffset(8)]
 		public readonly Demerits Penalty;
-
-		[FieldOffset(0)]
-		public readonly double Stretch;
-
-		[FieldOffset(8)]
-		public readonly double Shrink;
-
-		[FieldOffset(16)]
-		public readonly double Width;
-
-		[FieldOffset(24)]
 		public readonly int Position;
 
-		[FieldOffset(28)]
-		private readonly ItemType mType;
+		public readonly double Shrink;
+		public readonly double Stretch;
+
+		public readonly double Width;
+
+		private readonly ItemType _Type;
 
 		private LineItem(double width, int position) : this()
 		{
-			Contract.Requires(width >= 0.0 && width <= double.MaxValue);
-			Contract.Requires(position >= int.MinValue && position <= int.MaxValue);
+			Contract.Requires(Check.IsPositive(width));
 
-			mType = ItemType.Box;
+			_Type = ItemType.Box;
 
 			Width = width;
 			Position = position;
 		}
 
-		private LineItem(
-			double width, int position, double stretch, double shrink) : this()
+		private LineItem(double width, int position, double stretch, double shrink) : this()
 		{
-			Contract.Requires(width >= 0.0 && width <= double.MaxValue);
-			Contract.Requires(position >= int.MinValue && position <= int.MaxValue);
-			Contract.Requires(stretch >= double.MinValue && stretch <= double.MaxValue);
-			Contract.Requires(shrink >= double.MinValue && shrink <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(width));
+			Contract.Requires(Check.IsFinite(stretch));
+			Contract.Requires(Check.IsFinite(shrink));
 
-			mType = ItemType.Glue;
+			_Type = ItemType.Glue;
 
 			Width = width;
 			Position = position;
@@ -57,13 +48,11 @@ namespace Cabbage.Formatting
 			Shrink = shrink;
 		}
 
-		private LineItem(
-			double width, int position, Demerits penalty, Demerits flagged) : this()
+		private LineItem(double width, int position, Demerits penalty, Demerits flagged) : this()
 		{
-			Contract.Requires(width >= 0.0 && width <= double.MaxValue);
-			Contract.Requires(position >= int.MinValue && position <= int.MaxValue);
+			Contract.Requires(Check.IsPositive(width));
 
-			mType = ItemType.Penalty;
+			_Type = ItemType.Penalty;
 
 			Width = width;
 			Position = position;
@@ -73,17 +62,17 @@ namespace Cabbage.Formatting
 
 		public bool IsGlue
 		{
-			get { return mType == ItemType.Glue; }
+			get { return _Type == ItemType.Glue; }
 		}
 
 		public bool IsBox
 		{
-			get { return mType == ItemType.Box; }
+			get { return _Type == ItemType.Box; }
 		}
 
 		public bool IsPenalty
 		{
-			get { return mType == ItemType.Penalty; }
+			get { return _Type == ItemType.Penalty; }
 		}
 
 		public bool IsForcedBreak
@@ -101,19 +90,16 @@ namespace Cabbage.Formatting
 
 		public static LineItem CreateBox(double width, int position)
 		{
-			Contract.Requires(width >= 0.0 && width <= double.MaxValue);
-			Contract.Requires(position >= int.MinValue && position <= int.MaxValue);
+			Contract.Requires(Check.IsPositive(width));
 
 			return new LineItem(width, position);
 		}
 
-		public static LineItem CreateGlue(
-			double width, int position, double shrink, double stretch)
+		public static LineItem CreateGlue(double width, int position, double shrink, double stretch)
 		{
-			Contract.Requires(width >= 0.0 && width <= double.MaxValue);
-			Contract.Requires(position >= int.MinValue && position <= int.MaxValue);
-			Contract.Requires(shrink >= double.MinValue && shrink <= double.MaxValue);
-			Contract.Requires(stretch >= double.MinValue && stretch <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(width));
+			Contract.Requires(Check.IsFinite(shrink));
+			Contract.Requires(Check.IsFinite(stretch));
 
 			return new LineItem(width, position, stretch, shrink);
 		}
@@ -121,24 +107,21 @@ namespace Cabbage.Formatting
 		public static LineItem CreatePenalty(
 			double width, int position, Demerits penalty, Demerits flagged)
 		{
-			Contract.Requires(width >= 0.0 && width <= double.MaxValue);
-			Contract.Requires(position >= int.MinValue && position <= int.MaxValue);
+			Contract.Requires(Check.IsPositive(width));
 
 			return new LineItem(width, position, penalty, flagged);
 		}
 
 		public double ComputeWidth(double lineRatio)
 		{
-			Contract.Requires(
-				lineRatio >= double.MinValue && lineRatio <= double.MaxValue);
+			Contract.Requires(Check.IsFinite(lineRatio));
 
 			return ComputeWidth(lineRatio, false);
 		}
 
 		public double ComputeWidth(double lineRatio, bool isPenaltyActive)
 		{
-			Contract.Requires(
-				lineRatio >= double.MinValue && lineRatio <= double.MaxValue);
+			Contract.Requires(Check.IsFinite(lineRatio));
 
 			if(IsGlue)
 			{
@@ -160,6 +143,8 @@ namespace Cabbage.Formatting
 
 		public Demerits ComputeDemerits(double lineRatio)
 		{
+			Contract.Requires(Check.IsFinite(lineRatio));
+
 			double badness = 100.0 * Math.Pow(Math.Abs(lineRatio), 3.0);
 
 			if(IsPenalty && Penalty >= 0.0)
@@ -187,24 +172,16 @@ namespace Cabbage.Formatting
 
 		public override string ToString()
 		{
-			switch(mType)
+			switch(_Type)
 			{
 				case ItemType.Box:
-					return string.Format("Item: {0}, Width: {1}", mType, Width);
+					return string.Format("Item: {0}, Width: {1}", _Type, Width);
 				case ItemType.Glue:
 					return string.Format(
-						"Item: {0}, Width: {1}, Stretch: {2}, Shrink: {3}",
-						mType,
-						Width,
-						Stretch,
-						Shrink);
+						"Item: {0}, Width: {1}, Stretch: {2}, Shrink: {3}", _Type, Width, Stretch, Shrink);
 				case ItemType.Penalty:
 					return string.Format(
-						"Item: {0}, Width: {1}, Penalty: {2}, Flagged: {3}",
-						mType,
-						Width,
-						Penalty,
-						Flagged);
+						"Item: {0}, Width: {1}, Penalty: {2}, Flagged: {3}", _Type, Width, Penalty, Flagged);
 			}
 
 			return "Item: Untyped";
