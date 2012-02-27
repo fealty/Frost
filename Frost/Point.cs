@@ -116,6 +116,24 @@ namespace Frost
 			return Convert.ToSingle(Math.Sqrt((dx * dx) + (dy * dy)));
 		}
 
+		public float DistanceTo(Point lineStart, Point lineEnd)
+		{
+			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
+
+			Point intersection = FindIntersectionWith(lineStart, lineEnd);
+
+			return DistanceTo(intersection);
+		}
+
+		public float DistanceTo(Point lineStart, Point lineEnd, out Point intersection)
+		{
+			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
+
+			intersection = FindIntersectionWith(lineStart, lineEnd);
+
+			return DistanceTo(intersection);
+		}
+
 		public float SquaredDistanceTo(Point point)
 		{
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
@@ -124,6 +142,24 @@ namespace Frost
 			double dy = point.Y - _Y;
 
 			return Convert.ToSingle((dx * dx) + (dy * dy));
+		}
+
+		public float SquaredDistanceTo(Point lineStart, Point lineEnd)
+		{
+			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
+
+			Point intersection = FindIntersectionWith(lineStart, lineEnd);
+
+			return SquaredDistanceTo(intersection);
+		}
+
+		public float SquaredDistanceTo(Point lineStart, Point lineEnd, out Point intersection)
+		{
+			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
+
+			intersection = FindIntersectionWith(lineStart, lineEnd);
+
+			return SquaredDistanceTo(intersection);
 		}
 
 		public Point FindIntersectionWith(Point lineStart, Point lineEnd)
