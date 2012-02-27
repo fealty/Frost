@@ -1,26 +1,57 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
 
-namespace Cabbage.Formatting
+using System;
+using System.Diagnostics.Contracts;
+
+namespace Frost.DirectX.Formatting
 {
 	public struct BreakIndex : IEquatable<BreakIndex>
 	{
-		public readonly int Index;
-		public readonly double Ratio;
+		private readonly int _Index;
+		private readonly double _Ratio;
 
 		public BreakIndex(int index, double ratio)
 		{
-			Index = index;
-			Ratio = ratio;
+			Contract.Requires(index >= 0);
+			Contract.Requires(Check.IsFinite(ratio));
+
+			_Index = index;
+			_Ratio = ratio;
+		}
+
+		public double Ratio
+		{
+			get
+			{
+				Contract.Ensures(Check.IsFinite(Contract.Result<double>()));
+				Contract.Ensures(Contract.Result<double>().Equals(_Ratio));
+				
+				return _Ratio;
+			}
+		}
+
+		public int Index
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<int>() >= 0);
+				Contract.Ensures(Contract.Result<int>().Equals(_Index));
+				
+				return _Index;
+			}
 		}
 
 		public bool Equals(BreakIndex other)
 		{
-			return other.Index == Index && other.Ratio.Equals(Ratio);
+			return other._Index == _Index && other._Ratio.Equals(_Ratio);
 		}
 
 		public override string ToString()
 		{
-			return string.Format("Index: {0}, Ratio: {1}", Index, Ratio);
+			return string.Format("Index: {0}, Ratio: {1}", _Index, _Ratio);
 		}
 
 		public override bool Equals(object obj)
@@ -37,7 +68,7 @@ namespace Cabbage.Formatting
 		{
 			unchecked
 			{
-				return (Index * 397) ^ Ratio.GetHashCode();
+				return (_Index * 397) ^ _Ratio.GetHashCode();
 			}
 		}
 
