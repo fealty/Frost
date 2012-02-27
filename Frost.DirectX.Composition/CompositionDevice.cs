@@ -37,7 +37,7 @@ namespace Frost.DirectX.Composition
 			_Device3D = new Device1(
 				newAdapter, DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug, FeatureLevel.Level_10_0);
 #else
-			mDevice3D = new Device1(
+			_Device3D = new Device1(
 				newAdapter,
 				DeviceCreationFlags.BgraSupport,
 				FeatureLevel.Level_10_0);
