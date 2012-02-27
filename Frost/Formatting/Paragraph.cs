@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Text;
 
 using Frost.Collections;
+using Frost.Painting;
 
 namespace Frost.Formatting
 {
@@ -70,6 +71,51 @@ namespace Frost.Formatting
 			_Spacing = spacing;
 			_Tracking = tracking;
 			_Runs = runs;
+		}
+
+		public static void Draw(Painter painterSink, ITextMetrics metrics)
+		{
+			Contract.Requires(painterSink != null);
+			Contract.Requires(metrics != null);
+
+			Draw(painterSink, metrics, metrics.Paragraph.Text);
+		}
+
+		public static void Draw(Painter painterSink, ITextMetrics metrics, IndexedRange range)
+		{
+			Contract.Requires(painterSink != null);
+			Contract.Requires(metrics != null);
+
+			for (int i = range.StartIndex; i <= range.LastIndex; ++i)
+			{
+				if (metrics.IsClusterStart(i))
+				{
+					if (metrics.IsClusterVisible(i))
+					{
+						Rectangle region = metrics.Regions[i];
+
+						Point baseline = new Point(
+							region.Left + metrics.BaselineOffset.Width, region.Top + metrics.BaselineOffset.Height);
+
+						if (metrics.IsRightToLeft(i))
+						{
+							baseline = new Point(region.Right + metrics.BaselineOffset.Width, baseline.Y);
+						}
+
+						painterSink.SaveState();
+
+						painterSink.Translate(baseline.X, baseline.Y);
+
+						Outline outline = metrics.Outlines[i];
+
+						painterSink.Scale(outline.EmSize, outline.EmSize);
+
+						painterSink.Fill(outline.NormalizedOutline);
+
+						painterSink.RestoreState();
+					}
+				}
+			}
 		}
 
 		public float Tracking
