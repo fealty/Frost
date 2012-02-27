@@ -1,29 +1,35 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
 	internal sealed class ShaperSink
 	{
-		private readonly List<ShapedCluster> mClusters;
-		private readonly List<ShapedGlyph> mGlyphs;
-		private string mFullText;
+		private readonly List<ShapedCluster> _Clusters;
+		private readonly List<ShapedGlyph> _Glyphs;
+
+		private string _FullText;
 
 		public ShaperSink()
 		{
-			mGlyphs = new List<ShapedGlyph>();
+			_Glyphs = new List<ShapedGlyph>();
 
-			mClusters = new List<ShapedCluster>();
+			_Clusters = new List<ShapedCluster>();
 		}
 
 		public List<ShapedGlyph> Glyphs
 		{
-			get { return mGlyphs; }
+			get { return _Glyphs; }
 		}
 
 		public List<ShapedCluster> Clusters
 		{
-			get { return mClusters; }
+			get { return _Clusters; }
 		}
 
 		public string FullText
@@ -32,13 +38,13 @@ namespace Frost.DirectX.Formatting
 			{
 				Contract.Ensures(Contract.Result<string>() != null);
 
-				return mFullText;
+				return _FullText;
 			}
 			set
 			{
 				Contract.Requires(!string.IsNullOrEmpty(FullText));
 
-				mFullText = value;
+				_FullText = value;
 			}
 		}
 
@@ -66,10 +72,10 @@ namespace Frost.DirectX.Formatting
 		{
 			Contract.Requires(!string.IsNullOrEmpty(fullText));
 
-			mGlyphs.Clear();
-			mClusters.Clear();
+			_Glyphs.Clear();
+			_Clusters.Clear();
 
-			mFullText = fullText;
+			_FullText = fullText;
 		}
 	}
 }
