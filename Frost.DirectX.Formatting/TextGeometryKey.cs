@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 
 using SharpDX.DirectWrite;
 
@@ -13,15 +18,15 @@ namespace Frost.DirectX.Formatting
 
 		public bool Equals(TextGeometryKey other)
 		{
-			if (!ReferenceEquals(Advances, other.Advances))
+			if(!ReferenceEquals(Advances, other.Advances))
 			{
-				if (Advances != null)
+				if(Advances != null)
 				{
-					if (Advances.Length == other.Advances.Length)
+					if(Advances.Length == other.Advances.Length)
 					{
-						for (int i = 0; i < Advances.Length; ++i)
+						for(int i = 0; i < Advances.Length; ++i)
 						{
-							if (!Advances[i].Equals(other.Advances[i]))
+							if(!Advances[i].Equals(other.Advances[i]))
 							{
 								return false;
 							}
@@ -34,15 +39,15 @@ namespace Frost.DirectX.Formatting
 				}
 			}
 
-			if (!ReferenceEquals(Indices, other.Indices))
+			if(!ReferenceEquals(Indices, other.Indices))
 			{
-				if (Indices != null)
+				if(Indices != null)
 				{
-					if (Indices.Length == other.Indices.Length)
+					if(Indices.Length == other.Indices.Length)
 					{
-						for (int i = 0; i < Indices.Length; ++i)
+						for(int i = 0; i < Indices.Length; ++i)
 						{
-							if (!Indices[i].Equals(other.Indices[i]))
+							if(!Indices[i].Equals(other.Indices[i]))
 							{
 								return false;
 							}
@@ -55,18 +60,16 @@ namespace Frost.DirectX.Formatting
 				}
 			}
 
-			if (!ReferenceEquals(Offsets, other.Offsets))
+			if(!ReferenceEquals(Offsets, other.Offsets))
 			{
-				if (Offsets != null)
+				if(Offsets != null)
 				{
-					if (Offsets.Length == other.Offsets.Length)
+					if(Offsets.Length == other.Offsets.Length)
 					{
-						for (int i = 0; i < Offsets.Length; ++i)
+						for(int i = 0; i < Offsets.Length; ++i)
 						{
-							if (Math.Abs(Offsets[i].AdvanceOffset - other.Offsets[i].AdvanceOffset) >
-							   float.Epsilon ||
-							   Math.Abs(Offsets[i].AscenderOffset - other.Offsets[i].AscenderOffset) >
-							   float.Epsilon)
+							if(Math.Abs(Offsets[i].AdvanceOffset - other.Offsets[i].AdvanceOffset) > float.Epsilon ||
+							   Math.Abs(Offsets[i].AscenderOffset - other.Offsets[i].AscenderOffset) > float.Epsilon)
 							{
 								return false;
 							}
@@ -84,7 +87,7 @@ namespace Frost.DirectX.Formatting
 
 		public override bool Equals(object obj)
 		{
-			if (ReferenceEquals(null, obj))
+			if(ReferenceEquals(null, obj))
 			{
 				return false;
 			}
@@ -98,25 +101,25 @@ namespace Frost.DirectX.Formatting
 			{
 				int result = 0;
 
-				if (Advances != null)
+				if(Advances != null)
 				{
-					foreach (float item in Advances)
+					foreach(float item in Advances)
 					{
 						result = (result * 397) ^ item.GetHashCode();
 					}
 				}
 
-				if (Indices != null)
+				if(Indices != null)
 				{
-					foreach (short item in Indices)
+					foreach(short item in Indices)
 					{
 						result = (result * 397) ^ item.GetHashCode();
 					}
 				}
 
-				if (Offsets != null)
+				if(Offsets != null)
 				{
-					foreach (GlyphOffset item in Offsets)
+					foreach(GlyphOffset item in Offsets)
 					{
 						result = (result * 397) ^ item.AdvanceOffset.GetHashCode();
 						result = (result * 397) ^ item.AscenderOffset.GetHashCode();
