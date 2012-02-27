@@ -39,7 +39,7 @@ namespace Frost
 			Contracts.Invariant(Check.IsPositive(_Height));
 		}
 
-		public Rectangle(float left, float top, float right, float bottom)
+		public static Rectangle FromCorners(float left, float top, float right, float bottom)
 		{
 			Contracts.Requires(Check.IsFinite(left));
 			Contracts.Requires(Check.IsFinite(top));
@@ -48,19 +48,29 @@ namespace Frost
 			Contracts.Requires(Check.IsPositive(right - left));
 			Contracts.Requires(Check.IsPositive(bottom - top));
 
-			_X = left;
-			_Y = top;
-			_Width = right - left;
-			_Height = bottom - top;
+			return new Rectangle(left, top, right - left, bottom - top);
+		}
 
-			Contracts.Assert(X.Equals(left));
-			Contracts.Assert(Y.Equals(top));
+		public Rectangle(float x, float y, float width, float height)
+		{
+			Contracts.Requires(Check.IsFinite(x));
+			Contracts.Requires(Check.IsFinite(y));
+			Contracts.Requires(Check.IsPositive(width));
+			Contracts.Requires(Check.IsPositive(height));
+
+			_X = x;
+			_Y = y;
+			_Width = width;
+			_Height = height;
+
+			Contracts.Assert(X.Equals(x));
+			Contracts.Assert(Y.Equals(y));
 			Contracts.Assert(Width.Equals(_Width));
 			Contracts.Assert(Height.Equals(_Height));
 		}
 
 		public Rectangle(Point location, Size size)
-			: this(location.X, location.Y, location.X + size.Width, location.Y + size.Height)
+			: this(location.X, location.Y, size.Width, size.Height)
 		{
 			Contracts.Requires(Check.IsPositive(size.Width));
 			Contracts.Requires(Check.IsPositive(size.Height));
@@ -219,13 +229,13 @@ namespace Frost
 
 		public Rectangle Contract(Thickness amount)
 		{
-			return new Rectangle(
+			return FromCorners(
 				Left + amount.Left, Top + amount.Top, Right - amount.Right, Bottom - amount.Bottom);
 		}
 
 		public Rectangle Expand(Thickness amount)
 		{
-			return new Rectangle(
+			return FromCorners(
 				Left - amount.Left, Top - amount.Top, Right + amount.Right, Bottom + amount.Bottom);
 		}
 
@@ -296,7 +306,7 @@ namespace Frost
 				}
 			}
 
-			return new Rectangle(x, y, x + width, y + height);
+			return new Rectangle(x, y, width, height);
 		}
 
 		public bool Contains(Point point)
@@ -371,35 +381,35 @@ namespace Frost
 #if(UNIT_TESTING)
 		[Fact] internal static void Test0()
 		{
-			Assert.Equal(0, new Rectangle(0, 1, 2, 3).X);
-			Assert.Equal(1, new Rectangle(0, 1, 2, 3).Y);
-			Assert.Equal(0, new Rectangle(0, 1, 2, 3).Left);
-			Assert.Equal(1, new Rectangle(0, 1, 2, 3).Top);
-			Assert.Equal(2, new Rectangle(0, 1, 2, 3).Right);
-			Assert.Equal(3, new Rectangle(0, 1, 2, 3).Bottom);
-			Assert.Equal(10, new Rectangle(0, 5, 10, 15).Width);
-			Assert.Equal(10, new Rectangle(0, 5, 10, 15).Height);
-			Assert.Equal(new Point(0, 1), new Rectangle(0, 1, 2, 3).Location);
-			Assert.Equal(new Size(2, 2), new Rectangle(0, 1, 2, 3).Size);
+			Assert.Equal(0, FromCorners(0, 1, 2, 3).X);
+			Assert.Equal(1, FromCorners(0, 1, 2, 3).Y);
+			Assert.Equal(0, FromCorners(0, 1, 2, 3).Left);
+			Assert.Equal(1, FromCorners(0, 1, 2, 3).Top);
+			Assert.Equal(2, FromCorners(0, 1, 2, 3).Right);
+			Assert.Equal(3, FromCorners(0, 1, 2, 3).Bottom);
+			Assert.Equal(10, FromCorners(0, 5, 10, 15).Width);
+			Assert.Equal(10, FromCorners(0, 5, 10, 15).Height);
+			Assert.Equal(new Point(0, 1), FromCorners(0, 1, 2, 3).Location);
+			Assert.Equal(new Size(2, 2), FromCorners(0, 1, 2, 3).Size);
 
-			Assert.Equal(new Rectangle(1, 1, 1, 1), new Rectangle(0, 0, 2, 2).Contract(new Thickness(1)));
-			Assert.Equal(new Rectangle(-1, -1, 3, 3), new Rectangle(0, 0, 2, 2).Expand(new Thickness(1)));
+			Assert.Equal(FromCorners(1, 1, 1, 1), FromCorners(0, 0, 2, 2).Contract(new Thickness(1)));
+			Assert.Equal(FromCorners(-1, -1, 3, 3), FromCorners(0, 0, 2, 2).Expand(new Thickness(1)));
 
-			Assert.Equal(4, new Rectangle(0, 0, 2, 2).Area);
+			Assert.Equal(4, FromCorners(0, 0, 2, 2).Area);
 
-			Assert.Equal(new Point(0.5f), new Rectangle(0, 0, 1, 1).Center);
+			Assert.Equal(new Point(0.5f), FromCorners(0, 0, 1, 1).Center);
 
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(0.5f, 0.5f)));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(0.0f, 0.0f)));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(1.0f, 0.0f)));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(1.0f, 1.0f)));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Point(0.0f, 1.0f)));
-			Assert.False(new Rectangle(0, 0, 1, 1).Contains(new Point(1.5f, 0.5f)));
+			Assert.True(FromCorners(0, 0, 1, 1).Contains(new Point(0.5f, 0.5f)));
+			Assert.True(FromCorners(0, 0, 1, 1).Contains(new Point(0.0f, 0.0f)));
+			Assert.True(FromCorners(0, 0, 1, 1).Contains(new Point(1.0f, 0.0f)));
+			Assert.True(FromCorners(0, 0, 1, 1).Contains(new Point(1.0f, 1.0f)));
+			Assert.True(FromCorners(0, 0, 1, 1).Contains(new Point(0.0f, 1.0f)));
+			Assert.False(FromCorners(0, 0, 1, 1).Contains(new Point(1.5f, 0.5f)));
 
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(Empty));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Rectangle(0, 0, 1, 1)));
-			Assert.True(new Rectangle(0, 0, 1, 1).Contains(new Rectangle(0.5f, 0, 0.5f, 1)));
-			Assert.False(new Rectangle(0, 0, 1, 1).Contains(new Rectangle(-1, -1, 1, 1)));
+			Assert.True(FromCorners(0, 0, 1, 1).Contains(Empty));
+			Assert.True(FromCorners(0, 0, 1, 1).Contains(FromCorners(0, 0, 1, 1)));
+			Assert.True(FromCorners(0, 0, 1, 1).Contains(FromCorners(0.5f, 0, 0.5f, 1)));
+			Assert.False(FromCorners(0, 0, 1, 1).Contains(FromCorners(-1, -1, 1, 1)));
 
 			Assert.TestObject(MinValue, MaxValue);
 		}
@@ -407,101 +417,101 @@ namespace Frost
 		[Fact] internal static void Test1()
 		{
 			Assert.Equal(
-				new Rectangle(50, 0, 100, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal));
+				FromCorners(50, 0, 100, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal));
 			Assert.Equal(
-				new Rectangle(0, 0, 50, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal, LayoutDirection.RightToLeft));
+				FromCorners(0, 0, 50, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(0, 50, 50, 100),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Leading, Axis.Vertical));
+				FromCorners(0, 50, 50, 100),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Vertical));
 			Assert.Equal(
-				new Rectangle(0, 50, 50, 100),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Leading, Axis.Vertical, LayoutDirection.RightToLeft));
+				FromCorners(0, 50, 50, 100),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(50, 50, 100, 100),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Leading, Axis.Both));
+				FromCorners(50, 50, 100, 100),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Both));
 			Assert.Equal(
-				new Rectangle(0, 50, 50, 100),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Leading, Axis.Both, LayoutDirection.RightToLeft));
+				FromCorners(0, 50, 50, 100),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(0, 0, 50, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal));
+				FromCorners(0, 0, 50, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal));
 			Assert.Equal(
-				new Rectangle(50, 0, 100, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal, LayoutDirection.RightToLeft));
+				FromCorners(50, 0, 100, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(0, 0, 50, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical));
+				FromCorners(0, 0, 50, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical));
 			Assert.Equal(
-				new Rectangle(0, 0, 50, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical, LayoutDirection.RightToLeft));
+				FromCorners(0, 0, 50, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(0, 0, 50, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Both));
+				FromCorners(0, 0, 50, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Both));
 			Assert.Equal(
-				new Rectangle(50, 0, 100, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Trailing, Axis.Both, LayoutDirection.RightToLeft));
+				FromCorners(50, 0, 100, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(25, 0, 75, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Center, Axis.Horizontal));
+				FromCorners(25, 0, 75, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Horizontal));
 			Assert.Equal(
-				new Rectangle(25, 0, 75, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Center, Axis.Horizontal, LayoutDirection.RightToLeft));
+				FromCorners(25, 0, 75, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(0, 25, 50, 75),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Center, Axis.Vertical));
+				FromCorners(0, 25, 50, 75),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Vertical));
 			Assert.Equal(
-				new Rectangle(0, 25, 50, 75),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Center, Axis.Vertical, LayoutDirection.RightToLeft));
+				FromCorners(0, 25, 50, 75),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(25, 25, 75, 75),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Center, Axis.Both));
+				FromCorners(25, 25, 75, 75),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Both));
 			Assert.Equal(
-				new Rectangle(25, 25, 75, 75),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Center, Axis.Both, LayoutDirection.RightToLeft));
+				FromCorners(25, 25, 75, 75),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(0, 0, 100, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal));
+				FromCorners(0, 0, 100, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal));
 			Assert.Equal(
-				new Rectangle(0, 0, 100, 50),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal, LayoutDirection.RightToLeft));
+				FromCorners(0, 0, 100, 50),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(0, 0, 50, 100),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical));
+				FromCorners(0, 0, 50, 100),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical));
 			Assert.Equal(
-				new Rectangle(0, 0, 50, 100),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical, LayoutDirection.RightToLeft));
+				FromCorners(0, 0, 50, 100),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				new Rectangle(0, 0, 100, 100),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Stretch, Axis.Both));
+				FromCorners(0, 0, 100, 100),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Both));
 			Assert.Equal(
-				new Rectangle(0, 0, 100, 100),
-				new Rectangle(0, 0, 50, 50).AlignWithin(
-					new Rectangle(0, 0, 100, 100), Alignment.Stretch, Axis.Both, LayoutDirection.RightToLeft));
+				FromCorners(0, 0, 100, 100),
+				FromCorners(0, 0, 50, 50).AlignWithin(
+					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Both, LayoutDirection.RightToLeft));
 		}
 #endif
 	}

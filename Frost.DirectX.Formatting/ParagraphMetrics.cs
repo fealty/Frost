@@ -88,7 +88,7 @@ namespace Frost.DirectX.Formatting
 				bottom = Math.Max(bottom, _Clusters[i].Region.Bottom);
 			}
 
-			_TextRegion = new Rectangle(left, top, right, bottom);
+			_TextRegion = Rectangle.FromCorners(left, top, right, bottom);
 
 			int lastLine = 0;
 
@@ -268,7 +268,7 @@ namespace Frost.DirectX.Formatting
 				}
 			}
 
-			region = new Rectangle(left, top, right, bottom);
+			region = Rectangle.FromCorners(left, top, right, bottom);
 		}
 
 		private static OutlineCollection CreateOutlineList(

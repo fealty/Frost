@@ -383,7 +383,7 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsValid(destination, Device2D));
 
 			Rectangle sourceRegion = new Rectangle(
-				sourceX, sourceY, sourceX + sourceWidth, sourceY + sourceHeight);
+				sourceX, sourceY, sourceWidth, sourceHeight);
 
 			OnCopyResult(ref sourceRegion, destination);
 		}
@@ -407,7 +407,7 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 
-			Rectangle region = new Rectangle(x, y, x + width, y + height);
+			Rectangle region = new Rectangle(x, y, width, height);
 
 			OnCompositeResult(ref region);
 		}
@@ -423,7 +423,7 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsFinite(dstX));
 			Contract.Requires(Check.IsFinite(dstY));
 
-			Rectangle srcRegion = new Rectangle(srcX, srcY, srcX + srcWidth, srcY + srcHeight);
+			Rectangle srcRegion = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
 			Point dstLocation = new Point(dstX, dstY);
 
@@ -450,9 +450,9 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsPositive(dstWidth));
 			Contract.Requires(Check.IsPositive(dstHeight));
 
-			Rectangle srcRegion = new Rectangle(srcX, srcY, srcX + srcWidth, srcY + srcHeight);
+			Rectangle srcRegion = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
-			Rectangle dstRegion = new Rectangle(dstX, dstY, dstX + dstWidth, dstY + dstHeight);
+			Rectangle dstRegion = new Rectangle(dstX, dstY, dstWidth, dstHeight);
 
 			OnCompositeResult(ref srcRegion, ref dstRegion);
 		}
@@ -478,7 +478,7 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 
-			Rectangle region = new Rectangle(x, y, x + width, y + height);
+			Rectangle region = new Rectangle(x, y, width, height);
 
 			OnComposite(source, ref region);
 		}
@@ -495,7 +495,7 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsFinite(dstX));
 			Contract.Requires(Check.IsFinite(dstY));
 
-			Rectangle srcRegion = new Rectangle(srcX, srcY, srcX + srcWidth, srcY + srcHeight);
+			Rectangle srcRegion = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
 			Point dstLocation = new Point(dstX, dstY);
 
@@ -524,9 +524,9 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsPositive(dstWidth));
 			Contract.Requires(Check.IsPositive(dstHeight));
 
-			Rectangle srcRegion = new Rectangle(srcX, srcY, srcX + srcWidth, srcY + srcHeight);
+			Rectangle srcRegion = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
-			Rectangle dstRegion = new Rectangle(dstX, dstY, dstX + dstWidth, dstY + dstHeight);
+			Rectangle dstRegion = new Rectangle(dstX, dstY, dstWidth, dstHeight);
 
 			OnComposite(source, ref srcRegion, ref dstRegion);
 		}

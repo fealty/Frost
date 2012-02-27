@@ -503,7 +503,7 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 
-			Rectangle region = new Rectangle(x, y, x + width, y + height);
+			Rectangle region = new Rectangle(x, y, width, height);
 
 			OnClear(ref region);
 		}
@@ -539,7 +539,7 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(roundedRadiusHeight));
 
 			Rectangle region = new Rectangle(
-				rectangleX, rectangleY, rectangleX + rectangleWidth, rectangleY + rectangleHeight);
+				rectangleX, rectangleY, rectangleWidth, rectangleHeight);
 
 			Size radius = new Size(roundedRadiusWidth, roundedRadiusHeight);
 
@@ -570,7 +570,7 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(roundedRadiusHeight));
 
 			Rectangle region = new Rectangle(
-				rectangleX, rectangleY, rectangleX + rectangleWidth, rectangleY + rectangleHeight);
+				rectangleX, rectangleY, rectangleWidth, rectangleHeight);
 
 			Size radius = new Size(roundedRadiusWidth, roundedRadiusHeight);
 
