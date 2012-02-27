@@ -82,6 +82,11 @@ namespace Frost.Formatting
 			get { return _Text; }
 		}
 
+		public CultureInfo Culture
+		{
+			get { return _Runs[0].Culture ?? CultureInfo.InvariantCulture; }
+		}
+
 		public float Spacing
 		{
 			get { return _Spacing; }
