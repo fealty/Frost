@@ -16,43 +16,43 @@ namespace Frost.DirectX.Formatting
 {
 	internal sealed class Typesetter : ILineProvider
 	{
-		private static readonly Comparison<Segment> mSegmentComparison;
+		private static readonly Comparison<Segment> _SegmentComparison;
 
-		private readonly Stack<BreakIndex> mClusterBreaks;
+		private readonly Stack<BreakIndex> _ClusterBreaks;
 
-		private readonly List<Rectangle> mComputedLines;
-		private readonly List<Segment> mFreeSegments;
-		private readonly LineBreaker mLineBreaker;
-		private readonly List<Rectangle> mObstructions;
+		private readonly List<Rectangle> _ComputedLines;
+		private readonly List<Segment> _FreeSegments;
+		private readonly LineBreaker _LineBreaker;
+		private readonly List<Rectangle> _Obstructions;
 
-		private readonly TypesetterSink mOutputSink;
-		private ShaperSink mInputSink;
+		private readonly TypesetterSink _OutputSink;
+		private ShaperSink _InputSink;
 
-		private Rectangle mLayoutRegion;
+		private Rectangle _LayoutRegion;
 
-		private double mLeading;
-		private double mLineHeight;
-		private double mLineOffset;
+		private float _Leading;
+		private float _LineHeight;
+		private float _LineOffset;
 
 		static Typesetter()
 		{
-			mSegmentComparison = (c1, c2) => c1.Position.CompareTo(c2.Position);
+			_SegmentComparison = (c1, c2) => c1.Position.CompareTo(c2.Position);
 		}
 
 		public Typesetter(TypesetterSink outputSink)
 		{
 			Contract.Requires(outputSink != null);
 
-			mOutputSink = outputSink;
+			_OutputSink = outputSink;
 
-			mLineBreaker = new LineBreaker(this);
+			_LineBreaker = new LineBreaker(this);
 
-			mFreeSegments = new List<Segment>();
-			mComputedLines = new List<Rectangle>();
-			mObstructions = new List<Rectangle>();
-			mClusterBreaks = new Stack<BreakIndex>();
+			_FreeSegments = new List<Segment>();
+			_ComputedLines = new List<Rectangle>();
+			_Obstructions = new List<Rectangle>();
+			_ClusterBreaks = new Stack<BreakIndex>();
 
-			mLineBreaker.ExaminingItem += ProcessFloaters;
+			_LineBreaker.ExaminingItem += ProcessFloaters;
 		}
 
 		double ILineProvider.ProduceLine(int lineIndex)
@@ -65,34 +65,30 @@ namespace Frost.DirectX.Formatting
 		{
 			Contract.Requires(input != null);
 			Contract.Requires(paragraph != null);
-			Contract.Requires(region.X >= double.MinValue && region.X <= double.MaxValue);
-			Contract.Requires(region.Y >= double.MinValue && region.Y <= double.MaxValue);
-			Contract.Requires(region.Width >= 0.0 && region.Width <= double.MaxValue);
-			Contract.Requires(region.Height >= 0.0 && region.Height <= double.MaxValue);
 
-			Contract.Ensures(mOutputSink.Glyphs.Count == input.Glyphs.Count);
-			Contract.Ensures(mOutputSink.Clusters.Count == input.Clusters.Count);
+			Contract.Ensures(_OutputSink.Glyphs.Count == input.Glyphs.Count);
+			Contract.Ensures(_OutputSink.Clusters.Count == input.Clusters.Count);
 
-			mInputSink = input;
-			mLayoutRegion = region;
+			_InputSink = input;
+			_LayoutRegion = region;
 
-			mOutputSink.Reset(input.FullText);
+			_OutputSink.Reset(input.FullText);
 
-			mOutputSink.PreallocateClusters(input.Clusters.Count);
-			mOutputSink.PreallocateGlyphs(input.Glyphs.Count);
+			_OutputSink.PreallocateClusters(input.Clusters.Count);
+			_OutputSink.PreallocateGlyphs(input.Glyphs.Count);
 
-			mOutputSink.LayoutRegion = region;
-			mOutputSink.Alignment = paragraph.Alignment;
+			_OutputSink.LayoutRegion = region;
+			_OutputSink.Alignment = paragraph.Alignment;
 
 			FindLineHeight(input, paragraph.Leading);
 
-			mOutputSink.Leading = mLeading;
-			mOutputSink.LineHeight = mLineHeight;
+			_OutputSink.Leading = _Leading;
+			_OutputSink.LineHeight = _LineHeight;
 
 			// determine the amount of indentation in pixels
-			double indentation = Math.Min(mLayoutRegion.Width / 2.0, paragraph.Indentation * mLineHeight);
+			float indentation = Math.Min(_LayoutRegion.Width / 2.0f, paragraph.Indentation * _LineHeight);
 
-			mOutputSink.Indentation = indentation;
+			_OutputSink.Indentation = indentation;
 
 			AnalyzeItems(input, paragraph.Alignment, paragraph.Spacing, paragraph.Tracking, indentation);
 
@@ -102,44 +98,47 @@ namespace Frost.DirectX.Formatting
 
 			OutputClusters(input, paragraph.Alignment);
 
-			mOutputSink.Lines.AddRange(mComputedLines);
+			_OutputSink.Lines.AddRange(_ComputedLines);
 		}
 
 		private void ProcessFloaters(ref LineItem item)
 		{
 			if(item.Position >= 0)
 			{
-				ShapedCluster cluster = mInputSink.Clusters[item.Position];
+				ShapedCluster cluster = _InputSink.Clusters[item.Position];
 
 				if(cluster.ContentType == ContentType.Floater)
 				{
-					Rectangle floaterRegion = Rectangle.Empty;
+					float floaterX = 0.0f;
+					float floaterY = 0.0f;
+					float floaterWidth = 0.0f;
+					float floaterHeight = 0.0f;
 
-					double occupiedHeight = Math.Ceiling(cluster.Floater.Height / (mLineHeight + mLeading)) *
-					                        (mLineHeight + mLeading);
+					float occupiedHeight = (float)Math.Ceiling(cluster.Floater.Height / (_LineHeight + _Leading)) *
+					                       (_LineHeight + _Leading);
 
 					switch(cluster.VAlignment)
 					{
 						case Alignment.Stretch:
-							floaterRegion.Width = cluster.Floater.Width + (occupiedHeight - cluster.Floater.Height);
-							floaterRegion.Height = occupiedHeight;
-							floaterRegion.Y = mLayoutRegion.Top + mLineOffset;
+							floaterWidth = cluster.Floater.Width + (occupiedHeight - cluster.Floater.Height);
+							floaterHeight = occupiedHeight;
+							floaterY = _LayoutRegion.Top + _LineOffset;
 							break;
 						case Alignment.Trailing:
-							floaterRegion.Width = cluster.Floater.Width;
-							floaterRegion.Height = cluster.Floater.Height;
-							floaterRegion.Y = mLayoutRegion.Top + mLineOffset;
+							floaterWidth = cluster.Floater.Width;
+							floaterHeight = cluster.Floater.Height;
+							floaterY = _LayoutRegion.Top + _LineOffset;
 							break;
 						case Alignment.Center:
-							floaterRegion.Width = cluster.Floater.Width;
-							floaterRegion.Height = cluster.Floater.Height;
-							floaterRegion.Y = ((mLayoutRegion.Top + mLineOffset) + (occupiedHeight / 2.0)) -
-							                  (floaterRegion.Height / 2.0);
+							floaterWidth = cluster.Floater.Width;
+							floaterHeight = cluster.Floater.Height;
+							floaterY = ((_LayoutRegion.Top + _LineOffset) + (occupiedHeight / 2.0f)) -
+							           (floaterHeight / 2.0f);
 							break;
 						case Alignment.Leading:
-							floaterRegion.Width = cluster.Floater.Width;
-							floaterRegion.Height = cluster.Floater.Height;
-							floaterRegion.Y = (mLayoutRegion.Top + mLineOffset + occupiedHeight) - floaterRegion.Height;
+							floaterWidth = cluster.Floater.Width;
+							floaterHeight = cluster.Floater.Height;
+							floaterY = (_LayoutRegion.Top + _LineOffset + occupiedHeight) - floaterHeight;
 							break;
 					}
 
@@ -150,70 +149,71 @@ namespace Frost.DirectX.Formatting
 						case Alignment.Leading:
 							if(cluster.BidiLevel % 2 == 0)
 							{
-								floaterRegion.X = mLayoutRegion.Right - floaterRegion.Width;
+								floaterX = _LayoutRegion.Right - floaterWidth;
 							}
 							else
 							{
-								floaterRegion.X = mLayoutRegion.Left;
+								floaterX = _LayoutRegion.Left;
 							}
 							break;
 						case Alignment.Center:
-							floaterRegion.X = (mLayoutRegion.X + (mLayoutRegion.Width / 2.0)) -
-							                  (floaterRegion.Width / 2.0);
+							floaterX = (_LayoutRegion.X + (_LayoutRegion.Width / 2.0f)) - (floaterWidth / 2.0f);
 							break;
 						case Alignment.Trailing:
 							if(cluster.BidiLevel % 2 == 0)
 							{
-								floaterRegion.X = mLayoutRegion.Left;
+								floaterX = _LayoutRegion.Left;
 							}
 							else
 							{
-								floaterRegion.X = mLayoutRegion.Right - floaterRegion.Width;
+								floaterX = _LayoutRegion.Right - floaterWidth;
 							}
 							break;
 					}
 
-					cluster.Floater = floaterRegion;
+					cluster.Floater = new Rectangle(
+						floaterX, floaterY, floaterX + floaterWidth, floaterY + floaterHeight);
 
-					mInputSink.Clusters[item.Position] = cluster;
+					_InputSink.Clusters[item.Position] = cluster;
 
-					mObstructions.Add(floaterRegion);
+					_Obstructions.Add(cluster.Floater);
 				}
 			}
 		}
 
-		private void FindLineHeight(ShaperSink input, double leadingEm)
+		private void FindLineHeight(ShaperSink input, float leadingEm)
 		{
 			Contract.Requires(input != null);
 			Contract.Requires(leadingEm >= 0.0 && leadingEm <= double.MaxValue);
 
 			ResetLinesState();
 
-			double gap = 0.0;
+			float gap = 0.0f;
 
-			mLineHeight = 0.0;
-			mLineOffset = 0.0;
+			_LineHeight = 0.0f;
+			_LineOffset = 0.0f;
 
 			foreach(ShapedCluster cluster in input.Clusters)
 			{
 				if(cluster.ContentType != ContentType.Floater)
 				{
-					DxFontMetrics metrics = cluster.Font.ResolveFace().Metrics;
+					DxFontMetrics dxMetrics = cluster.Font.ResolveFace().Metrics;
 
-					double units = metrics.DesignUnitsPerEm;
+					FontMetrics metrics = new FontMetrics(
+						dxMetrics.Ascent, dxMetrics.Descent, dxMetrics.DesignUnitsPerEm);
 
 					// find the maximum line gap in the paragraph
-					gap = Math.Max(gap, FontMetrics.ToPixels(metrics.LineGap, cluster.PointSize, units));
+					gap = Math.Max(gap, metrics.Measure(dxMetrics.LineGap, cluster.PointSize));
 
-					double height = FontMetrics.ToPixels(metrics.Descent, cluster.PointSize, units);
+					float height = metrics.Measure(dxMetrics.Descent, cluster.PointSize);
 
 					// find the maximum line height in the paragraph
-					mLineHeight = Math.Max(mLineHeight, cluster.Advance.Height + height);
+					_LineHeight = Math.Max(_LineHeight, cluster.Advance.Height + height);
 				}
 			}
 
 			// convert from EMs to pixels, cap value to a minimum of the gap
-			mLeading = (mLineHeight * leadingEm) + gap;
+			_Leading = (_LineHeight * leadingEm) + gap;
 		}
 
 		private Rectangle GetLineRegion(int lineIndex)
@@ -221,22 +221,20 @@ namespace Frost.DirectX.Formatting
 			Contract.Requires(lineIndex >= 0);
 
 			// a line has already been computed for this index
-			if(lineIndex < mComputedLines.Count)
+			if(lineIndex < _ComputedLines.Count)
 			{
-				return mComputedLines[lineIndex];
+				return _ComputedLines[lineIndex];
 			}
 
-			Rectangle lineRegion = Rectangle.Empty;
-
-			lineRegion.X = mLayoutRegion.Left;
-			lineRegion.Y = mLayoutRegion.Top + mLineOffset;
-			lineRegion.Width = mLayoutRegion.Width;
-			lineRegion.Height = mLineHeight;
+			Rectangle lineRegion =
+				new Rectangle(
+					new Point(_LayoutRegion.Left, _LayoutRegion.Top + _LineOffset),
+					new Size(_LayoutRegion.Width, _LineHeight));
 
 			IdentifyFreeSegments(lineRegion);
 
 			// advance over the line and its leading to next line position
-			mLineOffset += mLineHeight + mLeading;
+			_LineOffset += _LineHeight + _Leading;
 
 			return GetLineRegion(lineIndex);
 		}
@@ -249,7 +247,7 @@ namespace Frost.DirectX.Formatting
 			Contract.Requires(box.Width >= 0.0 && box.Width <= double.MaxValue);
 			Contract.Requires(box.Height >= 0.0 && box.Height <= double.MaxValue);
 
-			Segment segment = mFreeSegments[index];
+			Segment segment = _FreeSegments[index];
 
 			// the segment entirely contains the box
 			if(segment.Contains(box.Left) && segment.Contains(box.Right))
@@ -268,10 +266,10 @@ namespace Frost.DirectX.Formatting
 
 				Debug.Assert(right.Length >= 0.0);
 
-				mFreeSegments.RemoveAt(index--);
+				_FreeSegments.RemoveAt(index--);
 
-				mFreeSegments.Add(left);
-				mFreeSegments.Add(right);
+				_FreeSegments.Add(left);
+				_FreeSegments.Add(right);
 
 				Debug.Assert(index >= -1);
 			}
@@ -283,7 +281,7 @@ namespace Frost.DirectX.Formatting
 
 				Debug.Assert(segment.Length >= 0.0);
 
-				mFreeSegments[index] = segment;
+				_FreeSegments[index] = segment;
 			}
 
 				// the segment contains only the right portion of the box
@@ -295,7 +293,7 @@ namespace Frost.DirectX.Formatting
 
 				segment.Position = box.Right;
 
-				mFreeSegments[index] = segment;
+				_FreeSegments[index] = segment;
 			}
 		}
 
@@ -306,25 +304,25 @@ namespace Frost.DirectX.Formatting
 			Contract.Requires(lineRegion.Width >= 0.0 && lineRegion.Width <= double.MaxValue);
 			Contract.Requires(lineRegion.Height >= 0.0 && lineRegion.Height <= double.MaxValue);
 
-			mFreeSegments.Clear();
+			_FreeSegments.Clear();
 
 			Segment fullLine;
 
 			fullLine.Length = lineRegion.Width;
 			fullLine.Position = lineRegion.Left;
 
-			mFreeSegments.Add(fullLine);
+			_FreeSegments.Add(fullLine);
 
 			// remove space for each box that intersects the line region
-			foreach(Rectangle obstruction in mObstructions)
+			foreach(Rectangle obstruction in _Obstructions)
 			{
 				if(obstruction.Top < lineRegion.Bottom)
 				{
 					if(obstruction.Bottom > lineRegion.Top)
 					{
-						if(!obstruction.IsEmpty)
+						if(obstruction.Area > 0)
 						{
-							for(int i = 0; i < mFreeSegments.Count; ++i)
+							for(int i = 0; i < _FreeSegments.Count; ++i)
 							{
 								ProcessFreeSegment(ref i, obstruction);
 							}
@@ -334,31 +332,28 @@ namespace Frost.DirectX.Formatting
 			}
 
 			// sort free segments to order left to right
-			mFreeSegments.Sort(mSegmentComparison);
+			_FreeSegments.Sort(_SegmentComparison);
 
-			foreach(Segment segment in mFreeSegments)
+			foreach(Segment segment in _FreeSegments)
 			{
-				Rectangle newRegion = Rectangle.Empty;
-
-				newRegion.X = segment.Position;
-				newRegion.Y = lineRegion.Y;
-				newRegion.Width = segment.Length;
-				newRegion.Height = lineRegion.Height;
+				Rectangle newRegion = new Rectangle(
+					new Point(segment.Position, lineRegion.Y),
+					new Size(segment.Length, lineRegion.Height));
 
 				// reject lines that occupy less space than the line height
-				if(newRegion.Width > mLineHeight)
+				if(newRegion.Width > _LineHeight)
 				{
-					mComputedLines.Add(newRegion);
+					_ComputedLines.Add(newRegion);
 				}
 			}
 		}
 
 		private void ResetLinesState()
 		{
-			mLineOffset = 0.0;
+			_LineOffset = 0.0f;
 
-			mObstructions.Clear();
-			mComputedLines.Clear();
+			_Obstructions.Clear();
+			_ComputedLines.Clear();
 		}
 
 		private void AddObstructions<T>(T boxes) where T : class, IEnumerable<Rectangle>
@@ -372,7 +367,7 @@ namespace Frost.DirectX.Formatting
 					Contract.Assert(box.Width >= 0.0 && box.Width <= double.MaxValue);
 					Contract.Assert(box.Height >= 0.0 && box.Height <= double.MaxValue);
 
-					mObstructions.Add(box);
+					_Obstructions.Add(box);
 				}
 			}
 		}
@@ -384,7 +379,7 @@ namespace Frost.DirectX.Formatting
 			// five attempts to find a feasible set of breaking points
 			for(int i = 1; i <= 5; ++i)
 			{
-				if(mLineBreaker.FindBreakpoints(((i - 1) * 2) + 1))
+				if(_LineBreaker.FindBreakpoints(((i - 1) * 2) + 1))
 				{
 					break;
 				}
@@ -396,19 +391,19 @@ namespace Frost.DirectX.Formatting
 				if(i == 5)
 				{
 					// give up by forcing the text to set
-					mLineBreaker.FindBreakpoints(20, true);
+					_LineBreaker.FindBreakpoints(20, true);
 				}
 			}
 		}
 
 		private void SaveBreakingPoints()
 		{
-			mClusterBreaks.Clear();
+			_ClusterBreaks.Clear();
 
 			// save the breaking points in reverse iteration order
-			for(int i = mLineBreaker.Breakpoints.Count - 1; i >= 1; --i)
+			for(int i = _LineBreaker.Breakpoints.Count - 1; i >= 1; --i)
 			{
-				mClusterBreaks.Push(mLineBreaker.Breakpoints[i]);
+				_ClusterBreaks.Push(_LineBreaker.Breakpoints[i]);
 			}
 		}
 
@@ -473,14 +468,14 @@ namespace Frost.DirectX.Formatting
 
 			if(isRagged)
 			{
-				mLineBreaker.AddPenalty(0.0, 0.0, 0.0);
-				mLineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
-				mLineBreaker.AddPenalty(advance, index, 5.0, 1.0);
-				mLineBreaker.AddGlue(0.0, -LineItem.Infinity, 0.0);
+				_LineBreaker.AddPenalty(0.0, 0.0, 0.0);
+				_LineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
+				_LineBreaker.AddPenalty(advance, index, 5.0, 1.0);
+				_LineBreaker.AddGlue(0.0, -LineItem.Infinity, 0.0);
 			}
 			else
 			{
-				mLineBreaker.AddPenalty(advance, index, 5.0, 1.0);
+				_LineBreaker.AddPenalty(advance, index, 5.0, 1.0);
 			}
 		}
 
@@ -490,12 +485,12 @@ namespace Frost.DirectX.Formatting
 
 			if(isRagged)
 			{
-				mLineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
-				mLineBreaker.AddPenalty(0.0, index, -LineItem.Infinity);
+				_LineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
+				_LineBreaker.AddPenalty(0.0, index, -LineItem.Infinity);
 			}
 			else
 			{
-				mLineBreaker.AddPenalty(0.0, index, -LineItem.Infinity);
+				_LineBreaker.AddPenalty(0.0, index, -LineItem.Infinity);
 			}
 		}
 
@@ -506,13 +501,13 @@ namespace Frost.DirectX.Formatting
 
 			if(isRagged)
 			{
-				mLineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
-				mLineBreaker.AddPenalty(0.0, 0.0);
-				mLineBreaker.AddGlue(length, index, -LineItem.Infinity, 0.0);
+				_LineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
+				_LineBreaker.AddPenalty(0.0, 0.0);
+				_LineBreaker.AddGlue(length, index, -LineItem.Infinity, 0.0);
 			}
 			else
 			{
-				mLineBreaker.AddGlue(length, index, length / 2.0, length / 3.0);
+				_LineBreaker.AddGlue(length, index, length / 2.0, length / 3.0);
 			}
 		}
 
@@ -539,7 +534,7 @@ namespace Frost.DirectX.Formatting
 			{
 				ShapedCluster cluster = input.Clusters[index];
 
-				mLineBreaker.AddBox(ComputeAdvance(ref cluster), index);
+				_LineBreaker.AddBox(ComputeAdvance(ref cluster), index);
 			}
 		}
 
@@ -549,7 +544,7 @@ namespace Frost.DirectX.Formatting
 			Contract.Requires(advance >= 0.0 && advance <= double.MaxValue);
 			Contract.Requires(input != null);
 
-			mLineBreaker.AddBox(advance, index);
+			_LineBreaker.AddBox(advance, index);
 
 			bool isForced = false;
 
@@ -563,12 +558,12 @@ namespace Frost.DirectX.Formatting
 				{
 					if(isRagged)
 					{
-						mLineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
-						mLineBreaker.AddPenalty(0.0, 0.0);
+						_LineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
+						_LineBreaker.AddPenalty(0.0, 0.0);
 					}
 					else
 					{
-						mLineBreaker.AddPenalty(0.0, 0.0);
+						_LineBreaker.AddPenalty(0.0, 0.0);
 					}
 				}
 			}
@@ -586,7 +581,7 @@ namespace Frost.DirectX.Formatting
 				newGlyph.Index = glyph.Index;
 				newGlyph.Offset = glyph.Offset;
 
-				mOutputSink.Glyphs.Add(newGlyph);
+				_OutputSink.Glyphs.Add(newGlyph);
 			}
 		}
 
@@ -596,20 +591,20 @@ namespace Frost.DirectX.Formatting
 
 			int lineNumber = 0;
 
-			double lineLength = 0.0;
+			float lineLength = 0.0f;
 
 			bool isLineStart = true;
 
-			for(int i = 0; i < mLineBreaker.Items.Count; ++i)
+			for(int i = 0; i < _LineBreaker.Items.Count; ++i)
 			{
-				LineItem item = mLineBreaker.Items[i];
+				LineItem item = _LineBreaker.Items[i];
 
 				// line ends are always at breaking points
 				bool isLineEnd = false;
 
-				if(mClusterBreaks.Count > 0)
+				if(_ClusterBreaks.Count > 0)
 				{
-					isLineEnd = mClusterBreaks.Peek().Index == i;
+					isLineEnd = _ClusterBreaks.Peek().Index == i;
 				}
 
 				if(item.Position >= 0)
@@ -621,9 +616,9 @@ namespace Frost.DirectX.Formatting
 
 					newCluster.LineNumber = lineNumber;
 
-					if(mClusterBreaks.Count > 0)
+					if(_ClusterBreaks.Count > 0)
 					{
-						ratio = mClusterBreaks.Peek().Ratio;
+						ratio = _ClusterBreaks.Peek().Ratio;
 					}
 
 					if(isLineEnd)
@@ -631,14 +626,14 @@ namespace Frost.DirectX.Formatting
 						if(item.IsGlue)
 						{
 							// suppress whitespaces at the end of each line
-							newCluster.Advance.Width = 0.0;
+							newCluster.Advance = new Size(0.0f, newCluster.Advance.Height);
 
 							newCluster.Display = DisplayMode.Suppressed;
 						}
 						else
 						{
 							// breaking on a penalty enables that cluster
-							newCluster.Advance.Width = item.ComputeWidth(ratio, true);
+							newCluster.Advance = new Size(Convert.ToSingle(item.ComputeWidth(ratio, true)), newCluster.Advance.Height);
 
 							newCluster.Display = DisplayMode.Neutral;
 						}
@@ -648,14 +643,14 @@ namespace Frost.DirectX.Formatting
 						if(item.IsGlue)
 						{
 							// suppress whitespaces at the start of each line
-							newCluster.Advance.Width = 0.0;
+							newCluster.Advance = new Size(0.0f, newCluster.Advance.Height);
 
 							newCluster.Display = DisplayMode.Suppressed;
 						}
 						else
 						{
 							// penalties cannot display at the start of the line
-							newCluster.Advance.Width = item.ComputeWidth(ratio, false);
+							newCluster.Advance = new Size(Convert.ToSingle(item.ComputeWidth(ratio, false)), newCluster.Advance.Height);
 
 							newCluster.Display = DisplayMode.Neutral;
 						}
@@ -665,7 +660,7 @@ namespace Frost.DirectX.Formatting
 						if(alignment == Alignment.Stretch)
 						{
 							// spacing length within the line depends on the line ratio
-							newCluster.Advance.Width = item.ComputeWidth(ratio, false);
+							newCluster.Advance = new Size(Convert.ToSingle(item.ComputeWidth(ratio, false)), newCluster.Advance.Height);
 
 							newCluster.Display = DisplayMode.Neutral;
 						}
@@ -674,14 +669,14 @@ namespace Frost.DirectX.Formatting
 							if(item.IsPenalty)
 							{
 								// suppress penalties within the line
-								newCluster.Advance.Width = 0.0;
+								newCluster.Advance = new Size(0.0f, newCluster.Advance.Height);
 
 								newCluster.Display = DisplayMode.Suppressed;
 							}
 							else
 							{
 								// other items retain their widths
-								newCluster.Advance.Width = item.Width;
+								newCluster.Advance = new Size(Convert.ToSingle(item.Width), newCluster.Advance.Height);
 
 								newCluster.Display = DisplayMode.Neutral;
 							}
@@ -694,7 +689,7 @@ namespace Frost.DirectX.Formatting
 					newCluster.Glyphs = cluster.Glyphs;
 					newCluster.ContentType = cluster.ContentType;
 					newCluster.Font = cluster.Font;
-					newCluster.Advance.Height = cluster.Advance.Height;
+					newCluster.Advance = new Size(newCluster.Advance.Width, cluster.Advance.Height);
 					newCluster.BidiLevel = cluster.BidiLevel;
 					newCluster.PointSize = cluster.PointSize;
 
@@ -712,7 +707,7 @@ namespace Frost.DirectX.Formatting
 					// track the actual length of the line
 					lineLength += newCluster.Advance.Width;
 
-					mOutputSink.Clusters.Add(newCluster);
+					_OutputSink.Clusters.Add(newCluster);
 				}
 
 				if(isLineEnd)
@@ -723,12 +718,12 @@ namespace Frost.DirectX.Formatting
 					lineNumber++;
 
 					// save the actual length of the line
-					mOutputSink.LineLengths.Add(lineLength);
+					_OutputSink.LineLengths.Add(lineLength);
 
-					lineLength = 0.0;
+					lineLength = 0.0f;
 
 					// remove the used breakpoint
-					mClusterBreaks.Pop();
+					_ClusterBreaks.Pop();
 				}
 				else
 				{
@@ -737,7 +732,7 @@ namespace Frost.DirectX.Formatting
 			}
 
 			// save the actual length of the line
-			mOutputSink.LineLengths.Add(lineLength);
+			_OutputSink.LineLengths.Add(lineLength);
 		}
 
 		private void AnalyzeItems(
@@ -750,9 +745,9 @@ namespace Frost.DirectX.Formatting
 
 			OutputGlyphs(input);
 
-			mLineBreaker.BeginParagraph();
+			_LineBreaker.BeginParagraph();
 
-			mLineBreaker.AddBox(indentation);
+			_LineBreaker.AddBox(indentation);
 
 			for(int i = 0; i < input.Clusters.Count; ++i)
 			{
@@ -788,7 +783,7 @@ namespace Frost.DirectX.Formatting
 					{
 						if(cluster.Breakpoint.IsWhitespace)
 						{
-							mLineBreaker.AddBox(0.0, i);
+							_LineBreaker.AddBox(0.0, i);
 
 							continue;
 						}
@@ -829,16 +824,16 @@ namespace Frost.DirectX.Formatting
 					}
 					else
 					{
-						mLineBreaker.AddBox(0.0, i);
+						_LineBreaker.AddBox(0.0, i);
 					}
 				}
 			}
 
 			// add the final items required by the line breaking algorithm
-			mLineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
-			mLineBreaker.AddPenalty(0.0, -LineItem.Infinity, 1.0);
+			_LineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
+			_LineBreaker.AddPenalty(0.0, -LineItem.Infinity, 1.0);
 
-			mLineBreaker.EndParagraph();
+			_LineBreaker.EndParagraph();
 		}
 
 		private static double ComputeAdvance(ref ShapedCluster cluster)
@@ -851,7 +846,7 @@ namespace Frost.DirectX.Formatting
 			double spacing = cluster.Advance.Height * spacingEm;
 
 			// cap spacing at a quarter of the layout length
-			return Math.Min(spacing, mLayoutRegion.Width / 4.0);
+			return Math.Min(spacing, _LayoutRegion.Width / 4.0);
 		}
 
 		private double ComputeTracking(double trackingEm, ref ShapedCluster cluster)
@@ -859,19 +854,19 @@ namespace Frost.DirectX.Formatting
 			double tracking = trackingEm * cluster.Advance.Height;
 
 			// cap tracking at a quarter of the layout length
-			return Math.Min(mLayoutRegion.Width / 4.0, tracking);
+			return Math.Min(_LayoutRegion.Width / 4.0, tracking);
 		}
 
 		private double ComputeInline(double inlineLength)
 		{
 			// cap inlines at half the layout length
-			return Math.Min(mLayoutRegion.Width / 2.0, inlineLength);
+			return Math.Min(_LayoutRegion.Width / 2.0, inlineLength);
 		}
 
 		private struct Segment : IEquatable<Segment>
 		{
-			public double Length;
-			public double Position;
+			public float Length;
+			public float Position;
 
 			public bool Equals(Segment other)
 			{
