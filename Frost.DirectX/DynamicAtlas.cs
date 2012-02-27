@@ -13,6 +13,7 @@ using Frost.Surfacing;
 
 namespace Frost.DirectX
 {
+	//TODO: add support for canvas-object association
 	public sealed class DynamicAtlas<T> : ISurfaceAtlas, IDisposable
 		where T : class, ISurface2D, IDisposable
 	{
