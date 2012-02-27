@@ -1,80 +1,82 @@
-﻿using Frost.Formatting;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using SharpDX.DirectWrite;
 
 namespace Frost.DirectX.Formatting
 {
 	internal static class Extensions
 	{
-		internal static SharpDX.DirectWrite.FontWeight ToDirectWrite(
-			this FontWeight weight)
+		internal static FontWeight ToDirectWrite(this Frost.Formatting.FontWeight weight)
 		{
 			switch(weight)
 			{
-				case FontWeight.Regular:
-					return SharpDX.DirectWrite.FontWeight.Normal;
-				case FontWeight.Thin:
-					return SharpDX.DirectWrite.FontWeight.Thin;
-				case FontWeight.ExtraLight:
-					return SharpDX.DirectWrite.FontWeight.ExtraLight;
-				case FontWeight.Light:
-					return SharpDX.DirectWrite.FontWeight.Light;
-				case FontWeight.Medium:
-					return SharpDX.DirectWrite.FontWeight.Medium;
-				case FontWeight.SemiBold:
-					return SharpDX.DirectWrite.FontWeight.SemiBold;
-				case FontWeight.Bold:
-					return SharpDX.DirectWrite.FontWeight.Bold;
-				case FontWeight.ExtraBold:
-					return SharpDX.DirectWrite.FontWeight.ExtraBold;
-				case FontWeight.Heavy:
-					return SharpDX.DirectWrite.FontWeight.Heavy;
+				case Frost.Formatting.FontWeight.Regular:
+					return FontWeight.Normal;
+				case Frost.Formatting.FontWeight.Thin:
+					return FontWeight.Thin;
+				case Frost.Formatting.FontWeight.ExtraLight:
+					return FontWeight.ExtraLight;
+				case Frost.Formatting.FontWeight.Light:
+					return FontWeight.Light;
+				case Frost.Formatting.FontWeight.Medium:
+					return FontWeight.Medium;
+				case Frost.Formatting.FontWeight.SemiBold:
+					return FontWeight.SemiBold;
+				case Frost.Formatting.FontWeight.Bold:
+					return FontWeight.Bold;
+				case Frost.Formatting.FontWeight.ExtraBold:
+					return FontWeight.ExtraBold;
+				case Frost.Formatting.FontWeight.Heavy:
+					return FontWeight.Heavy;
 				default:
-					return SharpDX.DirectWrite.FontWeight.Normal;
+					return FontWeight.Normal;
 			}
 		}
 
-		internal static SharpDX.DirectWrite.FontStyle ToDirectWrite(
-			this FontStyle style)
+		internal static FontStyle ToDirectWrite(this Frost.Formatting.FontStyle style)
 		{
 			switch(style)
 			{
-				case FontStyle.Regular:
-					return SharpDX.DirectWrite.FontStyle.Normal;
-				case FontStyle.Italic:
-					return SharpDX.DirectWrite.FontStyle.Italic;
-				case FontStyle.Oblique:
-					return SharpDX.DirectWrite.FontStyle.Oblique;
+				case Frost.Formatting.FontStyle.Regular:
+					return FontStyle.Normal;
+				case Frost.Formatting.FontStyle.Italic:
+					return FontStyle.Italic;
+				case Frost.Formatting.FontStyle.Oblique:
+					return FontStyle.Oblique;
 				default:
-					return SharpDX.DirectWrite.FontStyle.Normal;
+					return FontStyle.Normal;
 			}
 		}
 
-		internal static SharpDX.DirectWrite.FontStretch ToDirectWrite(
-			this FontStretch stretch)
+		internal static FontStretch ToDirectWrite(this Frost.Formatting.FontStretch stretch)
 		{
 			switch(stretch)
 			{
-				case FontStretch.UltraCondensed:
-					return SharpDX.DirectWrite.FontStretch.UltraCondensed;
-				case FontStretch.ExtraCondensed:
-					return SharpDX.DirectWrite.FontStretch.ExtraCondensed;
-				case FontStretch.Condensed:
-					return SharpDX.DirectWrite.FontStretch.Condensed;
-				case FontStretch.SemiCondensed:
-					return SharpDX.DirectWrite.FontStretch.SemiCondensed;
-				case FontStretch.Regular:
-					return SharpDX.DirectWrite.FontStretch.Normal;
-				case FontStretch.SemiExpanded:
-					return SharpDX.DirectWrite.FontStretch.SemiExpanded;
-				case FontStretch.Expanded:
-					return SharpDX.DirectWrite.FontStretch.Expanded;
-				case FontStretch.ExtraExpanded:
-					return SharpDX.DirectWrite.FontStretch.ExtraExpanded;
-				case FontStretch.UltraExpanded:
-					return SharpDX.DirectWrite.FontStretch.UltraExpanded;
-				case FontStretch.Medium:
-					return SharpDX.DirectWrite.FontStretch.Medium;
+				case Frost.Formatting.FontStretch.UltraCondensed:
+					return FontStretch.UltraCondensed;
+				case Frost.Formatting.FontStretch.ExtraCondensed:
+					return FontStretch.ExtraCondensed;
+				case Frost.Formatting.FontStretch.Condensed:
+					return FontStretch.Condensed;
+				case Frost.Formatting.FontStretch.SemiCondensed:
+					return FontStretch.SemiCondensed;
+				case Frost.Formatting.FontStretch.Regular:
+					return FontStretch.Normal;
+				case Frost.Formatting.FontStretch.SemiExpanded:
+					return FontStretch.SemiExpanded;
+				case Frost.Formatting.FontStretch.Expanded:
+					return FontStretch.Expanded;
+				case Frost.Formatting.FontStretch.ExtraExpanded:
+					return FontStretch.ExtraExpanded;
+				case Frost.Formatting.FontStretch.UltraExpanded:
+					return FontStretch.UltraExpanded;
+				case Frost.Formatting.FontStretch.Medium:
+					return FontStretch.Medium;
 				default:
-					return SharpDX.DirectWrite.FontStretch.Normal;
+					return FontStretch.Normal;
 			}
 		}
 	}
