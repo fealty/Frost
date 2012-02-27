@@ -1,49 +1,44 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Runtime.InteropServices;
+
+using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
-	[StructLayout(LayoutKind.Explicit)]
-	internal struct TypesetCluster : IEquatable<TypesetCluster>
+	[StructLayout(LayoutKind.Explicit)] internal struct TypesetCluster : IEquatable<TypesetCluster>
 	{
-		[FieldOffset(0)]
 		public ContentType ContentType;
 
-		[FieldOffset(4)]
 		public Size Advance;
 
-		[FieldOffset(20)]
 		public Rectangle Floater;
 
-		[FieldOffset(52)]
 		public DisplayMode Display;
 
-		[FieldOffset(60)]
-		public TextRange Characters;
+		public IndexedRange Characters;
 
-		[FieldOffset(72)]
 		public GlyphRange Glyphs;
 
-		[FieldOffset(84)]
-		public double PointSize;
+		public float PointSize;
 
-		[FieldOffset(92)]
 		public int LineNumber;
 
-		[FieldOffset(96)]
 		public byte BidiLevel;
 
-		[FieldOffset(104)]
 		public FontHandle Font;
 
 		public bool Equals(TypesetCluster other)
 		{
 			return other.ContentType == ContentType && other.Advance.Equals(Advance) &&
-			       other.BidiLevel == BidiLevel && other.Characters.Equals(Characters)
-			       && Equals(other.Font, Font) &&
-			       other.Glyphs.Equals(Glyphs) && other.LineNumber == LineNumber &&
-			       other.Display == Display &&
-			       other.PointSize.Equals(PointSize) && other.Floater.Equals(Floater);
+			       other.BidiLevel == BidiLevel && other.Characters.Equals(Characters) &&
+			       Equals(other.Font, Font) && other.Glyphs.Equals(Glyphs) && other.LineNumber == LineNumber &&
+			       other.Display == Display && other.PointSize.Equals(PointSize) &&
+			       other.Floater.Equals(Floater);
 		}
 
 		public override bool Equals(object obj)
