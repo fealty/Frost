@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
+
+using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
@@ -9,14 +16,13 @@ namespace Frost.DirectX.Formatting
 		public float EmSize;
 		public FontHandle Font;
 		public int LineNumber;
-		public double PointSize;
-		public TextRange TextRange;
+		public float PointSize;
+		public IndexedRange TextRange;
 
 		public bool Equals(FormattedRun other)
 		{
 			return other.LineNumber == LineNumber && other.BidiLevel == BidiLevel &&
-			       other.Clusters.Equals(Clusters) &&
-			       other.EmSize.Equals(EmSize) && Equals(other.Font, Font) &&
+			       other.Clusters.Equals(Clusters) && other.EmSize.Equals(EmSize) && Equals(other.Font, Font) &&
 			       other.TextRange.Equals(TextRange) && other.PointSize.Equals(PointSize);
 		}
 
