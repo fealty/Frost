@@ -99,6 +99,15 @@ namespace Frost.Formatting
 			return ToPixels(_Ascent + _Descent, pointSize);
 		}
 
+		public float Measure(float value, float pointSize)
+		{
+			Contract.Requires(Check.IsFinite(value));
+			Contract.Requires(Check.IsPositive(pointSize));
+			Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
+
+			return ToPixels(value, pointSize);
+		}
+
 		public override bool Equals(object obj)
 		{
 			if(ReferenceEquals(null, obj))
@@ -128,9 +137,9 @@ namespace Frost.Formatting
 
 		private float ToPixels(float value, float pointSize)
 		{
-			Contract.Requires(Check.IsPositive(value));
+			Contract.Requires(Check.IsFinite(value));
 			Contract.Requires(Check.IsPositive(pointSize));
-			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
+			Contract.Ensures(Check.IsFinite(Contract.Result<float>()));
 
 			return (((value / _UnitsPerEm) * pointSize) / 72.0f) * 96.0f;
 		}

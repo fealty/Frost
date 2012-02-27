@@ -10,6 +10,21 @@ namespace Frost
 {
 	public static class Check
 	{
+		[Pure] public static bool IsFinite(double value)
+		{
+			return !Double.IsNaN(value) && !Double.IsInfinity(value);
+		}
+
+		[Pure] public static bool IsPositive(double value)
+		{
+			return value >= 0.0 && IsFinite(value);
+		}
+
+		[Pure] public static bool IsNormalized(double value)
+		{
+			return value >= 0.0 && value <= 1.0;
+		}
+
 		[Pure] public static bool IsFinite(float value)
 		{
 			return !Single.IsNaN(value) && !Single.IsInfinity(value);
