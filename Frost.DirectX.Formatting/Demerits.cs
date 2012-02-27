@@ -1,7 +1,13 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
 
-namespace Cabbage.Formatting
+using System;
+using System.Diagnostics.Contracts;
+using System.Globalization;
+
+namespace Frost.DirectX.Formatting
 {
 	public struct Demerits : IEquatable<Demerits>
 	{
@@ -12,7 +18,7 @@ namespace Cabbage.Formatting
 
 		public static readonly Demerits None;
 
-		public readonly double Value;
+		private readonly double _Value;
 
 		static Demerits()
 		{
@@ -26,29 +32,34 @@ namespace Cabbage.Formatting
 
 		public Demerits(double value)
 		{
-			Contract.Requires(value >= double.MinValue && value <= double.MaxValue);
+			Contract.Requires(Check.IsFinite(value));
 
-			Value = value;
+			_Value = value;
+		}
+
+		public double Value
+		{
+			get { return _Value; }
 		}
 
 		public bool Equals(Demerits other)
 		{
-			return other.Value.Equals(Value);
+			return other._Value.Equals(_Value);
 		}
 
 		public static bool IsPositiveInfinity(Demerits value)
 		{
-			return value.Value >= Infinity.Value;
+			return value._Value >= Infinity._Value;
 		}
 
 		public static bool IsNegativeInfinity(Demerits value)
 		{
-			return value.Value <= -Infinity.Value;
+			return value._Value <= -Infinity._Value;
 		}
 
 		public override string ToString()
 		{
-			return Value.ToString();
+			return _Value.ToString(CultureInfo.InvariantCulture);
 		}
 
 		public override bool Equals(object obj)
@@ -63,7 +74,7 @@ namespace Cabbage.Formatting
 
 		public override int GetHashCode()
 		{
-			return Value.GetHashCode();
+			return _Value.GetHashCode();
 		}
 
 		public static implicit operator Demerits(double value)
@@ -75,52 +86,52 @@ namespace Cabbage.Formatting
 
 		public static bool operator >(Demerits a, Demerits b)
 		{
-			return a.Value > b.Value;
+			return a._Value > b._Value;
 		}
 
 		public static bool operator <(Demerits a, Demerits b)
 		{
-			return a.Value < b.Value;
+			return a._Value < b._Value;
 		}
 
 		public static bool operator >=(Demerits a, Demerits b)
 		{
-			return a.Value >= b.Value;
+			return a._Value >= b._Value;
 		}
 
 		public static bool operator <=(Demerits a, Demerits b)
 		{
-			return a.Value <= b.Value;
+			return a._Value <= b._Value;
 		}
 
 		public static Demerits operator +(Demerits a, Demerits b)
 		{
-			return new Demerits(a.Value + b.Value);
+			return new Demerits(a._Value + b._Value);
 		}
 
 		public static Demerits operator -(Demerits a, Demerits b)
 		{
-			return new Demerits(a.Value - b.Value);
+			return new Demerits(a._Value - b._Value);
 		}
 
 		public static Demerits operator *(Demerits a, Demerits b)
 		{
-			return new Demerits(a.Value * b.Value);
+			return new Demerits(a._Value * b._Value);
 		}
 
 		public static Demerits operator /(Demerits a, Demerits b)
 		{
-			return new Demerits(a.Value / b.Value);
+			return new Demerits(a._Value / b._Value);
 		}
 
 		public static Demerits operator ++(Demerits a)
 		{
-			return new Demerits(a.Value + 1.0);
+			return new Demerits(a._Value + 1.0);
 		}
 
 		public static Demerits operator --(Demerits a)
 		{
-			return new Demerits(a.Value - 1.0);
+			return new Demerits(a._Value - 1.0);
 		}
 
 		public static bool operator ==(Demerits left, Demerits right)
