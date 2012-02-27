@@ -1,7 +1,12 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Diagnostics.Contracts;
 
-namespace Cabbage.Formatting
+namespace Frost.DirectX.Formatting
 {
 	public sealed class Breakpoint : IEquatable<Breakpoint>
 	{
@@ -9,23 +14,24 @@ namespace Cabbage.Formatting
 
 		public static readonly Breakpoint MaxDemerits;
 
-		private readonly Demerits mDemerits;
-		private readonly LineFitness mFitnessClass;
-		private readonly int mLine;
-		private readonly int mPosition;
-		private readonly Breakpoint mPrevious;
-		private readonly double mRatio;
-		private readonly double mTotalShrink;
-		private readonly double mTotalStretch;
-		private readonly double mTotalWidth;
+		private readonly Demerits _Demerits;
+		private readonly LineFitness _FitnessClass;
+
+		private readonly int _Line;
+		private readonly int _Position;
+
+		private readonly Breakpoint _Previous;
+
+		private readonly double _Ratio;
+		private readonly double _TotalShrink;
+		private readonly double _TotalStretch;
+		private readonly double _TotalWidth;
 
 		static Breakpoint()
 		{
-			Empty = new Breakpoint(
-				0, 0, LineFitness.Tight, 0.0, 0.0, 0.0, 0.0, 0.0);
+			Empty = new Breakpoint(0, 0, LineFitness.Tight, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-			MaxDemerits = new Breakpoint(
-				0, 0, LineFitness.Tight, 0.0, 0.0, 0.0, double.MaxValue, 0.0);
+			MaxDemerits = new Breakpoint(0, 0, LineFitness.Tight, 0.0, 0.0, 0.0, double.MaxValue, 0.0);
 		}
 
 		public Breakpoint(
@@ -37,25 +43,14 @@ namespace Cabbage.Formatting
 			double totalShrink,
 			Demerits demerits,
 			double ratio)
-			: this(
-				position,
-				line,
-				fitnessClass,
-				totalWidth,
-				totalShrink,
-				totalStretch,
-				demerits,
-				ratio,
-				null)
+			: this(position, line, fitnessClass, totalWidth, totalShrink, totalStretch, demerits, ratio, null)
 		{
 			Contract.Requires(position >= 0);
 			Contract.Requires(line >= 0);
-			Contract.Requires(totalWidth >= 0.0 && totalWidth <= double.MaxValue);
-			Contract.Requires(
-				totalShrink >= double.MinValue && totalShrink <= double.MaxValue);
-			Contract.Requires(
-				totalStretch >= double.MinValue && totalStretch <= double.MaxValue);
-			Contract.Requires(ratio >= double.MinValue && ratio <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(totalWidth));
+			Contract.Requires(Check.IsFinite(totalShrink));
+			Contract.Requires(Check.IsFinite(totalStretch));
+			Contract.Requires(Check.IsFinite(ratio));
 		}
 
 		public Breakpoint(
@@ -71,67 +66,65 @@ namespace Cabbage.Formatting
 		{
 			Contract.Requires(position >= 0);
 			Contract.Requires(line >= 0);
-			Contract.Requires(totalWidth >= 0.0 && totalWidth <= double.MaxValue);
-			Contract.Requires(
-				totalShrink >= double.MinValue && totalShrink <= double.MaxValue);
-			Contract.Requires(
-				totalStretch >= double.MinValue && totalStretch <= double.MaxValue);
-			Contract.Requires(ratio >= double.MinValue && ratio <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(totalWidth));
+			Contract.Requires(Check.IsFinite(totalShrink));
+			Contract.Requires(Check.IsFinite(totalStretch));
+			Contract.Requires(Check.IsFinite(ratio));
 
-			mPosition = position;
-			mLine = line;
-			mFitnessClass = fitnessClass;
-			mTotalWidth = totalWidth;
-			mTotalShrink = totalShrink;
-			mTotalStretch = totalStretch;
-			mDemerits = demerits;
-			mPrevious = previous;
-			mRatio = ratio;
+			_Position = position;
+			_Line = line;
+			_FitnessClass = fitnessClass;
+			_TotalWidth = totalWidth;
+			_TotalShrink = totalShrink;
+			_TotalStretch = totalStretch;
+			_Demerits = demerits;
+			_Previous = previous;
+			_Ratio = ratio;
 		}
 
 		public Demerits Demerits
 		{
-			get { return mDemerits; }
+			get { return _Demerits; }
 		}
 
 		public LineFitness Fitness
 		{
-			get { return mFitnessClass; }
+			get { return _FitnessClass; }
 		}
 
 		public int Line
 		{
-			get { return mLine; }
+			get { return _Line; }
 		}
 
 		public int Position
 		{
-			get { return mPosition; }
+			get { return _Position; }
 		}
 
 		public double Ratio
 		{
-			get { return mRatio; }
+			get { return _Ratio; }
 		}
 
 		public Breakpoint Previous
 		{
-			get { return mPrevious; }
+			get { return _Previous; }
 		}
 
 		public double TotalShrink
 		{
-			get { return mTotalShrink; }
+			get { return _TotalShrink; }
 		}
 
 		public double TotalStretch
 		{
-			get { return mTotalStretch; }
+			get { return _TotalStretch; }
 		}
 
 		public double TotalWidth
 		{
-			get { return mTotalWidth; }
+			get { return _TotalWidth; }
 		}
 
 		public bool Equals(Breakpoint other)
@@ -146,26 +139,25 @@ namespace Cabbage.Formatting
 				return true;
 			}
 
-			return other.mDemerits.Equals(mDemerits) &&
-			       other.mFitnessClass.Equals(mFitnessClass) && other.mLine == mLine &&
-			       other.mPosition == mPosition && Equals(other.mPrevious, mPrevious) &&
-			       other.mRatio.Equals(mRatio) && other.mTotalShrink.Equals(mTotalShrink) &&
-			       other.mTotalStretch.Equals(mTotalStretch) &&
-			       other.mTotalWidth.Equals(mTotalWidth);
+			return other._Demerits.Equals(_Demerits) && other._FitnessClass.Equals(_FitnessClass) &&
+			       other._Line == _Line && other._Position == _Position && Equals(other._Previous, _Previous) &&
+			       other._Ratio.Equals(_Ratio) && other._TotalShrink.Equals(_TotalShrink) &&
+			       other._TotalStretch.Equals(_TotalStretch) && other._TotalWidth.Equals(_TotalWidth);
 		}
 
 		public override string ToString()
 		{
-			return string.Format(
-				"Demerits: {0}, Ratio: {1} ({2}), Line: {3}, Position: {4}, Width: {5}, Stretch: {6}, Shrink: {7}",
-				Demerits,
-				Ratio,
-				Fitness,
-				Line,
-				Position,
-				TotalWidth,
-				TotalStretch,
-				TotalShrink);
+			return
+				string.Format(
+					"Demerits: {0}, Ratio: {1} ({2}), Line: {3}, Position: {4}, Width: {5}, Stretch: {6}, Shrink: {7}",
+					Demerits,
+					Ratio,
+					Fitness,
+					Line,
+					Position,
+					TotalWidth,
+					TotalStretch,
+					TotalShrink);
 		}
 
 		public override bool Equals(object obj)
@@ -187,15 +179,15 @@ namespace Cabbage.Formatting
 		{
 			unchecked
 			{
-				int result = mDemerits.GetHashCode();
-				result = (result * 397) ^ mFitnessClass.GetHashCode();
-				result = (result * 397) ^ mLine;
-				result = (result * 397) ^ mPosition;
-				result = (result * 397) ^ (mPrevious != null ? mPrevious.GetHashCode() : 0);
-				result = (result * 397) ^ mRatio.GetHashCode();
-				result = (result * 397) ^ mTotalShrink.GetHashCode();
-				result = (result * 397) ^ mTotalStretch.GetHashCode();
-				result = (result * 397) ^ mTotalWidth.GetHashCode();
+				int result = _Demerits.GetHashCode();
+				result = (result * 397) ^ _FitnessClass.GetHashCode();
+				result = (result * 397) ^ _Line;
+				result = (result * 397) ^ _Position;
+				result = (result * 397) ^ (_Previous != null ? _Previous.GetHashCode() : 0);
+				result = (result * 397) ^ _Ratio.GetHashCode();
+				result = (result * 397) ^ _TotalShrink.GetHashCode();
+				result = (result * 397) ^ _TotalStretch.GetHashCode();
+				result = (result * 397) ^ _TotalWidth.GetHashCode();
 				return result;
 			}
 		}
