@@ -65,7 +65,8 @@ namespace Demo.Framework
 
 			string shader = GetShaderText(Resources.RenderingEffects);
 
-			using(var byteCode = ShaderBytecode.Compile(shader, "fx_4_0", ShaderFlags.None, EffectFlags.None))
+			using(var byteCode = ShaderBytecode.Compile(shader, "fx_4_0", ShaderFlags.None, EffectFlags.None)
+				)
 			{
 				_Effect = new Effect(_Device3D, byteCode);
 			}
@@ -141,47 +142,57 @@ namespace Demo.Framework
 		{
 			Contract.Requires(Check.IsValid(canvas));
 
-			if(_SharedHandle != canvas.Surface2D.GetDeviceHandle())
-			{
-				Contract.Assert(canvas.Surface2D.GetDeviceHandle() != IntPtr.Zero);
+			IntPtr sharedHandle = canvas.Surface2D.GetDeviceHandle();
 
+			if(sharedHandle != _SharedHandle)
+			{
 				_SharedMutex.SafeDispose();
 				_DependentView.SafeDispose();
 				_SharedTexture.SafeDispose();
 
-				_SharedTexture = _Device3D.OpenSharedResource<Texture2D>(canvas.Surface2D.GetDeviceHandle());
+				_SharedMutex = null;
+				_DependentView = null;
+				_SharedTexture = null;
 
-				_SharedMutex = _SharedTexture.QueryInterface<KeyedMutex>();
-
-				_DependentView = new ShaderResourceView(_Device3D, _SharedTexture);
-
-				_SharedHandle = canvas.Surface2D.GetDeviceHandle();
-			}
-
-			_SharedMutex.AcquireSync();
-
-			try
-			{
-				if (_SharedTexture != null)
+				if(sharedHandle != IntPtr.Zero)
 				{
-					var textureVariable = _Effect.GetVariableByName("tex2D");
+					_SharedTexture = _Device3D.OpenSharedResource<Texture2D>(sharedHandle);
 
-					Contract.Assert(textureVariable != null);
+					_SharedMutex = _SharedTexture.QueryInterface<KeyedMutex>();
 
-					var shaderResource = textureVariable.AsShaderResource();
+					_DependentView = new ShaderResourceView(_Device3D, _SharedTexture);
 
-					Contract.Assert(shaderResource != null);
-
-					shaderResource.SetResource(_DependentView);
-
-					_EffectPass.Apply();
-
-					_Device3D.Draw(_VertexCount, 0);
+					_SharedHandle = sharedHandle;
 				}
 			}
-			finally
+
+			if (_SharedMutex != null)
 			{
-				_SharedMutex.ReleaseSync();
+				_SharedMutex.AcquireSync();
+
+				try
+				{
+					if(_SharedTexture != null)
+					{
+						var textureVariable = _Effect.GetVariableByName("tex2D");
+
+						Contract.Assert(textureVariable != null);
+
+						var shaderResource = textureVariable.AsShaderResource();
+
+						Contract.Assert(shaderResource != null);
+
+						shaderResource.SetResource(_DependentView);
+
+						_EffectPass.Apply();
+
+						_Device3D.Draw(_VertexCount, 0);
+					}
+				}
+				finally
+				{
+					_SharedMutex.ReleaseSync();
+				}
 			}
 		}
 
