@@ -16,7 +16,6 @@ BlendState SrcAlphaBlendingAdd
 	SrcBlendAlpha = ONE;
 	DestBlendAlpha = INV_SRC_ALPHA;
 	BlendOpAlpha = ADD;
-	//RenderTargetWriteMask[0] = 0x0F;*/
 };
 
 struct VS_IN

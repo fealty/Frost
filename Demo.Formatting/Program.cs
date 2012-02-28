@@ -1,5 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
 using Demo.Framework;
 
 using Frost;
@@ -8,8 +11,6 @@ namespace Demo.Formatting
 {
 	internal sealed class Application : IDemoContext
 	{
-
-
 		public string Name
 		{
 			get { return "Frost.Formatting Demo"; }
@@ -29,11 +30,11 @@ namespace Demo.Formatting
 		}
 	}
 
-	static class Program
+	internal static class Program
 	{
-		static void Main()
+		private static void Main()
 		{
-			using (Application application = new Application())
+			using(Application application = new Application())
 			{
 				using(DemoApplication demo = new DemoApplication())
 				{

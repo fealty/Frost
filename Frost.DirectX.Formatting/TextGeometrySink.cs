@@ -5,7 +5,6 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using System.Drawing;
 
 using SharpDX;
 using SharpDX.Direct2D1;
@@ -27,14 +26,14 @@ namespace Frost.DirectX.Formatting
 		{
 		}
 
-		void SimplifiedGeometrySink.BeginFigure(PointF startPoint, FigureBegin figureBegin)
+		void SimplifiedGeometrySink.BeginFigure(DrawingPointF startPoint, FigureBegin figureBegin)
 		{
 			_GeometryBuilder.MoveTo(startPoint.X, startPoint.Y);
 		}
 
-		void SimplifiedGeometrySink.AddLines(PointF[] ointsRef)
+		void SimplifiedGeometrySink.AddLines(DrawingPointF[] ointsRef)
 		{
-			foreach(PointF point in ointsRef)
+			foreach (DrawingPointF point in ointsRef)
 			{
 				_GeometryBuilder.LineTo(point.X, point.Y);
 			}

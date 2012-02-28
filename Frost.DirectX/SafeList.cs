@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,22 +13,21 @@ using System.Threading;
 namespace Frost.DirectX
 {
 	/// <summary>
-	///   This class provides a thread-safe wrapper of <see cref = "List{T}" />.
+	///   This class provides a thread-safe wrapper of <see cref="List{T}" /> .
 	/// </summary>
-	/// <typeparam name = "T">The type of the items stored.</typeparam>
+	/// <typeparam name="T"> The type of the items stored. </typeparam>
 	public class SafeList<T> : IEnumerable<T>
 	{
 		private readonly List<T> _InternalList;
 
-		public SafeList()
-			: this(0)
+		public SafeList() : this(0)
 		{
 		}
 
 		/// <summary>
 		///   Initializes a new instance of the class.
 		/// </summary>
-		/// <param name = "capacity">The initial capacity of the collection.</param>
+		/// <param name="capacity"> The initial capacity of the collection. </param>
 		public SafeList(int capacity)
 		{
 			Contract.Requires(capacity >= 0);
@@ -34,7 +38,7 @@ namespace Frost.DirectX
 		/// <summary>
 		///   Initializes a new instance of the class.
 		/// </summary>
-		/// <param name = "items">The items to populate the list with.</param>
+		/// <param name="items"> The items to populate the list with. </param>
 		public SafeList(IEnumerable<T> items)
 		{
 			Contract.Requires(items != null);
@@ -59,7 +63,7 @@ namespace Frost.DirectX
 				}
 				finally
 				{
-					if (isLockTaken)
+					if(isLockTaken)
 					{
 						ExitReadLock();
 					}
@@ -77,12 +81,22 @@ namespace Frost.DirectX
 				}
 				finally
 				{
-					if (isLockTaken)
+					if(isLockTaken)
 					{
 						ExitWriteLock();
 					}
 				}
 			}
+		}
+
+		IEnumerator<T> IEnumerable<T>.GetEnumerator()
+		{
+			return new SafeEnumerator(this);
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return new SafeEnumerator(this);
 		}
 
 		/// <summary>
@@ -100,14 +114,14 @@ namespace Frost.DirectX
 
 				_InternalList.Clear();
 
-				foreach (T item in items)
+				foreach(T item in items)
 				{
 					OnItemRemoved(item);
 				}
 			}
 			finally
 			{
-				if (isLockTaken)
+				if(isLockTaken)
 				{
 					ExitWriteLock();
 				}
@@ -117,7 +131,7 @@ namespace Frost.DirectX
 		/// <summary>
 		///   Adds an item to the collection.
 		/// </summary>
-		/// <param name = "item">The item to add.</param>
+		/// <param name="item"> The item to add. </param>
 		public void Add(T item)
 		{
 			bool isLockTaken = false;
@@ -132,7 +146,7 @@ namespace Frost.DirectX
 			}
 			finally
 			{
-				if (isLockTaken)
+				if(isLockTaken)
 				{
 					ExitWriteLock();
 				}
@@ -147,7 +161,7 @@ namespace Frost.DirectX
 			{
 				EnterWriteLock(out isLockTaken);
 
-				foreach (T item in enumerable)
+				foreach(T item in enumerable)
 				{
 					_InternalList.Add(item);
 
@@ -156,7 +170,7 @@ namespace Frost.DirectX
 			}
 			finally
 			{
-				if (isLockTaken)
+				if(isLockTaken)
 				{
 					ExitWriteLock();
 				}
@@ -166,10 +180,8 @@ namespace Frost.DirectX
 		/// <summary>
 		///   Removes an item from the collection.
 		/// </summary>
-		/// <param name = "item">The item to remove.</param>
-		/// <returns>
-		///   Returns <c>true</c> if the item was removed; otherwise, <c>false</c>.
-		/// </returns>
+		/// <param name="item"> The item to remove. </param>
+		/// <returns> Returns <c>true</c> if the item was removed; otherwise, <c>false</c> . </returns>
 		public bool Remove(T item)
 		{
 			bool isLockTaken = false;
@@ -178,7 +190,7 @@ namespace Frost.DirectX
 			{
 				EnterWriteLock(out isLockTaken);
 
-				if (_InternalList.Remove(item))
+				if(_InternalList.Remove(item))
 				{
 					OnItemRemoved(item);
 
@@ -187,7 +199,7 @@ namespace Frost.DirectX
 			}
 			finally
 			{
-				if (isLockTaken)
+				if(isLockTaken)
 				{
 					ExitWriteLock();
 				}
@@ -209,27 +221,17 @@ namespace Frost.DirectX
 			}
 			finally
 			{
-				if (isLockTaken)
+				if(isLockTaken)
 				{
 					ExitReadLock();
 				}
 			}
 		}
 
-		IEnumerator<T> IEnumerable<T>.GetEnumerator()
-		{
-			return new SafeEnumerator(this);
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return new SafeEnumerator(this);
-		}
-
 		/// <summary>
 		///   Acquires the unsafe writable context for the thread-safe collection.
 		/// </summary>
-		/// <returns>Returns a new unsafe collection context.</returns>
+		/// <returns> Returns a new unsafe collection context. </returns>
 		public UnsafeContext AcquireLock()
 		{
 			return new UnsafeContext(this);
@@ -248,7 +250,7 @@ namespace Frost.DirectX
 			}
 			finally
 			{
-				if (isLockTaken)
+				if(isLockTaken)
 				{
 					ExitReadLock();
 				}
@@ -263,7 +265,7 @@ namespace Frost.DirectX
 		/// <summary>
 		///   Internal event: Occurs when an item has been removed.
 		/// </summary>
-		/// <param name = "item">The item that was removed.</param>
+		/// <param name="item"> The item that was removed. </param>
 		protected virtual void OnItemRemoved(T item)
 		{
 		}
@@ -271,7 +273,7 @@ namespace Frost.DirectX
 		/// <summary>
 		///   Internal event: Occurs when an item has been inserted.
 		/// </summary>
-		/// <param name = "item">The item that was inserted.</param>
+		/// <param name="item"> The item that was inserted. </param>
 		protected virtual void OnItemAdded(T item)
 		{
 		}
@@ -279,8 +281,8 @@ namespace Frost.DirectX
 		/// <summary>
 		///   Internal event: Occurs when an item is replaced with another item.
 		/// </summary>
-		/// <param name = "oldItem">The old item.</param>
-		/// <param name = "newItem">The new item.</param>
+		/// <param name="oldItem"> The old item. </param>
+		/// <param name="newItem"> The new item. </param>
 		protected virtual void OnItemReplaced(T oldItem, T newItem)
 		{
 		}
@@ -288,9 +290,7 @@ namespace Frost.DirectX
 		/// <summary>
 		///   Enters the read lock.
 		/// </summary>
-		/// <param name = "isLockTaken">
-		///   Output value indicating whether the lock was taken.
-		/// </param>
+		/// <param name="isLockTaken"> Output value indicating whether the lock was taken. </param>
 		private void EnterReadLock(out bool isLockTaken)
 		{
 			isLockTaken = false;
@@ -301,9 +301,7 @@ namespace Frost.DirectX
 		/// <summary>
 		///   Enters the write lock.
 		/// </summary>
-		/// <param name = "isLockTaken">
-		///   Output value indicating whether the lock was taken.
-		/// </param>
+		/// <param name="isLockTaken"> Output value indicating whether the lock was taken. </param>
 		private void EnterWriteLock(out bool isLockTaken)
 		{
 			isLockTaken = false;
@@ -337,18 +335,12 @@ namespace Frost.DirectX
 			/// <summary>
 			///   Initializes a new instance of the class.
 			/// </summary>
-			/// <param name = "wrappedList">The wrapped list.</param>
+			/// <param name="wrappedList"> The wrapped list. </param>
 			public ReadOnly(SafeList<T> wrappedList)
 			{
 				Contract.Requires(wrappedList != null);
 
 				_WrappedList = wrappedList;
-			}
-
-			/// <inheritdoc />
-			public void CopyTo(T[] array, int startIndex)
-			{
-				_WrappedList.CopyTo(array, startIndex);
 			}
 
 			/// <inheritdoc />
@@ -367,10 +359,16 @@ namespace Frost.DirectX
 				return GetEnumerator();
 			}
 
+			/// <inheritdoc />
+			public void CopyTo(T[] array, int startIndex)
+			{
+				_WrappedList.CopyTo(array, startIndex);
+			}
+
 			/// <summary>
 			///   Acquires the unsafe context for the read-only thread-safe collection.
 			/// </summary>
-			/// <returns>Returns a new unsafe collection context.</returns>
+			/// <returns> Returns a new unsafe collection context. </returns>
 			public UnsafeReadOnlyContext AcquireLock()
 			{
 				return new UnsafeReadOnlyContext(_WrappedList);
@@ -421,7 +419,7 @@ namespace Frost.DirectX
 
 			void IDisposable.Dispose()
 			{
-				if (_IsLocked)
+				if(_IsLocked)
 				{
 					_List.ExitReadLock();
 				}
@@ -439,9 +437,8 @@ namespace Frost.DirectX
 			/// <summary>
 			///   Initializes a new instance of the struct.
 			/// </summary>
-			/// <param name = "boundList">The bound list.</param>
-			internal UnsafeContext(SafeList<T> boundList)
-				: this()
+			/// <param name="boundList"> The bound list. </param>
+			internal UnsafeContext(SafeList<T> boundList) : this()
 			{
 				Contract.Requires(boundList != null);
 
@@ -453,23 +450,6 @@ namespace Frost.DirectX
 			}
 
 			/// <inheritdoc />
-			void IDisposable.Dispose()
-			{
-				if (_IsLocked)
-				{
-					_BoundList.ExitWriteLock();
-				}
-			}
-
-			/// <inheritdoc />
-			public bool Contains(T item)
-			{
-				Debug.Assert(_BoundList != null);
-
-				return _BoundList._InternalList.Contains(item);
-			}
-
-			/// <inheritdoc />
 			public int Count
 			{
 				get
@@ -478,6 +458,35 @@ namespace Frost.DirectX
 
 					return _BoundList._InternalList.Count;
 				}
+			}
+
+			/// <inheritdoc />
+			void IDisposable.Dispose()
+			{
+				if(_IsLocked)
+				{
+					_BoundList.ExitWriteLock();
+				}
+			}
+
+			/// <inheritdoc />
+			IEnumerator<T> IEnumerable<T>.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			/// <inheritdoc />
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			/// <inheritdoc />
+			public bool Contains(T item)
+			{
+				Debug.Assert(_BoundList != null);
+
+				return _BoundList._InternalList.Contains(item);
 			}
 
 			/// <inheritdoc />
@@ -580,7 +589,7 @@ namespace Frost.DirectX
 			{
 				Debug.Assert(_BoundList != null);
 
-				if (index >= 0 && index < _BoundList._InternalList.Count)
+				if(index >= 0 && index < _BoundList._InternalList.Count)
 				{
 					return _BoundList._InternalList[index];
 				}
@@ -625,18 +634,6 @@ namespace Frost.DirectX
 			}
 
 			/// <inheritdoc />
-			IEnumerator<T> IEnumerable<T>.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-
-			/// <inheritdoc />
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-
-			/// <inheritdoc />
 			public List<T>.Enumerator GetEnumerator()
 			{
 				Debug.Assert(_BoundList != null);
@@ -656,7 +653,7 @@ namespace Frost.DirectX
 			/// <summary>
 			///   Initializes a new instance of the struct.
 			/// </summary>
-			/// <param name = "boundList">The bound list.</param>
+			/// <param name="boundList"> The bound list. </param>
 			public UnsafeReadOnlyContext(SafeList<T> boundList)
 			{
 				Contract.Requires(boundList != null);
@@ -669,23 +666,6 @@ namespace Frost.DirectX
 			}
 
 			/// <inheritdoc />
-			void IDisposable.Dispose()
-			{
-				if (_IsLocked)
-				{
-					_BoundList.ExitReadLock();
-				}
-			}
-
-			/// <inheritdoc />
-			public bool Contains(T item)
-			{
-				Debug.Assert(_BoundList != null);
-
-				return _BoundList._InternalList.Contains(item);
-			}
-
-			/// <inheritdoc />
 			public int Count
 			{
 				get
@@ -694,6 +674,35 @@ namespace Frost.DirectX
 
 					return _BoundList._InternalList.Count;
 				}
+			}
+
+			/// <inheritdoc />
+			void IDisposable.Dispose()
+			{
+				if(_IsLocked)
+				{
+					_BoundList.ExitReadLock();
+				}
+			}
+
+			/// <inheritdoc />
+			IEnumerator<T> IEnumerable<T>.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			/// <inheritdoc />
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+
+			/// <inheritdoc />
+			public bool Contains(T item)
+			{
+				Debug.Assert(_BoundList != null);
+
+				return _BoundList._InternalList.Contains(item);
 			}
 
 			/// <inheritdoc />
@@ -756,24 +765,12 @@ namespace Frost.DirectX
 			{
 				Debug.Assert(_BoundList != null);
 
-				if (index >= 0 && index < _BoundList._InternalList.Count)
+				if(index >= 0 && index < _BoundList._InternalList.Count)
 				{
 					return _BoundList._InternalList[index];
 				}
 
 				return default(T);
-			}
-
-			/// <inheritdoc />
-			IEnumerator<T> IEnumerable<T>.GetEnumerator()
-			{
-				return GetEnumerator();
-			}
-
-			/// <inheritdoc />
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return GetEnumerator();
 			}
 
 			/// <inheritdoc />

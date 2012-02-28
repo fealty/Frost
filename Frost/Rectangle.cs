@@ -434,8 +434,7 @@ namespace Frost
 					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromCorners(50, 50, 100, 100),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Both));
+				FromCorners(0, 0, 50, 50).AlignWithin(FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Both));
 			Assert.Equal(
 				FromCorners(0, 50, 50, 100),
 				FromCorners(0, 0, 50, 50).AlignWithin(
@@ -482,8 +481,7 @@ namespace Frost
 					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromCorners(25, 25, 75, 75),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Both));
+				FromCorners(0, 0, 50, 50).AlignWithin(FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Both));
 			Assert.Equal(
 				FromCorners(25, 25, 75, 75),
 				FromCorners(0, 0, 50, 50).AlignWithin(
@@ -506,8 +504,7 @@ namespace Frost
 					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromCorners(0, 0, 100, 100),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Both));
+				FromCorners(0, 0, 50, 50).AlignWithin(FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Both));
 			Assert.Equal(
 				FromCorners(0, 0, 100, 100),
 				FromCorners(0, 0, 50, 50).AlignWithin(

@@ -37,10 +37,10 @@ namespace Demo.Framework
 		private readonly IDeviceCounter<TimeSpan> _PaintingFrameDuration;
 		private readonly SwapChain _SwapChain;
 		private readonly Stopwatch _Timer;
+		private bool _IsResetQueued;
 
 		private RenderTargetView _RenderView;
 		private Canvas _Target;
-		private bool _IsResetQueued;
 
 		public DemoApplication()
 		{
@@ -229,7 +229,7 @@ namespace Demo.Framework
 
 				_IsResetQueued = false;
 			}
-			
+
 			_Device.OutputMerger.SetTargets(_RenderView);
 
 			_Device.ClearRenderTargetView(_RenderView, new Color4());

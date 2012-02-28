@@ -45,6 +45,19 @@ namespace Frost.DirectX.Composition
 			get { return _Surface2D; }
 		}
 
+		public void Dispose()
+		{
+			_ChildReference.Invalidate();
+			_AtlasReference.Invalidate();
+
+			_ChildReference = null;
+			_AtlasReference = null;
+
+			IDisposable disposable = Surface2D as IDisposable;
+
+			disposable.SafeDispose();
+		}
+
 		ISurface2D ISurfaceAtlas.Surface2D
 		{
 			get { return Surface2D; }
@@ -94,19 +107,6 @@ namespace Frost.DirectX.Composition
 			{
 				_Canvas.Target = null;
 			}
-		}
-
-		public void Dispose()
-		{
-			_ChildReference.Invalidate();
-			_AtlasReference.Invalidate();
-
-			_ChildReference = null;
-			_AtlasReference = null;
-
-			IDisposable disposable = Surface2D as IDisposable;
-
-			disposable.SafeDispose();
 		}
 
 		private void ComputeOffsetRegion(Size desiredSize, out Rectangle result)

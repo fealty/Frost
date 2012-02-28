@@ -4,7 +4,6 @@
 // See LICENSE for more information.
 
 using System;
-using System.Drawing;
 
 using SharpDX;
 using SharpDX.Direct2D1;
@@ -26,14 +25,14 @@ namespace Frost.DirectX
 		{
 		}
 
-		void SimplifiedGeometrySink.BeginFigure(PointF startPoint, FigureBegin figureBegin)
+		void SimplifiedGeometrySink.BeginFigure(DrawingPointF startPoint, FigureBegin figureBegin)
 		{
 			_Builder.MoveTo(startPoint.X, startPoint.Y);
 		}
 
-		void SimplifiedGeometrySink.AddLines(PointF[] ointsRef)
+		void SimplifiedGeometrySink.AddLines(DrawingPointF[] ointsRef)
 		{
-			foreach(PointF point in ointsRef)
+			foreach(DrawingPointF point in ointsRef)
 			{
 				_Builder.LineTo(point.X, point.Y);
 			}
@@ -65,7 +64,7 @@ namespace Frost.DirectX
 		{
 		}
 
-		void GeometrySink.AddLine(PointF point)
+		void GeometrySink.AddLine(DrawingPointF point)
 		{
 			throw new NotSupportedException();
 		}

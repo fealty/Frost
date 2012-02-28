@@ -5,7 +5,6 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using System.Drawing;
 
 using Frost.Atlasing;
 using Frost.DirectX.Common;
@@ -17,13 +16,16 @@ using Frost.Painting;
 using Frost.Shaping;
 using Frost.Surfacing;
 
+using SharpDX;
 using SharpDX.DXGI;
+using SharpDX.DirectWrite;
 
 using Compositor = Frost.Composition.Compositor;
 using DxGeometry = SharpDX.Direct2D1.Geometry;
-using Font = SharpDX.DirectWrite.Font;
+using FontMetrics = Frost.Formatting.FontMetrics;
+using FontStretch = Frost.Formatting.FontStretch;
 using FontStyle = Frost.Formatting.FontStyle;
-using RectangleF = SharpDX.RectangleF;
+using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX
 {
@@ -116,9 +118,10 @@ namespace Frost.DirectX
 
 				if(resolvedPath != null)
 				{
-					PointF resultVector;
+					DrawingPointF resultVector;
 
-					PointF resultPoint = resolvedPath.ComputePointAtLength(length, tolerance, out resultVector);
+					DrawingPointF resultPoint = resolvedPath.ComputePointAtLength(
+						length, tolerance, out resultVector);
 
 					tangentVector = new Point(resultVector.X, resultVector.Y);
 

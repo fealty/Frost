@@ -382,8 +382,7 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsPositive(sourceHeight));
 			Contract.Requires(Check.IsValid(destination, Device2D));
 
-			Rectangle sourceRegion = new Rectangle(
-				sourceX, sourceY, sourceWidth, sourceHeight);
+			Rectangle sourceRegion = new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight);
 
 			OnCopyResult(ref sourceRegion, destination);
 		}

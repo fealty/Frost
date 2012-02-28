@@ -5,10 +5,10 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using System.Drawing;
 
 using Frost.DirectX.Common;
 
+using SharpDX;
 using SharpDX.Direct2D1;
 
 using Brush = SharpDX.Direct2D1.Brush;
@@ -121,8 +121,8 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(style != null);
 			Contract.Requires(Check.IsPositive(strokeWidth));
 
-			PointF start = new PointF {X = lineStart.X, Y = lineStart.Y};
-			PointF end = new PointF {X = lineEnd.X, Y = lineEnd.Y};
+			DrawingPointF start = new DrawingPointF { X = lineStart.X, Y = lineStart.Y };
+			DrawingPointF end = new DrawingPointF { X = lineEnd.X, Y = lineEnd.Y };
 
 			_Target.DrawLine(start, end, brush, strokeWidth, style);
 		}

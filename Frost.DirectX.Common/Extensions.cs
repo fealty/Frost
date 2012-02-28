@@ -5,7 +5,6 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using System.Drawing;
 
 using Frost.Surfacing;
 
@@ -51,9 +50,9 @@ namespace Frost.DirectX.Common
 			return surfaceD3D.DeviceHandle;
 		}
 
-		public static SizeF ToSizeF(this Size size)
+		public static DrawingSizeF ToSizeF(this Size size)
 		{
-			SizeF result = new SizeF {Width = size.Width, Height = size.Height};
+			DrawingSizeF result = new DrawingSizeF { Width = size.Width, Height = size.Height };
 
 			return result;
 		}
@@ -65,9 +64,9 @@ namespace Frost.DirectX.Common
 			return result;
 		}
 
-		public static PointF ToPointF(this Point point)
+		public static DrawingPointF ToPointF(this Point point)
 		{
-			PointF result = new PointF {X = point.X, Y = point.Y};
+			DrawingPointF result = new DrawingPointF { X = point.X, Y = point.Y };
 
 			return result;
 		}

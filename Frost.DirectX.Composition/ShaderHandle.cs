@@ -32,7 +32,7 @@ namespace Frost.DirectX.Composition
 			get
 			{
 				Contract.Ensures(Contract.Result<int>() >= 0);
-				
+
 				return _Index - 1;
 			}
 		}

@@ -86,18 +86,18 @@ namespace Frost.Formatting
 			Contract.Requires(painterSink != null);
 			Contract.Requires(metrics != null);
 
-			for (int i = range.StartIndex; i <= range.LastIndex; ++i)
+			for(int i = range.StartIndex; i <= range.LastIndex; ++i)
 			{
-				if (metrics.IsClusterStart(i))
+				if(metrics.IsClusterStart(i))
 				{
-					if (metrics.IsClusterVisible(i))
+					if(metrics.IsClusterVisible(i))
 					{
 						Rectangle region = metrics.Regions[i];
 
 						Point baseline = new Point(
 							region.Left + metrics.BaselineOffset.Width, region.Top + metrics.BaselineOffset.Height);
 
-						if (metrics.IsRightToLeft(i))
+						if(metrics.IsRightToLeft(i))
 						{
 							baseline = new Point(region.Right + metrics.BaselineOffset.Width, baseline.Y);
 						}

@@ -20,7 +20,6 @@ using SharpDX.D3DCompiler;
 using SharpDX.Direct3D10;
 
 using BlendOperation = Frost.Composition.BlendOperation;
-using RectangleF = System.Drawing.RectangleF;
 
 namespace Frost.DirectX.Composition
 {
@@ -443,19 +442,11 @@ namespace Frost.DirectX.Composition
 			float xPixel = 1.0f / source.Surface2D.Region.Width;
 			float yPixel = 1.0f / source.Surface2D.Region.Height;
 
-			RectangleF tex = RectangleF.Empty;
-
-			tex.X = (source.Region.X + sourceRegion.X) * xPixel;
-			tex.Y = (source.Region.Y + sourceRegion.Y) * yPixel;
-			tex.Width = sourceRegion.Width * xPixel;
-			tex.Height = sourceRegion.Height * yPixel;
-
-			RectangleF reg = RectangleF.Empty;
-
-			reg.X = destinationRegion.X;
-			reg.Y = destinationRegion.Y;
-			reg.Width = destinationRegion.Width;
-			reg.Height = destinationRegion.Height;
+			Rectangle tex = new Rectangle(
+				(source.Region.X + sourceRegion.X) * xPixel,
+				(source.Region.Y + sourceRegion.Y) * yPixel,
+				(sourceRegion.Width * xPixel),
+				(sourceRegion.Height * yPixel));
 
 			RenderConstants item;
 
@@ -464,10 +455,10 @@ namespace Frost.DirectX.Composition
 			item.TextureRegion.Z = tex.Right;
 			item.TextureRegion.W = tex.Bottom;
 
-			item.DrawnRegion.X = reg.Left;
-			item.DrawnRegion.Y = reg.Top;
-			item.DrawnRegion.Z = reg.Right;
-			item.DrawnRegion.W = reg.Bottom;
+			item.DrawnRegion.X = destinationRegion.Left;
+			item.DrawnRegion.Y = destinationRegion.Top;
+			item.DrawnRegion.Z = destinationRegion.Right;
+			item.DrawnRegion.W = destinationRegion.Bottom;
 
 			item.Transform = Matrix.Identity;
 

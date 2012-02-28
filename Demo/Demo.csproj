@@ -65,23 +65,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpDX, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SharpDX, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\sharpdx\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.D3DCompiler, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="SharpDX.Direct3D10, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SharpDX.D3DCompiler, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\sharpdx\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D10, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\sharpdx\SharpDX.Direct3D10.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.DXGI, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="SharpDX.DXGI, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\sharpdx\SharpDX.DXGI.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DistanceEffect.cs" />
@@ -126,14 +129,6 @@
     <ProjectReference Include="..\Frost.DirectX.Composition\Frost.DirectX.Composition.csproj">
       <Project>{2EA01B9A-898F-425F-B65A-D6A2225CFD05}</Project>
       <Name>Frost.DirectX.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Frost.DirectX.Formatting\Frost.DirectX.Formatting.csproj">
-      <Project>{C168162F-F8DF-4898-AAB1-03F0B2EF4ED0}</Project>
-      <Name>Frost.DirectX.Formatting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Frost.DirectX.Painting\Frost.DirectX.Painting.csproj">
-      <Project>{5F6DDFC5-EFAF-4930-B7DC-75CF46582184}</Project>
-      <Name>Frost.DirectX.Painting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Frost.DirectX\Frost.DirectX.csproj">
       <Project>{47E1516A-0345-408E-B762-7E4F9D0361F8}</Project>

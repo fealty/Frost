@@ -14,7 +14,7 @@ namespace Demo.Framework
 	{
 		public static void SafeDispose(this IDisposable disposable)
 		{
-			if (disposable != null)
+			if(disposable != null)
 			{
 				disposable.Dispose();
 			}
@@ -30,7 +30,7 @@ namespace Demo.Framework
 		/// <returns> Returns the result of the operation. </returns>
 		public static Result AcquireSync(this KeyedMutex mutex)
 		{
-			if (mutex != null)
+			if(mutex != null)
 			{
 				return mutex.Acquire(0, -1);
 			}
@@ -48,7 +48,7 @@ namespace Demo.Framework
 		/// <returns> Returns the result of the operation. </returns>
 		public static Result ReleaseSync(this KeyedMutex mutex)
 		{
-			if (mutex != null)
+			if(mutex != null)
 			{
 				return mutex.Release(0);
 			}
