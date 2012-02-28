@@ -238,7 +238,9 @@ namespace Demo.Framework
 
 			_Device.OutputMerger.SetTargets(_RenderView);
 
-			_Device.ClearRenderTargetView(_RenderView, new Color4());
+			Color4 background = new Color4(0.75f, 0.75f, 0.75f, 1.0f);
+
+			_Device.ClearRenderTargetView(_RenderView, background);
 
 			_Renderer.BeginRendering();
 
