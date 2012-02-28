@@ -16,11 +16,6 @@ namespace Demo.Formatting
 {
 	internal sealed class Application : IDemoContext
 	{
-		public string Name
-		{
-			get { return "Frost.Formatting Demo"; }
-		}
-
 		public void Reset(Canvas target, Device2D device2D)
 		{
 			Painter painter = device2D.Painter;

@@ -24,11 +24,6 @@ namespace Demo.SDF
 			_Distance = new DistanceField();
 		}
 
-		public string Name
-		{
-			get { return "Frost: o"; }
-		}
-
 		public void Reset(Canvas target, Device2D device2D)
 		{
 			if(device2D.Effects.Find<DistanceEffectSettings>() == null)
