@@ -20,40 +20,14 @@ namespace Demo.Framework
 			}
 		}
 
-		/// <summary>
-		///   Acquires the keyed mutex.
-		/// </summary>
-		/// <remarks>
-		///   This method only acquires key zero.
-		/// </remarks>
-		/// <param name="mutex"> The mutex to acquire. </param>
-		/// <returns> Returns the result of the operation. </returns>
-		public static Result AcquireSync(this KeyedMutex mutex)
+		internal static Result AcquireSync(this KeyedMutex mutex)
 		{
-			if(mutex != null)
-			{
-				return mutex.Acquire(0, -1);
-			}
-
-			return Result.NoInterface;
+			return mutex != null ? mutex.Acquire(0, -1) : Result.NoInterface;
 		}
 
-		/// <summary>
-		///   Releases the keyed mutex.
-		/// </summary>
-		/// <remarks>
-		///   This method only releases key zero.
-		/// </remarks>
-		/// <param name="mutex"> The mutex to release. </param>
-		/// <returns> Returns the result of the operation. </returns>
-		public static Result ReleaseSync(this KeyedMutex mutex)
+		internal static Result ReleaseSync(this KeyedMutex mutex)
 		{
-			if(mutex != null)
-			{
-				return mutex.Release(0);
-			}
-
-			return Result.NoInterface;
+			return mutex != null ? mutex.Release(0) : Result.NoInterface;
 		}
 	}
 }
