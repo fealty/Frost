@@ -210,66 +210,7 @@ namespace Demo
 
 			HandleFormResize(null, null);
 
-			mDevice2D.Effects.Register<DistanceFieldEffect>();
-
-			Paragraph p = Paragraph.Create().WithPointSize(12)
-				//.ChangeFontStyle(FontStyle.Italic)
-				.WithFeatures(new FontFeatureCollection(new[] {new FontFeature("swsh", 1)})).WithFamily(
-					"Brioso Pro").WithAdditionalText("R").Build();
-
-			ITextMetrics metrics = mDevice2D.Measure(
-				p, new Rectangle(Frost.Point.Empty, Size.MaxValue), null);
-
-			Outline outline = metrics.Outlines[0];
-
-			GC.Collect(4);
-
-			Canvas test2 = mDevice2D.CreateCanvas(new Size(128, 128));
-
-			Stopwatch watch = new Stopwatch();
-			watch.Start();
-			Canvas test = mDistance.CreateField(
-				outline.NormalizedOutline, outline.NormalizedBaseline, mDevice2D);
-			watch.Stop();
-
-			mForm.Text = string.Format("Time: {0}", watch.ElapsedMilliseconds);
-
-			Debug.WriteLine("Time: {0}", watch.ElapsedMilliseconds);
-
-			Rectangle reg = mDevice2D.ComputeRegion(outline.NormalizedOutline);
-
-			mDevice2D.Painter.Begin(mViewer);
-			mDevice2D.Painter.Translate(test.Region.X, test.Region.Y);
-
-			mDevice2D.Painter.Translate(
-				(0.5f - (reg.Width / 2.0f)) * 400, (0.5f - (reg.Height / 2.0f)) * 400);
-
-			// translate the glyph to the left corner of the EM square
-			mDevice2D.Painter.Translate(-reg.X * 400, -reg.Y * 400);
-			mDevice2D.Painter.SetBrush(Color.Black);
-			mDevice2D.Painter.Scale(400, 400);
-			mDevice2D.Painter.Fill(outline.NormalizedOutline);
-			mDevice2D.Painter.End(); //*/
-
-			mDevice2D.Compositor.Begin(mViewer, Retention.RetainData);
-
-			DistanceEffectSettings settings;
-			mDevice2D.Compositor.Translate(400, 0);
-			mDevice2D.Compositor.Scale(3.125f, 3.125f);
-			mDevice2D.Compositor.ApplyEffect(settings);
-			mDevice2D.Compositor.Composite(test);
-			mDevice2D.Compositor.End();
-
-			mDevice2D.Painter.Begin(mViewer, Retention.RetainData);
-			mDevice2D.Painter.SetBrush(Color.IndianRed);
-			mDevice2D.Painter.IsAntialiased = Antialiasing.Aliased;
-			mDevice2D.Painter.StrokeWidth = DistanceField.EmLength / 400;
-			mDevice2D.Painter.Scale(1.0f / DistanceField.EmLength, 1.0f / DistanceField.EmLength);
-			mDevice2D.Painter.Scale(400, 400);
-			TestTest(mDistance.Sample);
-			mDevice2D.Painter.End();
-
-			mDevice2D.DumpSurfaces(null, SurfaceUsage.Normal); //*/
+			
 
 			
 		}

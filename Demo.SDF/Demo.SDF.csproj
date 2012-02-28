@@ -46,6 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClusterNode.cs" />
+    <Compile Include="DistanceEffect.cs" />
+    <Compile Include="DistanceField.cs" />
+    <Compile Include="GeometryDecomposer.cs" />
+    <Compile Include="GeometryNode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -66,6 +71,36 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Demo.Framework\Demo.Framework.csproj">
+      <Project>{A95A4341-032C-43A2-89B0-7BA3B7773C4E}</Project>
+      <Name>Demo.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Frost.DirectX.Common\Frost.DirectX.Common.csproj">
+      <Project>{4F35A7DE-5B7B-4271-97C2-6059E685FBC6}</Project>
+      <Name>Frost.DirectX.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Frost.DirectX.Composition\Frost.DirectX.Composition.csproj">
+      <Project>{2EA01B9A-898F-425F-B65A-D6A2225CFD05}</Project>
+      <Name>Frost.DirectX.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Frost.DirectX.Formatting\Frost.DirectX.Formatting.csproj">
+      <Project>{C168162F-F8DF-4898-AAB1-03F0B2EF4ED0}</Project>
+      <Name>Frost.DirectX.Formatting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Frost.DirectX.Painting\Frost.DirectX.Painting.csproj">
+      <Project>{5F6DDFC5-EFAF-4930-B7DC-75CF46582184}</Project>
+      <Name>Frost.DirectX.Painting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Frost.DirectX\Frost.DirectX.csproj">
+      <Project>{47E1516A-0345-408E-B762-7E4F9D0361F8}</Project>
+      <Name>Frost.DirectX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Frost\Frost.csproj">
+      <Project>{5DA3C280-5EBE-4148-BAB5-C700DA0645C2}</Project>
+      <Name>Frost</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
