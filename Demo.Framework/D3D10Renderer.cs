@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 
 using Demo.Framework.Properties;
@@ -19,140 +20,180 @@ using SharpDX.Direct3D10;
 
 using Buffer = SharpDX.Direct3D10.Buffer;
 using Device1 = SharpDX.Direct3D10.Device1;
-using MapFlags = SharpDX.Direct3D10.MapFlags;
 
 namespace Demo.Framework
 {
-	public sealed class Dx101Renderer : IDisposable
+	internal sealed class D3D10Renderer : IDisposable
 	{
 		private const int _Stride = 20;
 		private const int _Offset = 0;
+		private const int _VertexCount = 6;
+
+		private static readonly Vector2[] _QuadPrimitiveData = new[]
+		{
+			new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f),
+			new Vector2(1.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 1.0f),
+			new Vector2(1.0f, 1.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f),
+			new Vector2(0.0f, 1.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 0.0f)
+		};
+
+		private static readonly InputElement[] _InputLayoutData = new[]
+		{
+			new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0),
+			new InputElement("TEXCOORD", 0, Format.R32G32_Float, 12, 0)
+		};
+
+		private readonly Device1 _Device3D;
 
 		private readonly Effect _Effect;
 		private readonly EffectPass _EffectPass;
 		private readonly EffectTechnique _EffectTechnique;
-		private readonly InputLayout _Layout;
+		private readonly InputLayout _InputLayout;
 		private readonly Buffer _VertexBuffer;
+		private readonly VertexBufferBinding _VertexBufferBinding;
+
 		private ShaderResourceView _DependentView;
 		private IntPtr _SharedHandle;
 		private KeyedMutex _SharedMutex;
 		private Texture2D _SharedTexture;
 
-		public Dx101Renderer(Device1 renderingDevice)
+		public D3D10Renderer(Device1 device3D)
 		{
-			RenderingDevice = renderingDevice;
+			Contract.Requires(device3D != null);
+
+			_Device3D = device3D;
 
 			string shader = GetShaderText(Resources.RenderingEffects);
 
-			ShaderBytecode byteCode = ShaderBytecode.Compile(
-				shader, "fx_4_0", ShaderFlags.EnableStrictness, EffectFlags.None);
+			using(var byteCode = ShaderBytecode.Compile(shader, "fx_4_0", ShaderFlags.None, EffectFlags.None))
+			{
+				_Effect = new Effect(_Device3D, byteCode);
+			}
 
-			// Create the effect.
-			_Effect = new Effect(RenderingDevice, byteCode);
+			_EffectTechnique = _Effect.GetTechniqueByName("WithTexture");
 
-			_EffectTechnique = _Effect.GetTechniqueByIndex(0);
+			Contract.Assert(_EffectTechnique != null);
+
 			_EffectPass = _EffectTechnique.GetPassByIndex(0);
 
-			// Define the input layout.
-			_Layout = new InputLayout(
-				RenderingDevice,
-				_EffectPass.Description.Signature,
-				new[]
+			Contract.Assert(_EffectPass != null);
+
+			_InputLayout = new InputLayout(_Device3D, _EffectPass.Description.Signature, _InputLayoutData);
+
+			const int byteSize = _Stride * _VertexCount;
+
+			using(DataStream stream = new DataStream(byteSize, true, true))
+			{
+				for(int i = 0; i < _QuadPrimitiveData.Length; i += 2)
 				{
-					new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0),
-					new InputElement("TEXCOORD", 0, Format.R32G32_Float, 12, 0)
-				});
+					float fx = (2.0f * _QuadPrimitiveData[i + 0].X) - 1.0f;
+					float fy = (2.0f * _QuadPrimitiveData[i + 0].Y) - 1.0f;
 
-			_VertexBuffer = CreateVertexBuffer();
+					stream.Write(new Vector3(fx, -fy, 0.5f));
+					stream.Write(_QuadPrimitiveData[i + 1]);
+				}
+
+				stream.Seek(0, SeekOrigin.Begin);
+
+				BufferDescription description = new BufferDescription
+				{
+					BindFlags = BindFlags.VertexBuffer,
+					CpuAccessFlags = CpuAccessFlags.None,
+					OptionFlags = ResourceOptionFlags.None,
+					Usage = ResourceUsage.Immutable,
+					SizeInBytes = byteSize
+				};
+
+				description.SizeInBytes = byteSize;
+
+				_VertexBuffer = new Buffer(_Device3D, stream, description);
+
+				_VertexBufferBinding = new VertexBufferBinding(_VertexBuffer, _Stride, _Offset);
+			}
 		}
-
-		public Device1 RenderingDevice { get; private set; }
 
 		public void Dispose()
 		{
-			RenderingDevice.ClearState();
+			_Device3D.ClearState();
 
 			_DependentView.SafeDispose();
 			_SharedMutex.SafeDispose();
 			_SharedTexture.SafeDispose();
 			_VertexBuffer.SafeDispose();
-			_Layout.SafeDispose();
+			_InputLayout.SafeDispose();
 			_Effect.SafeDispose();
-			RenderingDevice.Dispose();
-
-			RenderingDevice = null;
+			_Device3D.Dispose();
 		}
 
 		public void BeginRendering()
 		{
 			// Set the input layout.
-			RenderingDevice.InputAssembler.InputLayout = _Layout;
+			_Device3D.InputAssembler.InputLayout = _InputLayout;
 
 			// Set the vertex buffer.
-			RenderingDevice.InputAssembler.SetVertexBuffers(
-				0, new VertexBufferBinding(_VertexBuffer, _Stride, _Offset));
+			_Device3D.InputAssembler.SetVertexBuffers(0, _VertexBufferBinding);
 
 			// Set the primitive topology.
-			RenderingDevice.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+			_Device3D.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 		}
 
 		public void Render(Canvas canvas)
 		{
-			if(canvas == null || !canvas.IsValid)
-			{
-				return;
-			}
+			Contract.Requires(Check.IsValid(canvas));
 
 			if(_SharedHandle != canvas.Surface2D.GetDeviceHandle())
 			{
+				Contract.Assert(canvas.Surface2D.GetDeviceHandle() != IntPtr.Zero);
+
 				_SharedMutex.SafeDispose();
 				_DependentView.SafeDispose();
 				_SharedTexture.SafeDispose();
 
-				_SharedTexture =
-					RenderingDevice.OpenSharedResource<Texture2D>(canvas.Surface2D.GetDeviceHandle());
+				_SharedTexture = _Device3D.OpenSharedResource<Texture2D>(canvas.Surface2D.GetDeviceHandle());
 
 				_SharedMutex = _SharedTexture.QueryInterface<KeyedMutex>();
 
-				_DependentView = new ShaderResourceView(RenderingDevice, _SharedTexture);
+				_DependentView = new ShaderResourceView(_Device3D, _SharedTexture);
 
 				_SharedHandle = canvas.Surface2D.GetDeviceHandle();
 			}
 
 			_SharedMutex.AcquireSync();
 
-			EffectTechnique technique;
-
-			// Get the technique used for the widget.
-			if(_SharedTexture != null)
+			try
 			{
-				technique = _Effect.GetTechniqueByName("WithTexture");
+				if (_SharedTexture != null)
+				{
+					var textureVariable = _Effect.GetVariableByName("tex2D");
 
-				EffectVariable esv = _Effect.GetVariableByName("tex2D").AsShaderResource();
+					Contract.Assert(textureVariable != null);
 
-				esv.AsShaderResource().SetResource(_DependentView);
+					var shaderResource = textureVariable.AsShaderResource();
+
+					Contract.Assert(shaderResource != null);
+
+					shaderResource.SetResource(_DependentView);
+
+					_EffectPass.Apply();
+
+					_Device3D.Draw(_VertexCount, 0);
+				}
 			}
-			else
+			finally
 			{
-				technique = _Effect.GetTechniqueByName("WithoutTexture");
+				_SharedMutex.ReleaseSync();
 			}
-
-			// Apply the pass.
-			technique.GetPassByIndex(0).Apply();
-
-			// Draw the geometry.
-			RenderingDevice.Draw(6, 0);
-
-			_SharedMutex.ReleaseSync();
 		}
 
-		/// <inheritdoc />
 		public void EndRendering()
 		{
 		}
 
 		private static string GetShaderText(byte[] pixelShaderTextBytes)
 		{
+			Contract.Requires(pixelShaderTextBytes != null);
+			Contract.Ensures(Contract.Result<string>() != null);
+
 			using(MemoryStream stream = new MemoryStream(pixelShaderTextBytes))
 			{
 				using(StreamReader reader = new StreamReader(stream))
@@ -160,41 +201,6 @@ namespace Demo.Framework
 					return reader.ReadToEnd();
 				}
 			}
-		}
-
-		private Buffer CreateVertexBuffer()
-		{
-			Buffer buffer = new Buffer(
-				RenderingDevice,
-				_Stride * 6,
-				ResourceUsage.Dynamic,
-				BindFlags.VertexBuffer,
-				CpuAccessFlags.Write,
-				ResourceOptionFlags.None);
-
-			using(DataStream stream = buffer.Map(MapMode.WriteDiscard, MapFlags.None))
-			{
-				Vector2[] quadPrimitiveData = new[]
-				{
-					new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f),
-					new Vector2(1.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 1.0f),
-					new Vector2(1.0f, 1.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f),
-					new Vector2(0.0f, 1.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 0.0f)
-				};
-
-				for(int i = 0; i < quadPrimitiveData.Length; i += 2)
-				{
-					float fx = (2.0f * quadPrimitiveData[i + 0].X) - 1.0f;
-					float fy = (2.0f * quadPrimitiveData[i + 0].Y) - 1.0f;
-
-					stream.Write(new Vector3(fx, -fy, 0.5f));
-					stream.Write(quadPrimitiveData[i + 1]);
-				}
-
-				buffer.Unmap();
-			}
-
-			return buffer;
 		}
 	}
 }
