@@ -86,6 +86,8 @@ namespace Frost.DirectX.Composition
 				{
 					_DxgiFactory.Value.Dispose();
 				}
+
+				_Device3D.Dispose();
 			}
 		}
 	}
