@@ -242,7 +242,12 @@ namespace Demo.Framework
 			_Device.ClearRenderTargetView(_RenderView, new Color4());
 
 			_Renderer.BeginRendering();
-			_Renderer.Render(_Target);
+
+			if (Check.IsValid(_Target))
+			{
+				_Renderer.Render(_Target);
+			}
+
 			_Renderer.EndRendering();
 
 			_SwapChain.Present(1, PresentFlags.None);
