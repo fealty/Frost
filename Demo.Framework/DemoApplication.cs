@@ -33,7 +33,7 @@ namespace Demo.Framework
 		private readonly Device2D _Device2D;
 		private readonly Factory1 _Factory;
 		private readonly RenderForm _Form;
-		private readonly Dx101Renderer _GuiRenderer;
+		private readonly Dx101Renderer _Renderer;
 		private readonly IDeviceCounter<TimeSpan> _PaintingFrameDuration;
 		private readonly SwapChain _SwapChain;
 		private readonly Stopwatch _Timer;
@@ -44,15 +44,16 @@ namespace Demo.Framework
 
 		public DemoApplication()
 		{
-			_Form = new RenderForm();
+			//SharpDX.Configuration.EnableObjectTracking = true;
 
+			_Form = new RenderForm();
 			_Timer = new Stopwatch();
 
 			_Form.KeyPress += HandleKeyPress;
 			_Form.ClientSizeChanged += HandleClientSizeChanged;
 			_Form.KeyDown += HandleKeyDown;
 
-			ModeDescription md = new ModeDescription
+			ModeDescription displayMode = new ModeDescription
 			{
 				Width = _Form.ClientSize.Width,
 				Height = _Form.ClientSize.Height,
@@ -60,13 +61,11 @@ namespace Demo.Framework
 				Format = Format.R8G8B8A8_UNorm
 			};
 
-			SampleDescription sd = new SampleDescription {Count = 1, Quality = 0};
-
-			SwapChainDescription scd = new SwapChainDescription
+			SwapChainDescription chainDescription = new SwapChainDescription
 			{
-				ModeDescription = md,
-				SampleDescription = sd,
-				BufferCount = 3,
+				ModeDescription = displayMode,
+				SampleDescription =  new SampleDescription(1, 0),
+				BufferCount = 2,
 				IsWindowed = true,
 				OutputHandle = _Form.Handle,
 				SwapEffect = SwapEffect.Sequential,
@@ -75,29 +74,35 @@ namespace Demo.Framework
 
 			_Factory = new Factory1();
 #if DEBUG
-			Device1.CreateWithSwapChain(
-				_Factory.GetAdapter1(0),
-				DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug,
-				scd,
-				out _Device,
-				out _SwapChain);
+			using(Adapter1 dxgiSurfaceAdapter = _Factory.GetAdapter1(0))
+			{
+				Device1.CreateWithSwapChain(
+					dxgiSurfaceAdapter,
+					DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug,
+					chainDescription,
+					out _Device,
+					out _SwapChain);
+			}
 #else
-			Device1.CreateWithSwapChain(
-				mFactory.GetAdapter1(0),
-				DeviceCreationFlags.BgraSupport,
-				scd,
-				out mDevice,
-				out mSwapChain);
+			using(Adapter1 dxgiSurfaceAdapter = _Factory.GetAdapter1(0))
+			{
+				Device1.CreateWithSwapChain(
+					dxgiSurfaceAdapter,
+					DeviceCreationFlags.BgraSupport,
+					chainDescription,
+					out _Device,
+					out _SwapChain);
+			}
 #endif
-			_Timer.Start();
-
-			_GuiRenderer = new Dx101Renderer(_Device);
-
 			_Device2D = new Device2D();
 
 			_Device2D.Diagnostics.Query("Composition", "FrameBatchCount", out _CompositionFrameBatchCount);
 			_Device2D.Diagnostics.Query("Composition", "FrameDuration", out _CompositionFrameDuration);
 			_Device2D.Diagnostics.Query("Painting", "FrameDuration", out _PaintingFrameDuration);
+
+			_Timer.Start();
+
+			_Renderer = new Dx101Renderer(_Device);
 
 			HandleClientSizeChanged(null, null);
 
@@ -106,9 +111,9 @@ namespace Demo.Framework
 
 		public void Dispose()
 		{
-			_Form.Dispose();
+			_Form.SafeDispose();
 
-			_GuiRenderer.SafeDispose();
+			_Renderer.SafeDispose();
 			_Device2D.SafeDispose();
 
 			_RenderView.SafeDispose();
@@ -221,6 +226,8 @@ namespace Demo.Framework
 
 		private void Run(IDemoContext context)
 		{
+			Contract.Requires(context != null);
+
 			_Device2D.SignalUpdate();
 
 			if(_IsResetQueued)
@@ -234,9 +241,9 @@ namespace Demo.Framework
 
 			_Device.ClearRenderTargetView(_RenderView, new Color4());
 
-			_GuiRenderer.BeginRendering();
-			_GuiRenderer.Render(_Target);
-			_GuiRenderer.EndRendering();
+			_Renderer.BeginRendering();
+			_Renderer.Render(_Target);
+			_Renderer.EndRendering();
 
 			_SwapChain.Present(1, PresentFlags.None);
 		}
