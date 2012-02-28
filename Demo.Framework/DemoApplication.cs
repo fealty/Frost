@@ -23,7 +23,6 @@ using Resource = SharpDX.Direct3D10.Resource;
 
 namespace Demo.Framework
 {
-	//TODO: ISSUE: Resize window randomly in x86... will crash randomly. May be SharpDX problem. Works fine in x64
 	public sealed class DemoApplication : IDisposable
 	{
 		private readonly IDeviceCounter<int> _CompositionFrameBatchCount;
