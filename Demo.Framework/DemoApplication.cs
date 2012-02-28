@@ -33,7 +33,7 @@ namespace Demo.Framework
 		private readonly Device2D _Device2D;
 		private readonly Factory1 _Factory;
 		private readonly RenderForm _Form;
-		private readonly Dx101Renderer _Renderer;
+		private readonly D3D10Renderer _Renderer;
 		private readonly IDeviceCounter<TimeSpan> _PaintingFrameDuration;
 		private readonly SwapChain _SwapChain;
 		private readonly Stopwatch _Timer;
@@ -102,7 +102,7 @@ namespace Demo.Framework
 
 			_Timer.Start();
 
-			_Renderer = new Dx101Renderer(_Device);
+			_Renderer = new D3D10Renderer(_Device);
 
 			HandleClientSizeChanged(null, null);
 
