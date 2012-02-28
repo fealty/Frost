@@ -1,20 +1,15 @@
-﻿// Copyright (c) 2012, Joshua Burke
-// All rights reserved.
-// 
-// See LICENSE for more information.
-
-using System.Reflection;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-
-[assembly: AssemblyTitle("Text Formatting Demo")]
-[assembly: AssemblyDescription("This sample demonstrates Frost's text formatting capabilities.")]
+[assembly: AssemblyTitle("Signed Distance Fields Demo")]
+[assembly: AssemblyDescription("This sample demonstrates how Frost can use signed distance fields for text rendering.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Frost: Text Formatting Demo")]
+[assembly: AssemblyProduct("Frost: Signed Distance Field Demo")]
 [assembly: AssemblyCopyright("Copyright © Joshua Burke 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -22,12 +17,10 @@ using System.Runtime.InteropServices;
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-
-[assembly: Guid("96ba9b9f-b1fb-443c-9398-dac4eab9495a")]
+[assembly: Guid("1b0cbdc0-82a4-4e76-a41b-1d0b1e0fe174")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -39,6 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
