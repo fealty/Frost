@@ -19,16 +19,6 @@ namespace Demo.Framework
 		{
 			public abstract void Dispose();
 
-			public string Name
-			{
-				get
-				{
-					Contract.Ensures(Contract.Result<string>() != null);
-
-					throw new NotSupportedException();
-				}
-			}
-
 			public void Reset(Canvas target, Device2D device2D)
 			{
 				Contract.Requires(device2D != null);
@@ -39,8 +29,6 @@ namespace Demo.Framework
 
 	[ContractClass(typeof(IDemoContextContract))] public interface IDemoContext : IDisposable
 	{
-		string Name { get; }
-
 		void Reset(Canvas target, Device2D device2D);
 	}
 }

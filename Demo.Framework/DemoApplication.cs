@@ -131,7 +131,7 @@ namespace Demo.Framework
 
 			try
 			{
-				_Form.Text = context.Name;
+				_Form.Text = Application.ProductName;
 
 				RenderLoop.Run(_Form, () => Run(context));
 			}
