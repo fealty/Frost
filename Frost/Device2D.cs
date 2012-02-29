@@ -44,6 +44,16 @@ namespace Frost
 			get { return _EffectCollection; }
 		}
 
+		internal void ForgetCanvas(Canvas2 targetResource)
+		{
+			
+		}
+
+		internal void ResolveCanvas(Canvas2 targetResource)
+		{
+			
+		}
+
 		public abstract Painter Painter { get; }
 		public abstract Compositor Compositor { get; }
 
