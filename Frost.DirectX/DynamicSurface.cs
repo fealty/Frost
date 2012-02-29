@@ -16,7 +16,7 @@ namespace Frost.DirectX
 	{
 		private readonly LinkedList<Rectangle> _FreeRegions;
 		private readonly object _Lock = new object();
-		private readonly List<Canvas.ResolvedContext> _UsedRegions;
+		private readonly List<Rectangle> _UsedRegions;
 
 		private float _FreeArea;
 
@@ -26,7 +26,7 @@ namespace Frost.DirectX
 
 			_FreeArea = Region.Area;
 
-			_UsedRegions = new List<Canvas.ResolvedContext>();
+			_UsedRegions = new List<Rectangle>();
 
 			_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
 		}
@@ -46,11 +46,28 @@ namespace Frost.DirectX
 		{
 			get
 			{
-				foreach(Canvas.ResolvedContext item in _UsedRegions)
+				return _UsedRegions;
+			}
+		}
+
+		public void Purge(bool isForced, SafeList<Canvas> invalidatedResources)
+		{
+			lock(_Lock)
+			{
+				if(isForced)
 				{
-					yield return item.Region;
+					_UsedRegions.Clear();
+					_FreeRegions.Clear();
+
+					_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
+
+					_FreeArea = Region.Area;
 				}
 			}
+		}
+
+		public void Forget(Canvas.ResolvedContext context)
+		{
 		}
 
 		public Surface2D Surface2D
@@ -69,8 +86,6 @@ namespace Frost.DirectX
 
 			ComputeOffsetRegion(dimensions, out adjustedRegion);
 
-			adjustedRegion = new Rectangle(adjustedRegion.Location, adjustedRegion.Size + dimensions);
-
 			lock(_Lock)
 			{
 				if(adjustedRegion.Area > _FreeArea)
@@ -83,9 +98,10 @@ namespace Frost.DirectX
 
 			if(result != null)
 			{
-				Rectangle region =
-					new Rectangle(
-						new Point(result.Value.X + adjustedRegion.X, result.Value.Y + adjustedRegion.Y), dimensions);
+				float finalX = result.Value.X + adjustedRegion.X;
+				float finalY = result.Value.Y + adjustedRegion.Y;
+
+				Rectangle region = new Rectangle(finalX, finalY, dimensions);
 
 				lock(_Lock)
 				{
@@ -94,30 +110,12 @@ namespace Frost.DirectX
 
 				var context = new TargetContext(target, region, this);
 
-				_UsedRegions.Add(context);
+				_UsedRegions.Add(region);
 
 				return context;
 			}
 
 			return null;
-		}
-
-		public void Invalidate()
-		{
-			lock(_Lock)
-			{
-				foreach(Canvas.ResolvedContext item in _UsedRegions)
-				{
-					//Canvas.Implementation.Assign(item.Target, null);
-				}
-
-				_UsedRegions.Clear();
-				_FreeRegions.Clear();
-
-				_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
-
-				_FreeArea = Region.Area;
-			}
 		}
 
 		private void ComputeOffsetRegion(Size desiredSize, out Rectangle result)
@@ -127,15 +125,17 @@ namespace Frost.DirectX
 
 			result = Rectangle.Empty;
 
-			if(!desiredSize.Width.Equals(Region.Width))
+			if (!desiredSize.Width.Equals(Region.Width))
 			{
 				result = new Rectangle(new Point(1, result.Y), new Size(2, result.Height));
 			}
 
-			if(!desiredSize.Height.Equals(Region.Height))
+			if (!desiredSize.Height.Equals(Region.Height))
 			{
 				result = new Rectangle(new Point(result.X, 1), new Size(result.Width, 2));
 			}
+
+			result = new Rectangle(result.Location, result.Size + desiredSize);
 		}
 
 		private Rectangle? InsertIntoNode(Size size, LinkedListNode<Rectangle> node)
@@ -256,6 +256,11 @@ namespace Frost.DirectX
 				_Canvas = canvas;
 				_Region = region;
 				_Layer = layer;
+
+				Contract.Assert(Region.Equals(region));
+				Contract.Assert(ReferenceEquals(Surface2D, layer));
+				Contract.Assert(ReferenceEquals(Target, canvas));
+				Contract.Assert(ReferenceEquals(Device2D, layer.Device2D));
 			}
 
 			public override Rectangle Region
