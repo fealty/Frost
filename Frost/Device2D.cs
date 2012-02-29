@@ -251,13 +251,10 @@ namespace Frost
 
 		protected abstract void OnDumpSurfaces(string path, SurfaceUsage usage);
 
-		internal void ForgetCanvas(Canvas targetResource)
-		{
-			throw new NotImplementedException();
-		}
-
 		internal Canvas.ResolvedContext ResolveCanvas(Canvas targetResource)
 		{
+			//TODO: have OnResolveCanvas(ICanvasImpl targetResource?) This would expose the BackingContext
+			// Do the same for ForgetCanvas()?
 			throw new NotImplementedException();
 		}
 
