@@ -37,8 +37,7 @@ namespace Frost.DirectX.Composition
 			}
 		}
 
-		//TODO: can this be made internal?
-		public object Reference
+		internal object Reference
 		{
 			get { return _Reference; }
 		}

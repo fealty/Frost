@@ -308,7 +308,6 @@ namespace Frost.DirectX.Composition
 
 			_Target = target;
 
-			_Renderer.Begin();
 			_Renderer.PushLayer(Retention.ClearData, target.Region.Size);
 
 			if(retention == Retention.RetainData)
@@ -330,8 +329,6 @@ namespace Frost.DirectX.Composition
 			}
 			finally
 			{
-				_Renderer.End();
-
 				_Watch.Stop();
 
 				_FrameDuration.Value += _Watch.Elapsed;
@@ -514,6 +511,8 @@ namespace Frost.DirectX.Composition
 
 		private void CompileDefaultShader(out PixelShader shader)
 		{
+			Contract.Ensures(Contract.ValueAtReturn(out shader) != null);
+
 			using(ShaderBytecode code = ShaderBytecode.Compile(Resources.PixelShader, "Main", "ps_4_0"))
 			{
 				shader = new PixelShader(_Device3D, code);

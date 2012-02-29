@@ -103,8 +103,8 @@ namespace Frost.DirectX
 		{
 			InvalidateResources();
 
-			_DrawingDevice.SignalUpdate();
-			_CompositionDevice.SignalUpdate();
+			_DrawingDevice.ProcessTick();
+			_CompositionDevice.ProcessTick();
 		}
 
 		protected override void OnCopy(Rectangle fromRegion, Canvas.ResolvedContext fromTarget, Canvas.ResolvedContext toTarget)

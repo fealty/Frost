@@ -130,14 +130,6 @@ namespace Frost.DirectX.Composition
 			Dispose(true);
 		}
 
-		public void Begin()
-		{
-		}
-
-		public void End()
-		{
-		}
-
 		public void SetConstants<T>(ConstantRegister register, ref T value)
 			where T : struct, IConstantBufferData
 		{
@@ -198,8 +190,8 @@ namespace Frost.DirectX.Composition
 
 		public void PushLayer(Retention retentionMode, Size layerSize)
 		{
-			Contract.Requires(layerSize.Width >= 0.0 && layerSize.Width <= double.MaxValue);
-			Contract.Requires(layerSize.Height >= 0.0 && layerSize.Height <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(layerSize.Width));
+			Contract.Requires(Check.IsPositive(layerSize.Height));
 
 			if(_Layers.Count > 0)
 			{
@@ -232,11 +224,15 @@ namespace Frost.DirectX.Composition
 
 		public void FreeLayer(Canvas.ResolvedContext previousLayer)
 		{
+			Contract.Requires(previousLayer != null);
+
 			previousLayer.Target.Forget();
 		}
 
 		public void PopLayer(out Canvas.ResolvedContext previousLayer)
 		{
+			Contract.Ensures(Contract.ValueAtReturn(out previousLayer) != null);
+
 			previousLayer = _Layers.Pop();
 
 			try
@@ -270,6 +266,7 @@ namespace Frost.DirectX.Composition
 		private void GetDynamicBuffer(ConstantRegister register, int byteSize, out Buffer result)
 		{
 			Contract.Requires(byteSize >= 0);
+			Contract.Ensures(Contract.ValueAtReturn(out result) != null);
 
 			int resolvedRegister = (int)register;
 
@@ -336,11 +333,11 @@ namespace Frost.DirectX.Composition
 
 			PredefinedConstants constants;
 
-			constants.SizeX = Convert.ToSingle(surface.Region.Width);
-			constants.SizeY = Convert.ToSingle(surface.Region.Height);
+			constants.SizeX = surface.Region.Width;
+			constants.SizeY = surface.Region.Height;
 
-			constants.TexelSizeX = Convert.ToSingle(1.0 / surface.Region.Width);
-			constants.TexelSizeY = Convert.ToSingle(1.0 / surface.Region.Height);
+			constants.TexelSizeX = 1.0f / surface.Region.Width;
+			constants.TexelSizeY = 1.0f / surface.Region.Height;
 
 			SetConstants(ConstantRegister.Predefined, ref constants);
 
@@ -385,6 +382,8 @@ namespace Frost.DirectX.Composition
 
 		private void CreateVertexBuffer(out Buffer vertices)
 		{
+			Contract.Ensures(Contract.ValueAtReturn(out vertices) != null);
+
 			int byteSize = VertexPositionTexture.LayoutStride * ActiveVertices;
 
 			using(DataStream stream = new DataStream(byteSize, true, true))
@@ -408,6 +407,9 @@ namespace Frost.DirectX.Composition
 
 		private void Compile(out VertexShader shader, out InputLayout layout)
 		{
+			Contract.Ensures(Contract.ValueAtReturn(out shader) != null);
+			Contract.Ensures(Contract.ValueAtReturn(out layout) != null);
+
 			using(ShaderBytecode code = ShaderBytecode.Compile(Resources.VertexShader, "Main", "vs_4_0"))
 			{
 				shader = new VertexShader(_Device3D, code);

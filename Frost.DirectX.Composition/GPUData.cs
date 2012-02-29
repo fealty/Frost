@@ -14,6 +14,7 @@ namespace Frost.DirectX.Composition
 	{
 		public static int OffsetOf<T>(Expression<Func<T, object>> expression) where T : struct
 		{
+			Contract.Requires(expression != null);
 			Contract.Requires(expression.NodeType == ExpressionType.Lambda);
 			Contract.Requires(expression.Body is UnaryExpression);
 

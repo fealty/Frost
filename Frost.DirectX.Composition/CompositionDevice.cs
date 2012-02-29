@@ -70,7 +70,7 @@ namespace Frost.DirectX.Composition
 			Dispose(true);
 		}
 
-		public void SignalUpdate()
+		public void ProcessTick()
 		{
 			_ImmediateContext.FrameBatchCount.Reset();
 			_ImmediateContext.FrameDuration.Reset();
