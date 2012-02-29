@@ -82,6 +82,11 @@ namespace Frost
 			public abstract ISurface2D Surface2D { get; }
 			public abstract Canvas Target { get; }
 			public abstract Device2D Device2D { get; }
+
+			public void Invalidate()
+			{
+				Target.BackingContext = null;
+			}
 		}
 	}
 }

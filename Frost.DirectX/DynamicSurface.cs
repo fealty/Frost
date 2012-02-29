@@ -16,7 +16,7 @@ namespace Frost.DirectX
 	{
 		private readonly LinkedList<Rectangle> _FreeRegions;
 		private readonly object _Lock = new object();
-		private readonly List<Rectangle> _UsedRegions;
+		private readonly List<Canvas.ResolvedContext> _UsedRegions;
 
 		private float _FreeArea;
 
@@ -26,7 +26,7 @@ namespace Frost.DirectX
 
 			_FreeArea = Region.Area;
 
-			_UsedRegions = new List<Rectangle>();
+			_UsedRegions = new List<Canvas.ResolvedContext>();
 
 			_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
 		}
@@ -46,7 +46,10 @@ namespace Frost.DirectX
 		{
 			get
 			{
-				return _UsedRegions;
+				foreach(Canvas.ResolvedContext item in _UsedRegions)
+				{
+					yield return item.Region;
+				}
 			}
 		}
 
@@ -56,6 +59,11 @@ namespace Frost.DirectX
 			{
 				if(isForced)
 				{
+					foreach(Canvas.ResolvedContext item in _UsedRegions)
+					{
+						item.Invalidate();
+					}
+
 					_UsedRegions.Clear();
 					_FreeRegions.Clear();
 
@@ -68,6 +76,12 @@ namespace Frost.DirectX
 
 		public void Forget(Canvas.ResolvedContext context)
 		{
+			lock(_Lock)
+			{
+				context.Invalidate();
+
+				_UsedRegions.Remove(context);
+			}
 		}
 
 		public Surface2D Surface2D
@@ -110,7 +124,7 @@ namespace Frost.DirectX
 
 				var context = new TargetContext(target, region, this);
 
-				_UsedRegions.Add(region);
+				_UsedRegions.Add(context);
 
 				return context;
 			}

@@ -215,7 +215,7 @@ namespace Demo.Framework
 
 			if (_Target != null)
 			{
-				//_Target.Forget();
+				_Target.Forget();
 			}
 
 			_Target = new Canvas(formSize, SurfaceUsage.External);

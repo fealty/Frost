@@ -103,6 +103,8 @@ namespace Frost.DirectX
 
 					if (context != null)
 					{
+						context.Invalidate();
+
 						invalidatedResources.Add(context.Target);
 					}
 
@@ -119,6 +121,8 @@ namespace Frost.DirectX
 		{
 			lock (_CanvasContext)
 			{
+				context.Invalidate();
+
 				_CanvasContext.Target = null;
 			}
 		}

@@ -103,6 +103,8 @@ namespace Frost.DirectX
 
 			lock(_Lock)
 			{
+				context.Invalidate();
+
 				Rectangle region = targetContext.Node.Value.ActualRegion;
 
 				_UsedRegions.Remove(targetContext.Node);
@@ -168,6 +170,8 @@ namespace Frost.DirectX
 
 						if(context != null)
 						{
+							context.Invalidate();
+
 							invalidatedResources.Add(context.Target);
 						}
 					}
@@ -307,6 +311,7 @@ namespace Frost.DirectX
 				if(nodeArea > itr.Value.Area)
 				{
 					_FreeRegions.AddAfter(itr, node);
+
 					return;
 				}
 			}

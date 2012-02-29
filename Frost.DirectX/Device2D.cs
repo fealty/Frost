@@ -39,6 +39,7 @@ namespace Frost.DirectX
 		private readonly SafeList<DynamicSurface> _DynamicSurfaces;
 		private readonly SafeList<ExternalSurface> _ExternalSurfaces;
 		private readonly SafeList<PrivateSurface> _PrivateSurfaces;
+		private readonly SafeList<Canvas> _InvalidatedResources;
 
 		private readonly PaintingDevice _DrawingDevice;
 
@@ -68,6 +69,7 @@ namespace Frost.DirectX
 			_ExternalSurfaces = new SafeList<ExternalSurface>();
 			_DynamicSurfaces = new SafeList<DynamicSurface>();
 			_PrivateSurfaces = new SafeList<PrivateSurface>();
+			_InvalidatedResources = new SafeList<Canvas>();
 
 			_FontDevice = new FontDevice();
 			_CompositionDevice = new CompositionDevice(adapter, this);
@@ -302,12 +304,16 @@ namespace Frost.DirectX
 				{
 					_DynamicAtlasSize = size;
 
+					PurgeSurfaces(_DynamicSurfaces, true);
+
 					ReleaseSurfaces(_DynamicSurfaces);
 				}
 
 				if(!size.Equals(_DefaultAtlasSize))
 				{
 					_DefaultAtlasSize = size;
+
+					PurgeSurfaces(_DefaultSurfaces, true);
 
 					ReleaseSurfaces(_DefaultSurfaces);
 				}
@@ -338,7 +344,7 @@ namespace Frost.DirectX
 
 		protected override void OnForget(Canvas.ResolvedContext target)
 		{
-			ISurfaceAtlas atlas = target as ISurfaceAtlas;
+			ISurfaceAtlas atlas = target.Surface2D as ISurfaceAtlas;
 
 			if(atlas != null)
 			{
@@ -423,33 +429,44 @@ namespace Frost.DirectX
 
 			if(Math.Abs(tickTime - _LastInvalidationTickTime) > (TimeSpan.TicksPerMillisecond * 500))
 			{
-				PurgeSurfaces(_DefaultSurfaces);
-				PurgeSurfaces(_DynamicSurfaces);
-				PurgeSurfaces(_ExternalSurfaces);
-				PurgeSurfaces(_PrivateSurfaces);
-
+				PurgeSurfaces(_DefaultSurfaces, false);
+				PurgeSurfaces(_DynamicSurfaces, false);
+				
 				_LastInvalidationTickTime = tickTime;
 			}
+			
+			PurgeSurfaces(_ExternalSurfaces, false);
+			PurgeSurfaces(_PrivateSurfaces, false);
 
 			foreach(DynamicSurface surface in _DynamicSurfaces)
 			{
-				surface.Invalidate();
+				surface.Purge(true, _InvalidatedResources);
 
-				Surface2D surface2D = surface;
-
-				surface2D.Clear();
+				surface.Clear();
 			}
 
 			foreach(SharedSurface surface in _DefaultSurfaces)
 			{
 				if(surface.Fragmentation >= 25.0f)
 				{
-					surface.Invalidate();
+					surface.Purge(true, _InvalidatedResources);
 				}
 			}
+
+			Action<Canvas> evt = ResourceInvalidated;
+
+			if(evt != null)
+			{
+				foreach(Canvas item in _InvalidatedResources)
+				{
+					evt(item);
+				}
+			}
+
+			_InvalidatedResources.Clear();
 		}
 
-		private static void PurgeSurfaces<T>(SafeList<T> atlasCollection) where T : ISurfaceAtlas
+		private void PurgeSurfaces<T>(SafeList<T> atlasCollection, bool isForced) where T : ISurfaceAtlas
 		{
 			Contract.Requires(atlasCollection != null);
 
@@ -458,6 +475,8 @@ namespace Frost.DirectX
 				for(int i = 0; i < context.Count; ++i)
 				{
 					T item = context.GetItem(i);
+
+					item.Purge(isForced, _InvalidatedResources);
 
 					if(!item.InUse)
 					{
