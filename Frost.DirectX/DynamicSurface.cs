@@ -8,15 +8,12 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading;
 
-using Frost.Atlasing;
 using Frost.DirectX.Common;
 using Frost.Surfacing;
 
 namespace Frost.DirectX
 {
-	//TODO: add support for canvas-object association
-	public sealed class DynamicAtlas<T> : ISurfaceAtlas
-		where T : class, ISurface2D
+	public sealed class DynamicSurface : Surface2D, ISurfaceAtlas
 	{
 		private readonly Canvas3 _AtlasCanvas;
 		private readonly LinkedList<Rectangle> _FreeRegions;
@@ -29,7 +26,7 @@ namespace Frost.DirectX
 
 		private float _FreeArea;
 
-		public DynamicAtlas(T surface2D)
+		public DynamicSurface(T surface2D)
 		{
 			Contract.Requires(surface2D != null);
 
