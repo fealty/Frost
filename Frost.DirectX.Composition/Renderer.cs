@@ -41,8 +41,6 @@ namespace Frost.DirectX.Composition
 		private readonly RasterizerState _Rasterizer;
 		private readonly Buffer _RenderConstants;
 
-		private readonly Stack<TargetLayer> _Surfaces;
-
 		private readonly VertexBufferBinding _VertexBinding;
 		private readonly InputLayout _VertexLayout;
 		private readonly VertexShader _VertexShader;
@@ -59,7 +57,6 @@ namespace Frost.DirectX.Composition
 			Contract.Requires(device2D != null);
 
 			_Layers = new Stack<Canvas.ResolvedContext>();
-			_Surfaces = new Stack<TargetLayer>();
 
 			_Device3D = device3D;
 			_Device2D = device2D;
@@ -225,9 +222,7 @@ namespace Frost.DirectX.Composition
 			}
 			catch
 			{
-				IDisposable disposable = availableLayer.Surface2D as IDisposable;
-
-				disposable.SafeDispose();
+				availableLayer.Target.Forget();
 
 				throw;
 			}
@@ -237,7 +232,7 @@ namespace Frost.DirectX.Composition
 
 		public void FreeLayer(Canvas.ResolvedContext previousLayer)
 		{
-			_Surfaces.Push((TargetLayer)previousLayer.Surface2D);
+			previousLayer.Target.Forget();
 		}
 
 		public void PopLayer(out Canvas.ResolvedContext previousLayer)
@@ -354,71 +349,21 @@ namespace Frost.DirectX.Composition
 			_Device3D.OutputMerger.SetTargets(surface.TargetView);
 		}
 
-		private Canvas.ResolvedContext GetFreeLayer(Size size)
+		private Canvas.ResolvedContext GetFreeLayer(Size dimensions)
 		{
-			Contract.Requires(size.Width >= 0.0 && size.Width <= double.MaxValue);
-			Contract.Requires(size.Height >= 0.0 && size.Height <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(dimensions.Width));
+			Contract.Requires(Check.IsPositive(dimensions.Height));
 			Contract.Ensures(Contract.Result<Canvas.ResolvedContext>() != null);
 
-			Size surfaceSize = size;
+			Canvas newCanvas = new Canvas(dimensions, SurfaceUsage.Private);
 
-			surfaceSize = new Size(surfaceSize.Width + 2, surfaceSize.Height + 2);
+			var context = _Device2D.ResolveCanvas(newCanvas);
 
-			TargetLayer newLayer;
+			Surface2D surface = (Surface2D)context.Surface2D;
 
-			if(_Surfaces.Count == 0)
-			{
-				newLayer = CreateSurface(surfaceSize);
+			_Device3D.ClearRenderTargetView(surface.TargetView, new Color4());
 
-				try
-				{
-					return newLayer.AcquireRegion(size);
-				}
-				catch
-				{
-					newLayer.Dispose();
-
-					throw;
-				}
-			}
-
-			newLayer = _Surfaces.Pop();
-
-			if(size.Width > newLayer.Region.Width || size.Height > newLayer.Region.Height)
-			{
-				newLayer.Dispose();
-
-				newLayer = CreateSurface(surfaceSize);
-			}
-
-			try
-			{
-				_Device3D.ClearRenderTargetView(newLayer.TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
-
-				return newLayer.AcquireRegion(size);
-			}
-			catch
-			{
-				newLayer.Dispose();
-
-				throw;
-			}
-		}
-
-		private TargetLayer CreateSurface(Size size)
-		{
-			Contract.Requires(size.Width >= 0.0 && size.Width <= double.MaxValue);
-			Contract.Requires(size.Height >= 0.0 && size.Height <= double.MaxValue);
-
-			Surface2D.Description description;
-
-			description.Device2D = _Device2D;
-			description.Device3D = _Device3D;
-			description.Factory2D = null;
-			description.Usage = SurfaceUsage.Normal;
-			description.Size = size;
-
-			return new TargetLayer(ref description);
+			return context;
 		}
 
 		private void InitializeDeviceState()
@@ -503,21 +448,7 @@ namespace Frost.DirectX.Composition
 
 				_Device3D.InputAssembler.PrimitiveTopology = Topology;
 
-				foreach(Canvas.ResolvedContext item in _Layers)
-				{
-					IDisposable disposable = item.Surface2D as IDisposable;
-
-					disposable.SafeDispose();
-				}
-
 				_Layers.Clear();
-
-				foreach(TargetLayer item in _Surfaces)
-				{
-					item.Dispose();
-				}
-
-				_Surfaces.Clear();
 			}
 		}
 
