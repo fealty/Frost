@@ -33,6 +33,8 @@ namespace Frost.Painting
 		private bool _IsStrokeWidthInvalid;
 		private bool _IsTransformationInvalid;
 
+		private Size _TargetDelta;
+
 		protected Painter(Device2D device2D)
 		{
 			Contract.Requires(device2D != null);
@@ -331,10 +333,12 @@ namespace Frost.Painting
 			}
 		}
 
-		public void Begin(Canvas3 target, Retention retention = Retention.ClearData)
+		public void Begin(Canvas target, Retention retention = Retention.ClearData)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(target, Device2D));
+			Contract.Requires(target != null);
+
+			var targetContext = _Device2D.ResolveCanvas(target);
 
 			_IsAntialiasingInvalid = true;
 			_IsDashCapInvalid = true;
@@ -347,7 +351,9 @@ namespace Frost.Painting
 
 			ResetState();
 
-			OnBegin(target, retention);
+			_TargetDelta = targetContext.Region.Location;
+
+			OnBegin(targetContext, retention);
 		}
 
 		public void End()
@@ -367,6 +373,9 @@ namespace Frost.Painting
 		public void Clear(Rectangle region)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+
+			// translate to 2D surface coordinate space
+			region = region.Translate(_TargetDelta);
 
 			OnClear(ref region);
 		}
@@ -412,12 +421,19 @@ namespace Frost.Painting
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
+			// translate to 2D surface coordinate space
+			lineStart = lineStart.Translate(_TargetDelta);
+			lineEnd = lineEnd.Translate(_TargetDelta);
+
 			OnStroke(ref lineStart, ref lineEnd);
 		}
 
 		public void Stroke(Rectangle rectangleRegion)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+
+			// translate to 2D surface coordinate space
+			rectangleRegion = rectangleRegion.Translate(_TargetDelta);
 
 			OnStroke(ref rectangleRegion);
 		}
@@ -428,12 +444,18 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(roundedRadius.Width));
 			Contract.Requires(Check.IsPositive(roundedRadius.Height));
 
+			// translate to 2D surface coordinate space
+			rectangleRegion = rectangleRegion.Translate(_TargetDelta);
+
 			OnStroke(ref rectangleRegion, ref roundedRadius);
 		}
 
 		public void Fill(Rectangle rectangleRegion)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+
+			// translate to 2D surface coordinate space
+			rectangleRegion = rectangleRegion.Translate(_TargetDelta);
 
 			OnFill(ref rectangleRegion);
 		}
@@ -443,6 +465,9 @@ namespace Frost.Painting
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsPositive(roundedRadius.Width));
 			Contract.Requires(Check.IsPositive(roundedRadius.Height));
+
+			// translate to 2D surface coordinate space
+			rectangleRegion = rectangleRegion.Translate(_TargetDelta);
 
 			OnFill(ref rectangleRegion, ref roundedRadius);
 		}
@@ -468,12 +493,16 @@ namespace Frost.Painting
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(gradient != null);
 
+			// translate to 2D surface coordinate space
+			linearGradientStart = linearGradientStart.Translate(_TargetDelta);
+			linearGradientEnd = linearGradientEnd.Translate(_TargetDelta);
+
 			OnSetBrush(ref linearGradientStart, ref linearGradientEnd, gradient);
 		}
 
 		public void SetBrush(
 			Point radialGradientCenter,
-			Point radialGradientOffset,
+			Size radialGradientOffset,
 			Size radialGradientRadius,
 			Gradient gradient)
 		{
@@ -482,16 +511,19 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(radialGradientRadius.Height));
 			Contract.Requires(gradient != null);
 
+			// translate to 2D surface coordinate space
+			radialGradientCenter = radialGradientCenter.Translate(_TargetDelta);
+
 			OnSetBrush(
 				ref radialGradientCenter, ref radialGradientOffset, ref radialGradientRadius, gradient);
 		}
 
-		public void SetBrush(Canvas3 source, Repetition extension)
+		public void SetBrush(Canvas source, Repetition extension)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 
-			OnSetBrush(source, extension);
+			OnSetBrush(_Device2D.ResolveCanvas(source), extension);
 		}
 
 		public void Clear(float x, float y, float width, float height)
@@ -503,6 +535,9 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(height));
 
 			Rectangle region = new Rectangle(x, y, width, height);
+
+			// translate to 2D surface coordinate space
+			region = region.Translate(_TargetDelta);
 
 			OnClear(ref region);
 		}
@@ -517,6 +552,10 @@ namespace Frost.Painting
 
 			Point start = new Point(lineStartX, lineStartY);
 			Point end = new Point(lineEndX, lineEndY);
+
+			// translate to 2D surface coordinate space
+			start = start.Translate(_TargetDelta);
+			end = end.Translate(_TargetDelta);
 
 			OnStroke(ref start, ref end);
 		}
@@ -538,6 +577,9 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(roundedRadiusHeight));
 
 			Rectangle region = new Rectangle(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+
+			// translate to 2D surface coordinate space
+			region = region.Translate(_TargetDelta);
 
 			Size radius = new Size(roundedRadiusWidth, roundedRadiusHeight);
 
@@ -569,6 +611,9 @@ namespace Frost.Painting
 
 			Rectangle region = new Rectangle(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
 
+			// translate to 2D surface coordinate space
+			region = region.Translate(_TargetDelta);
+
 			Size radius = new Size(roundedRadiusWidth, roundedRadiusHeight);
 
 			if(radius == Size.Empty)
@@ -598,14 +643,17 @@ namespace Frost.Painting
 			Point linearGradientStart = new Point(linearGradientStartX, linearGradientStartY);
 			Point linearGradientEnd = new Point(linearGradientEndX, linearGradientEndY);
 
+			linearGradientStart = linearGradientStart.Translate(_TargetDelta);
+			linearGradientEnd = linearGradientEnd.Translate(_TargetDelta);
+
 			OnSetBrush(ref linearGradientStart, ref linearGradientEnd, gradient);
 		}
 
 		public void SetBrush(
 			float radialGradientCenterX,
 			float radialGradientCenterY,
-			float radialGradientOffsetX,
-			float radialGradientOffsetY,
+			float radialGradientOffsetWidth,
+			float radialGradientOffsetHeight,
 			float radialGradientRadiusWidth,
 			float radialGradientRadiusHeight,
 			Gradient gradient)
@@ -613,14 +661,18 @@ namespace Frost.Painting
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsFinite(radialGradientCenterX));
 			Contract.Requires(Check.IsFinite(radialGradientCenterY));
-			Contract.Requires(Check.IsFinite(radialGradientOffsetX));
-			Contract.Requires(Check.IsFinite(radialGradientOffsetY));
+			Contract.Requires(Check.IsFinite(radialGradientOffsetWidth));
+			Contract.Requires(Check.IsFinite(radialGradientOffsetHeight));
 			Contract.Requires(Check.IsPositive(radialGradientRadiusWidth));
 			Contract.Requires(Check.IsPositive(radialGradientRadiusHeight));
 			Contract.Requires(gradient != null);
 
 			Point radialGradientCenter = new Point(radialGradientCenterX, radialGradientCenterY);
-			Point radialGradientOffset = new Point(radialGradientOffsetX, radialGradientOffsetY);
+			
+			// translate to 2D surface coordinate space
+			radialGradientCenter = radialGradientCenter.Translate(_TargetDelta);
+
+			Size radialGradientOffset = new Size(radialGradientOffsetWidth, radialGradientOffsetHeight);
 			Size radialGradientRadius = new Size(radialGradientRadiusWidth, radialGradientRadiusHeight);
 
 			OnSetBrush(
@@ -654,6 +706,7 @@ namespace Frost.Painting
 			Scale(size.Width, size.Height);
 		}
 
+		//TODO: do transformation origins need to be scaled?
 		public void Scale(float width, float height, float originX, float originY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
@@ -777,7 +830,7 @@ namespace Frost.Painting
 			}
 		}
 
-		protected abstract void OnBegin(Canvas3 target, Retention retention);
+		protected abstract void OnBegin(Canvas.ResolvedContext target, Retention retention);
 		protected abstract void OnEnd();
 
 		protected abstract void OnClear();
@@ -802,14 +855,14 @@ namespace Frost.Painting
 
 		protected abstract void OnSetBrush(Color color);
 
-		protected abstract void OnSetBrush(Canvas3 source, Repetition extension);
+		protected abstract void OnSetBrush(Canvas.ResolvedContext source, Repetition extension);
 
 		protected abstract void OnSetBrush(
 			ref Point linearGradientStart, ref Point linearGradientEnd, Gradient gradient);
 
 		protected abstract void OnSetBrush(
 			ref Point radialGradientCenter,
-			ref Point radialGradientOffset,
+			ref Size radialGradientOffset,
 			ref Size radialGradientRadius,
 			Gradient gradient);
 	}
