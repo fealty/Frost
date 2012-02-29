@@ -450,7 +450,7 @@ namespace Frost.DirectX.Common
 			public SurfaceUsage Usage;
 		}
 
-		private class ExternalSurface2D : Surface2D
+		public class ExternalSurface2D : Surface2D
 		{
 			private readonly IntPtr _DeviceHandle;
 			private readonly KeyedMutex _DeviceMutex;

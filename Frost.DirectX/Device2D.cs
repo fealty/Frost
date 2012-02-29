@@ -28,7 +28,6 @@ using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX
 {
-	//TODO: support canvas-object association
 	public sealed class Device2D : Frost.Device2D, IDisposable
 	{
 		public const int DeferredCacheLimit = 10;
@@ -36,18 +35,18 @@ namespace Frost.DirectX
 		private readonly CombinationSink _CombinationSink;
 		private readonly CompositionDevice _CompositionDevice;
 
-		private readonly SafeList<SharedAtlas<ISurface2D>> _DefaultSurfaces;
+		private readonly SafeList<SharedSurface> _DefaultSurfaces;
 
 		private readonly PaintingDevice _DrawingDevice;
 
-		private readonly SafeList<DynamicSurface<ISurface2D>> _DynamicSurfaces;
+		private readonly SafeList<DynamicSurface> _DynamicSurfaces;
 
 		private readonly FontDevice _FontDevice;
 		private readonly GeometryCache _GeometryCache;
 
 		private readonly object _Lock = new object();
 
-		private readonly SafeList<PrivateAtlas<ISurface2D>> _PrivateSurfaces;
+		private readonly SafeList<PrivateSurface> _PrivateSurfaces;
 
 		private readonly SimplificationSink _SimplificationSink;
 		private readonly StagingTexture _StagingTexture;
@@ -66,9 +65,9 @@ namespace Frost.DirectX
 
 		public Device2D(Adapter1 adapter)
 		{
-			_DefaultSurfaces = new SafeList<SharedAtlas<ISurface2D>>();
-			_PrivateSurfaces = new SafeList<PrivateAtlas<ISurface2D>>();
-			_DynamicSurfaces = new SafeList<DynamicSurface<ISurface2D>>();
+			_DefaultSurfaces = new SafeList<SharedSurface>();
+			_PrivateSurfaces = new SafeList<PrivateSurface>();
+			_DynamicSurfaces = new SafeList<DynamicSurface>();
 
 			_FontDevice = new FontDevice();
 			_CompositionDevice = new CompositionDevice(adapter, this);
@@ -106,6 +105,17 @@ namespace Frost.DirectX
 
 			_DrawingDevice.SignalUpdate();
 			_CompositionDevice.SignalUpdate();
+		}
+
+		protected override void OnCopy(Rectangle fromRegion, Canvas.ResolvedContext fromTarget, Canvas.ResolvedContext toTarget)
+		{
+			fromTarget.Surface2D.CopyTo(fromRegion, toTarget.Surface2D, toTarget.Region.Location);
+		}
+
+		protected override void OnCopy(byte[] rgbaData, Canvas.ResolvedContext toTarget)
+		{
+			_StagingTexture.UploadData(toTarget.Region.Size, rgbaData);
+			_StagingTexture.CopyTo(toTarget.Region, toTarget);
 		}
 
 		protected override Point OnComputePointAlongPath(
@@ -284,27 +294,6 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Canvas3 OnCreateCanvas(Size size, byte[] data, SurfaceUsage usage, object owner)
-		{
-			Canvas3 result = CreateCanvas(size, usage);
-
-			if(result != null)
-			{
-				_StagingTexture.UploadData(size, data);
-
-				Rectangle region = new Rectangle(Point.Empty, size);
-
-				_StagingTexture.CopyTo(region, result);
-			}
-
-			return result;
-		}
-
-		protected override Canvas3 OnCreateCanvas(Size size, SurfaceUsage usage, object owner)
-		{
-			return CreateCanvas(size, usage);
-		}
-
 		protected override void OnResizeSurfaces(Size size, SurfaceUsage usage)
 		{
 			lock(_Lock)
@@ -352,10 +341,12 @@ namespace Frost.DirectX
 			}
 		}
 
-		private Canvas3 CreateCanvas(Size size, SurfaceUsage usage)
+		private Canvas.ResolvedContext CreateCanvas(Size size, Canvas target)
 		{
 			Contract.Requires(Check.IsPositive(size.Width));
 			Contract.Requires(Check.IsPositive(size.Height));
+
+			SurfaceUsage usage = target.Usage;
 
 			Size atlasSize = Size.MaxValue;
 
@@ -382,11 +373,11 @@ namespace Frost.DirectX
 				switch(usage)
 				{
 					case SurfaceUsage.Dynamic:
-						return InsertIntoDynamicAtlas(size);
+						return InsertIntoDynamicAtlas(size, target);
 					case SurfaceUsage.External:
-						return AddToPrivateCollection(size);
+						return AddToPrivateCollection(size, target);
 					default:
-						return InsertIntoDefaultAtlas(size);
+						return InsertIntoDefaultAtlas(size, target);
 				}
 			}
 
@@ -431,16 +422,16 @@ namespace Frost.DirectX
 				_LastInvalidationTickTime = tickTime;
 			}
 
-			foreach(DynamicSurface<ISurface2D> surface in _DynamicSurfaces)
+			foreach(DynamicSurface surface in _DynamicSurfaces)
 			{
 				surface.Invalidate();
 
-				Surface2D surface2D = (Surface2D)surface.Surface2D;
+				Surface2D surface2D = surface;
 
 				surface2D.Clear();
 			}
 
-			foreach(SharedAtlas<ISurface2D> surface in _DefaultSurfaces)
+			foreach(SharedSurface surface in _DefaultSurfaces)
 			{
 				if(surface.Fragmentation >= 25.0f)
 				{
@@ -473,7 +464,7 @@ namespace Frost.DirectX
 		{
 			Contract.Requires(atlas != null);
 
-			Painter.Begin(atlas.Canvas, Retention.RetainData);
+			/*Painter.Begin(atlas.Canvas, Retention.RetainData);
 
 			Painter.IsAntialiased = Antialiasing.Aliased;
 			Painter.LineStyle = LineStyle.Dash;
@@ -492,7 +483,7 @@ namespace Frost.DirectX
 				Painter.Stroke(region);
 			}
 
-			Painter.End();
+			Painter.End();*/
 		}
 
 		private void DumpAtlases<T>(string path, SafeList<T> atlasCollections) where T : ISurfaceAtlas
@@ -527,84 +518,67 @@ namespace Frost.DirectX
 			atlasCollection.Clear();
 		}
 
-		private static Canvas3 AddNewSurfaceAtlas<T>(
+		private static Canvas.ResolvedContext AddNewSurfaceAtlas<T>(
+			Canvas target,
 			ref Size canvasSize,
 			ref Size surfaceSize,
 			SafeList<T> atlasCollection,
-			Func<Size, ISurface2D> surfaceConstructor,
-			Func<ISurface2D, T> atlasConstructor) where T : ISurfaceAtlas
+			Func<Size, T> surfaceConstructor) where T : ISurface2D, ISurfaceAtlas
 		{
+			Contract.Requires(target != null);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
 			Contract.Requires(Check.IsPositive(canvasSize.Height));
 			Contract.Requires(Check.IsPositive(surfaceSize.Width));
 			Contract.Requires(Check.IsPositive(surfaceSize.Height));
 			Contract.Requires(atlasCollection != null);
 			Contract.Requires(surfaceConstructor != null);
-			Contract.Requires(atlasConstructor != null);
 
 			// create a new surface to add to the atlas
-			ISurface2D surface2D = surfaceConstructor(surfaceSize);
+			T surface2D = surfaceConstructor(surfaceSize);
 
-			try
+			using(var context = atlasCollection.AcquireLock())
 			{
-				// create a new atlas for the surface
-				T atlas = atlasConstructor(surface2D);
+				// give the new atlas to the atlas collection
+				atlasCollection.Add(surface2D);
 
-				using(var context = atlasCollection.AcquireLock())
+				try
 				{
-					// give the new atlas to the atlas collection
-					atlasCollection.Add(atlas);
-
-					try
-					{
-						return atlas.AcquireRegion(canvasSize);
-					}
-					catch
-					{
-						// failure: rollback change to atlas collection
-						context.RemoveLast();
-
-						throw;
-					}
+					return surface2D.AcquireRegion(canvasSize, target);
 				}
-			}
-			catch
-			{
-				IDisposable disposable = surface2D as IDisposable;
+				catch
+				{
+					// failure: rollback change to atlas collection
+					context.RemoveLast();
 
-				// failure: dispose of the unused surface
-				disposable.SafeDispose();
-
-				throw;
+					throw;
+				}
 			}
 		}
 
-		private Canvas3 AddToPrivateCollection(Size canvasSize)
+		private Canvas.ResolvedContext AddToPrivateCollection(Size canvasSize, Canvas target)
 		{
 			Contract.Requires(canvasSize.Area > 0);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
 			Contract.Requires(Check.IsPositive(canvasSize.Height));
+			Contract.Requires(target != null);
 
 			return AddNewSurfaceAtlas(
-				ref canvasSize,
-				ref canvasSize,
-				_PrivateSurfaces,
-				CreatePrivateSurface,
-				s => new PrivateAtlas<ISurface2D>(s));
+				target, ref canvasSize, ref canvasSize, _PrivateSurfaces, CreatePrivateSurface);
 		}
 
-		private static Canvas3 InsertIntoAtlas<T>(Size canvasSize, SafeList<T> atlasCollection)
-			where T : ISurfaceAtlas
+		private static Canvas.ResolvedContext InsertIntoAtlas<T>(
+			Size canvasSize, SafeList<T> atlasCollection, Canvas target) where T : ISurfaceAtlas
 		{
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
 			Contract.Requires(Check.IsPositive(canvasSize.Height));
 			Contract.Requires(atlasCollection != null);
+			Contract.Requires(target != null);
 
 			foreach(T item in atlasCollection)
 			{
-				Canvas3 canvas = item.AcquireRegion(canvasSize);
+				Canvas.ResolvedContext canvas = item.AcquireRegion(canvasSize, target);
 
-				if(canvas != null && canvas.IsValid)
+				if(canvas != null)
 				{
 					return canvas;
 				}
@@ -613,55 +587,49 @@ namespace Frost.DirectX
 			return null;
 		}
 
-		private Canvas3 InsertIntoDefaultAtlas(Size canvasSize)
+		private Canvas.ResolvedContext InsertIntoDefaultAtlas(Size canvasSize, Canvas target)
 		{
 			Contract.Requires(canvasSize.Area > 0);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
 			Contract.Requires(Check.IsPositive(canvasSize.Height));
+			Contract.Requires(target != null);
 
-			Canvas3 canvas = InsertIntoAtlas(canvasSize, _DefaultSurfaces);
+			Canvas.ResolvedContext canvas = InsertIntoAtlas(canvasSize, _DefaultSurfaces, target);
 
 			if(canvas == null)
 			{
 				lock(_Lock)
 				{
 					return AddNewSurfaceAtlas(
-						ref canvasSize,
-						ref _DefaultAtlasSize,
-						_DefaultSurfaces,
-						CreateDefaultSurface,
-						s => new SharedAtlas<ISurface2D>(s));
+						target, ref canvasSize, ref _DefaultAtlasSize, _DefaultSurfaces, CreateDefaultSurface);
 				}
 			}
 
 			return canvas;
 		}
 
-		private Canvas3 InsertIntoDynamicAtlas(Size canvasSize)
+		private Canvas.ResolvedContext InsertIntoDynamicAtlas(Size canvasSize, Canvas target)
 		{
 			Contract.Requires(canvasSize.Area > 0);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
 			Contract.Requires(Check.IsPositive(canvasSize.Height));
+			Contract.Requires(target != null);
 
-			Canvas3 canvas = InsertIntoAtlas(canvasSize, _DynamicSurfaces);
+			Canvas.ResolvedContext canvas = InsertIntoAtlas(canvasSize, _DynamicSurfaces, target);
 
 			if(canvas == null)
 			{
 				lock(_Lock)
 				{
 					return AddNewSurfaceAtlas(
-						ref canvasSize,
-						ref _DynamicAtlasSize,
-						_DynamicSurfaces,
-						CreateDynamicSurface,
-						s => new DynamicSurface<ISurface2D>(s));
+						target, ref canvasSize, ref _DynamicAtlasSize, _DynamicSurfaces, CreateDynamicSurface);
 				}
 			}
 
 			return canvas;
 		}
 
-		private ISurface2D CreateDynamicSurface(Size surfaceSize)
+		private DynamicSurface CreateDynamicSurface(Size surfaceSize)
 		{
 			Contract.Requires(surfaceSize.Area > 0);
 			Contract.Requires(Check.IsPositive(surfaceSize.Width));
@@ -676,10 +644,10 @@ namespace Frost.DirectX
 			description.Device2D = this;
 			description.Factory2D = _DrawingDevice.Factory2D;
 
-			return Surface2D.FromDescription(ref description);
+			return new DynamicSurface(ref description);
 		}
 
-		private ISurface2D CreatePrivateSurface(Size surfaceSize)
+		private PrivateSurface CreatePrivateSurface(Size surfaceSize)
 		{
 			Contract.Requires(surfaceSize.Area > 0);
 			Contract.Requires(Check.IsPositive(surfaceSize.Width));
@@ -694,10 +662,10 @@ namespace Frost.DirectX
 			description.Device2D = this;
 			description.Factory2D = _DrawingDevice.Factory2D;
 
-			return Surface2D.FromDescription(ref description);
+			return new PrivateSurface(ref description);
 		}
 
-		private ISurface2D CreateDefaultSurface(Size surfaceSize)
+		private SharedSurface CreateDefaultSurface(Size surfaceSize)
 		{
 			Contract.Requires(surfaceSize.Area > 0);
 			Contract.Requires(Check.IsPositive(surfaceSize.Width));
@@ -712,7 +680,19 @@ namespace Frost.DirectX
 			description.Device2D = this;
 			description.Factory2D = _DrawingDevice.Factory2D;
 
-			return Surface2D.FromDescription(ref description);
+			return new SharedSurface(ref description);
+		}
+
+		protected override Canvas.ResolvedContext OnResolveCanvas(Canvas targetResource)
+		{
+			Canvas.ResolvedContext context = targetResource.BackingContext;
+
+			if(context != null)
+			{
+				return context;
+			}
+
+			return CreateCanvas(targetResource.Region.Size, targetResource);
 		}
 
 		public override event Action<object> CanvasInvalidated;

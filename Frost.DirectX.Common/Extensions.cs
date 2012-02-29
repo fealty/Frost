@@ -23,7 +23,7 @@ namespace Frost.DirectX.Common
 			}
 		}
 
-		public static ShaderResourceView GetShaderView(this ISurface2D surface2D)
+		internal static ShaderResourceView GetShaderView(this ISurface2D surface2D)
 		{
 			Contract.Requires(surface2D != null);
 
@@ -32,7 +32,7 @@ namespace Frost.DirectX.Common
 			return surfaceD3D.ShaderView;
 		}
 
-		public static RenderTargetView GetRenderTarget(this ISurface2D surface2D)
+		internal static RenderTargetView GetRenderTarget(this ISurface2D surface2D)
 		{
 			Contract.Requires(surface2D != null);
 
@@ -41,13 +41,19 @@ namespace Frost.DirectX.Common
 			return surfaceD3D.TargetView;
 		}
 
-		public static IntPtr GetDeviceHandle(this ISurface2D surface2D)
+		public static IntPtr GetDeviceHandle(this Canvas canvas, Device2D device2D)
 		{
-			Contract.Requires(surface2D != null);
+			Contract.Requires(canvas != null);
+			Contract.Requires(device2D != null);
 
-			Surface2D surfaceD3D = (Surface2D)surface2D;
+			Canvas.ResolvedContext context = device2D.ResolveCanvas(canvas);
 
-			return surfaceD3D.DeviceHandle;
+			if(context != null)
+			{
+				return ((Surface2D)context.Surface2D).DeviceHandle;
+			}
+
+			return IntPtr.Zero;
 		}
 
 		public static DrawingSizeF ToSizeF(this Size size)

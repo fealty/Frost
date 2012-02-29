@@ -53,6 +53,11 @@ namespace Frost.DirectX
 			}
 		}
 
+		public Surface2D Surface2D
+		{
+			get { return this; }
+		}
+
 		public IEnumerable<Rectangle> FreeRegions
 		{
 			get { return _FreeRegions; }
@@ -90,6 +95,8 @@ namespace Frost.DirectX
 				var context = new TargetContext(target, region, this);
 
 				_UsedRegions.Add(context);
+
+				Canvas.Implementation.Assign(target, context);
 
 				return context;
 			}

@@ -12,7 +12,7 @@ using Frost.Surfacing;
 
 namespace Frost.DirectX
 {
-	internal sealed class PrivateSurface : Surface2D, ISurfaceAtlas
+	internal sealed class PrivateSurface : Surface2D.ExternalSurface2D, ISurfaceAtlas
 	{
 		private readonly WeakReference _CanvasContext;
 
@@ -35,6 +35,11 @@ namespace Frost.DirectX
 					}
 				}
 			}
+		}
+
+		public Surface2D Surface2D
+		{
+			get { return this; }
 		}
 
 		public IEnumerable<Rectangle> FreeRegions
@@ -92,6 +97,8 @@ namespace Frost.DirectX
 			{
 				_CanvasContext.Target = context;
 			}
+
+			Canvas.Implementation.Assign(target, context);
 
 			return context;
 		}

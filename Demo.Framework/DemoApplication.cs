@@ -39,7 +39,7 @@ namespace Demo.Framework
 		private bool _IsResetQueued;
 
 		private RenderTargetView _RenderView;
-		private Canvas3 _Target;
+		private Canvas _Target;
 
 		public DemoApplication()
 		{
@@ -213,7 +213,12 @@ namespace Demo.Framework
 			// reconfigure the Frost rendering surface
 			Size formSize = new Size(_Form.ClientSize.Width, _Form.ClientSize.Height);
 
-			_Target = _Device2D.CreateCanvas(formSize, SurfaceUsage.External);
+			if (_Target != null)
+			{
+				_Target.Forget();
+			}
+
+			_Target = new Canvas(formSize, SurfaceUsage.External);
 
 			_Device2D.ResizeSurfaces(
 				new Size(formSize.Width + 0, formSize.Height + 0), SurfaceUsage.External);
@@ -244,9 +249,9 @@ namespace Demo.Framework
 
 			_Renderer.BeginRendering();
 
-			if (Check.IsValid(_Target))
+			if (_Target != null)
 			{
-				_Renderer.Render(_Target);
+				_Renderer.Render(_Target, _Device2D);
 			}
 
 			_Renderer.EndRendering();

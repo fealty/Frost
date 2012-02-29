@@ -6,6 +6,8 @@
 using System;
 using System.Collections.Generic;
 
+using Frost.DirectX.Common;
+
 namespace Frost.DirectX
 {
 	public interface ISurfaceAtlas : IDisposable
@@ -14,6 +16,8 @@ namespace Frost.DirectX
 
 		IEnumerable<Rectangle> FreeRegions { get; }
 		IEnumerable<Rectangle> UsedRegions { get; }
+
+		Surface2D Surface2D { get; }
 
 		Canvas.ResolvedContext AcquireRegion(Size dimensions, Canvas target);
 	}

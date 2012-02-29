@@ -31,7 +31,7 @@ namespace Frost
 			Contract.Assert(Usage == usage);
 		}
 
-		private ResolvedContext BackingContext
+		public ResolvedContext BackingContext
 		{
 			get { return Interlocked.CompareExchange(ref _BackingContext, null, null); }
 			set { Interlocked.Exchange(ref _BackingContext, value); }

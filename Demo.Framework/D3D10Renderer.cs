@@ -138,11 +138,13 @@ namespace Demo.Framework
 			_Device3D.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 		}
 
-		public void Render(Canvas3 canvas)
+		public void Render(Canvas canvas, Device2D device2D)
 		{
-			Contract.Requires(Check.IsValid(canvas));
+			Contract.Requires(canvas != null);
+			Contract.Requires(device2D != null);
 
-			IntPtr sharedHandle = canvas.Surface2D.GetDeviceHandle();
+			//TODO: is there a better way to get the device handle?
+			IntPtr sharedHandle = canvas.GetDeviceHandle(device2D);
 
 			if(sharedHandle != _SharedHandle)
 			{
