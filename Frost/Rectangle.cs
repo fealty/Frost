@@ -69,8 +69,7 @@ namespace Frost
 			Contracts.Assert(Height.Equals(_Height));
 		}
 
-		public Rectangle(float x, float y, Size size)
-			: this(x, y, size.Width, size.Height)
+		public Rectangle(float x, float y, Size size) : this(x, y, size.Width, size.Height)
 		{
 			Contracts.Requires(Check.IsFinite(x));
 			Contracts.Requires(Check.IsFinite(y));
@@ -338,7 +337,7 @@ namespace Frost
 			return new Rectangle(x, y, width, height);
 		}
 
-		public bool Contains(Point point)
+		[Pure] public bool Contains(Point point)
 		{
 			if((point.X >= Left) && (point.X <= Right))
 			{
@@ -351,7 +350,7 @@ namespace Frost
 			return false;
 		}
 
-		public bool Contains(Rectangle region)
+		[Pure] public bool Contains(Rectangle region)
 		{
 			if((region.Left >= Left) && (region.Right <= Right))
 			{

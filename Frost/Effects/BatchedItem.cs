@@ -13,13 +13,13 @@ namespace Frost.Effects
 	public struct BatchedItem : IEquatable<BatchedItem>
 	{
 		private readonly BlendOperation _Blend;
-		private readonly Canvas3 _Canvas;
+		private readonly Canvas.ResolvedContext _Canvas;
 		private readonly Rectangle _DestinationRegion;
 		private readonly Rectangle _SourceRegion;
 		private readonly Matrix3X2 _Transformation;
 
 		public BatchedItem(
-			Canvas3 canvas,
+			Canvas.ResolvedContext canvas,
 			Rectangle sourceRegion,
 			Rectangle destinationRegion,
 			BlendOperation blend,
@@ -49,7 +49,7 @@ namespace Frost.Effects
 			get { return _DestinationRegion; }
 		}
 
-		public Canvas3 Canvas
+		public Canvas.ResolvedContext Canvas
 		{
 			get { return _Canvas; }
 		}
