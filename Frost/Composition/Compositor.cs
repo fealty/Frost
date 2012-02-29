@@ -26,6 +26,8 @@ namespace Frost.Composition
 		private bool _IsOpacityInvalid;
 		private bool _IsTransformationInvalid;
 
+		private Size _TargetDelta;
+
 		protected Compositor(Device2D device2D)
 		{
 			Contract.Requires(device2D != null);
@@ -251,20 +253,23 @@ namespace Frost.Composition
 			OnFlatten();
 		}
 
-		public void CopyResult(Canvas3 destination)
+		public void CopyResult(Canvas destination)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(destination, Device2D));
+			Contract.Requires(destination != null);
 
-			OnCopyResult(destination);
+			OnCopyResult(_Device2D.ResolveCanvas(destination));
 		}
 
-		public void CopyResult(Rectangle sourceRegion, Canvas3 destination)
+		public void CopyResult(Rectangle sourceRegion, Canvas destination)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(destination, Device2D));
+			Contract.Requires(destination != null);
 
-			OnCopyResult(ref sourceRegion, destination);
+			// translate to 2D surface coordinate space
+			sourceRegion = sourceRegion.Translate(_TargetDelta);
+
+			OnCopyResult(ref sourceRegion, _Device2D.ResolveCanvas(destination));
 		}
 
 		public void Flush()
@@ -285,12 +290,18 @@ namespace Frost.Composition
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
+			// translate to 2D surface coordinate space
+			location = location.Translate(_TargetDelta);
+
 			OnCompositeResult(ref location);
 		}
 
 		public void CompositeResult(Rectangle region)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+
+			// translate to 2D surface coordinate space
+			region = region.Translate(_TargetDelta);
 
 			OnCompositeResult(ref region);
 		}
@@ -299,6 +310,10 @@ namespace Frost.Composition
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
+			// translate to 2D surface coordinate space
+			srcRegion = srcRegion.Translate(_TargetDelta);
+			dstLocation = dstLocation.Translate(_TargetDelta);
+
 			OnCompositeResult(ref srcRegion, ref dstLocation);
 		}
 
@@ -306,53 +321,77 @@ namespace Frost.Composition
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
+			// translate to 2D surface coordinate space
+			srcRegion = srcRegion.Translate(_TargetDelta);
+			dstRegion = dstRegion.Translate(_TargetDelta);
+
 			OnCompositeResult(ref srcRegion, ref dstRegion);
 		}
 
-		public void Composite(Canvas3 source)
+		public void Composite(Canvas source)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 
-			OnComposite(source);
+			OnComposite(_Device2D.ResolveCanvas(source));
 		}
 
-		public void Composite(Canvas3 source, Point location)
+		public void Composite(Canvas source, Point location)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 
-			OnComposite(source, ref location);
+			// translate to 2D surface coordinate space
+			location = location.Translate(_TargetDelta);
+
+			OnComposite(_Device2D.ResolveCanvas(source), ref location);
 		}
 
-		public void Composite(Canvas3 source, Rectangle region)
+		public void Composite(Canvas source, Rectangle region)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 
-			OnComposite(source, ref region);
+			// translate to 2D surface coordinate space
+			region = region.Translate(_TargetDelta);
+
+			OnComposite(_Device2D.ResolveCanvas(source), ref region);
 		}
 
-		public void Composite(Canvas3 source, Rectangle srcRegion, Point dstLocation)
+		public void Composite(Canvas source, Rectangle srcRegion, Point dstLocation)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 
-			OnComposite(source, ref srcRegion, ref dstLocation);
+			var sourceContext = _Device2D.ResolveCanvas(source);
+
+			// translate to 2D surface coordinate space
+			srcRegion = srcRegion.Translate(sourceContext.Region.Location);
+			dstLocation = dstLocation.Translate(_TargetDelta);
+
+			OnComposite(sourceContext, ref srcRegion, ref dstLocation);
 		}
 
-		public void Composite(Canvas3 source, Rectangle srcRegion, Rectangle dstRegion)
+		public void Composite(Canvas source, Rectangle srcRegion, Rectangle dstRegion)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 
-			OnComposite(source, ref srcRegion, ref dstRegion);
+			var sourceContext = _Device2D.ResolveCanvas(source);
+
+			// translate to 2D surface coordinate space
+			srcRegion = srcRegion.Translate(sourceContext.Region.Location);
+			dstRegion = dstRegion.Translate(_TargetDelta);
+
+			OnComposite(sourceContext, ref srcRegion, ref dstRegion);
 		}
 
-		public void Begin(Canvas3 target, Retention retention = Retention.ClearData)
+		public void Begin(Canvas target, Retention retention = Retention.ClearData)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(target, Device2D));
+			Contract.Requires(target != null);
+
+			var targetContext = _Device2D.ResolveCanvas(target);
 
 			_IsBlendOperationInvalid = true;
 			_IsEffectContextInvalid = true;
@@ -361,7 +400,9 @@ namespace Frost.Composition
 
 			ResetState();
 
-			OnBegin(target, retention);
+			_TargetDelta = targetContext.Region.Location;
+
+			OnBegin(targetContext, retention);
 		}
 
 		public void End()
@@ -372,18 +413,21 @@ namespace Frost.Composition
 		}
 
 		public void CopyResult(
-			float sourceX, float sourceY, float sourceWidth, float sourceHeight, Canvas3 destination)
+			float sourceX, float sourceY, float sourceWidth, float sourceHeight, Canvas destination)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsFinite(sourceX));
 			Contract.Requires(Check.IsFinite(sourceY));
 			Contract.Requires(Check.IsPositive(sourceWidth));
 			Contract.Requires(Check.IsPositive(sourceHeight));
-			Contract.Requires(Check.IsValid(destination, Device2D));
+			Contract.Requires(destination != null);
 
 			Rectangle sourceRegion = new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight);
 
-			OnCopyResult(ref sourceRegion, destination);
+			// translate to 2D surface coordinate space
+			sourceRegion = sourceRegion.Translate(_TargetDelta);
+
+			OnCopyResult(ref sourceRegion, _Device2D.ResolveCanvas(destination));
 		}
 
 		public void CompositeResult(float x, float y)
@@ -393,6 +437,9 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsFinite(y));
 
 			Point location = new Point(x, y);
+
+			// translate to 2D surface coordinate space
+			location = location.Translate(_TargetDelta);
 
 			OnCompositeResult(ref location);
 		}
@@ -406,6 +453,9 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsPositive(height));
 
 			Rectangle region = new Rectangle(x, y, width, height);
+
+			// translate to 2D surface coordinate space
+			region = region.Translate(_TargetDelta);
 
 			OnCompositeResult(ref region);
 		}
@@ -425,6 +475,10 @@ namespace Frost.Composition
 
 			Point dstLocation = new Point(dstX, dstY);
 
+			// translate to 2D surface coordinate space
+			srcRegion = srcRegion.Translate(_TargetDelta);
+			dstLocation = dstLocation.Translate(_TargetDelta);
+
 			OnCompositeResult(ref srcRegion, ref dstLocation);
 		}
 
@@ -452,25 +506,32 @@ namespace Frost.Composition
 
 			Rectangle dstRegion = new Rectangle(dstX, dstY, dstWidth, dstHeight);
 
+			// translate to 2D surface coordinate space
+			srcRegion = srcRegion.Translate(_TargetDelta);
+			dstRegion = dstRegion.Translate(_TargetDelta);
+
 			OnCompositeResult(ref srcRegion, ref dstRegion);
 		}
 
-		public void Composite(Canvas3 source, float x, float y)
+		public void Composite(Canvas source, float x, float y)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 			Contract.Requires(Check.IsFinite(x));
 			Contract.Requires(Check.IsFinite(y));
 
 			Point location = new Point(x, y);
 
-			OnComposite(source, ref location);
+			// translate to 2D surface coordinate space
+			location = location.Translate(_TargetDelta);
+
+			OnComposite(_Device2D.ResolveCanvas(source), ref location);
 		}
 
-		public void Composite(Canvas3 source, float x, float y, float width, float height)
+		public void Composite(Canvas source, float x, float y, float width, float height)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 			Contract.Requires(Check.IsFinite(x));
 			Contract.Requires(Check.IsFinite(y));
 			Contract.Requires(Check.IsPositive(width));
@@ -478,14 +539,17 @@ namespace Frost.Composition
 
 			Rectangle region = new Rectangle(x, y, width, height);
 
-			OnComposite(source, ref region);
+			// translate to 2D surface coordinate space
+			region = region.Translate(_TargetDelta);
+
+			OnComposite(_Device2D.ResolveCanvas(source), ref region);
 		}
 
 		public void Composite(
-			Canvas3 source, float srcX, float srcY, float srcWidth, float srcHeight, float dstX, float dstY)
+			Canvas source, float srcX, float srcY, float srcWidth, float srcHeight, float dstX, float dstY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 			Contract.Requires(Check.IsFinite(srcX));
 			Contract.Requires(Check.IsFinite(srcY));
 			Contract.Requires(Check.IsPositive(srcWidth));
@@ -493,15 +557,21 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsFinite(dstX));
 			Contract.Requires(Check.IsFinite(dstY));
 
+			var sourceContext = _Device2D.ResolveCanvas(source);
+
 			Rectangle srcRegion = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
 			Point dstLocation = new Point(dstX, dstY);
 
-			OnComposite(source, ref srcRegion, ref dstLocation);
+			// translate to 2D surface coordinate space
+			srcRegion = srcRegion.Translate(sourceContext.Region.Location);
+			dstLocation = dstLocation.Translate(_TargetDelta);
+
+			OnComposite(sourceContext, ref srcRegion, ref dstLocation);
 		}
 
 		public void Composite(
-			Canvas3 source,
+			Canvas source,
 			float srcX,
 			float srcY,
 			float srcWidth,
@@ -512,7 +582,7 @@ namespace Frost.Composition
 			float dstHeight)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 			Contract.Requires(Check.IsFinite(srcX));
 			Contract.Requires(Check.IsFinite(srcY));
 			Contract.Requires(Check.IsPositive(srcWidth));
@@ -522,11 +592,17 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsPositive(dstWidth));
 			Contract.Requires(Check.IsPositive(dstHeight));
 
+			var sourceContext = _Device2D.ResolveCanvas(source);
+
 			Rectangle srcRegion = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
 			Rectangle dstRegion = new Rectangle(dstX, dstY, dstWidth, dstHeight);
 
-			OnComposite(source, ref srcRegion, ref dstRegion);
+			// translate to 2D surface coordinate space
+			srcRegion = srcRegion.Translate(sourceContext.Region.Location);
+			dstRegion = dstRegion.Translate(_TargetDelta);
+
+			OnComposite(sourceContext, ref srcRegion, ref dstRegion);
 		}
 
 		public void Scale(float width, float height)
@@ -556,6 +632,7 @@ namespace Frost.Composition
 			Scale(size.Width, size.Height);
 		}
 
+		//TODO: do origins need to be translated to 2d surface coordinate space?
 		public void Scale(float width, float height, float originX, float originY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
@@ -717,22 +794,22 @@ namespace Frost.Composition
 
 		protected abstract void OnCompositeResult(ref Rectangle srcRegion, ref Rectangle dstRegion);
 
-		protected abstract void OnBegin(Canvas3 target, Retention retention);
+		protected abstract void OnBegin(Canvas.ResolvedContext target, Retention retention);
 		protected abstract void OnEnd();
 
-		protected abstract void OnCopyResult(Canvas3 destination);
+		protected abstract void OnCopyResult(Canvas.ResolvedContext destination);
 
-		protected abstract void OnCopyResult(ref Rectangle sourceRegion, Canvas3 destination);
+		protected abstract void OnCopyResult(ref Rectangle sourceRegion, Canvas.ResolvedContext destination);
 
-		protected abstract void OnComposite(Canvas3 source);
+		protected abstract void OnComposite(Canvas.ResolvedContext source);
 
-		protected abstract void OnComposite(Canvas3 source, ref Point location);
+		protected abstract void OnComposite(Canvas.ResolvedContext source, ref Point location);
 
-		protected abstract void OnComposite(Canvas3 source, ref Rectangle region);
+		protected abstract void OnComposite(Canvas.ResolvedContext source, ref Rectangle region);
 
-		protected abstract void OnComposite(Canvas3 source, ref Rectangle srcRegion, ref Point dstLocation);
+		protected abstract void OnComposite(Canvas.ResolvedContext source, ref Rectangle srcRegion, ref Point dstLocation);
 
 		protected abstract void OnComposite(
-			Canvas3 source, ref Rectangle srcRegion, ref Rectangle dstRegion);
+			Canvas.ResolvedContext source, ref Rectangle srcRegion, ref Rectangle dstRegion);
 	}
 }
