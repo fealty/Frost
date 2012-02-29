@@ -65,14 +65,7 @@ namespace Frost.DirectX
 			{
 				lock (_CanvasContext)
 				{
-					if (!_CanvasContext.IsAlive)
-					{
-						Invalidate();
-
-						return false;
-					}
-
-					return true;
+					return _CanvasContext.IsAlive;
 				}
 			}
 		}
@@ -88,29 +81,41 @@ namespace Frost.DirectX
 
 			ComputeOffsetRegion(dimensions, out offsetRegion);
 
-			Rectangle region = new Rectangle(offsetRegion.Location, offsetRegion.Size + dimensions);
+			TargetContext context = new TargetContext(
+				target, new Rectangle(offsetRegion.Location, offsetRegion.Size + dimensions), this);
 
-			Invalidate();
-
-			var context = new TargetContext(target, region, this);
-
-			lock (_CanvasContext)
+			lock(_CanvasContext)
 			{
+				Contract.Assert(!_CanvasContext.IsAlive);
+
 				_CanvasContext.Target = context;
 			}
 
 			return context;
 		}
 
-		public void Invalidate()
+		public void Purge()
 		{
+			lock (_CanvasContext)
+			{
+				if (!_CanvasContext.IsAlive)
+				{
+					_CanvasContext.Target = null;
+				}
+			}
+		}
+
+		public void Forget(SafeList<Canvas> forgottenResources)
+		{
+			Contract.Requires(forgottenResources != null);
+
 			lock (_CanvasContext)
 			{
 				var context = (Canvas.ResolvedContext)_CanvasContext.Target;
 
 				if (context != null)
 				{
-					//Canvas.Implementation.Assign(context.Target, null);
+					forgottenResources.Add(context.Target);
 				}
 
 				_CanvasContext.Target = null;
@@ -149,6 +154,11 @@ namespace Frost.DirectX
 				_Canvas = canvas;
 				_Region = region;
 				_Layer = layer;
+
+				Contract.Assert(Region.Equals(region));
+				Contract.Assert(ReferenceEquals(Surface2D, layer));
+				Contract.Assert(ReferenceEquals(Target, canvas));
+				Contract.Assert(ReferenceEquals(Device2D, layer.Device2D));
 			}
 
 			public override Rectangle Region
