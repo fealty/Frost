@@ -66,9 +66,8 @@ namespace Frost
 			Canvas.ResolvedContext fromContext = ResolveCanvas(fromTarget);
 			Canvas.ResolvedContext toContext = ResolveCanvas(toTarget);
 
-			fromRegion = new Rectangle(
-				fromContext.Region.X + fromRegion.X, 
-				fromContext.Region.Y + fromRegion.Y, fromRegion.Size);
+			// translate to 2D surface coordinate space
+			fromRegion = fromRegion.Translate(fromContext.Region.Location);
 
 			OnCopy(fromRegion, fromContext, toContext);
 		}
