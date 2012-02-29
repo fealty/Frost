@@ -19,8 +19,8 @@ namespace Frost.DirectX
 		private readonly object _Lock = new object();
 		private readonly LinkedList<CanvasData> _UsedRegions;
 
-		private double _FragmentedArea;
-		private double _OccupiedArea;
+		private float _FragmentedArea;
+		private float _OccupiedArea;
 
 		public SharedSurface(ref Description surfaceDescription) : base(ref surfaceDescription)
 		{
@@ -30,26 +30,26 @@ namespace Frost.DirectX
 			_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
 		}
 
-		public double Occupancy
+		public float Occupancy
 		{
 			get
 			{
 				lock(_Lock)
 				{
-					double totalArea = Region.Area;
+					float totalArea = Region.Area;
 
 					return (_OccupiedArea / totalArea) * 100.0f;
 				}
 			}
 		}
 
-		public double Fragmentation
+		public float Fragmentation
 		{
 			get
 			{
 				lock(_Lock)
 				{
-					double totalArea = Region.Area;
+					float totalArea = Region.Area;
 
 					return (_FragmentedArea / totalArea) * 100.0f;
 				}
@@ -62,8 +62,6 @@ namespace Frost.DirectX
 			{
 				lock(_Lock)
 				{
-					PurgeUsedRegions(false);
-
 					return _UsedRegions.Count > 0;
 				}
 			}
@@ -72,6 +70,45 @@ namespace Frost.DirectX
 		public IEnumerable<Rectangle> UsedRegions
 		{
 			get { return _UsedRegions.Select(item => item.ActualRegion); }
+		}
+
+		public void Purge(bool isForced, SafeList<Canvas> invalidatedResources)
+		{
+			if(isForced)
+			{
+				lock(_Lock)
+				{
+					_OccupiedArea = 0;
+					_FragmentedArea = 0;
+
+					_FreeRegions.Clear();
+
+					_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
+
+					PurgeUsedRegions(true, invalidatedResources);
+				}
+			}
+			else
+			{
+				lock(_Lock)
+				{
+					PurgeUsedRegions(false, invalidatedResources);
+				}
+			}
+		}
+
+		public void Forget(Canvas.ResolvedContext context)
+		{
+			TargetContext targetContext = (TargetContext)context;
+
+			lock(_Lock)
+			{
+				Rectangle region = targetContext.Node.Value.ActualRegion;
+
+				_UsedRegions.Remove(targetContext.Node);
+
+				_FragmentedArea += region.Area;
+			}
 		}
 
 		public Surface2D Surface2D
@@ -90,16 +127,14 @@ namespace Frost.DirectX
 
 			ComputeOffsetRegion(dimensions, out adjustedRegion);
 
-			adjustedRegion = new Rectangle(adjustedRegion.Location, adjustedRegion.Size + dimensions);
-
 			Rectangle? result = InsertIntoSurface(adjustedRegion.Size);
 
 			if(result != null)
 			{
-				Rectangle region =
-					new Rectangle(
-						new Point(result.Value.X + adjustedRegion.X, result.Value.Y + adjustedRegion.Y),
-						new Size(dimensions.Width, dimensions.Height));
+				float finalX = result.Value.X + adjustedRegion.X;
+				float finalY = result.Value.Y + adjustedRegion.Y;
+
+				Rectangle region = new Rectangle(finalX, finalY, dimensions);
 
 				CanvasData data;
 
@@ -115,72 +150,33 @@ namespace Frost.DirectX
 					_UsedRegions.AddLast(context.Node);
 				}
 
-				int area = Convert.ToInt32(result.Value.Area * 4);
-
-				GC.AddMemoryPressure(area);
-
 				return context;
 			}
 
 			return null;
 		}
 
-		public void Invalidate()
-		{
-			lock(_Lock)
-			{
-				_OccupiedArea = 0;
-				_FragmentedArea = 0;
-
-				_FreeRegions.Clear();
-
-				_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
-
-				PurgeUsedRegions(true);
-			}
-		}
-
-		private void PurgeUsedRegions(bool forcePurge)
+		private void PurgeUsedRegions(bool forcePurge, SafeList<Canvas> invalidatedResources)
 		{
 			for(var item = _UsedRegions.First; item != null; item = item.Next)
 			{
 				if(!item.Value.CanvasReference.IsAlive || forcePurge)
 				{
-					/*Rectangle region = item.Value.ActualRegion;
+					if(forcePurge)
+					{
+						var context = (Canvas.ResolvedContext)item.Value.CanvasReference.Target;
+
+						if(context != null)
+						{
+							invalidatedResources.Add(context.Target);
+						}
+					}
+
+					Rectangle region = item.Value.ActualRegion;
 
 					_UsedRegions.Remove(item);
 
-					int area = Convert.ToInt32(region.Area * 4);
-
-					GC.RemoveMemoryPressure(area);
-
-					_FragmentedArea += region.Area;*/
-					PurgeItem(item);
-				}
-			}
-		}
-
-		private void PurgeItem(LinkedListNode<CanvasData> item)
-		{
-			Contract.Requires(item != null);
-
-			lock(_Lock)
-			{
-				Rectangle region = item.Value.ActualRegion;
-
-				_UsedRegions.Remove(item);
-
-				int area = Convert.ToInt32(region.Area * 4);
-
-				GC.RemoveMemoryPressure(area);
-
-				_FragmentedArea += region.Area;
-
-				var context = (Canvas.ResolvedContext)item.Value.CanvasReference.Target;
-
-				if(context != null)
-				{
-					//Canvas.Implementation.Assign(context.Target, null);
+					_FragmentedArea += region.Area;
 				}
 			}
 		}
@@ -201,6 +197,8 @@ namespace Frost.DirectX
 			{
 				result = new Rectangle(new Point(result.X, 1), new Size(result.Width, 2));
 			}
+
+			result = new Rectangle(result.Location, result.Size + desiredSize);
 		}
 
 		private bool CheckAvailableArea(double desiredArea)
