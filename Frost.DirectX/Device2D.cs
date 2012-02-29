@@ -338,7 +338,12 @@ namespace Frost.DirectX
 
 		protected override void OnForget(Canvas.ResolvedContext target)
 		{
-			throw new NotImplementedException();
+			ISurfaceAtlas atlas = target as ISurfaceAtlas;
+
+			if(atlas != null)
+			{
+				atlas.Forget(target);
+			}
 		}
 
 		private Canvas.ResolvedContext CreateCanvas(Size size, Canvas target)

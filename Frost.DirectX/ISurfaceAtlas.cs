@@ -17,6 +17,10 @@ namespace Frost.DirectX
 		IEnumerable<Rectangle> FreeRegions { get; }
 		IEnumerable<Rectangle> UsedRegions { get; }
 
+		void Purge(bool isForced, SafeList<Canvas> invalidatedResources);
+
+		void Forget(Canvas.ResolvedContext context);
+
 		Surface2D Surface2D { get; }
 
 		Canvas.ResolvedContext AcquireRegion(Size dimensions, Canvas target);

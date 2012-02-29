@@ -72,17 +72,16 @@ namespace Frost.DirectX
 
 		public Canvas.ResolvedContext AcquireRegion(Size dimensions, Canvas target)
 		{
+			Rectangle region;
+			
 			if (!Region.Contains(new Rectangle(Region.Location, dimensions)))
 			{
 				return null;
 			}
+			
+			ComputeOffsetRegion(dimensions, out region);
 
-			Rectangle offsetRegion;
-
-			ComputeOffsetRegion(dimensions, out offsetRegion);
-
-			TargetContext context = new TargetContext(
-				target, new Rectangle(offsetRegion.Location, offsetRegion.Size + dimensions), this);
+			TargetContext context = new TargetContext(target, region, this);
 
 			lock(_CanvasContext)
 			{
@@ -94,30 +93,32 @@ namespace Frost.DirectX
 			return context;
 		}
 
-		public void Purge()
+		public void Purge(bool isForced, SafeList<Canvas> invalidatedResources)
 		{
 			lock (_CanvasContext)
 			{
-				if (!_CanvasContext.IsAlive)
+				if(isForced)
+				{
+					var context = (Canvas.ResolvedContext)_CanvasContext.Target;
+
+					if(context != null)
+					{
+						invalidatedResources.Add(context.Target);
+					}
+
+					_CanvasContext.Target = null;
+				}
+				else if (!_CanvasContext.IsAlive)
 				{
 					_CanvasContext.Target = null;
 				}
 			}
 		}
 
-		public void Forget(SafeList<Canvas> forgottenResources)
+		public void Forget(Canvas.ResolvedContext context)
 		{
-			Contract.Requires(forgottenResources != null);
-
 			lock (_CanvasContext)
 			{
-				var context = (Canvas.ResolvedContext)_CanvasContext.Target;
-
-				if (context != null)
-				{
-					forgottenResources.Add(context.Target);
-				}
-
 				_CanvasContext.Target = null;
 			}
 		}
@@ -138,6 +139,8 @@ namespace Frost.DirectX
 			{
 				result = new Rectangle(new Point(result.X, 1), new Size(result.Width, 2));
 			}
+
+			result = new Rectangle(result.Location, result.Size + desiredSize);
 		}
 
 		private sealed class TargetContext : Canvas.ResolvedContext
