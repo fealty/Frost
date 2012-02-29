@@ -74,7 +74,7 @@ namespace Frost.DirectX.Painting
 			_Watch.Reset();
 			_Watch.Start();
 
-			SetBrush(Color.Black);
+			OnSetBrush(Color.Black);
 
 			_IsBrushInvalid = true;
 
