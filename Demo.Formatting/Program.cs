@@ -18,12 +18,7 @@ namespace Demo.Formatting
 	{
 		public void Reset(Canvas target, Device2D device2D)
 		{
-			device2D.Painter.Begin(target);
-			device2D.Painter.SetBrush(Color.Red);
-			device2D.Painter.Fill(0, 0, 100, 100, 10, 10);
-			device2D.Painter.End();
-
-			/*Painter painter = device2D.Painter;
+			Painter painter = device2D.Painter;
 
 			painter.Begin(target);
 
@@ -71,7 +66,7 @@ namespace Demo.Formatting
 			builder.WithAdditionalText(
 				"בקר תורת משפטית לויקיפדים ב, ביוני טכניים סטטיסטיקה את תנך, מה קרן הרוח מיתולוגיה. בה ליום נוסחאות זאת, סדר שאלות לעריכת ב. שתי את יוני שימושי תיקונים, על מונחים פיסיקה מאמרשיחהצפה שמו. את ראשי כניסה מתן, גם מלא הבאים זכויות, בדף אודות לחיבור על. מה החברה תיאטרון בדף, לערכים תיאטרון צעד גם. מה רפואה כלכלה ויש. מיזמי ביולי תאולוגיה ויש את, כימיה לחשבון מאמרשיחהצפה רבה אם. מוגש לעתים של היא, מה ערבית לציין כלל. של העיר ביולי קישורים אחר. צ'ט כדור כלכלה צרפתית מה, ויקי המלחמה את שמו.");
 
-			ITextMetrics metrics = device2D.Measure(
+			ITextMetrics metrics = device2D.MeasureLayout(
 				builder.Build(), new Rectangle(180, 50, 440, 500), obs2, obs3);
 
 			Paragraph.Draw(painter, metrics);
@@ -133,7 +128,7 @@ namespace Demo.Formatting
 				0,
 				0);
 
-			painter.End();*/
+			painter.End();
 		}
 
 		public void Dispose()

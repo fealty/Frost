@@ -166,6 +166,7 @@ namespace Demo.Framework
 				_Device2D.Dump(string.Empty, SurfaceUsage.Normal);
 				_Device2D.Dump(string.Empty, SurfaceUsage.Dynamic);
 				_Device2D.Dump(string.Empty, SurfaceUsage.External);
+				_Device2D.Dump(string.Empty, SurfaceUsage.Private);
 			}
 
 			if(e.KeyChar == 'r')
