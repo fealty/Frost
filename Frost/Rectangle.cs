@@ -69,6 +69,22 @@ namespace Frost
 			Contracts.Assert(Height.Equals(_Height));
 		}
 
+		public Rectangle(float x, float y, Size size)
+			: this(x, y, size.Width, size.Height)
+		{
+			Contracts.Requires(Check.IsFinite(x));
+			Contracts.Requires(Check.IsFinite(y));
+			Contracts.Requires(Check.IsPositive(size.Width));
+			Contracts.Requires(Check.IsPositive(size.Height));
+		}
+
+		public Rectangle(Point location, float width, float height)
+			: this(location.X, location.Y, width, height)
+		{
+			Contracts.Requires(Check.IsPositive(width));
+			Contracts.Requires(Check.IsPositive(height));
+		}
+
 		public Rectangle(Point location, Size size)
 			: this(location.X, location.Y, size.Width, size.Height)
 		{
