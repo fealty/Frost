@@ -7,53 +7,27 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Threading;
 
-using Frost.Atlasing;
 using Frost.DirectX.Common;
 using Frost.Surfacing;
 
 namespace Frost.DirectX
 {
-	//TODO: add support for canvas-object association
-	public sealed class SharedAtlas<T> : ISurfaceAtlas, IDisposable
-		where T : class, ISurface2D
+	public sealed class SharedSurface : Surface2D, ISurfaceAtlas
 	{
-		private readonly Canvas3 _AtlasCanvas;
 		private readonly LinkedList<Rectangle> _FreeRegions;
 		private readonly object _Lock = new object();
-		private readonly T _Surface2D;
 		private readonly LinkedList<CanvasData> _UsedRegions;
-
-		private Notification _AtlasReference;
-		private Notification _ChildReference;
 
 		private double _FragmentedArea;
 		private double _OccupiedArea;
 
-		public SharedAtlas(T surface2D)
+		public SharedSurface(ref Description surfaceDescription) : base(ref surfaceDescription)
 		{
-			Contract.Requires(surface2D != null);
-
-			_ChildReference = new Notification(this);
-
-			_Surface2D = surface2D;
-
 			_UsedRegions = new LinkedList<CanvasData>();
 			_FreeRegions = new LinkedList<Rectangle>();
 
-			_FreeRegions.AddLast(new Rectangle(Point.Empty, _Surface2D.Region.Size));
-
-			_AtlasReference = _ChildReference;
-
-			_AtlasCanvas = new SharedCanvas(surface2D.Region, _AtlasReference);
-
-			_ChildReference = new Notification(this);
-		}
-
-		public T Surface2D
-		{
-			get { return _Surface2D; }
+			_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
 		}
 
 		public double Occupancy
@@ -62,7 +36,7 @@ namespace Frost.DirectX
 			{
 				lock(_Lock)
 				{
-					double totalArea = _Surface2D.Region.Area;
+					double totalArea = Region.Area;
 
 					return (_OccupiedArea / totalArea) * 100.0f;
 				}
@@ -75,7 +49,7 @@ namespace Frost.DirectX
 			{
 				lock(_Lock)
 				{
-					double totalArea = _Surface2D.Region.Area;
+					double totalArea = Region.Area;
 
 					return (_FragmentedArea / totalArea) * 100.0f;
 				}
@@ -105,38 +79,13 @@ namespace Frost.DirectX
 			get { return _FreeRegions; }
 		}
 
-		public void Dispose()
-		{
-			_ChildReference.Invalidate();
-			_AtlasReference.Invalidate();
-
-			_ChildReference = null;
-			_AtlasReference = null;
-
-			IDisposable disposable = _Surface2D as IDisposable;
-
-			disposable.SafeDispose();
-		}
-
-		ISurface2D Atlasing.ISurfaceAtlas.Surface2D
-		{
-			get { return _Surface2D; }
-		}
-
-		public Canvas3 Canvas
-		{
-			get { return _AtlasCanvas; }
-		}
-
-		public Canvas3 AcquireRegion(Size size, object owner = null)
+		public Canvas.ResolvedContext AcquireRegion(Size dimensions, Canvas target)
 		{
 			Rectangle adjustedRegion;
 
-			ComputeOffsetRegion(size, out adjustedRegion);
+			ComputeOffsetRegion(dimensions, out adjustedRegion);
 
-			adjustedRegion = new Rectangle(
-				adjustedRegion.Location,
-				new Size(adjustedRegion.Width + size.Width, adjustedRegion.Height + size.Height));
+			adjustedRegion = new Rectangle(adjustedRegion.Location, adjustedRegion.Size + dimensions);
 
 			Rectangle? result = InsertIntoSurface(adjustedRegion.Size);
 
@@ -145,28 +94,27 @@ namespace Frost.DirectX
 				Rectangle region =
 					new Rectangle(
 						new Point(result.Value.X + adjustedRegion.X, result.Value.Y + adjustedRegion.Y),
-						new Size(size.Width, size.Height));
+						new Size(dimensions.Width, dimensions.Height));
 
 				CanvasData data;
 
 				data.ActualRegion = result.Value;
+				data.CanvasReference = new WeakReference(null);
 
-				SharedCanvas newCanvas = new SharedCanvas(region, _ChildReference);
+				var context = new TargetContext(target, region, this, new LinkedListNode<CanvasData>(data));
 
-				data.CanvasReference = new WeakReference(newCanvas);
-
-				newCanvas.Node = new LinkedListNode<CanvasData>(data);
+				context.Node.Value.CanvasReference.Target = context;
 
 				lock(_Lock)
 				{
-					_UsedRegions.AddLast(newCanvas.Node);
+					_UsedRegions.AddLast(context.Node);
 				}
 
 				int area = Convert.ToInt32(result.Value.Area * 4);
 
 				GC.AddMemoryPressure(area);
 
-				return newCanvas;
+				return context;
 			}
 
 			return null;
@@ -174,12 +122,6 @@ namespace Frost.DirectX
 
 		public void Invalidate()
 		{
-			_ChildReference.Invalidate();
-
-			Interlocked.Exchange(ref _ChildReference, new Notification(this));
-
-			_ChildReference = new Notification(this);
-
 			lock(_Lock)
 			{
 				_OccupiedArea = 0;
@@ -187,7 +129,7 @@ namespace Frost.DirectX
 
 				_FreeRegions.Clear();
 
-				_FreeRegions.AddLast(new Rectangle(Point.Empty, _Surface2D.Region.Size));
+				_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
 
 				PurgeUsedRegions(true);
 			}
@@ -199,7 +141,7 @@ namespace Frost.DirectX
 			{
 				if(!item.Value.CanvasReference.IsAlive || forcePurge)
 				{
-					Rectangle region = item.Value.ActualRegion;
+					/*Rectangle region = item.Value.ActualRegion;
 
 					_UsedRegions.Remove(item);
 
@@ -207,7 +149,33 @@ namespace Frost.DirectX
 
 					GC.RemoveMemoryPressure(area);
 
-					_FragmentedArea += region.Area;
+					_FragmentedArea += region.Area;*/
+					PurgeItem(item);
+				}
+			}
+		}
+
+		private void PurgeItem(LinkedListNode<CanvasData> item)
+		{
+			Contract.Requires(item != null);
+
+			lock(_Lock)
+			{
+				Rectangle region = item.Value.ActualRegion;
+
+				_UsedRegions.Remove(item);
+
+				int area = Convert.ToInt32(region.Area * 4);
+
+				GC.RemoveMemoryPressure(area);
+
+				_FragmentedArea += region.Area;
+
+				var context = (Canvas.ResolvedContext)item.Value.CanvasReference.Target;
+
+				if(context != null)
+				{
+					Canvas.Implementation.Assign(context.Target, null);
 				}
 			}
 		}
@@ -219,12 +187,12 @@ namespace Frost.DirectX
 
 			result = Rectangle.Empty;
 
-			if(!desiredSize.Width.Equals(_Surface2D.Region.Width))
+			if(!desiredSize.Width.Equals(Region.Width))
 			{
 				result = new Rectangle(new Point(1, result.Y), new Size(2, result.Height));
 			}
 
-			if(!desiredSize.Height.Equals(_Surface2D.Region.Height))
+			if(!desiredSize.Height.Equals(Region.Height))
 			{
 				result = new Rectangle(new Point(result.X, 1), new Size(result.Width, 2));
 			}
@@ -234,7 +202,7 @@ namespace Frost.DirectX
 		{
 			Contract.Requires(Check.IsPositive(desiredArea));
 
-			double totalArea = _Surface2D.Region.Area;
+			double totalArea = Region.Area;
 
 			return desiredArea <= totalArea - _OccupiedArea;
 		}
@@ -349,12 +317,49 @@ namespace Frost.DirectX
 			public WeakReference CanvasReference;
 		}
 
-		private sealed class SharedCanvas : Canvas3
+		private sealed class TargetContext : Canvas.ResolvedContext
 		{
-			public LinkedListNode<CanvasData> Node;
+			private readonly Canvas _Canvas;
+			private readonly SharedSurface _Layer;
+			private readonly LinkedListNode<CanvasData> _Node;
+			private readonly Rectangle _Region;
 
-			public SharedCanvas(Rectangle region, Notification atlas) : base(region, atlas)
+			public TargetContext(
+				Canvas canvas, Rectangle region, SharedSurface layer, LinkedListNode<CanvasData> node)
 			{
+				Contract.Requires(canvas != null);
+				Contract.Requires(layer != null);
+				Contract.Requires(node != null);
+
+				_Canvas = canvas;
+				_Region = region;
+				_Layer = layer;
+				_Node = node;
+			}
+
+			public LinkedListNode<CanvasData> Node
+			{
+				get { return _Node; }
+			}
+
+			public override Rectangle Region
+			{
+				get { return _Region; }
+			}
+
+			public override ISurface2D Surface2D
+			{
+				get { return _Layer; }
+			}
+
+			public override Canvas Target
+			{
+				get { return _Canvas; }
+			}
+
+			public override void Forget()
+			{
+				_Layer.PurgeItem(Node);
 			}
 		}
 	}
