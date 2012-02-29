@@ -50,7 +50,7 @@ namespace Frost.DirectX.Common
 		private BitmapBrush _BitmapBrush;
 		private SolidColorBrush _SolidColorBrush;
 
-		private Surface2D(ref Description surfaceDescription)
+		protected Surface2D(ref Description surfaceDescription)
 			: this(ref surfaceDescription, Descriptions.PrivateTexture)
 		{
 			Contract.Requires(surfaceDescription.Device2D != null);
@@ -259,7 +259,7 @@ namespace Frost.DirectX.Common
 				return brush;
 			}
 
-			using(var stopCollection = this.CreateStopCollection(gradient))
+			using(var stopCollection = CreateStopCollection(gradient))
 			{
 				brush = new RadialGradientBrush(_Target2D, Descriptions.RadialGradient, stopCollection)
 				{
@@ -299,7 +299,7 @@ namespace Frost.DirectX.Common
 				return brush;
 			}
 
-			using(var stopCollection = this.CreateStopCollection(gradient))
+			using(var stopCollection = CreateStopCollection(gradient))
 			{
 				brush = new LinearGradientBrush(_Target2D, Descriptions.LinearGradient, stopCollection)
 				{StartPoint = startPoint.ToPointF(), EndPoint = endPoint.ToPointF()};

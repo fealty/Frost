@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 
-using Frost.Atlasing;
 using Frost.DirectX.Common;
 using Frost.DirectX.Composition.Properties;
 using Frost.Surfacing;
@@ -36,13 +35,13 @@ namespace Frost.DirectX.Composition
 		private readonly Device _Device3D;
 		private readonly DynamicBuffer[] _DynamicBuffers;
 		private readonly Buffer _FrameConstants;
-		private readonly Stack<Canvas3> _Layers;
+		private readonly Stack<Canvas.ResolvedContext> _Layers;
 
 		private readonly SamplerState _LinearSampler;
 		private readonly RasterizerState _Rasterizer;
 		private readonly Buffer _RenderConstants;
 
-		private readonly Stack<TargetLayerAtlas<Surface2D>> _Surfaces;
+		private readonly Stack<TargetLayer> _Surfaces;
 
 		private readonly VertexBufferBinding _VertexBinding;
 		private readonly InputLayout _VertexLayout;
@@ -59,8 +58,8 @@ namespace Frost.DirectX.Composition
 			Contract.Requires(device3D != null);
 			Contract.Requires(device2D != null);
 
-			_Layers = new Stack<Canvas3>();
-			_Surfaces = new Stack<TargetLayerAtlas<Surface2D>>();
+			_Layers = new Stack<Canvas.ResolvedContext>();
+			_Surfaces = new Stack<TargetLayer>();
 
 			_Device3D = device3D;
 			_Device2D = device2D;
@@ -119,7 +118,7 @@ namespace Frost.DirectX.Composition
 			get { return _Layers.Count > 1; }
 		}
 
-		public Canvas3 ActiveLayer
+		public Canvas.ResolvedContext ActiveLayer
 		{
 			get { return _Layers.Peek(); }
 		}
@@ -212,13 +211,14 @@ namespace Frost.DirectX.Composition
 					Math.Max(layerSize.Height, ActiveLayer.Region.Height));
 			}
 
-			Canvas3 availableLayer = GetFreeLayer(layerSize);
+			Canvas.ResolvedContext availableLayer = GetFreeLayer(layerSize);
 
 			try
 			{
 				if(retentionMode == Retention.RetainData)
 				{
-					ActiveLayer.CopyTo(availableLayer);
+					ActiveLayer.Surface2D.CopyTo(
+						ActiveLayer.Region, availableLayer.Surface2D, availableLayer.Region.Location);
 				}
 
 				_Layers.Push(availableLayer);
@@ -235,12 +235,12 @@ namespace Frost.DirectX.Composition
 			ReconfigureRenderTarget(retentionMode);
 		}
 
-		public void FreeLayer(Canvas3 previousLayer)
+		public void FreeLayer(Canvas.ResolvedContext previousLayer)
 		{
-			_Surfaces.Push((TargetLayerAtlas<Surface2D>)previousLayer.Atlas);
+			_Surfaces.Push((TargetLayer)previousLayer.Surface2D);
 		}
 
-		public void PopLayer(out Canvas3 previousLayer)
+		public void PopLayer(out Canvas.ResolvedContext previousLayer)
 		{
 			previousLayer = _Layers.Pop();
 
@@ -265,7 +265,7 @@ namespace Frost.DirectX.Composition
 
 		public void PopLayer()
 		{
-			Canvas3 temporary;
+			Canvas.ResolvedContext temporary;
 
 			PopLayer(out temporary);
 
@@ -308,7 +308,7 @@ namespace Frost.DirectX.Composition
 
 		private void ReconfigureRenderTarget(Retention retentionMode)
 		{
-			Canvas3 activeLayer = ActiveLayer;
+			Canvas.ResolvedContext activeLayer = ActiveLayer;
 
 			Viewport viewport;
 
@@ -354,58 +354,58 @@ namespace Frost.DirectX.Composition
 			_Device3D.OutputMerger.SetTargets(surface.TargetView);
 		}
 
-		private Canvas3 GetFreeLayer(Size size)
+		private Canvas.ResolvedContext GetFreeLayer(Size size)
 		{
 			Contract.Requires(size.Width >= 0.0 && size.Width <= double.MaxValue);
 			Contract.Requires(size.Height >= 0.0 && size.Height <= double.MaxValue);
-			Contract.Ensures(Contract.Result<Canvas3>() != null);
+			Contract.Ensures(Contract.Result<Canvas.ResolvedContext>() != null);
 
 			Size surfaceSize = size;
 
 			surfaceSize = new Size(surfaceSize.Width + 2, surfaceSize.Height + 2);
 
-			TargetLayerAtlas<Surface2D> atlas;
+			TargetLayer newLayer;
 
 			if(_Surfaces.Count == 0)
 			{
-				atlas = CreateSurface(surfaceSize);
+				newLayer = CreateSurface(surfaceSize);
 
 				try
 				{
-					return atlas.AcquireRegion(size);
+					return newLayer.AcquireRegion(size);
 				}
 				catch
 				{
-					atlas.Dispose();
+					newLayer.Dispose();
 
 					throw;
 				}
 			}
 
-			atlas = _Surfaces.Pop();
+			newLayer = _Surfaces.Pop();
 
-			if(size.Width > atlas.Surface2D.Region.Width || size.Height > atlas.Surface2D.Region.Height)
+			if(size.Width > newLayer.Region.Width || size.Height > newLayer.Region.Height)
 			{
-				atlas.Dispose();
+				newLayer.Dispose();
 
-				atlas = CreateSurface(surfaceSize);
+				newLayer = CreateSurface(surfaceSize);
 			}
 
 			try
 			{
-				_Device3D.ClearRenderTargetView(atlas.Surface2D.TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
+				_Device3D.ClearRenderTargetView(newLayer.TargetView, new Color4(0.0f, 0.0f, 0.0f, 0.0f));
 
-				return atlas.AcquireRegion(size);
+				return newLayer.AcquireRegion(size);
 			}
 			catch
 			{
-				atlas.Dispose();
+				newLayer.Dispose();
 
 				throw;
 			}
 		}
 
-		private TargetLayerAtlas<Surface2D> CreateSurface(Size size)
+		private TargetLayer CreateSurface(Size size)
 		{
 			Contract.Requires(size.Width >= 0.0 && size.Width <= double.MaxValue);
 			Contract.Requires(size.Height >= 0.0 && size.Height <= double.MaxValue);
@@ -418,18 +418,7 @@ namespace Frost.DirectX.Composition
 			description.Usage = SurfaceUsage.Normal;
 			description.Size = size;
 
-			Surface2D newSurface = Surface2D.FromDescription(ref description);
-
-			try
-			{
-				return new TargetLayerAtlas<Surface2D>(newSurface);
-			}
-			catch
-			{
-				newSurface.Dispose();
-
-				throw;
-			}
+			return new TargetLayer(ref description);
 		}
 
 		private void InitializeDeviceState()
@@ -514,16 +503,16 @@ namespace Frost.DirectX.Composition
 
 				_Device3D.InputAssembler.PrimitiveTopology = Topology;
 
-				foreach(Canvas3 item in _Layers)
+				foreach(Canvas.ResolvedContext item in _Layers)
 				{
-					IDisposable disposable = item.Atlas.Surface2D as IDisposable;
+					IDisposable disposable = item.Surface2D as IDisposable;
 
 					disposable.SafeDispose();
 				}
 
 				_Layers.Clear();
 
-				foreach(TargetLayerAtlas<Surface2D> item in _Surfaces)
+				foreach(TargetLayer item in _Surfaces)
 				{
 					item.Dispose();
 				}

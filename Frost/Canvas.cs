@@ -31,7 +31,7 @@ namespace Frost
 			Contract.Assert(Usage == usage);
 		}
 
-		internal ResolvedContext BackingContext
+		private ResolvedContext BackingContext
 		{
 			get { return Interlocked.CompareExchange(ref _BackingContext, null, null); }
 			set { Interlocked.Exchange(ref _BackingContext, value); }
@@ -59,11 +59,11 @@ namespace Frost
 
 		public void Forget()
 		{
-			Device2D device2D = BackingContext.Device2D;
+			ResolvedContext context = BackingContext;
 
-			if(device2D != null)
+			if(context != null)
 			{
-				device2D.ForgetCanvas(this);
+				context.Forget();
 			}
 		}
 
@@ -72,12 +72,24 @@ namespace Frost
 			return string.Format("Region: {0}, Usage: {1}", _Region, _Usage);
 		}
 
+		public static class Implementation
+		{
+			public static void Assign(Canvas target, ResolvedContext context)
+			{
+				Contract.Requires(target != null);
+				Contract.Requires(context != null);
+
+				target.BackingContext = context;
+			}
+		}
+
 		public abstract class ResolvedContext
 		{
-			public abstract Device2D Device2D { get; }
 			public abstract Rectangle Region { get; }
 			public abstract ISurface2D Surface2D { get; }
 			public abstract Canvas Target { get; }
+
+			public abstract void Forget();
 		}
 	}
 }

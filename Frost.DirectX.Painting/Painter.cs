@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-using Frost.Atlasing;
 using Frost.DirectX.Common;
 using Frost.DirectX.Common.Diagnostics;
 using Frost.Painting;
@@ -70,7 +69,7 @@ namespace Frost.DirectX.Painting
 			Dispose(true);
 		}
 
-		protected override void OnBegin(Canvas3 target, Retention retention)
+		protected override void OnBegin(Canvas.ResolvedContext target, Retention retention)
 		{
 			_Watch.Reset();
 			_Watch.Start();
@@ -216,7 +215,7 @@ namespace Frost.DirectX.Painting
 			_IsBrushInvalid = true;
 		}
 
-		protected override void OnSetBrush(Canvas3 source, Repetition extension)
+		protected override void OnSetBrush(Canvas.ResolvedContext source, Repetition extension)
 		{
 			_ActiveBrushState.PatternSurface.SafeDispose();
 
@@ -254,7 +253,7 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnSetBrush(
 			ref Point radialGradientCenter,
-			ref Point radialGradientOffset,
+			ref Size radialGradientOffset,
 			ref Size radialGradientRadius,
 			Gradient gradient)
 		{
@@ -388,7 +387,7 @@ namespace Frost.DirectX.Painting
 			public Repetition PatternRepetition;
 			public Surface2D PatternSurface;
 			public Point RadialGradientCenter;
-			public Point RadialGradientOffset;
+			public Size RadialGradientOffset;
 			public Size RadialGradientRadius;
 			public Color SolidColorColor;
 			public Gradient Stops;

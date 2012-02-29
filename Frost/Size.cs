@@ -54,6 +54,26 @@ namespace Frost
 			return new Size(location.X, location.Y);
 		}
 
+		public static Size operator +(Size left, Size right)
+		{
+			return new Size(left.Width + right.Width, left.Height + right.Height);
+		}
+
+		public static Size operator -(Size left, Size right)
+		{
+			return new Size(left.Width - right.Width, left.Height - right.Height);
+		}
+
+		public static Size operator *(Size left, Size right)
+		{
+			return new Size(left.Width * right.Width, left.Height * right.Height);
+		}
+
+		public static Size operator /(Size left, Size right)
+		{
+			return new Size(left.Width / right.Width, left.Height / right.Height);
+		}
+
 		public float Height
 		{
 			get

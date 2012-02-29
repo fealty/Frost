@@ -9,7 +9,6 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
 
-using Frost.Atlasing;
 using Frost.DirectX.Common;
 using Frost.DirectX.Common.Diagnostics;
 using Frost.DirectX.Composition.Properties;
@@ -56,7 +55,7 @@ namespace Frost.DirectX.Composition
 		private PixelShader _BatchedShader;
 		private Surface2D _BatchedSurface;
 
-		private Canvas3 _Target;
+		private Canvas.ResolvedContext _Target;
 
 		public Compositor(Device device3D, Device2D device2D) : base(device2D)
 		{
@@ -183,7 +182,7 @@ namespace Frost.DirectX.Composition
 		{
 			Flush();
 
-			Canvas3 previousLayer;
+			Canvas.ResolvedContext previousLayer;
 
 			_Renderer.PopLayer(out previousLayer);
 
@@ -193,7 +192,7 @@ namespace Frost.DirectX.Composition
 
 				RestoreState();
 
-				Composite(previousLayer, region, region);
+				OnComposite(previousLayer, ref region, ref region);
 
 				Flush();
 			}
@@ -254,21 +253,21 @@ namespace Frost.DirectX.Composition
 		{
 			Point location = _Renderer.ActiveLayer.Region.Location;
 
-			CompositeResult(location);
+			OnCompositeResult(ref location);
 		}
 
 		protected override void OnCompositeResult(ref Point location)
 		{
 			Rectangle region = _Renderer.ActiveLayer.Region;
 
-			CompositeResult(region, location);
+			OnCompositeResult(ref region, ref location);
 		}
 
 		protected override void OnCompositeResult(ref Rectangle region)
 		{
 			Rectangle activeRegion = _Renderer.ActiveLayer.Region;
 
-			CompositeResult(activeRegion, region);
+			OnCompositeResult(ref activeRegion, ref region);
 		}
 
 		protected override void OnCompositeResult(ref Rectangle srcRegion, ref Point dstLocation)
@@ -277,7 +276,7 @@ namespace Frost.DirectX.Composition
 
 			Rectangle dstRegion = new Rectangle(dstLocation, activeSize);
 
-			CompositeResult(srcRegion, dstRegion);
+			OnCompositeResult(ref srcRegion, ref dstRegion);
 		}
 
 		protected override void OnCompositeResult(ref Rectangle srcRegion, ref Rectangle dstRegion)
@@ -286,13 +285,13 @@ namespace Frost.DirectX.Composition
 
 			_Renderer.PushLayer(Retention.RetainData, srcRegion.Size);
 
-			Canvas3 previousLayer;
+			Canvas.ResolvedContext previousLayer;
 
 			_Renderer.PopLayer(out previousLayer);
 
 			try
 			{
-				Composite(previousLayer, srcRegion, dstRegion);
+				OnComposite(previousLayer, ref srcRegion, ref dstRegion);
 
 				Flush();
 			}
@@ -302,7 +301,7 @@ namespace Frost.DirectX.Composition
 			}
 		}
 
-		protected override void OnBegin(Canvas3 target, Retention retention)
+		protected override void OnBegin(Canvas.ResolvedContext target, Retention retention)
 		{
 			_Watch.Reset();
 			_Watch.Start();
@@ -314,7 +313,8 @@ namespace Frost.DirectX.Composition
 
 			if(retention == Retention.RetainData)
 			{
-				_Target.CopyTo(_Renderer.ActiveLayer);
+				_Target.Surface2D.CopyTo(
+					_Target.Region, _Renderer.ActiveLayer.Surface2D, _Renderer.ActiveLayer.Region.Location);
 			}
 		}
 
@@ -324,7 +324,8 @@ namespace Frost.DirectX.Composition
 			{
 				Flatten();
 
-				_Renderer.ActiveLayer.CopyTo(_Target);
+				_Renderer.ActiveLayer.Surface2D.CopyTo(
+					_Renderer.ActiveLayer.Region, _Target.Surface2D, _Target.Region.Location);
 				_Renderer.PopLayer();
 			}
 			finally
@@ -337,50 +338,54 @@ namespace Frost.DirectX.Composition
 			}
 		}
 
-		protected override void OnCopyResult(Canvas3 destination)
+		protected override void OnCopyResult(Canvas.ResolvedContext destination)
 		{
 			Flush();
 
-			_Renderer.ActiveLayer.CopyTo(destination);
+			_Renderer.ActiveLayer.Surface2D.CopyTo(
+				_Renderer.ActiveLayer.Region, destination.Surface2D, destination.Region.Location);
 		}
 
-		protected override void OnCopyResult(ref Rectangle sourceRegion, Canvas3 destination)
+		protected override void OnCopyResult(
+			ref Rectangle sourceRegion, Canvas.ResolvedContext destination)
 		{
 			Flush();
 
-			_Renderer.ActiveLayer.CopyTo(sourceRegion, destination);
+			_Renderer.ActiveLayer.Surface2D.CopyTo(
+				sourceRegion, destination.Surface2D, destination.Region.Location);
 		}
 
-		protected override void OnComposite(Canvas3 source)
+		protected override void OnComposite(Canvas.ResolvedContext source)
 		{
 			Rectangle region = new Rectangle(Point.Empty, source.Region.Size);
 
-			Composite(source, region);
+			OnComposite(source, ref region);
 		}
 
-		protected override void OnComposite(Canvas3 source, ref Point location)
+		protected override void OnComposite(Canvas.ResolvedContext source, ref Point location)
 		{
 			Rectangle region = new Rectangle(location, source.Region.Size);
 
-			Composite(source, region);
+			OnComposite(source, ref region);
 		}
 
-		protected override void OnComposite(Canvas3 source, ref Rectangle region)
+		protected override void OnComposite(Canvas.ResolvedContext source, ref Rectangle region)
 		{
 			Rectangle srcRegion = new Rectangle(Point.Empty, source.Region.Size);
 
-			Composite(source, srcRegion, region);
-		}
-
-		protected override void OnComposite(Canvas3 source, ref Rectangle srcRegion, ref Point dstLocation)
-		{
-			Rectangle dstRegion = new Rectangle(dstLocation, srcRegion.Size);
-
-			Composite(source, srcRegion, dstRegion);
+			OnComposite(source, ref srcRegion, ref region);
 		}
 
 		protected override void OnComposite(
-			Canvas3 source, ref Rectangle srcRegion, ref Rectangle dstRegion)
+			Canvas.ResolvedContext source, ref Rectangle srcRegion, ref Point dstLocation)
+		{
+			Rectangle dstRegion = new Rectangle(dstLocation, srcRegion.Size);
+
+			OnComposite(source, ref srcRegion, ref dstRegion);
+		}
+
+		protected override void OnComposite(
+			Canvas.ResolvedContext source, ref Rectangle srcRegion, ref Rectangle dstRegion)
 		{
 			EffectContext effect = ActiveEffectContext;
 
@@ -416,7 +421,7 @@ namespace Frost.DirectX.Composition
 				Matrix3X2 transformation = ActiveTransformation;
 
 				_BatchedItems.Add(
-					new BatchedItem(source, srcRegion, dstRegion, ActiveBlendOperation, ref transformation));
+					new BatchedItem(source.Target, srcRegion, dstRegion, ActiveBlendOperation, ref transformation));
 			}
 			else
 			{
@@ -431,9 +436,9 @@ namespace Frost.DirectX.Composition
 		}
 
 		private void CompositeToQueue(
-			Canvas3 source, ref Rectangle sourceRegion, ref Rectangle destinationRegion)
+			Canvas.ResolvedContext source, ref Rectangle sourceRegion, ref Rectangle destinationRegion)
 		{
-			Contract.Requires(Check.IsValid(source, Device2D));
+			Contract.Requires(source != null);
 
 			Matrix3X2 transformation = ActiveTransformation;
 
@@ -474,7 +479,7 @@ namespace Frost.DirectX.Composition
 			_RenderableItems.Add(item);
 		}
 
-		private void FlushOnStateChange(Canvas3 source)
+		private void FlushOnStateChange(Canvas.ResolvedContext source)
 		{
 			Contract.Requires(source != null);
 
