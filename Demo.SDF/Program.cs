@@ -9,7 +9,6 @@ using System.Diagnostics;
 using Demo.Framework;
 
 using Frost;
-using Frost.Atlasing;
 using Frost.Formatting;
 using Frost.Surfacing;
 
@@ -24,7 +23,7 @@ namespace Demo.SDF
 			_Distance = new DistanceField();
 		}
 
-		public void Reset(Canvas3 target, Device2D device2D)
+		public void Reset(Canvas target, Device2D device2D)
 		{
 			if(device2D.Effects.Find<DistanceEffectSettings>() == null)
 			{
@@ -36,17 +35,17 @@ namespace Demo.SDF
 				.WithFeatures(new FontFeatureCollection(new[] {new FontFeature("swsh", 1)})).WithFamily(
 					"Brioso Pro").WithAdditionalText("R").Build();
 
-			ITextMetrics metrics = device2D.Measure(p, new Rectangle(Point.Empty, Size.MaxValue), null);
+			ITextMetrics metrics = device2D.MeasureLayout(p, new Rectangle(Point.Empty, Size.MaxValue), null);
 
 			Outline outline = metrics.Outlines[0];
 
 			GC.Collect(4);
 
-			Canvas3 test2 = device2D.CreateCanvas(new Size(128, 128));
+			Canvas test2 = new Canvas(new Size(128, 128), SurfaceUsage.Normal);
 
 			Stopwatch watch = new Stopwatch();
 			watch.Start();
-			Canvas3 test = _Distance.CreateField(
+			Canvas test = _Distance.CreateField(
 				outline.NormalizedOutline, outline.NormalizedBaseline, device2D);
 			watch.Stop();
 
@@ -54,7 +53,7 @@ namespace Demo.SDF
 
 			Debug.WriteLine("Time: {0}", watch.ElapsedMilliseconds);
 
-			Rectangle reg = device2D.ComputeRegion(outline.NormalizedOutline);
+			Rectangle reg = device2D.MeasureRegion(outline.NormalizedOutline);
 
 			device2D.Painter.Begin(target);
 			device2D.Painter.Translate(test.Region.X, test.Region.Y);
@@ -86,7 +85,7 @@ namespace Demo.SDF
 			TestTest(_Distance.Sample, device2D);
 			device2D.Painter.End();
 
-			device2D.DumpSurfaces(null, SurfaceUsage.Normal); //*/
+			device2D.Dump(null, SurfaceUsage.Normal); //*/
 		}
 
 		public void Dispose()

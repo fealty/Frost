@@ -36,7 +36,7 @@ namespace Demo.SDF
 			Contract.Requires(resolution >= double.MinValue && resolution <= double.MaxValue);
 			Contract.Requires(device2D != null);
 
-			Rectangle region = device2D.ComputeRegion(geometry);
+			Rectangle region = device2D.MeasureRegion(geometry);
 
 			SetRegion(ref region);
 

@@ -118,9 +118,9 @@ namespace Demo.SDF
 			get { return mSample; }
 		}
 
-		public Canvas3 CreateField(Geometry geometry, double normalizedBaseline, Device2D device2D)
+		public Canvas CreateField(Geometry geometry, double normalizedBaseline, Device2D device2D)
 		{
-			Rectangle normalizedRegion = device2D.ComputeRegion(geometry);
+			Rectangle normalizedRegion = device2D.MeasureRegion(geometry);
 
 			Matrix3X2 transform = Matrix3X2.Identity;
 
@@ -199,7 +199,11 @@ namespace Demo.SDF
 				}
 			}
 
-			return device2D.CreateCanvas(new Size(ResolvedLength, ResolvedLength), mRgbaData);
+			Canvas newCanvas = new Canvas(new Size(ResolvedLength, ResolvedLength), Frost.Surfacing.SurfaceUsage.Normal);
+
+			device2D.Copy(mRgbaData, newCanvas);
+
+			return newCanvas;
 		}
 
 		private Sample ComputeTree(ref Rectangle region, Device2D device2D)
