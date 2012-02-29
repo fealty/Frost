@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Threading;
 
 using Frost.DirectX.Common;
 using Frost.Surfacing;
@@ -15,43 +14,21 @@ namespace Frost.DirectX
 {
 	public sealed class DynamicSurface : Surface2D, ISurfaceAtlas
 	{
-		private readonly Canvas3 _AtlasCanvas;
 		private readonly LinkedList<Rectangle> _FreeRegions;
 		private readonly object _Lock = new object();
-		private readonly T _Surface2D;
-		private readonly List<Rectangle> _UsedRegions;
-
-		private Notification _AtlasReference;
-		private Notification _ChildReference;
+		private readonly List<Canvas.ResolvedContext> _UsedRegions;
 
 		private float _FreeArea;
 
-		public DynamicSurface(T surface2D)
+		public DynamicSurface(ref Description surfaceDescription) : base(ref surfaceDescription)
 		{
-			Contract.Requires(surface2D != null);
-
-			_ChildReference = new Notification(this);
-
-			_Surface2D = surface2D;
-
 			_FreeRegions = new LinkedList<Rectangle>();
 
-			_FreeArea = _Surface2D.Region.Area;
+			_FreeArea = Region.Area;
 
-			_UsedRegions = new List<Rectangle>();
+			_UsedRegions = new List<Canvas.ResolvedContext>();
 
-			_FreeRegions.AddLast(new Rectangle(Point.Empty, _Surface2D.Region.Size));
-
-			_AtlasReference = _ChildReference;
-
-			_AtlasCanvas = new Canvas3(surface2D.Region, _AtlasReference);
-
-			_ChildReference = new Notification(this);
-		}
-
-		public T Surface2D
-		{
-			get { return _Surface2D; }
+			_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
 		}
 
 		public bool InUse
@@ -60,14 +37,20 @@ namespace Frost.DirectX
 			{
 				lock(_Lock)
 				{
-					return _FreeArea < _Surface2D.Region.Area;
+					return _FreeArea < Region.Area;
 				}
 			}
 		}
 
 		public IEnumerable<Rectangle> UsedRegions
 		{
-			get { return _UsedRegions; }
+			get
+			{
+				foreach(Canvas.ResolvedContext item in _UsedRegions)
+				{
+					yield return item.Region;
+				}
+			}
 		}
 
 		public IEnumerable<Rectangle> FreeRegions
@@ -75,38 +58,13 @@ namespace Frost.DirectX
 			get { return _FreeRegions; }
 		}
 
-		public void Dispose()
-		{
-			_ChildReference.Invalidate();
-			_AtlasReference.Invalidate();
-
-			_ChildReference = null;
-			_AtlasReference = null;
-
-			IDisposable disposable = _Surface2D as IDisposable;
-
-			disposable.SafeDispose();
-		}
-
-		ISurface2D Atlasing.ISurfaceAtlas.Surface2D
-		{
-			get { return _Surface2D; }
-		}
-
-		public Canvas3 Canvas
-		{
-			get { return _AtlasCanvas; }
-		}
-
-		public Canvas3 AcquireRegion(Size size, object owner = null)
+		public Canvas.ResolvedContext AcquireRegion(Size dimensions, Canvas target)
 		{
 			Rectangle adjustedRegion;
 
-			ComputeOffsetRegion(size, out adjustedRegion);
+			ComputeOffsetRegion(dimensions, out adjustedRegion);
 
-			adjustedRegion = new Rectangle(
-				adjustedRegion.Location,
-				new Size(adjustedRegion.Width + size.Width, adjustedRegion.Height + size.Height));
+			adjustedRegion = new Rectangle(adjustedRegion.Location, adjustedRegion.Size + dimensions);
 
 			lock(_Lock)
 			{
@@ -122,16 +80,18 @@ namespace Frost.DirectX
 			{
 				Rectangle region =
 					new Rectangle(
-						new Point(result.Value.X + adjustedRegion.X, result.Value.Y + adjustedRegion.Y), size);
+						new Point(result.Value.X + adjustedRegion.X, result.Value.Y + adjustedRegion.Y), dimensions);
 
 				lock(_Lock)
 				{
 					_FreeArea -= adjustedRegion.Area;
 				}
 
-				_UsedRegions.Add(region);
+				var context = new TargetContext(target, region, this);
 
-				return new Canvas3(region, _ChildReference);
+				_UsedRegions.Add(context);
+
+				return context;
 			}
 
 			return null;
@@ -139,18 +99,19 @@ namespace Frost.DirectX
 
 		public void Invalidate()
 		{
-			_ChildReference.Invalidate();
-
-			Interlocked.Exchange(ref _ChildReference, new Notification(this));
-
 			lock(_Lock)
 			{
+				foreach(Canvas.ResolvedContext item in _UsedRegions)
+				{
+					Canvas.Implementation.Assign(item.Target, null);
+				}
+
 				_UsedRegions.Clear();
 				_FreeRegions.Clear();
 
-				_FreeRegions.AddLast(new Rectangle(Point.Empty, _Surface2D.Region.Size));
+				_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
 
-				_FreeArea = _Surface2D.Region.Area;
+				_FreeArea = Region.Area;
 			}
 		}
 
@@ -161,12 +122,12 @@ namespace Frost.DirectX
 
 			result = Rectangle.Empty;
 
-			if(!desiredSize.Width.Equals(_Surface2D.Region.Width))
+			if(!desiredSize.Width.Equals(Region.Width))
 			{
 				result = new Rectangle(new Point(1, result.Y), new Size(2, result.Height));
 			}
 
-			if(!desiredSize.Height.Equals(_Surface2D.Region.Height))
+			if(!desiredSize.Height.Equals(Region.Height))
 			{
 				result = new Rectangle(new Point(result.X, 1), new Size(result.Width, 2));
 			}
@@ -274,6 +235,42 @@ namespace Frost.DirectX
 			}
 
 			_FreeRegions.AddFirst(node);
+		}
+
+		private sealed class TargetContext : Canvas.ResolvedContext
+		{
+			private readonly Canvas _Canvas;
+			private readonly DynamicSurface _Layer;
+			private readonly Rectangle _Region;
+
+			public TargetContext(Canvas canvas, Rectangle region, DynamicSurface layer)
+			{
+				Contract.Requires(canvas != null);
+				Contract.Requires(layer != null);
+
+				_Canvas = canvas;
+				_Region = region;
+				_Layer = layer;
+			}
+
+			public override Rectangle Region
+			{
+				get { return _Region; }
+			}
+
+			public override ISurface2D Surface2D
+			{
+				get { return _Layer; }
+			}
+
+			public override Canvas Target
+			{
+				get { return _Canvas; }
+			}
+
+			public override void Forget()
+			{
+			}
 		}
 	}
 }
