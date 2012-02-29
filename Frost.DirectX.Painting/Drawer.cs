@@ -37,7 +37,7 @@ namespace Frost.DirectX.Painting
 			Dispose(true);
 		}
 
-		public void Begin(Canvas target)
+		public void Begin(Canvas3 target)
 		{
 			Contract.Requires(Check.IsValid(target));
 			Contract.Requires((target.Surface2D as Surface2D) != null);

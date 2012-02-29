@@ -16,7 +16,7 @@ namespace Frost.DirectX.Composition
 	public sealed class TargetLayerAtlas<T> : ISurfaceAtlas, IDisposable
 		where T : class, ISurface2D
 	{
-		private readonly Canvas _AtlasCanvas;
+		private readonly Canvas3 _AtlasCanvas;
 		private readonly WeakReference _Canvas;
 		private readonly T _Surface2D;
 
@@ -35,7 +35,7 @@ namespace Frost.DirectX.Composition
 
 			_AtlasReference = _ChildReference;
 
-			_AtlasCanvas = new Canvas(surface2D.Region, _AtlasReference);
+			_AtlasCanvas = new Canvas3(surface2D.Region, _AtlasReference);
 
 			_ChildReference = new Notification(this);
 		}
@@ -63,12 +63,12 @@ namespace Frost.DirectX.Composition
 			get { return Surface2D; }
 		}
 
-		public Canvas Canvas
+		public Canvas3 Canvas
 		{
 			get { return _AtlasCanvas; }
 		}
 
-		public Canvas AcquireRegion(Size size, object owner = null)
+		public Canvas3 AcquireRegion(Size size, object owner = null)
 		{
 			if(!_Surface2D.Region.Contains(new Rectangle(_Surface2D.Region.Location, size)))
 			{
@@ -87,7 +87,7 @@ namespace Frost.DirectX.Composition
 
 			Invalidate();
 
-			Canvas canvas = new Canvas(boundary, _ChildReference);
+			Canvas3 canvas = new Canvas3(boundary, _ChildReference);
 
 			lock(_Canvas)
 			{

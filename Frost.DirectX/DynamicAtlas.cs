@@ -18,7 +18,7 @@ namespace Frost.DirectX
 	public sealed class DynamicAtlas<T> : ISurfaceAtlas
 		where T : class, ISurface2D
 	{
-		private readonly Canvas _AtlasCanvas;
+		private readonly Canvas3 _AtlasCanvas;
 		private readonly LinkedList<Rectangle> _FreeRegions;
 		private readonly object _Lock = new object();
 		private readonly T _Surface2D;
@@ -47,7 +47,7 @@ namespace Frost.DirectX
 
 			_AtlasReference = _ChildReference;
 
-			_AtlasCanvas = new Canvas(surface2D.Region, _AtlasReference);
+			_AtlasCanvas = new Canvas3(surface2D.Region, _AtlasReference);
 
 			_ChildReference = new Notification(this);
 		}
@@ -96,12 +96,12 @@ namespace Frost.DirectX
 			get { return _Surface2D; }
 		}
 
-		public Canvas Canvas
+		public Canvas3 Canvas
 		{
 			get { return _AtlasCanvas; }
 		}
 
-		public Canvas AcquireRegion(Size size, object owner = null)
+		public Canvas3 AcquireRegion(Size size, object owner = null)
 		{
 			Rectangle adjustedRegion;
 
@@ -134,7 +134,7 @@ namespace Frost.DirectX
 
 				_UsedRegions.Add(region);
 
-				return new Canvas(region, _ChildReference);
+				return new Canvas3(region, _ChildReference);
 			}
 
 			return null;

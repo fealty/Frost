@@ -39,7 +39,7 @@ namespace Demo.Framework
 		private bool _IsResetQueued;
 
 		private RenderTargetView _RenderView;
-		private Canvas _Target;
+		private Canvas3 _Target;
 
 		public DemoApplication()
 		{

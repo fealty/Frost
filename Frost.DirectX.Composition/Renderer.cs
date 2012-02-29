@@ -36,7 +36,7 @@ namespace Frost.DirectX.Composition
 		private readonly Device _Device3D;
 		private readonly DynamicBuffer[] _DynamicBuffers;
 		private readonly Buffer _FrameConstants;
-		private readonly Stack<Canvas> _Layers;
+		private readonly Stack<Canvas3> _Layers;
 
 		private readonly SamplerState _LinearSampler;
 		private readonly RasterizerState _Rasterizer;
@@ -59,7 +59,7 @@ namespace Frost.DirectX.Composition
 			Contract.Requires(device3D != null);
 			Contract.Requires(device2D != null);
 
-			_Layers = new Stack<Canvas>();
+			_Layers = new Stack<Canvas3>();
 			_Surfaces = new Stack<TargetLayerAtlas<Surface2D>>();
 
 			_Device3D = device3D;
@@ -119,7 +119,7 @@ namespace Frost.DirectX.Composition
 			get { return _Layers.Count > 1; }
 		}
 
-		public Canvas ActiveLayer
+		public Canvas3 ActiveLayer
 		{
 			get { return _Layers.Peek(); }
 		}
@@ -212,7 +212,7 @@ namespace Frost.DirectX.Composition
 					Math.Max(layerSize.Height, ActiveLayer.Region.Height));
 			}
 
-			Canvas availableLayer = GetFreeLayer(layerSize);
+			Canvas3 availableLayer = GetFreeLayer(layerSize);
 
 			try
 			{
@@ -235,12 +235,12 @@ namespace Frost.DirectX.Composition
 			ReconfigureRenderTarget(retentionMode);
 		}
 
-		public void FreeLayer(Canvas previousLayer)
+		public void FreeLayer(Canvas3 previousLayer)
 		{
 			_Surfaces.Push((TargetLayerAtlas<Surface2D>)previousLayer.Atlas);
 		}
 
-		public void PopLayer(out Canvas previousLayer)
+		public void PopLayer(out Canvas3 previousLayer)
 		{
 			previousLayer = _Layers.Pop();
 
@@ -265,7 +265,7 @@ namespace Frost.DirectX.Composition
 
 		public void PopLayer()
 		{
-			Canvas temporary;
+			Canvas3 temporary;
 
 			PopLayer(out temporary);
 
@@ -308,7 +308,7 @@ namespace Frost.DirectX.Composition
 
 		private void ReconfigureRenderTarget(Retention retentionMode)
 		{
-			Canvas activeLayer = ActiveLayer;
+			Canvas3 activeLayer = ActiveLayer;
 
 			Viewport viewport;
 
@@ -354,11 +354,11 @@ namespace Frost.DirectX.Composition
 			_Device3D.OutputMerger.SetTargets(surface.TargetView);
 		}
 
-		private Canvas GetFreeLayer(Size size)
+		private Canvas3 GetFreeLayer(Size size)
 		{
 			Contract.Requires(size.Width >= 0.0 && size.Width <= double.MaxValue);
 			Contract.Requires(size.Height >= 0.0 && size.Height <= double.MaxValue);
-			Contract.Ensures(Contract.Result<Canvas>() != null);
+			Contract.Ensures(Contract.Result<Canvas3>() != null);
 
 			Size surfaceSize = size;
 
@@ -514,7 +514,7 @@ namespace Frost.DirectX.Composition
 
 				_Device3D.InputAssembler.PrimitiveTopology = Topology;
 
-				foreach(Canvas item in _Layers)
+				foreach(Canvas3 item in _Layers)
 				{
 					IDisposable disposable = item.Atlas.Surface2D as IDisposable;
 

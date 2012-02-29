@@ -285,9 +285,9 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Canvas OnCreateCanvas(Size size, byte[] data, SurfaceUsage usage, object owner)
+		protected override Canvas3 OnCreateCanvas(Size size, byte[] data, SurfaceUsage usage, object owner)
 		{
-			Canvas result = CreateCanvas(size, usage);
+			Canvas3 result = CreateCanvas(size, usage);
 
 			if(result != null)
 			{
@@ -301,7 +301,7 @@ namespace Frost.DirectX
 			return result;
 		}
 
-		protected override Canvas OnCreateCanvas(Size size, SurfaceUsage usage, object owner)
+		protected override Canvas3 OnCreateCanvas(Size size, SurfaceUsage usage, object owner)
 		{
 			return CreateCanvas(size, usage);
 		}
@@ -353,7 +353,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		private Canvas CreateCanvas(Size size, SurfaceUsage usage)
+		private Canvas3 CreateCanvas(Size size, SurfaceUsage usage)
 		{
 			Contract.Requires(Check.IsPositive(size.Width));
 			Contract.Requires(Check.IsPositive(size.Height));
@@ -528,7 +528,7 @@ namespace Frost.DirectX
 			atlasCollection.Clear();
 		}
 
-		private static Canvas AddNewSurfaceAtlas<T>(
+		private static Canvas3 AddNewSurfaceAtlas<T>(
 			ref Size canvasSize,
 			ref Size surfaceSize,
 			SafeList<T> atlasCollection,
@@ -580,7 +580,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		private Canvas AddToPrivateCollection(Size canvasSize)
+		private Canvas3 AddToPrivateCollection(Size canvasSize)
 		{
 			Contract.Requires(canvasSize.Area > 0);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
@@ -594,7 +594,7 @@ namespace Frost.DirectX
 				s => new PrivateAtlas<ISurface2D>(s));
 		}
 
-		private static Canvas InsertIntoAtlas<T>(Size canvasSize, SafeList<T> atlasCollection)
+		private static Canvas3 InsertIntoAtlas<T>(Size canvasSize, SafeList<T> atlasCollection)
 			where T : ISurfaceAtlas
 		{
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
@@ -603,7 +603,7 @@ namespace Frost.DirectX
 
 			foreach(T item in atlasCollection)
 			{
-				Canvas canvas = item.AcquireRegion(canvasSize);
+				Canvas3 canvas = item.AcquireRegion(canvasSize);
 
 				if(canvas != null && canvas.IsValid)
 				{
@@ -614,13 +614,13 @@ namespace Frost.DirectX
 			return null;
 		}
 
-		private Canvas InsertIntoDefaultAtlas(Size canvasSize)
+		private Canvas3 InsertIntoDefaultAtlas(Size canvasSize)
 		{
 			Contract.Requires(canvasSize.Area > 0);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
 			Contract.Requires(Check.IsPositive(canvasSize.Height));
 
-			Canvas canvas = InsertIntoAtlas(canvasSize, _DefaultSurfaces);
+			Canvas3 canvas = InsertIntoAtlas(canvasSize, _DefaultSurfaces);
 
 			if(canvas == null)
 			{
@@ -638,13 +638,13 @@ namespace Frost.DirectX
 			return canvas;
 		}
 
-		private Canvas InsertIntoDynamicAtlas(Size canvasSize)
+		private Canvas3 InsertIntoDynamicAtlas(Size canvasSize)
 		{
 			Contract.Requires(canvasSize.Area > 0);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
 			Contract.Requires(Check.IsPositive(canvasSize.Height));
 
-			Canvas canvas = InsertIntoAtlas(canvasSize, _DynamicSurfaces);
+			Canvas3 canvas = InsertIntoAtlas(canvasSize, _DynamicSurfaces);
 
 			if(canvas == null)
 			{

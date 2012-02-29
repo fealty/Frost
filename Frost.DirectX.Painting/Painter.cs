@@ -70,7 +70,7 @@ namespace Frost.DirectX.Painting
 			Dispose(true);
 		}
 
-		protected override void OnBegin(Canvas target, Retention retention)
+		protected override void OnBegin(Canvas3 target, Retention retention)
 		{
 			_Watch.Reset();
 			_Watch.Start();
@@ -216,7 +216,7 @@ namespace Frost.DirectX.Painting
 			_IsBrushInvalid = true;
 		}
 
-		protected override void OnSetBrush(Canvas source, Repetition extension)
+		protected override void OnSetBrush(Canvas3 source, Repetition extension)
 		{
 			_ActiveBrushState.PatternSurface.SafeDispose();
 

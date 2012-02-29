@@ -18,7 +18,7 @@ namespace Frost.DirectX
 	internal sealed class PrivateAtlas<T> : ISurfaceAtlas, IDisposable
 		where T : class, ISurface2D
 	{
-		private readonly Canvas _AtlasCanvas;
+		private readonly Canvas3 _AtlasCanvas;
 		private readonly WeakReference _Canvas;
 		private readonly T _Surface2D;
 
@@ -37,7 +37,7 @@ namespace Frost.DirectX
 
 			_AtlasReference = _ChildReference;
 
-			_AtlasCanvas = new Canvas(surface2D.Region, _AtlasReference);
+			_AtlasCanvas = new Canvas3(surface2D.Region, _AtlasReference);
 
 			_ChildReference = new Notification(this);
 		}
@@ -53,7 +53,7 @@ namespace Frost.DirectX
 			{
 				lock(_Canvas)
 				{
-					Canvas canvas = (Canvas)_Canvas.Target;
+					Canvas3 canvas = (Canvas3)_Canvas.Target;
 
 					if(canvas != null)
 					{
@@ -69,7 +69,7 @@ namespace Frost.DirectX
 			{
 				lock(_Canvas)
 				{
-					Canvas canvas = (Canvas)_Canvas.Target;
+					Canvas3 canvas = (Canvas3)_Canvas.Target;
 
 					if(canvas == null)
 					{
@@ -110,12 +110,12 @@ namespace Frost.DirectX
 			disposable.SafeDispose();
 		}
 
-		public Canvas Canvas
+		public Canvas3 Canvas
 		{
 			get { return _AtlasCanvas; }
 		}
 
-		public Canvas AcquireRegion(Size size, object owner = null)
+		public Canvas3 AcquireRegion(Size size, object owner = null)
 		{
 			Rectangle region = new Rectangle(_Surface2D.Region.Location, size);
 
@@ -134,7 +134,7 @@ namespace Frost.DirectX
 
 			Invalidate();
 
-			Canvas canvas = new Canvas(region, _ChildReference);
+			Canvas3 canvas = new Canvas3(region, _ChildReference);
 
 			lock(_Canvas)
 			{

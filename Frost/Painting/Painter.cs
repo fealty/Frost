@@ -6,7 +6,6 @@
 using System.Diagnostics.Contracts;
 using System.Threading;
 
-using Frost.Atlasing;
 using Frost.Shaping;
 
 namespace Frost.Painting
@@ -332,7 +331,7 @@ namespace Frost.Painting
 			}
 		}
 
-		public void Begin(Canvas target, Retention retention = Retention.ClearData)
+		public void Begin(Canvas3 target, Retention retention = Retention.ClearData)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsValid(target, Device2D));
@@ -487,7 +486,7 @@ namespace Frost.Painting
 				ref radialGradientCenter, ref radialGradientOffset, ref radialGradientRadius, gradient);
 		}
 
-		public void SetBrush(Canvas source, Repetition extension)
+		public void SetBrush(Canvas3 source, Repetition extension)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Check.IsValid(source, Device2D));
@@ -778,7 +777,7 @@ namespace Frost.Painting
 			}
 		}
 
-		protected abstract void OnBegin(Canvas target, Retention retention);
+		protected abstract void OnBegin(Canvas3 target, Retention retention);
 		protected abstract void OnEnd();
 
 		protected abstract void OnClear();
@@ -803,7 +802,7 @@ namespace Frost.Painting
 
 		protected abstract void OnSetBrush(Color color);
 
-		protected abstract void OnSetBrush(Canvas source, Repetition extension);
+		protected abstract void OnSetBrush(Canvas3 source, Repetition extension);
 
 		protected abstract void OnSetBrush(
 			ref Point linearGradientStart, ref Point linearGradientEnd, Gradient gradient);

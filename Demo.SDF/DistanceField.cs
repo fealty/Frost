@@ -118,7 +118,7 @@ namespace Demo.SDF
 			get { return mSample; }
 		}
 
-		public Canvas CreateField(Geometry geometry, double normalizedBaseline, Device2D device2D)
+		public Canvas3 CreateField(Geometry geometry, double normalizedBaseline, Device2D device2D)
 		{
 			Rectangle normalizedRegion = device2D.ComputeRegion(geometry);
 

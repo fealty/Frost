@@ -44,19 +44,47 @@ namespace Frost
 			get { return _EffectCollection; }
 		}
 
-		internal void ForgetCanvas(Canvas2 targetResource)
-		{
-			
-		}
-
-		internal void ResolveCanvas(Canvas2 targetResource)
-		{
-			
-		}
-
 		public abstract Painter Painter { get; }
 		public abstract Compositor Compositor { get; }
 
+		public void Copy(Canvas fromTarget, Canvas toTarget)
+		{
+			Contract.Requires(fromTarget != null);
+			Contract.Requires(toTarget != null);
+			Contract.Requires(fromTarget.Region.Size == toTarget.Region.Size);
+
+			Copy(fromTarget.Region, fromTarget, toTarget);
+		}
+
+		public void Copy(Rectangle fromRegion, Canvas fromTarget, Canvas toTarget)
+		{
+			Contract.Requires(fromTarget != null);
+			Contract.Requires(toTarget != null);
+			Contract.Requires(fromTarget.Region.Contains(fromRegion));
+			Contract.Requires(fromRegion.Size == toTarget.Region.Size);
+
+			Canvas.ResolvedContext fromContext = ResolveCanvas(fromTarget);
+			Canvas.ResolvedContext toContext = ResolveCanvas(toTarget);
+
+			fromRegion = new Rectangle(
+				fromContext.Region.X + fromRegion.X, 
+				fromContext.Region.Y + fromRegion.Y, fromRegion.Size);
+
+			OnCopy(fromRegion, fromContext, toContext);
+		}
+
+		public void Copy(byte[] fromRgbaData, Canvas toTarget)
+		{
+			Contract.Requires(fromRgbaData != null);
+			Contract.Requires(toTarget != null);
+			Contract.Requires(fromRgbaData.Length >= toTarget.Region.Size.Area * 4);
+
+			Canvas.ResolvedContext toContext = ResolveCanvas(toTarget);
+
+			OnCopy(fromRgbaData, toContext);
+		}
+
+		//TODO: SuggestBackingSurfaceSize?
 		public void ResizeSurfaces(Size size, SurfaceUsage usage)
 		{
 			Contract.Requires(Check.IsPositive(size.Width));
@@ -71,25 +99,6 @@ namespace Frost
 		}
 
 		public abstract void SignalUpdate();
-
-		public Canvas CreateCanvas(
-			Size size, SurfaceUsage usage = SurfaceUsage.Normal, object owner = null)
-		{
-			Contract.Requires(Check.IsPositive(size.Width));
-			Contract.Requires(Check.IsPositive(size.Height));
-
-			return OnCreateCanvas(size, usage, owner);
-		}
-
-		public Canvas CreateCanvas(
-			Size size, byte[] data, SurfaceUsage usage = SurfaceUsage.Normal, object owner = null)
-		{
-			Contract.Requires(Check.IsPositive(size.Width));
-			Contract.Requires(Check.IsPositive(size.Height));
-			Contract.Requires(data != null);
-
-			return OnCreateCanvas(size, data, usage, owner);
-		}
 
 		public bool ContainsPoint(Geometry path, Point point, float tolerance = _FlatteningTolerance)
 		{
@@ -208,6 +217,11 @@ namespace Frost
 			return OnComputePointAlongPath(path, length, tolerance, out tangentVector);
 		}
 
+		protected abstract void OnCopy(
+			Rectangle fromRegion, Canvas.ResolvedContext fromTarget, Canvas.ResolvedContext toTarget);
+
+		protected abstract void OnCopy(byte[] rgbaData, Canvas.ResolvedContext toTarget);
+
 		protected abstract Point OnComputePointAlongPath(
 			Geometry path, float length, float tolerance, out Point tangentVector);
 
@@ -234,13 +248,19 @@ namespace Frost
 
 		protected abstract bool OnContainsPoint(Geometry path, Point point, float tolerance);
 
-		protected abstract Canvas OnCreateCanvas(Size size, byte[] data, SurfaceUsage usage, object owner);
-
-		protected abstract Canvas OnCreateCanvas(Size size, SurfaceUsage usage, object owner);
-
 		protected abstract void OnResizeSurfaces(Size size, SurfaceUsage usage);
 
 		protected abstract void OnDumpSurfaces(string path, SurfaceUsage usage);
+
+		internal void ForgetCanvas(Canvas targetResource)
+		{
+			throw new NotImplementedException();
+		}
+
+		internal Canvas.ResolvedContext ResolveCanvas(Canvas targetResource)
+		{
+			throw new NotImplementedException();
+		}
 
 		public abstract event Action<object> CanvasInvalidated;
 	}

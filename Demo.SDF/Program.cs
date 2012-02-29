@@ -24,7 +24,7 @@ namespace Demo.SDF
 			_Distance = new DistanceField();
 		}
 
-		public void Reset(Canvas target, Device2D device2D)
+		public void Reset(Canvas3 target, Device2D device2D)
 		{
 			if(device2D.Effects.Find<DistanceEffectSettings>() == null)
 			{
@@ -42,11 +42,11 @@ namespace Demo.SDF
 
 			GC.Collect(4);
 
-			Canvas test2 = device2D.CreateCanvas(new Size(128, 128));
+			Canvas3 test2 = device2D.CreateCanvas(new Size(128, 128));
 
 			Stopwatch watch = new Stopwatch();
 			watch.Start();
-			Canvas test = _Distance.CreateField(
+			Canvas3 test = _Distance.CreateField(
 				outline.NormalizedOutline, outline.NormalizedBaseline, device2D);
 			watch.Stop();
 

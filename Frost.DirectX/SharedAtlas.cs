@@ -19,7 +19,7 @@ namespace Frost.DirectX
 	public sealed class SharedAtlas<T> : ISurfaceAtlas, IDisposable
 		where T : class, ISurface2D
 	{
-		private readonly Canvas _AtlasCanvas;
+		private readonly Canvas3 _AtlasCanvas;
 		private readonly LinkedList<Rectangle> _FreeRegions;
 		private readonly object _Lock = new object();
 		private readonly T _Surface2D;
@@ -123,12 +123,12 @@ namespace Frost.DirectX
 			get { return _Surface2D; }
 		}
 
-		public Canvas Canvas
+		public Canvas3 Canvas
 		{
 			get { return _AtlasCanvas; }
 		}
 
-		public Canvas AcquireRegion(Size size, object owner = null)
+		public Canvas3 AcquireRegion(Size size, object owner = null)
 		{
 			Rectangle adjustedRegion;
 
@@ -349,7 +349,7 @@ namespace Frost.DirectX
 			public WeakReference CanvasReference;
 		}
 
-		private sealed class SharedCanvas : Canvas
+		private sealed class SharedCanvas : Canvas3
 		{
 			public LinkedListNode<CanvasData> Node;
 

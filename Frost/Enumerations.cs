@@ -37,4 +37,10 @@ namespace Frost
 		Default,
 		Aliased
 	}
+
+	public enum Retention
+	{
+		ClearData,
+		RetainData
+	}
 }

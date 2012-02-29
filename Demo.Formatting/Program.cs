@@ -16,7 +16,7 @@ namespace Demo.Formatting
 {
 	internal sealed class Application : IDemoContext
 	{
-		public void Reset(Canvas target, Device2D device2D)
+		public void Reset(Canvas3 target, Device2D device2D)
 		{
 			Painter painter = device2D.Painter;
 

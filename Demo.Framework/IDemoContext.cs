@@ -19,7 +19,7 @@ namespace Demo.Framework
 		{
 			public abstract void Dispose();
 
-			public void Reset(Canvas target, Device2D device2D)
+			public void Reset(Canvas3 target, Device2D device2D)
 			{
 				Contract.Requires(device2D != null);
 				Contract.Requires(Check.IsValid(target, device2D));
@@ -29,6 +29,6 @@ namespace Demo.Framework
 
 	[ContractClass(typeof(IDemoContextContract))] public interface IDemoContext : IDisposable
 	{
-		void Reset(Canvas target, Device2D device2D);
+		void Reset(Canvas3 target, Device2D device2D);
 	}
 }

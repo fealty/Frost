@@ -65,7 +65,7 @@ namespace Frost.DirectX.Common
 			_Texture.Unmap(0);
 		}
 
-		public void CopyTo(Rectangle srcRegion, Canvas destination)
+		public void CopyTo(Rectangle srcRegion, Canvas3 destination)
 		{
 			Contract.Requires(Check.IsValid(destination, destination.Device2D));
 

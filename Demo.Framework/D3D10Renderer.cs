@@ -138,7 +138,7 @@ namespace Demo.Framework
 			_Device3D.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
 		}
 
-		public void Render(Canvas canvas)
+		public void Render(Canvas3 canvas)
 		{
 			Contract.Requires(Check.IsValid(canvas));
 
