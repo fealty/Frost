@@ -6,7 +6,6 @@
 using System;
 using System.Diagnostics.Contracts;
 
-using Frost.Atlasing;
 using Frost.DirectX.Common;
 using Frost.DirectX.Composition;
 using Frost.DirectX.Formatting;
@@ -41,7 +40,7 @@ namespace Frost.DirectX
 
 		private readonly PaintingDevice _DrawingDevice;
 
-		private readonly SafeList<DynamicAtlas<ISurface2D>> _DynamicSurfaces;
+		private readonly SafeList<DynamicSurface<ISurface2D>> _DynamicSurfaces;
 
 		private readonly FontDevice _FontDevice;
 		private readonly GeometryCache _GeometryCache;
@@ -69,7 +68,7 @@ namespace Frost.DirectX
 		{
 			_DefaultSurfaces = new SafeList<SharedAtlas<ISurface2D>>();
 			_PrivateSurfaces = new SafeList<PrivateAtlas<ISurface2D>>();
-			_DynamicSurfaces = new SafeList<DynamicAtlas<ISurface2D>>();
+			_DynamicSurfaces = new SafeList<DynamicSurface<ISurface2D>>();
 
 			_FontDevice = new FontDevice();
 			_CompositionDevice = new CompositionDevice(adapter, this);
@@ -432,7 +431,7 @@ namespace Frost.DirectX
 				_LastInvalidationTickTime = tickTime;
 			}
 
-			foreach(DynamicAtlas<ISurface2D> surface in _DynamicSurfaces)
+			foreach(DynamicSurface<ISurface2D> surface in _DynamicSurfaces)
 			{
 				surface.Invalidate();
 
@@ -655,7 +654,7 @@ namespace Frost.DirectX
 						ref _DynamicAtlasSize,
 						_DynamicSurfaces,
 						CreateDynamicSurface,
-						s => new DynamicAtlas<ISurface2D>(s));
+						s => new DynamicSurface<ISurface2D>(s));
 				}
 			}
 
