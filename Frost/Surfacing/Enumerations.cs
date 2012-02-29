@@ -9,6 +9,7 @@ namespace Frost.Surfacing
 	{
 		Normal,
 		Dynamic,
-		External
+		External,
+		Private
 	}
 }

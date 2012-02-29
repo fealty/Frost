@@ -110,8 +110,6 @@ namespace Frost.DirectX
 
 				context.Node.Value.CanvasReference.Target = context;
 
-				Canvas.Implementation.Assign(target, context);
-
 				lock(_Lock)
 				{
 					_UsedRegions.AddLast(context.Node);
@@ -182,7 +180,7 @@ namespace Frost.DirectX
 
 				if(context != null)
 				{
-					Canvas.Implementation.Assign(context.Target, null);
+					//Canvas.Implementation.Assign(context.Target, null);
 				}
 			}
 		}
@@ -364,9 +362,9 @@ namespace Frost.DirectX
 				get { return _Canvas; }
 			}
 
-			public override void Forget()
+			public override Frost.Device2D Device2D
 			{
-				_Layer.PurgeItem(Node);
+				get { return _Layer.Device2D; }
 			}
 		}
 	}

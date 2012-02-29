@@ -163,9 +163,9 @@ namespace Demo.Framework
 		{
 			if(e.KeyChar == '6')
 			{
-				_Device2D.DumpSurfaces(string.Empty, SurfaceUsage.Normal);
-				_Device2D.DumpSurfaces(string.Empty, SurfaceUsage.Dynamic);
-				_Device2D.DumpSurfaces(string.Empty, SurfaceUsage.External);
+				_Device2D.Dump(string.Empty, SurfaceUsage.Normal);
+				_Device2D.Dump(string.Empty, SurfaceUsage.Dynamic);
+				_Device2D.Dump(string.Empty, SurfaceUsage.External);
 			}
 
 			if(e.KeyChar == 'r')
@@ -215,15 +215,12 @@ namespace Demo.Framework
 
 			if (_Target != null)
 			{
-				_Target.Forget();
+				//_Target.Forget();
 			}
 
 			_Target = new Canvas(formSize, SurfaceUsage.External);
 
-			_Device2D.ResizeSurfaces(
-				new Size(formSize.Width + 0, formSize.Height + 0), SurfaceUsage.External);
-			_Device2D.ResizeSurfaces(new Size(formSize.Width + 2, formSize.Height + 2), SurfaceUsage.Dynamic);
-			_Device2D.ResizeSurfaces(new Size(formSize.Width * 2, formSize.Height * 2), SurfaceUsage.Normal);
+			_Device2D.SuggestPageDimensions(new Size(formSize.Width * 2, formSize.Height * 2));
 
 			_IsResetQueued = true;
 		}
@@ -232,7 +229,7 @@ namespace Demo.Framework
 		{
 			Contract.Requires(context != null);
 
-			_Device2D.SignalUpdate();
+			_Device2D.ProcessTick();
 
 			if(_IsResetQueued)
 			{

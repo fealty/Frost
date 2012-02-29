@@ -338,7 +338,7 @@ namespace Frost.Painting
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(target != null);
 
-			var targetContext = _Device2D.ResolveCanvas(target);
+			var targetContext = _Device2D.Resolve(target);
 
 			_IsAntialiasingInvalid = true;
 			_IsDashCapInvalid = true;
@@ -523,7 +523,7 @@ namespace Frost.Painting
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(source != null);
 
-			OnSetBrush(_Device2D.ResolveCanvas(source), extension);
+			OnSetBrush(_Device2D.Resolve(source), extension);
 		}
 
 		public void Clear(float x, float y, float width, float height)

@@ -18,7 +18,7 @@ namespace Frost
 {
 	public abstract class Device2D
 	{
-		private const float _FlatteningTolerance = 0.25f;
+		private const float _Flattening = 0.25f;
 
 		private readonly DeviceCounterCollection _CounterCollection;
 		private readonly EffectCollection _EffectCollection;
@@ -29,9 +29,9 @@ namespace Frost
 			_EffectCollection = new EffectCollection();
 		}
 
-		public static float FlatteningTolerance
+		public static float Flattening
 		{
-			get { return _FlatteningTolerance; }
+			get { return _Flattening; }
 		}
 
 		public DeviceCounterCollection Diagnostics
@@ -63,8 +63,8 @@ namespace Frost
 			Contract.Requires(fromTarget.Region.Contains(fromRegion));
 			Contract.Requires(fromRegion.Size == toTarget.Region.Size);
 
-			Canvas.ResolvedContext fromContext = ResolveCanvas(fromTarget);
-			Canvas.ResolvedContext toContext = ResolveCanvas(toTarget);
+			Canvas.ResolvedContext fromContext = Resolve(fromTarget);
+			Canvas.ResolvedContext toContext = Resolve(toTarget);
 
 			// translate to 2D surface coordinate space
 			fromRegion = fromRegion.Translate(fromContext.Region.Location);
@@ -78,36 +78,35 @@ namespace Frost
 			Contract.Requires(toTarget != null);
 			Contract.Requires(fromRgbaData.Length >= toTarget.Region.Size.Area * 4);
 
-			Canvas.ResolvedContext toContext = ResolveCanvas(toTarget);
+			Canvas.ResolvedContext toContext = Resolve(toTarget);
 
 			OnCopy(fromRgbaData, toContext);
 		}
 
-		//TODO: SuggestBackingSurfaceSize?
-		public void ResizeSurfaces(Size size, SurfaceUsage usage)
+		public void SuggestPageDimensions(Size dimensions)
 		{
-			Contract.Requires(Check.IsPositive(size.Width));
-			Contract.Requires(Check.IsPositive(size.Height));
+			Contract.Requires(Check.IsPositive(dimensions.Width));
+			Contract.Requires(Check.IsPositive(dimensions.Height));
 
-			OnResizeSurfaces(size, usage);
+			OnSuggestPageDimensions(dimensions);
 		}
 
-		public void DumpSurfaces(string path, SurfaceUsage usage)
+		public void Dump(string path, SurfaceUsage usage)
 		{
-			OnDumpSurfaces(path, usage);
+			OnDump(path, usage);
 		}
 
-		public abstract void SignalUpdate();
+		public abstract void ProcessTick();
 
-		public bool ContainsPoint(Geometry path, Point point, float tolerance = _FlatteningTolerance)
+		public bool Contains(Geometry path, Point point, float tolerance = _Flattening)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(tolerance));
 
-			return OnContainsPoint(path, point, tolerance);
+			return OnContains(path, point, tolerance);
 		}
 
-		public Geometry Simplify(Geometry path, float tolerance = _FlatteningTolerance)
+		public Geometry Simplify(Geometry path, float tolerance = _Flattening)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(tolerance));
@@ -116,7 +115,7 @@ namespace Frost
 			return OnSimplify(path, tolerance);
 		}
 
-		public Geometry Widen(Geometry path, float width, float tolerance = _FlatteningTolerance)
+		public Geometry Widen(Geometry path, float width, float tolerance = _Flattening)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsFinite(width));
@@ -126,28 +125,29 @@ namespace Frost
 			return OnWiden(path, width, tolerance);
 		}
 
-		public Rectangle ComputeRegion(Geometry path)
+		public Rectangle MeasureRegion(Geometry path)
 		{
 			Contract.Requires(path != null);
 
-			return OnComputeRegion(path);
+			return OnMeasureRegion(path);
 		}
 
-		public FontMetrics Measure(string family, FontWeight weight, FontStyle style, FontStretch stretch)
+		public FontMetrics MeasureFont(
+			string family, FontWeight weight, FontStyle style, FontStretch stretch)
 		{
 			if(string.IsNullOrWhiteSpace(family))
 			{
-				return OnMeasure(Paragraph.DefaultFamily, weight, style, stretch);
+				return OnMeasureFont(Paragraph.DefaultFamily, weight, style, stretch);
 			}
 
-			return OnMeasure(family, weight, style, stretch);
+			return OnMeasureFont(family, weight, style, stretch);
 		}
 
 		public Geometry Combine(
 			Geometry sourcePath,
 			Geometry destinationPath,
 			CombinationOperation operation,
-			float tolerance = _FlatteningTolerance)
+			float tolerance = _Flattening)
 		{
 			Contract.Requires(sourcePath != null);
 			Contract.Requires(destinationPath != null);
@@ -157,8 +157,7 @@ namespace Frost
 			return OnCombine(sourcePath, destinationPath, tolerance, operation);
 		}
 
-		public void Tessellate(
-			Geometry path, ITessellationSink sink, float tolerance = _FlatteningTolerance)
+		public void Tessellate(Geometry path, ITessellationSink sink, float tolerance = _Flattening)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(tolerance));
@@ -167,35 +166,34 @@ namespace Frost
 			OnTessellate(path, tolerance, sink);
 		}
 
-		public ITextMetrics Measure(
+		public ITextMetrics MeasureLayout(
 			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions)
 		{
 			Contract.Requires(paragraph != null);
 			Contract.Ensures(Contract.Result<ITextMetrics>() != null);
 
-			return OnMeasure(paragraph, region, obstructions);
+			return OnMeasureLayout(paragraph, region, obstructions);
 		}
 
-		public float ComputeArea(Geometry path, float tolerance = _FlatteningTolerance)
+		public float MeasureArea(Geometry path, float tolerance = _Flattening)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(tolerance));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
-			return OnComputeArea(path, tolerance);
+			return OnMeasureArea(path, tolerance);
 		}
 
-		public float ComputeLength(Geometry path, float tolerance = _FlatteningTolerance)
+		public float MeasureLength(Geometry path, float tolerance = _Flattening)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(tolerance));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
-			return OnComputeLength(path, tolerance);
+			return OnMeasureLength(path, tolerance);
 		}
 
-		public Point ComputePointAlongPath(
-			Geometry path, float length, float tolerance = _FlatteningTolerance)
+		public Point DeterminePoint(Geometry path, float length, float tolerance = _Flattening)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(length));
@@ -203,17 +201,52 @@ namespace Frost
 
 			Point stub;
 
-			return OnComputePointAlongPath(path, length, tolerance, out stub);
+			return OnDeterminePoint(path, length, tolerance, out stub);
 		}
 
-		public Point ComputePointAlongPath(
-			Geometry path, float length, out Point tangentVector, float tolerance = _FlatteningTolerance)
+		public Point DeterminePoint(
+			Geometry path, float length, out Point tangentVector, float tolerance = _Flattening)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(Check.IsPositive(length));
 			Contract.Requires(Check.IsPositive(tolerance));
 
-			return OnComputePointAlongPath(path, length, tolerance, out tangentVector);
+			return OnDeterminePoint(path, length, tolerance, out tangentVector);
+		}
+
+		public Canvas.ResolvedContext Resolve(Canvas target)
+		{
+			Contract.Requires(target != null);
+
+			Canvas.ResolvedContext context = target.BackingContext;
+
+			if(context != null)
+			{
+				if(context.Device2D == this)
+				{
+					return context;
+				}
+			}
+
+			context = OnResolve(target);
+
+			target.BackingContext = context;
+
+			return context;
+		}
+
+		public void Forget(Canvas target)
+		{
+			Contract.Requires(target != null);
+
+			Canvas.ResolvedContext context = target.BackingContext;
+
+			if(context != null)
+			{
+				OnForget(context);
+
+				target.BackingContext = null;
+			}
 		}
 
 		protected abstract void OnCopy(
@@ -221,14 +254,14 @@ namespace Frost
 
 		protected abstract void OnCopy(byte[] rgbaData, Canvas.ResolvedContext toTarget);
 
-		protected abstract Point OnComputePointAlongPath(
+		protected abstract Point OnDeterminePoint(
 			Geometry path, float length, float tolerance, out Point tangentVector);
 
-		protected abstract float OnComputeLength(Geometry path, float tolerance);
+		protected abstract float OnMeasureLength(Geometry path, float tolerance);
 
-		protected abstract float OnComputeArea(Geometry path, float tolerance);
+		protected abstract float OnMeasureArea(Geometry path, float tolerance);
 
-		protected abstract ITextMetrics OnMeasure(
+		protected abstract ITextMetrics OnMeasureLayout(
 			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions);
 
 		protected abstract void OnTessellate(Geometry path, float tolerance, ITessellationSink sink);
@@ -236,31 +269,25 @@ namespace Frost
 		protected abstract Geometry OnCombine(
 			Geometry sourcePath, Geometry destinationPath, float tolerance, CombinationOperation operation);
 
-		protected abstract FontMetrics OnMeasure(
+		protected abstract FontMetrics OnMeasureFont(
 			string family, FontWeight weight, FontStyle style, FontStretch stretch);
 
-		protected abstract Rectangle OnComputeRegion(Geometry path);
+		protected abstract Rectangle OnMeasureRegion(Geometry path);
 
 		protected abstract Geometry OnWiden(Geometry path, float width, float tolerance);
 
 		protected abstract Geometry OnSimplify(Geometry path, float tolerance);
 
-		protected abstract bool OnContainsPoint(Geometry path, Point point, float tolerance);
+		protected abstract bool OnContains(Geometry path, Point point, float tolerance);
 
-		protected abstract void OnResizeSurfaces(Size size, SurfaceUsage usage);
+		protected abstract void OnSuggestPageDimensions(Size dimensions);
 
-		protected abstract void OnDumpSurfaces(string path, SurfaceUsage usage);
+		protected abstract void OnDump(string path, SurfaceUsage usage);
 
-		public Canvas.ResolvedContext ResolveCanvas(Canvas targetResource)
-		{
-			return OnResolveCanvas(targetResource);
-			//TODO: have OnResolveCanvas(ICanvasImpl targetResource?) This would expose the BackingContext
-			// Do the same for ForgetCanvas()? IDeviceBinder?
-			//throw new NotImplementedException();
-		}
+		protected abstract void OnForget(Canvas.ResolvedContext target);
 
-		protected abstract Canvas.ResolvedContext OnResolveCanvas(Canvas targetResource);
+		protected abstract Canvas.ResolvedContext OnResolve(Canvas target);
 
-		public abstract event Action<object> CanvasInvalidated;
+		public abstract event Action<Canvas> ResourceInvalidated;
 	}
 }

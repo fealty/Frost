@@ -36,17 +36,16 @@ namespace Frost.DirectX
 		private readonly CompositionDevice _CompositionDevice;
 
 		private readonly SafeList<SharedSurface> _DefaultSurfaces;
+		private readonly SafeList<DynamicSurface> _DynamicSurfaces;
+		private readonly SafeList<ExternalSurface> _ExternalSurfaces;
+		private readonly SafeList<PrivateSurface> _PrivateSurfaces;
 
 		private readonly PaintingDevice _DrawingDevice;
-
-		private readonly SafeList<DynamicSurface> _DynamicSurfaces;
 
 		private readonly FontDevice _FontDevice;
 		private readonly GeometryCache _GeometryCache;
 
 		private readonly object _Lock = new object();
-
-		private readonly SafeList<PrivateSurface> _PrivateSurfaces;
 
 		private readonly SimplificationSink _SimplificationSink;
 		private readonly StagingTexture _StagingTexture;
@@ -66,8 +65,9 @@ namespace Frost.DirectX
 		public Device2D(Adapter1 adapter)
 		{
 			_DefaultSurfaces = new SafeList<SharedSurface>();
-			_PrivateSurfaces = new SafeList<PrivateSurface>();
+			_ExternalSurfaces = new SafeList<ExternalSurface>();
 			_DynamicSurfaces = new SafeList<DynamicSurface>();
+			_PrivateSurfaces = new SafeList<PrivateSurface>();
 
 			_FontDevice = new FontDevice();
 			_CompositionDevice = new CompositionDevice(adapter, this);
@@ -99,7 +99,7 @@ namespace Frost.DirectX
 			Dispose(true);
 		}
 
-		public override void SignalUpdate()
+		public override void ProcessTick()
 		{
 			InvalidateResources();
 
@@ -118,7 +118,7 @@ namespace Frost.DirectX
 			_StagingTexture.CopyTo(toTarget.Region, toTarget);
 		}
 
-		protected override Point OnComputePointAlongPath(
+		protected override Point OnDeterminePoint(
 			Geometry path, float length, float tolerance, out Point tangentVector)
 		{
 			lock(_Lock)
@@ -141,7 +141,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override float OnComputeLength(Geometry path, float tolerance)
+		protected override float OnMeasureLength(Geometry path, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -156,7 +156,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override float OnComputeArea(Geometry path, float tolerance)
+		protected override float OnMeasureArea(Geometry path, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -171,7 +171,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override ITextMetrics OnMeasure(
+		protected override ITextMetrics OnMeasureLayout(
 			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions)
 		{
 			lock(_Lock)
@@ -219,7 +219,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override FontMetrics OnMeasure(
+		protected override FontMetrics OnMeasureFont(
 			string family, FontWeight weight, FontStyle style, FontStretch stretch)
 		{
 			lock(_Lock)
@@ -232,7 +232,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Rectangle OnComputeRegion(Geometry path)
+		protected override Rectangle OnMeasureRegion(Geometry path)
 		{
 			lock(_Lock)
 			{
@@ -279,7 +279,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override bool OnContainsPoint(Geometry path, Point point, float tolerance)
+		protected override bool OnContains(Geometry path, Point point, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -294,35 +294,27 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override void OnResizeSurfaces(Size size, SurfaceUsage usage)
+		protected override void OnSuggestPageDimensions(Size size)
 		{
 			lock(_Lock)
 			{
-				switch(usage)
+				if(!size.Equals(_DynamicAtlasSize))
 				{
-					case SurfaceUsage.Dynamic:
-						if(!size.Equals(_DynamicAtlasSize))
-						{
-							_DynamicAtlasSize = size;
+					_DynamicAtlasSize = size;
 
-							ReleaseSurfaces(_DynamicSurfaces);
-						}
-						break;
-					case SurfaceUsage.External:
-						break;
-					default:
-						if(!size.Equals(_DefaultAtlasSize))
-						{
-							_DefaultAtlasSize = size;
+					ReleaseSurfaces(_DynamicSurfaces);
+				}
 
-							ReleaseSurfaces(_DefaultSurfaces);
-						}
-						break;
+				if(!size.Equals(_DefaultAtlasSize))
+				{
+					_DefaultAtlasSize = size;
+
+					ReleaseSurfaces(_DefaultSurfaces);
 				}
 			}
 		}
 
-		protected override void OnDumpSurfaces(string path, SurfaceUsage usage)
+		protected override void OnDump(string path, SurfaceUsage usage)
 		{
 			lock(_Lock)
 			{
@@ -332,6 +324,9 @@ namespace Frost.DirectX
 						DumpAtlases(path, _DynamicSurfaces);
 						break;
 					case SurfaceUsage.External:
+						DumpAtlases(path, _ExternalSurfaces);
+						break;
+					case SurfaceUsage.Private:
 						DumpAtlases(path, _PrivateSurfaces);
 						break;
 					default:
@@ -339,6 +334,11 @@ namespace Frost.DirectX
 						break;
 				}
 			}
+		}
+
+		protected override void OnForget(Canvas.ResolvedContext target)
+		{
+			throw new NotImplementedException();
 		}
 
 		private Canvas.ResolvedContext CreateCanvas(Size size, Canvas target)
@@ -365,7 +365,7 @@ namespace Frost.DirectX
 
 			if(size.Width >= atlasSize.Width || size.Height >= atlasSize.Height)
 			{
-				usage = SurfaceUsage.External;
+				usage = SurfaceUsage.Private;
 			}
 
 			if(size.Width > 0.0 && size.Height > 0.0)
@@ -375,6 +375,8 @@ namespace Frost.DirectX
 					case SurfaceUsage.Dynamic:
 						return InsertIntoDynamicAtlas(size, target);
 					case SurfaceUsage.External:
+						return AddToExternalCollection(size, target);
+					case SurfaceUsage.Private:
 						return AddToPrivateCollection(size, target);
 					default:
 						return InsertIntoDefaultAtlas(size, target);
@@ -390,6 +392,7 @@ namespace Frost.DirectX
 			{
 				ReleaseSurfaces(_DefaultSurfaces);
 				ReleaseSurfaces(_DynamicSurfaces);
+				ReleaseSurfaces(_ExternalSurfaces);
 				ReleaseSurfaces(_PrivateSurfaces);
 
 				_StagingTexture.SafeDispose();
@@ -417,6 +420,7 @@ namespace Frost.DirectX
 			{
 				PurgeSurfaces(_DefaultSurfaces);
 				PurgeSurfaces(_DynamicSurfaces);
+				PurgeSurfaces(_ExternalSurfaces);
 				PurgeSurfaces(_PrivateSurfaces);
 
 				_LastInvalidationTickTime = tickTime;
@@ -555,6 +559,17 @@ namespace Frost.DirectX
 			}
 		}
 
+		private Canvas.ResolvedContext AddToExternalCollection(Size canvasSize, Canvas target)
+		{
+			Contract.Requires(canvasSize.Area > 0);
+			Contract.Requires(Check.IsPositive(canvasSize.Width));
+			Contract.Requires(Check.IsPositive(canvasSize.Height));
+			Contract.Requires(target != null);
+
+			return AddNewSurfaceAtlas(
+				target, ref canvasSize, ref canvasSize, _ExternalSurfaces, CreateExternalSurface);
+		}
+
 		private Canvas.ResolvedContext AddToPrivateCollection(Size canvasSize, Canvas target)
 		{
 			Contract.Requires(canvasSize.Area > 0);
@@ -647,7 +662,7 @@ namespace Frost.DirectX
 			return new DynamicSurface(ref description);
 		}
 
-		private PrivateSurface CreatePrivateSurface(Size surfaceSize)
+		private ExternalSurface CreateExternalSurface(Size surfaceSize)
 		{
 			Contract.Requires(surfaceSize.Area > 0);
 			Contract.Requires(Check.IsPositive(surfaceSize.Width));
@@ -659,6 +674,24 @@ namespace Frost.DirectX
 			description.Size = surfaceSize;
 			description.Device3D = _CompositionDevice.Device3D;
 			description.Usage = SurfaceUsage.External;
+			description.Device2D = this;
+			description.Factory2D = _DrawingDevice.Factory2D;
+
+			return new ExternalSurface(ref description);
+		}
+
+		private PrivateSurface CreatePrivateSurface(Size surfaceSize)
+		{
+			Contract.Requires(surfaceSize.Area > 0);
+			Contract.Requires(Check.IsPositive(surfaceSize.Width));
+			Contract.Requires(Check.IsPositive(surfaceSize.Height));
+			Contract.Ensures(Contract.Result<ISurface2D>() != null);
+
+			Surface2D.Description description;
+
+			description.Size = surfaceSize;
+			description.Device3D = _CompositionDevice.Device3D;
+			description.Usage = SurfaceUsage.Normal;
 			description.Device2D = this;
 			description.Factory2D = _DrawingDevice.Factory2D;
 
@@ -683,18 +716,11 @@ namespace Frost.DirectX
 			return new SharedSurface(ref description);
 		}
 
-		protected override Canvas.ResolvedContext OnResolveCanvas(Canvas targetResource)
+		protected override Canvas.ResolvedContext OnResolve(Canvas target)
 		{
-			Canvas.ResolvedContext context = targetResource.BackingContext;
-
-			if(context != null)
-			{
-				return context;
-			}
-
-			return CreateCanvas(targetResource.Region.Size, targetResource);
+			return CreateCanvas(target.Region.Size, target);
 		}
 
-		public override event Action<object> CanvasInvalidated;
+		public override event Action<Canvas> ResourceInvalidated;
 	}
 }

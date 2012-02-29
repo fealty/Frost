@@ -12,12 +12,11 @@ using Frost.Surfacing;
 
 namespace Frost.DirectX
 {
-	internal sealed class PrivateSurface : Surface2D, ISurfaceAtlas
+	internal sealed class ExternalSurface : Surface2D.ExternalSurface2D, ISurfaceAtlas
 	{
 		private readonly WeakReference _CanvasContext;
 
-		public PrivateSurface(ref Description surfaceDescription)
-			: base(ref surfaceDescription)
+		public ExternalSurface(ref Description surfaceDescription) : base(ref surfaceDescription)
 		{
 			_CanvasContext = new WeakReference(null);
 		}
@@ -26,11 +25,11 @@ namespace Frost.DirectX
 		{
 			get
 			{
-				lock (_CanvasContext)
+				lock(_CanvasContext)
 				{
 					var canvas = (Canvas.ResolvedContext)_CanvasContext.Target;
 
-					if (canvas != null)
+					if(canvas != null)
 					{
 						yield return canvas.Region;
 					}
@@ -47,11 +46,11 @@ namespace Frost.DirectX
 		{
 			get
 			{
-				lock (_CanvasContext)
+				lock(_CanvasContext)
 				{
 					var canvas = (Canvas.ResolvedContext)_CanvasContext.Target;
 
-					if (canvas == null)
+					if(canvas == null)
 					{
 						yield return Region;
 					}
@@ -63,9 +62,9 @@ namespace Frost.DirectX
 		{
 			get
 			{
-				lock (_CanvasContext)
+				lock(_CanvasContext)
 				{
-					if (!_CanvasContext.IsAlive)
+					if(!_CanvasContext.IsAlive)
 					{
 						Invalidate();
 
@@ -79,7 +78,7 @@ namespace Frost.DirectX
 
 		public Canvas.ResolvedContext AcquireRegion(Size dimensions, Canvas target)
 		{
-			if (!Region.Contains(new Rectangle(Region.Location, dimensions)))
+			if(!Region.Contains(new Rectangle(Region.Location, dimensions)))
 			{
 				return null;
 			}
@@ -94,7 +93,7 @@ namespace Frost.DirectX
 
 			var context = new TargetContext(target, region, this);
 
-			lock (_CanvasContext)
+			lock(_CanvasContext)
 			{
 				_CanvasContext.Target = context;
 			}
@@ -104,11 +103,11 @@ namespace Frost.DirectX
 
 		public void Invalidate()
 		{
-			lock (_CanvasContext)
+			lock(_CanvasContext)
 			{
 				var context = (Canvas.ResolvedContext)_CanvasContext.Target;
 
-				if (context != null)
+				if(context != null)
 				{
 					//Canvas.Implementation.Assign(context.Target, null);
 				}
@@ -124,12 +123,12 @@ namespace Frost.DirectX
 
 			result = Rectangle.Empty;
 
-			if (!desiredSize.Width.Equals(Region.Width))
+			if(!desiredSize.Width.Equals(Region.Width))
 			{
 				result = new Rectangle(new Point(1, result.Y), new Size(2, result.Height));
 			}
 
-			if (!desiredSize.Height.Equals(Region.Height))
+			if(!desiredSize.Height.Equals(Region.Height))
 			{
 				result = new Rectangle(new Point(result.X, 1), new Size(result.Width, 2));
 			}
@@ -138,10 +137,10 @@ namespace Frost.DirectX
 		private sealed class TargetContext : Canvas.ResolvedContext
 		{
 			private readonly Canvas _Canvas;
-			private readonly PrivateSurface _Layer;
+			private readonly ExternalSurface _Layer;
 			private readonly Rectangle _Region;
 
-			public TargetContext(Canvas canvas, Rectangle region, PrivateSurface layer)
+			public TargetContext(Canvas canvas, Rectangle region, ExternalSurface layer)
 			{
 				Contract.Requires(canvas != null);
 				Contract.Requires(layer != null);

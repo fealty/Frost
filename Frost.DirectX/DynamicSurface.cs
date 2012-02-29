@@ -96,8 +96,6 @@ namespace Frost.DirectX
 
 				_UsedRegions.Add(context);
 
-				Canvas.Implementation.Assign(target, context);
-
 				return context;
 			}
 
@@ -110,7 +108,7 @@ namespace Frost.DirectX
 			{
 				foreach(Canvas.ResolvedContext item in _UsedRegions)
 				{
-					Canvas.Implementation.Assign(item.Target, null);
+					//Canvas.Implementation.Assign(item.Target, null);
 				}
 
 				_UsedRegions.Clear();
@@ -275,8 +273,9 @@ namespace Frost.DirectX
 				get { return _Canvas; }
 			}
 
-			public override void Forget()
+			public override Frost.Device2D Device2D
 			{
+				get { return _Layer.Device2D; }
 			}
 		}
 	}

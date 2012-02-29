@@ -10,7 +10,6 @@ using Frost.Surfacing;
 
 namespace Frost
 {
-	//TODO: tie Canvas to the 2d device... Canvas is a lazy mutable interface to an on-demand resource system. Backing resources are only taken when they are needed. They remain until the Canvas is garbage collected or changes. Canvas can also explicitly Forget() the backing resources. Canvases are valid so long as the 2d device is valid -- can these be decoupled from the device? Invalidations of backing resources can use an event on the device to notify.
 	public sealed class Canvas
 	{
 		private readonly Rectangle _Region;
@@ -31,7 +30,7 @@ namespace Frost
 			Contract.Assert(Usage == usage);
 		}
 
-		public ResolvedContext BackingContext
+		internal ResolvedContext BackingContext
 		{
 			get { return Interlocked.CompareExchange(ref _BackingContext, null, null); }
 			set { Interlocked.Exchange(ref _BackingContext, value); }
@@ -63,7 +62,12 @@ namespace Frost
 
 			if(context != null)
 			{
-				context.Forget();
+				Device2D device2D = context.Device2D;
+
+				if(device2D != null)
+				{
+					device2D.Forget(this);
+				}
 			}
 		}
 
@@ -72,23 +76,12 @@ namespace Frost
 			return string.Format("Region: {0}, Usage: {1}", _Region, _Usage);
 		}
 
-		public static class Implementation
-		{
-			public static void Assign(Canvas target, ResolvedContext context)
-			{
-				Contract.Requires(target != null);
-
-				target.BackingContext = context;
-			}
-		}
-
 		public abstract class ResolvedContext
 		{
 			public abstract Rectangle Region { get; }
 			public abstract ISurface2D Surface2D { get; }
 			public abstract Canvas Target { get; }
-
-			public abstract void Forget();
+			public abstract Device2D Device2D { get; }
 		}
 	}
 }

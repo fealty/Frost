@@ -357,7 +357,7 @@ namespace Frost.DirectX.Composition
 
 			Canvas newCanvas = new Canvas(dimensions, SurfaceUsage.Private);
 
-			var context = _Device2D.ResolveCanvas(newCanvas);
+			var context = _Device2D.Resolve(newCanvas);
 
 			Surface2D surface = (Surface2D)context.Surface2D;
 
