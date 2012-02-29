@@ -17,7 +17,7 @@ namespace Frost
 
 		private ResolvedContext _BackingContext;
 
-		public Canvas(Size dimensions, SurfaceUsage usage = SurfaceUsage.Normal)
+		public Canvas(Size dimensions, SurfaceUsage usage = SurfaceUsage.Dynamic)
 		{
 			Contract.Requires(Check.IsPositive(dimensions.Width));
 			Contract.Requires(Check.IsPositive(dimensions.Height));
