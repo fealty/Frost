@@ -243,6 +243,19 @@ namespace Frost
 			get { return new Point(_X + (_Width / 2.0f), _Y + (_Height / 2.0f)); }
 		}
 
+		public Rectangle Scale(Size amount)
+		{
+			Contracts.Requires(Check.IsPositive(amount.Width));
+			Contracts.Requires(Check.IsPositive(amount.Height));
+
+			return new Rectangle(Location, _Width * amount.Width, _Height * amount.Height);
+		}
+
+		public Rectangle Translate(Size amount)
+		{
+			return new Rectangle(_X + amount.Width, _Y + amount.Height, Size);
+		}
+
 		public Rectangle Contract(Thickness amount)
 		{
 			return FromCorners(

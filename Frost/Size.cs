@@ -49,6 +49,11 @@ namespace Frost
 			Contract.Requires(Check.IsFinite(widthHeight));
 		}
 
+		public static implicit operator Size(Point location)
+		{
+			return new Size(location.X, location.Y);
+		}
+
 		public float Height
 		{
 			get
@@ -109,6 +114,14 @@ namespace Frost
 
 				return Math.Max(0.0f, _Width * _Height);
 			}
+		}
+
+		public Size Scale(Size amount)
+		{
+			Contract.Requires(Check.IsPositive(amount.Width));
+			Contract.Requires(Check.IsPositive(amount.Height));
+
+			return new Size(_Width * amount.Width, _Height * amount.Height);
 		}
 
 		public Size Transform(ref Matrix3X2 transformation)

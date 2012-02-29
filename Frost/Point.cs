@@ -49,6 +49,11 @@ namespace Frost
 			Contract.Requires(Check.IsFinite(xy));
 		}
 
+		public static implicit operator Point(Size size)
+		{
+			return new Point(size.Width, size.Height);
+		}
+
 		public float Y
 		{
 			get
@@ -191,6 +196,11 @@ namespace Frost
 			return new Point(
 				(_X * transformation.M11) + (_Y * transformation.M21) + transformation.M31,
 				(_X * transformation.M12) + (_Y * transformation.M22) + transformation.M32);
+		}
+
+		public Point Translate(Size amount)
+		{
+			return new Point(_X + amount.Width, _Y + amount.Height);
 		}
 
 		public override bool Equals(object obj)
