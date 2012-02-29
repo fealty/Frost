@@ -52,6 +52,8 @@ namespace Frost.DirectX.Painting
 
 		public void End()
 		{
+			Contract.Ensures(_Target == null);
+
 			_Target.EndDraw();
 
 			_Target = null;
@@ -65,7 +67,7 @@ namespace Frost.DirectX.Painting
 		public void Clear(Rectangle region)
 		{
 			// matches the effective surface region; clear everything
-			if(region.Location.Equals(Point.Empty))
+			if(region.Location.Equals(_TargetRegion.Location))
 			{
 				if(region.Size == _TargetRegion.Size)
 				{
@@ -90,10 +92,15 @@ namespace Frost.DirectX.Painting
 
 			_Target.PushAxisAlignedClip(roundedRegion, AntialiasMode.Aliased);
 
-			// clear only part of the surface as specified by newRegion
-			_Target.Clear(Color.Transparent.ToColor4());
-
-			_Target.PopAxisAlignedClip();
+			try
+			{
+				// clear only part of the surface as specified by newRegion
+				_Target.Clear(Color.Transparent.ToColor4());
+			}
+			finally
+			{
+				_Target.PopAxisAlignedClip();
+			}
 		}
 
 		public void Stroke(Rectangle rectangleRegion, Brush brush, StrokeStyle style, float strokeWidth)
@@ -198,6 +205,8 @@ namespace Frost.DirectX.Painting
 
 			DxGeometry resolved = _GeometryCache.ResolveGeometry(geometry);
 
+			Contract.Assert(resolved != null);
+
 			_Target.DrawGeometry(resolved, brush, strokeWidth, style);
 		}
 
@@ -207,6 +216,8 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(brush != null);
 
 			DxGeometry resolved = _GeometryCache.ResolveGeometry(geometry);
+
+			Contract.Assert(resolved != null);
 
 			_Target.FillGeometry(resolved, brush);
 		}

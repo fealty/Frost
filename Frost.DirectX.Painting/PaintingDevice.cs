@@ -41,7 +41,7 @@ namespace Frost.DirectX.Painting
 			Dispose(true);
 		}
 
-		public void SignalUpdate()
+		public void ProcessTick()
 		{
 			_PainterSink.FrameDuration.Reset();
 		}
