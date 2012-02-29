@@ -77,7 +77,6 @@ namespace Frost
 			public static void Assign(Canvas target, ResolvedContext context)
 			{
 				Contract.Requires(target != null);
-				Contract.Requires(context != null);
 
 				target.BackingContext = context;
 			}
