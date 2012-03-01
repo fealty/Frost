@@ -255,8 +255,6 @@ namespace Demo.Framework
 			_Renderer.EndRendering();
 
 			_SwapChain.Present(1, PresentFlags.None);
-
-			//TODO: GC.Collect(); to avoid running out of video memory? Canvas needs a way to indicate done?
 		}
 	}
 }
