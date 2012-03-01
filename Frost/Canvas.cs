@@ -88,5 +88,12 @@ namespace Frost
 				Target.BackingContext = null;
 			}
 		}
+
+#if(UNIT_TESTING)
+		[Fact] internal static void Test0()
+		{
+			Assert.TestObject(new Canvas(Size.Empty, SurfaceUsage.Normal), new Canvas(Size.Empty));
+		}
+#endif
 	}
 }

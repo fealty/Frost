@@ -135,7 +135,7 @@ namespace Frost
 		public FontMetrics MeasureFont(
 			string family, FontWeight weight, FontStyle style, FontStretch stretch)
 		{
-			if(string.IsNullOrWhiteSpace(family))
+			if(String.IsNullOrWhiteSpace(family))
 			{
 				return OnMeasureFont(Paragraph.DefaultFamily, weight, style, stretch);
 			}
