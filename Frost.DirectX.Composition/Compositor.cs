@@ -22,7 +22,7 @@ using BlendOperation = Frost.Composition.BlendOperation;
 
 namespace Frost.DirectX.Composition
 {
-	public sealed class Compositor : Frost.Composition.Compositor, IDisposable, IShaderCompiler
+	internal sealed class Compositor : Frost.Composition.Compositor, IDisposable, IShaderCompiler
 	{
 		private readonly IntegerCounter _BatchItemCount = new IntegerCounter(
 			"Composition", "BatchItemCount");

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace Frost.DirectX.Composition
 {
-	public static class GPUData
+	internal static class GPUData
 	{
 		public static int OffsetOf<T>(Expression<Func<T, object>> expression) where T : struct
 		{

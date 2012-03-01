@@ -8,7 +8,7 @@ using Frost.Effects;
 
 namespace Frost.DirectX.Composition
 {
-	public sealed class DropShadowEffect : Effect<DropShadowSettings>
+	internal sealed class DropShadowEffect : Effect<DropShadowSettings>
 	{
 		public override void Apply<TEnum>(
 			TEnum batchedItems,

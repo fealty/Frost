@@ -9,7 +9,7 @@ using SharpDX.DirectWrite;
 
 namespace Frost.DirectX.Formatting
 {
-	public struct FormattedGlyph : IEquatable<FormattedGlyph>
+	internal struct FormattedGlyph : IEquatable<FormattedGlyph>
 	{
 		public float Advance;
 		public short Index;

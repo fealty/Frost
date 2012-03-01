@@ -15,7 +15,7 @@ using SharpDX.DirectWrite;
 
 namespace Frost.DirectX.Formatting
 {
-	public sealed class ParagraphMetrics : ITextMetrics
+	internal sealed class ParagraphMetrics : ITextMetrics
 	{
 		private static readonly List<Outline> _OutlineListBuilder;
 		private static readonly List<Rectangle> _RegionListBuilder;

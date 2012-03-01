@@ -12,7 +12,7 @@ using Frost.Surfacing;
 
 namespace Frost.DirectX
 {
-	public sealed class DynamicSurface : Surface2D, ISurfaceAtlas
+	internal sealed class DynamicSurface : Surface2D, ISurfaceAtlas
 	{
 		private readonly LinkedList<Rectangle> _FreeRegions;
 		private readonly object _Lock = new object();

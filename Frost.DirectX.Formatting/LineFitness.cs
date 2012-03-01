@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
-	public struct LineFitness : IEquatable<LineFitness>
+	internal struct LineFitness : IEquatable<LineFitness>
 	{
 		public static readonly LineFitness VeryTight;
 		public static readonly LineFitness Tight;

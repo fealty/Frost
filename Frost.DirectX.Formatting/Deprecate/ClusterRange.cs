@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
-	public struct ClusterRange : IEquatable<ClusterRange>
+	internal struct ClusterRange : IEquatable<ClusterRange>
 	{
 		public static readonly ClusterRange Empty;
 

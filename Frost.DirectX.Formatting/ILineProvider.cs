@@ -25,7 +25,7 @@ namespace Frost.DirectX.Formatting
 		}
 	}
 
-	[ContractClass(typeof(ILineProviderContract))] public interface ILineProvider
+	[ContractClass(typeof(ILineProviderContract))] internal interface ILineProvider
 	{
 		double ProduceLine(int lineIndex);
 	}

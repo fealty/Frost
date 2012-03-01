@@ -9,7 +9,7 @@ using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
-	public struct FormattedRun : IEquatable<FormattedRun>
+	internal struct FormattedRun : IEquatable<FormattedRun>
 	{
 		public byte BidiLevel;
 		public ClusterRange Clusters;

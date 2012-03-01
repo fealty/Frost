@@ -11,7 +11,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
-	public sealed class LineBreaker : ILineItemList, IBreakingPointList
+	internal sealed class LineBreaker : ILineItemList, IBreakingPointList
 	{
 		public delegate void LineItemHandler(ref LineItem item);
 

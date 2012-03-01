@@ -54,7 +54,7 @@ namespace Frost.DirectX.Formatting
 		}
 	}
 
-	[ContractClass(typeof(ILineItemListContract))] public interface ILineItemList
+	[ContractClass(typeof(ILineItemListContract))] internal interface ILineItemList
 		: IEnumerable<LineItem>
 	{
 		int Count { get; }

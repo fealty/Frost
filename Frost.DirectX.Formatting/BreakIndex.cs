@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
-	public struct BreakIndex : IEquatable<BreakIndex>
+	internal struct BreakIndex : IEquatable<BreakIndex>
 	{
 		private readonly int _Index;
 		private readonly double _Ratio;

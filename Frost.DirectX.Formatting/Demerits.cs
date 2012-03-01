@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace Frost.DirectX.Formatting
 {
-	public struct Demerits : IEquatable<Demerits>
+	internal struct Demerits : IEquatable<Demerits>
 	{
 		public static readonly Demerits FlaggedPenalty;
 		public static readonly Demerits FitnessPenalty;

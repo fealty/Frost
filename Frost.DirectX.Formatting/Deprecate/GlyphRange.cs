@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
-	public struct GlyphRange : IEquatable<GlyphRange>
+	internal struct GlyphRange : IEquatable<GlyphRange>
 	{
 		public readonly int End;
 		public readonly int Length;

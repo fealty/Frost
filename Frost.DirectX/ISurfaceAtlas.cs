@@ -10,7 +10,7 @@ using Frost.DirectX.Common;
 
 namespace Frost.DirectX
 {
-	public interface ISurfaceAtlas : IDisposable
+	internal interface ISurfaceAtlas : IDisposable
 	{
 		bool InUse { get; }
 

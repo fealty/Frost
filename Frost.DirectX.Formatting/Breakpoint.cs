@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
-	public sealed class Breakpoint : IEquatable<Breakpoint>
+	internal sealed class Breakpoint : IEquatable<Breakpoint>
 	{
 		public static readonly Breakpoint Empty;
 

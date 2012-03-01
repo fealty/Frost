@@ -16,7 +16,7 @@ namespace Frost.DirectX
 	///   This class provides a thread-safe wrapper of <see cref="List{T}" /> .
 	/// </summary>
 	/// <typeparam name="T"> The type of the items stored. </typeparam>
-	public class SafeList<T> : IEnumerable<T>
+	internal class SafeList<T> : IEnumerable<T>
 	{
 		private readonly List<T> _InternalList;
 

@@ -54,7 +54,7 @@ namespace Frost.DirectX.Formatting
 		}
 	}
 
-	[ContractClass(typeof(IBreakingPointListContract))] public interface IBreakingPointList
+	[ContractClass(typeof(IBreakingPointListContract))] internal interface IBreakingPointList
 		: IEnumerable<BreakIndex>
 	{
 		int Count { get; }

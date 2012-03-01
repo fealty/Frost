@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
-	public struct LineItem
+	internal struct LineItem
 	{
 		public static readonly double Infinity = 10000.0;
 

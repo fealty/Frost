@@ -9,7 +9,7 @@ using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
-	public struct FormattedCluster : IEquatable<FormattedCluster>
+	internal struct FormattedCluster : IEquatable<FormattedCluster>
 	{
 		public IndexedRange Characters;
 		public DisplayMode Display;
