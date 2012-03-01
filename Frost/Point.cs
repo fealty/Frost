@@ -257,6 +257,71 @@ namespace Frost
 			Assert.Equal(new Point(1, 0), Empty.FindIntersectionWith(new Point(+1, 5), new Point(1, -5)));
 			Assert.Equal(new Point(5, 0), Empty.FindIntersectionWith(new Point(+5, 5), new Point(5, -5)));
 
+			Assert.Equal(
+				Empty.DistanceTo(new Point(0, 0)), Empty.DistanceTo(new Point(-5, 5), new Point(0, +0)));
+			Assert.Equal(
+				Empty.DistanceTo(new Point(0, 0)), Empty.DistanceTo(new Point(+0, 0), new Point(5, -5)));
+			Assert.Equal(
+				Empty.DistanceTo(new Point(0, 0)), Empty.DistanceTo(new Point(+0, 0), new Point(0, +0)));
+			Assert.Equal(
+				Empty.DistanceTo(new Point(1, 0)), Empty.DistanceTo(new Point(+1, 5), new Point(1, -5)));
+			Assert.Equal(
+				Empty.DistanceTo(new Point(5, 0)), Empty.DistanceTo(new Point(+5, 5), new Point(5, -5)));
+
+			Point intersection;
+
+			Assert.Equal(
+				Empty.DistanceTo(new Point(0, 0)),
+				Empty.DistanceTo(new Point(-5, 5), new Point(0, +0), out intersection));
+			Assert.Equal(
+				Empty.DistanceTo(new Point(0, 0)),
+				Empty.DistanceTo(new Point(+0, 0), new Point(5, -5), out intersection));
+			Assert.Equal(
+				Empty.DistanceTo(new Point(0, 0)),
+				Empty.DistanceTo(new Point(+0, 0), new Point(0, +0), out intersection));
+			Assert.Equal(
+				Empty.DistanceTo(new Point(1, 0)),
+				Empty.DistanceTo(new Point(+1, 5), new Point(1, -5), out intersection));
+			Assert.Equal(
+				Empty.DistanceTo(new Point(5, 0)),
+				Empty.DistanceTo(new Point(+5, 5), new Point(5, -5), out intersection));
+
+			Assert.Equal(
+				Empty.SquaredDistanceTo(new Point(0, 0)),
+				Empty.SquaredDistanceTo(new Point(-5, 5), new Point(0, +0)));
+			Assert.Equal(
+				Empty.SquaredDistanceTo(new Point(0, 0)),
+				Empty.SquaredDistanceTo(new Point(+0, 0), new Point(5, -5)));
+			Assert.Equal(
+				Empty.SquaredDistanceTo(new Point(0, 0)),
+				Empty.SquaredDistanceTo(new Point(+0, 0), new Point(0, +0)));
+			Assert.Equal(
+				Empty.SquaredDistanceTo(new Point(1, 0)),
+				Empty.SquaredDistanceTo(new Point(+1, 5), new Point(1, -5)));
+			Assert.Equal(
+				Empty.SquaredDistanceTo(new Point(5, 0)),
+				Empty.SquaredDistanceTo(new Point(+5, 5), new Point(5, -5)));
+
+			Assert.Equal(
+				Empty.SquaredDistanceTo(new Point(0, 0)),
+				Empty.SquaredDistanceTo(new Point(-5, 5), new Point(0, +0), out intersection));
+			Assert.Equal(
+				Empty.SquaredDistanceTo(new Point(0, 0)),
+				Empty.SquaredDistanceTo(new Point(+0, 0), new Point(5, -5), out intersection));
+			Assert.Equal(
+				Empty.SquaredDistanceTo(new Point(0, 0)),
+				Empty.SquaredDistanceTo(new Point(+0, 0), new Point(0, +0), out intersection));
+			Assert.Equal(
+				Empty.SquaredDistanceTo(new Point(1, 0)),
+				Empty.SquaredDistanceTo(new Point(+1, 5), new Point(1, -5), out intersection));
+			Assert.Equal(
+				Empty.SquaredDistanceTo(new Point(5, 0)),
+				Empty.SquaredDistanceTo(new Point(+5, 5), new Point(5, -5), out intersection));
+
+			Assert.Equal(new Point(5, 5), Empty.Translate(new Size(5)));
+
+			Assert.Equal<Point>(new Point(5, 5), new Size(5));
+
 			Matrix3X2 identity = Matrix3X2.Identity;
 
 			Assert.Equal(Empty, Empty.Transform(ref identity));
