@@ -78,7 +78,6 @@
       <HintPath>..\sharpdx\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawer.cs" />
