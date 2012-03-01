@@ -40,19 +40,27 @@ namespace Frost.DirectX.Painting
 		public void Begin(Canvas.ResolvedContext target)
 		{
 			Contract.Requires(target != null);
-			Contract.Requires((target.Surface2D as Surface2D) != null);
+			Contract.Assert(_Target == null);
+			
+			Surface2D surface = target.Surface2D as Surface2D;
 
-			Surface2D surface = (Surface2D)target.Surface2D;
+			if (surface != null)
+			{
+				_Target = surface.Target2D;
+				_TargetRegion = target.Region;
+				
+				_Target.BeginDraw();
 
-			_Target = surface.Target2D;
-			_TargetRegion = target.Region;
+				return;
+			}
 
-			_Target.BeginDraw();
+			throw new InvalidOperationException();
 		}
 
 		public void End()
 		{
 			Contract.Ensures(_Target == null);
+			Contract.Assert(_Target != null);
 
 			_Target.EndDraw();
 
@@ -61,11 +69,15 @@ namespace Frost.DirectX.Painting
 
 		public void Clear()
 		{
+			Contract.Assert(_Target != null);
+
 			_Target.Clear(Color.Transparent.ToColor4());
 		}
 
 		public void Clear(Rectangle region)
 		{
+			Contract.Assert(_Target != null);
+
 			// matches the effective surface region; clear everything
 			if(region.Location.Equals(_TargetRegion.Location))
 			{
@@ -87,8 +99,12 @@ namespace Frost.DirectX.Painting
 				newRegion = newRegion.Expand(thickness);
 			}
 
-			RectangleF roundedRegion = new RectangleF
-			{Left = newRegion.Left, Top = newRegion.Top, Right = newRegion.Right, Bottom = newRegion.Bottom};
+			RectangleF roundedRegion = RectangleF.Empty;
+			
+			roundedRegion.Left = newRegion.Left;
+			roundedRegion.Top = newRegion.Top;
+			roundedRegion.Right = newRegion.Right;
+			roundedRegion.Bottom = newRegion.Bottom;
 
 			_Target.PushAxisAlignedClip(roundedRegion, AntialiasMode.Aliased);
 
@@ -108,6 +124,7 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(brush != null);
 			Contract.Requires(style != null);
 			Contract.Requires(Check.IsPositive(strokeWidth));
+			Contract.Assert(_Target != null);
 
 			Rectangle newRegion;
 
@@ -115,8 +132,12 @@ namespace Frost.DirectX.Painting
 
 			FitStroke(ref newRegion, strokeWidth, strokeWidth, out newRegion);
 
-			RectangleF roundedRectangle = new RectangleF
-			{Left = newRegion.Left, Top = newRegion.Top, Right = newRegion.Right, Bottom = newRegion.Bottom};
+			RectangleF roundedRectangle = RectangleF.Empty;
+
+			roundedRectangle.Left = newRegion.Left;
+			roundedRectangle.Top = newRegion.Top;
+			roundedRectangle.Right = newRegion.Right;
+			roundedRectangle.Bottom = newRegion.Bottom;
 
 			_Target.DrawRectangle(roundedRectangle, brush, strokeWidth, style);
 		}
@@ -127,6 +148,7 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(brush != null);
 			Contract.Requires(style != null);
 			Contract.Requires(Check.IsPositive(strokeWidth));
+			Contract.Assert(_Target != null);
 
 			DrawingPointF start = new DrawingPointF { X = lineStart.X, Y = lineStart.Y };
 			DrawingPointF end = new DrawingPointF { X = lineEnd.X, Y = lineEnd.Y };
@@ -146,6 +168,7 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(brush != null);
 			Contract.Requires(style != null);
 			Contract.Requires(Check.IsPositive(strokeWidth));
+			Contract.Assert(_Target != null);
 
 			Rectangle newRegion;
 
@@ -153,9 +176,16 @@ namespace Frost.DirectX.Painting
 
 			FitStroke(ref newRegion, strokeWidth, strokeWidth, out newRegion);
 
+			RectangleF rectangle = RectangleF.Empty;
+
+			rectangle.Left = newRegion.Left;
+			rectangle.Top = newRegion.Top;
+			rectangle.Right = newRegion.Right;
+			rectangle.Bottom = newRegion.Bottom;
+
 			RoundedRect roundedRectangle = new RoundedRect
 			{
-				Rect = new RectangleF(newRegion.Left, newRegion.Top, newRegion.Right, newRegion.Bottom),
+				Rect = rectangle,
 				RadiusX = roundedRectangleRadius.Width,
 				RadiusY = roundedRectangleRadius.Height
 			};
@@ -166,6 +196,7 @@ namespace Frost.DirectX.Painting
 		public void Fill(Rectangle rectangleRegion, Brush brush)
 		{
 			Contract.Requires(brush != null);
+			Contract.Assert(_Target != null);
 
 			RectangleF roundedRectangle = new RectangleF
 			{
@@ -183,17 +214,23 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(Check.IsPositive(roundedRectangleRadius.Width));
 			Contract.Requires(Check.IsPositive(roundedRectangleRadius.Height));
 			Contract.Requires(brush != null);
+			Contract.Assert(_Target != null);
 
-			RoundedRect rectangle = new RoundedRect
+			RectangleF rectangle = RectangleF.Empty;
+
+			rectangle.Left = rectangleRegion.Left;
+			rectangle.Top = rectangleRegion.Top;
+			rectangle.Right = rectangleRegion.Right;
+			rectangle.Bottom = rectangleRegion.Bottom;
+
+			RoundedRect roundedRect = new RoundedRect
 			{
-				Rect =
-					new RectangleF(
-						rectangleRegion.Left, rectangleRegion.Top, rectangleRegion.Right, rectangleRegion.Bottom),
+				Rect = rectangle,
 				RadiusX = roundedRectangleRadius.Width,
 				RadiusY = roundedRectangleRadius.Height
 			};
 
-			_Target.FillRoundedRectangle(rectangle, brush);
+			_Target.FillRoundedRectangle(roundedRect, brush);
 		}
 
 		public void Stroke(Geometry geometry, Brush brush, StrokeStyle style, float strokeWidth)
@@ -202,6 +239,7 @@ namespace Frost.DirectX.Painting
 			Contract.Requires(brush != null);
 			Contract.Requires(style != null);
 			Contract.Requires(Check.IsPositive(strokeWidth));
+			Contract.Assert(_Target != null);
 
 			DxGeometry resolved = _GeometryCache.ResolveGeometry(geometry);
 
@@ -214,6 +252,7 @@ namespace Frost.DirectX.Painting
 		{
 			Contract.Requires(geometry != null);
 			Contract.Requires(brush != null);
+			Contract.Assert(_Target != null);
 
 			DxGeometry resolved = _GeometryCache.ResolveGeometry(geometry);
 
@@ -233,7 +272,16 @@ namespace Frost.DirectX.Painting
 		private static void FitStroke(
 			ref Rectangle region, float thicknessX, float thicknessY, out Rectangle result)
 		{
-			Thickness thickness = new Thickness(thicknessX / 2.0f, thicknessY / 2.0f, 0.0f, 0.0f);
+			Contract.Requires(Check.IsPositive(thicknessX));
+			Contract.Requires(Check.IsPositive(thicknessY));
+
+			float left = thicknessX / 2.0f;
+			float top = thicknessY / 2.0f;
+
+			const float right = 0.0f;
+			const float bottom = 0.0f;
+
+			Thickness thickness = new Thickness(left, top, right, bottom);
 
 			result = region.Contract(thickness);
 		}
@@ -241,7 +289,16 @@ namespace Frost.DirectX.Painting
 		private static void ToStrokeable(
 			ref Rectangle region, float thicknessX, float thicknessY, out Rectangle result)
 		{
-			Thickness thickness = new Thickness(0.0f, 0.0f, thicknessX / 2.0f, thicknessY / 2.0f);
+			Contract.Requires(Check.IsPositive(thicknessX));
+			Contract.Requires(Check.IsPositive(thicknessY));
+
+			const float left = 0.0f;
+			const float top = 0.0f;
+
+			float right = thicknessX / 2.0f;
+			float bottom = thicknessY / 2.0f;
+
+			Thickness thickness = new Thickness(left, top, right, bottom);
 
 			result = region.Contract(thickness);
 		}

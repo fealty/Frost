@@ -93,7 +93,7 @@ namespace Frost.DirectX
 
 		public override Painter Painter
 		{
-			get { return _DrawingDevice.ImmediateContext; }
+			get { return _DrawingDevice.Painter; }
 		}
 
 		public void Dispose()

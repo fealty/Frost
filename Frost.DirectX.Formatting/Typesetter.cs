@@ -171,7 +171,7 @@ namespace Frost.DirectX.Formatting
 							break;
 					}
 
-					cluster.Floater = Rectangle.FromCorners(
+					cluster.Floater = Rectangle.FromEdges(
 						floaterX, floaterY, floaterX + floaterWidth, floaterY + floaterHeight);
 
 					_InputSink.Clusters[item.Position] = cluster;

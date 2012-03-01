@@ -39,7 +39,7 @@ namespace Frost
 			Contracts.Invariant(Check.IsPositive(_Height));
 		}
 
-		public static Rectangle FromCorners(float left, float top, float right, float bottom)
+		public static Rectangle FromEdges(float left, float top, float right, float bottom)
 		{
 			Contracts.Requires(Check.IsFinite(left));
 			Contracts.Requires(Check.IsFinite(top));
@@ -257,13 +257,13 @@ namespace Frost
 
 		public Rectangle Contract(Thickness amount)
 		{
-			return FromCorners(
+			return FromEdges(
 				Left + amount.Left, Top + amount.Top, Right - amount.Right, Bottom - amount.Bottom);
 		}
 
 		public Rectangle Expand(Thickness amount)
 		{
-			return FromCorners(
+			return FromEdges(
 				Left - amount.Left, Top - amount.Top, Right + amount.Right, Bottom + amount.Bottom);
 		}
 
@@ -409,35 +409,35 @@ namespace Frost
 #if(UNIT_TESTING)
 		[Fact] internal static void Test0()
 		{
-			Assert.Equal(0, FromCorners(0, 1, 2, 3).X);
-			Assert.Equal(1, FromCorners(0, 1, 2, 3).Y);
-			Assert.Equal(0, FromCorners(0, 1, 2, 3).Left);
-			Assert.Equal(1, FromCorners(0, 1, 2, 3).Top);
-			Assert.Equal(2, FromCorners(0, 1, 2, 3).Right);
-			Assert.Equal(3, FromCorners(0, 1, 2, 3).Bottom);
-			Assert.Equal(10, FromCorners(0, 5, 10, 15).Width);
-			Assert.Equal(10, FromCorners(0, 5, 10, 15).Height);
-			Assert.Equal(new Point(0, 1), FromCorners(0, 1, 2, 3).Location);
-			Assert.Equal(new Size(2, 2), FromCorners(0, 1, 2, 3).Size);
+			Assert.Equal(0, FromEdges(0, 1, 2, 3).X);
+			Assert.Equal(1, FromEdges(0, 1, 2, 3).Y);
+			Assert.Equal(0, FromEdges(0, 1, 2, 3).Left);
+			Assert.Equal(1, FromEdges(0, 1, 2, 3).Top);
+			Assert.Equal(2, FromEdges(0, 1, 2, 3).Right);
+			Assert.Equal(3, FromEdges(0, 1, 2, 3).Bottom);
+			Assert.Equal(10, FromEdges(0, 5, 10, 15).Width);
+			Assert.Equal(10, FromEdges(0, 5, 10, 15).Height);
+			Assert.Equal(new Point(0, 1), FromEdges(0, 1, 2, 3).Location);
+			Assert.Equal(new Size(2, 2), FromEdges(0, 1, 2, 3).Size);
 
-			Assert.Equal(FromCorners(1, 1, 1, 1), FromCorners(0, 0, 2, 2).Contract(new Thickness(1)));
-			Assert.Equal(FromCorners(-1, -1, 3, 3), FromCorners(0, 0, 2, 2).Expand(new Thickness(1)));
+			Assert.Equal(FromEdges(1, 1, 1, 1), FromEdges(0, 0, 2, 2).Contract(new Thickness(1)));
+			Assert.Equal(FromEdges(-1, -1, 3, 3), FromEdges(0, 0, 2, 2).Expand(new Thickness(1)));
 
-			Assert.Equal(4, FromCorners(0, 0, 2, 2).Area);
+			Assert.Equal(4, FromEdges(0, 0, 2, 2).Area);
 
-			Assert.Equal(new Point(0.5f), FromCorners(0, 0, 1, 1).Center);
+			Assert.Equal(new Point(0.5f), FromEdges(0, 0, 1, 1).Center);
 
-			Assert.True(FromCorners(0, 0, 1, 1).Contains(new Point(0.5f, 0.5f)));
-			Assert.True(FromCorners(0, 0, 1, 1).Contains(new Point(0.0f, 0.0f)));
-			Assert.True(FromCorners(0, 0, 1, 1).Contains(new Point(1.0f, 0.0f)));
-			Assert.True(FromCorners(0, 0, 1, 1).Contains(new Point(1.0f, 1.0f)));
-			Assert.True(FromCorners(0, 0, 1, 1).Contains(new Point(0.0f, 1.0f)));
-			Assert.False(FromCorners(0, 0, 1, 1).Contains(new Point(1.5f, 0.5f)));
+			Assert.True(FromEdges(0, 0, 1, 1).Contains(new Point(0.5f, 0.5f)));
+			Assert.True(FromEdges(0, 0, 1, 1).Contains(new Point(0.0f, 0.0f)));
+			Assert.True(FromEdges(0, 0, 1, 1).Contains(new Point(1.0f, 0.0f)));
+			Assert.True(FromEdges(0, 0, 1, 1).Contains(new Point(1.0f, 1.0f)));
+			Assert.True(FromEdges(0, 0, 1, 1).Contains(new Point(0.0f, 1.0f)));
+			Assert.False(FromEdges(0, 0, 1, 1).Contains(new Point(1.5f, 0.5f)));
 
-			Assert.True(FromCorners(0, 0, 1, 1).Contains(Empty));
-			Assert.True(FromCorners(0, 0, 1, 1).Contains(FromCorners(0, 0, 1, 1)));
-			Assert.True(FromCorners(0, 0, 1, 1).Contains(FromCorners(0.5f, 0, 0.5f, 1)));
-			Assert.False(FromCorners(0, 0, 1, 1).Contains(FromCorners(-1, -1, 1, 1)));
+			Assert.True(FromEdges(0, 0, 1, 1).Contains(Empty));
+			Assert.True(FromEdges(0, 0, 1, 1).Contains(FromEdges(0, 0, 1, 1)));
+			Assert.True(FromEdges(0, 0, 1, 1).Contains(FromEdges(0.5f, 0, 0.5f, 1)));
+			Assert.False(FromEdges(0, 0, 1, 1).Contains(FromEdges(-1, -1, 1, 1)));
 
 			Assert.Equal(new Rectangle(2, 2, 05, 05), new Rectangle(0, 0, 5, 5).Translate(new Size(2)));
 			Assert.Equal(new Rectangle(0, 0, 10, 10), new Rectangle(0, 0, 5, 5).Scale(new Size(2)));
@@ -448,98 +448,98 @@ namespace Frost
 		[Fact] internal static void Test1()
 		{
 			Assert.Equal(
-				FromCorners(50, 0, 100, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal));
+				FromEdges(50, 0, 100, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal));
 			Assert.Equal(
-				FromCorners(0, 0, 50, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal, LayoutDirection.RightToLeft));
+				FromEdges(0, 0, 50, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(0, 50, 50, 100),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Vertical));
+				FromEdges(0, 50, 50, 100),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Vertical));
 			Assert.Equal(
-				FromCorners(0, 50, 50, 100),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Vertical, LayoutDirection.RightToLeft));
+				FromEdges(0, 50, 50, 100),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(50, 50, 100, 100),
-				FromCorners(0, 0, 50, 50).AlignWithin(FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Both));
+				FromEdges(50, 50, 100, 100),
+				FromEdges(0, 0, 50, 50).AlignWithin(FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Both));
 			Assert.Equal(
-				FromCorners(0, 50, 50, 100),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Leading, Axis.Both, LayoutDirection.RightToLeft));
+				FromEdges(0, 50, 50, 100),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(0, 0, 50, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal));
+				FromEdges(0, 0, 50, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal));
 			Assert.Equal(
-				FromCorners(50, 0, 100, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal, LayoutDirection.RightToLeft));
+				FromEdges(50, 0, 100, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(0, 0, 50, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical));
+				FromEdges(0, 0, 50, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical));
 			Assert.Equal(
-				FromCorners(0, 0, 50, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical, LayoutDirection.RightToLeft));
+				FromEdges(0, 0, 50, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(0, 0, 50, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Both));
+				FromEdges(0, 0, 50, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Both));
 			Assert.Equal(
-				FromCorners(50, 0, 100, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Trailing, Axis.Both, LayoutDirection.RightToLeft));
+				FromEdges(50, 0, 100, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(25, 0, 75, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Horizontal));
+				FromEdges(25, 0, 75, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Horizontal));
 			Assert.Equal(
-				FromCorners(25, 0, 75, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Horizontal, LayoutDirection.RightToLeft));
+				FromEdges(25, 0, 75, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(0, 25, 50, 75),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Vertical));
+				FromEdges(0, 25, 50, 75),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Vertical));
 			Assert.Equal(
-				FromCorners(0, 25, 50, 75),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Vertical, LayoutDirection.RightToLeft));
+				FromEdges(0, 25, 50, 75),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(25, 25, 75, 75),
-				FromCorners(0, 0, 50, 50).AlignWithin(FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Both));
+				FromEdges(25, 25, 75, 75),
+				FromEdges(0, 0, 50, 50).AlignWithin(FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Both));
 			Assert.Equal(
-				FromCorners(25, 25, 75, 75),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Center, Axis.Both, LayoutDirection.RightToLeft));
+				FromEdges(25, 25, 75, 75),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(0, 0, 100, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal));
+				FromEdges(0, 0, 100, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal));
 			Assert.Equal(
-				FromCorners(0, 0, 100, 50),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal, LayoutDirection.RightToLeft));
+				FromEdges(0, 0, 100, 50),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(0, 0, 50, 100),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical));
+				FromEdges(0, 0, 50, 100),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical));
 			Assert.Equal(
-				FromCorners(0, 0, 50, 100),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical, LayoutDirection.RightToLeft));
+				FromEdges(0, 0, 50, 100),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
-				FromCorners(0, 0, 100, 100),
-				FromCorners(0, 0, 50, 50).AlignWithin(FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Both));
+				FromEdges(0, 0, 100, 100),
+				FromEdges(0, 0, 50, 50).AlignWithin(FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Both));
 			Assert.Equal(
-				FromCorners(0, 0, 100, 100),
-				FromCorners(0, 0, 50, 50).AlignWithin(
-					FromCorners(0, 0, 100, 100), Alignment.Stretch, Axis.Both, LayoutDirection.RightToLeft));
+				FromEdges(0, 0, 100, 100),
+				FromEdges(0, 0, 50, 50).AlignWithin(
+					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Both, LayoutDirection.RightToLeft));
 		}
 #endif
 	}

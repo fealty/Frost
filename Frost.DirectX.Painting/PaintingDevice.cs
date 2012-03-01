@@ -14,7 +14,7 @@ namespace Frost.DirectX.Painting
 	public sealed class PaintingDevice : IDisposable
 	{
 		private readonly Factory _Factory2D;
-		private readonly Painter _PainterSink;
+		private readonly Painter _PainterContext;
 
 		public PaintingDevice(Device2D device2D, Device device3D)
 		{
@@ -23,17 +23,30 @@ namespace Frost.DirectX.Painting
 
 			_Factory2D = new Factory(FactoryType.SingleThreaded);
 
-			_PainterSink = new Painter(_Factory2D, device2D, device3D);
+			_PainterContext = new Painter(_Factory2D, device2D, device3D);
+
+			Contract.Assert(Factory2D == _Factory2D);
+			Contract.Assert(Painter == _PainterContext);
 		}
 
 		public Factory Factory2D
 		{
-			get { return _Factory2D; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Factory>() != null);
+
+				return _Factory2D;
+			}
 		}
 
-		public Frost.Painting.Painter ImmediateContext
+		public Frost.Painting.Painter Painter
 		{
-			get { return _PainterSink; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Frost.Painting.Painter>() != null);
+
+				return _PainterContext;
+			}
 		}
 
 		public void Dispose()
@@ -43,14 +56,14 @@ namespace Frost.DirectX.Painting
 
 		public void ProcessTick()
 		{
-			_PainterSink.FrameDuration.Reset();
+			_PainterContext.FrameDuration.Reset();
 		}
 
 		private void Dispose(bool disposing)
 		{
 			if(disposing)
 			{
-				_PainterSink.Dispose();
+				_PainterContext.Dispose();
 				_Factory2D.Dispose();
 			}
 		}
