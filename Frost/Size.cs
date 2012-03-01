@@ -215,6 +215,15 @@ namespace Frost
 
 			Assert.Equal(new Size(10, 10), scaled);
 
+			Assert.Equal(new Size(50), new Size(10, 10) * new Size(5));
+			Assert.Equal(new Size(15), new Size(10, 10) + new Size(5));
+			Assert.Equal(new Size(05), new Size(10, 10) - new Size(5));
+			Assert.Equal(new Size(02), new Size(10, 10) / new Size(5));
+
+			Assert.Equal(new Size(4), new Size(2).Scale(new Size(2)));
+			
+			Assert.Equal<Size>(new Size(3), new Point(3));
+
 			Assert.TestObject(MinValue, MaxValue);
 		}
 #endif
