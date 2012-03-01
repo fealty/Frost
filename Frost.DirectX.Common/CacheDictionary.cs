@@ -36,7 +36,7 @@ namespace Frost.DirectX.Common
 		{
 			if(_Lookup.Count + 1 > _ItemLimit)
 			{
-				this.EvictLeastTouchedItem();
+				EvictLeastTouchedItem();
 			}
 
 			Item item;

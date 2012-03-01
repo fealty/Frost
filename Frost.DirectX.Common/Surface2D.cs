@@ -25,7 +25,6 @@ namespace Frost.DirectX.Common
 {
 	public class Surface2D : ISurface2D, IEquatable<Surface2D>, IDisposable
 	{
-		//TODO: add configuration option for surface 2d cache limit?
 		public const int CacheLimit = 5;
 
 		private static long _AvailableUniqueId;
@@ -253,8 +252,8 @@ namespace Frost.DirectX.Common
 			{
 				brush.Center = center.ToPointF();
 				brush.GradientOriginOffset = offset.ToPointF();
-				brush.RadiusX = Convert.ToSingle(radius.Width);
-				brush.RadiusY = Convert.ToSingle(radius.Height);
+				brush.RadiusX = radius.Width;
+				brush.RadiusY = radius.Height;
 
 				return brush;
 			}
@@ -265,8 +264,8 @@ namespace Frost.DirectX.Common
 				{
 					Center = center.ToPointF(),
 					GradientOriginOffset = offset.ToPointF(),
-					RadiusX = Convert.ToSingle(radius.Width),
-					RadiusY = Convert.ToSingle(radius.Height)
+					RadiusX = radius.Width,
+					RadiusY = radius.Height
 				};
 			}
 

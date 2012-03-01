@@ -55,14 +55,19 @@ namespace Frost.DirectX.Common
 
 			DataRectangle data = _Texture.Map(0, MapMode.Write, MapFlags.None);
 
-			int byteSize = (regionWidth * regionHeight) * 4;
-
-			using(DataStream stream = new DataStream(data.DataPointer, byteSize, false, true))
+			try
 			{
-				stream.Write(rgbaData, 0, byteSize);
-			}
+				int byteSize = (regionWidth * regionHeight) * 4;
 
-			_Texture.Unmap(0);
+				using(DataStream stream = new DataStream(data.DataPointer, byteSize, false, true))
+				{
+					stream.Write(rgbaData, 0, byteSize);
+				}
+			}
+			finally
+			{
+				_Texture.Unmap(0);
+			}
 		}
 
 		public void CopyTo(Rectangle srcRegion, Canvas.ResolvedContext destination)
