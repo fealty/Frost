@@ -16,10 +16,10 @@ namespace Frost.DirectX.Composition
 {
 	public sealed class CompositionDevice : IDisposable
 	{
+		private readonly Compositor _Compositor;
 		private readonly Device _Device3D;
 
 		private readonly Lazy<Factory1> _DxgiFactory;
-		private readonly Compositor _ImmediateContext;
 
 		public CompositionDevice(Adapter1 adapter, Device2D device2D)
 		{
@@ -47,7 +47,7 @@ namespace Frost.DirectX.Composition
 				newAdapter.Dispose();
 			}
 
-			_ImmediateContext = new Compositor(_Device3D, device2D);
+			_Compositor = new Compositor(_Device3D, device2D);
 
 			device2D.Effects.Register<ColorOutputEffect>();
 			device2D.Effects.Register<GaussianBlurEffect>();
@@ -57,12 +57,22 @@ namespace Frost.DirectX.Composition
 
 		public Device Device3D
 		{
-			get { return _Device3D; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Device>() != null);
+
+				return _Device3D;
+			}
 		}
 
-		public Frost.Composition.Compositor ImmediateContext
+		public Frost.Composition.Compositor Compositor
 		{
-			get { return _ImmediateContext; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Frost.Composition.Compositor>() != null);
+
+				return _Compositor;
+			}
 		}
 
 		public void Dispose()
@@ -72,15 +82,15 @@ namespace Frost.DirectX.Composition
 
 		public void ProcessTick()
 		{
-			_ImmediateContext.FrameBatchCount.Reset();
-			_ImmediateContext.FrameDuration.Reset();
+			_Compositor.FrameBatchCount.Reset();
+			_Compositor.FrameDuration.Reset();
 		}
 
 		private void Dispose(bool disposing)
 		{
 			if(disposing)
 			{
-				_ImmediateContext.Dispose();
+				_Compositor.Dispose();
 
 				if(_DxgiFactory.IsValueCreated)
 				{

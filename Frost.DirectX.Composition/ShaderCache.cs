@@ -37,7 +37,12 @@ namespace Frost.DirectX.Composition
 
 		public IntegerCounter CachedShaderCount
 		{
-			get { return _CachedShaderCount; }
+			get
+			{
+				Contract.Ensures(Contract.Result<IntegerCounter>() != null);
+				
+				return _CachedShaderCount;
+			}
 		}
 
 		public void Dispose()

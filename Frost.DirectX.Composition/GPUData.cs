@@ -27,6 +27,8 @@ namespace Frost.DirectX.Composition
 
 		public static int SizeOf<T>() where T : struct
 		{
+			Contract.Ensures(Contract.Result<int>() >= 0);
+
 			return Marshal.SizeOf(typeof(T));
 		}
 	}

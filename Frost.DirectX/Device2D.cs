@@ -88,7 +88,7 @@ namespace Frost.DirectX
 
 		public override Compositor Compositor
 		{
-			get { return _CompositionDevice.ImmediateContext; }
+			get { return _CompositionDevice.Compositor; }
 		}
 
 		public override Painter Painter
