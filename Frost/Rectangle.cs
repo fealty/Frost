@@ -439,6 +439,9 @@ namespace Frost
 			Assert.True(FromCorners(0, 0, 1, 1).Contains(FromCorners(0.5f, 0, 0.5f, 1)));
 			Assert.False(FromCorners(0, 0, 1, 1).Contains(FromCorners(-1, -1, 1, 1)));
 
+			Assert.Equal(new Rectangle(2, 2, 05, 05), new Rectangle(0, 0, 5, 5).Translate(new Size(2)));
+			Assert.Equal(new Rectangle(0, 0, 10, 10), new Rectangle(0, 0, 5, 5).Scale(new Size(2)));
+
 			Assert.TestObject(MinValue, MaxValue);
 		}
 
