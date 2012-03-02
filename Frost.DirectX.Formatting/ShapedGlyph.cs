@@ -9,6 +9,9 @@ using SharpDX.DirectWrite;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct holds data for glyphs that have been shaped.
+	/// </summary>
 	internal struct ShapedGlyph : IEquatable<ShapedGlyph>
 	{
 		public float Advance;

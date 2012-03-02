@@ -9,6 +9,9 @@ using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct holds data for clusters that have been shaped.
+	/// </summary>
 	internal struct ShapedCluster : IEquatable<ShapedCluster>
 	{
 		public Size Advance;
