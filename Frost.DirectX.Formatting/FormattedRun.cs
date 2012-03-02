@@ -9,6 +9,9 @@ using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct contains data for runs that have been formatted.
+	/// </summary>
 	internal struct FormattedRun : IEquatable<FormattedRun>
 	{
 		public byte BidiLevel;

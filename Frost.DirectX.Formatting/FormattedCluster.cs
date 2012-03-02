@@ -9,6 +9,9 @@ using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct contains data for clusters that have been formatted.
+	/// </summary>
 	internal struct FormattedCluster : IEquatable<FormattedCluster>
 	{
 		public IndexedRange Characters;

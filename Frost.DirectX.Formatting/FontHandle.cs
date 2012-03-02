@@ -14,6 +14,9 @@ using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This class provides a lazy handle to a font resource.
+	/// </summary>
 	public sealed class FontHandle : IEquatable<FontHandle>
 	{
 		private readonly string _Family;
@@ -22,6 +25,14 @@ namespace Frost.DirectX.Formatting
 		private readonly FontStyle _Style;
 		private readonly FontWeight _Weight;
 
+		/// <summary>
+		///   This constructor links a new instance of this class to a <see cref="FontDevice" /> or other resolver.
+		/// </summary>
+		/// <param name="resolver"> This parameter contains the delegate to the resolution method. </param>
+		/// <param name="family"> This parameter indicates the font family. </param>
+		/// <param name="style"> This parameter indicates the font style. </param>
+		/// <param name="weight"> This parameter indicates the font weight. </param>
+		/// <param name="stretch"> This parameter indicates the font stretch. </param>
 		internal FontHandle(
 			Func<FontHandle, FontInfo> resolver,
 			string family,
@@ -39,21 +50,33 @@ namespace Frost.DirectX.Formatting
 			_Stretch = stretch;
 		}
 
+		/// <summary>
+		///   This property references the font family.
+		/// </summary>
 		public string Family
 		{
 			get { return _Family; }
 		}
 
+		/// <summary>
+		///   This property indicates the font stretch.
+		/// </summary>
 		public FontStretch Stretch
 		{
 			get { return _Stretch; }
 		}
 
+		/// <summary>
+		///   This property indicates the font style.
+		/// </summary>
 		public FontStyle Style
 		{
 			get { return _Style; }
 		}
 
+		/// <summary>
+		///   This property indicates the font weight.
+		/// </summary>
 		public FontWeight Weight
 		{
 			get { return _Weight; }
@@ -75,6 +98,10 @@ namespace Frost.DirectX.Formatting
 			       other._Weight == _Weight;
 		}
 
+		/// <summary>
+		///   This method resolves the DirectWrite font for the handle.
+		/// </summary>
+		/// <returns> This method returns the resolved DirectWrite font. </returns>
 		public Font ResolveFont()
 		{
 			Contract.Ensures(Contract.Result<Font>() != null);
@@ -84,6 +111,10 @@ namespace Frost.DirectX.Formatting
 			return fontInfo.Font;
 		}
 
+		/// <summary>
+		///   This method resolves the DirectWrite font face for the handle.
+		/// </summary>
+		/// <returns> This method returns the resolved DirectWrite font face for the handle. </returns>
 		public FontFace ResolveFace()
 		{
 			Contract.Ensures(Contract.Result<FontFace>() != null);
@@ -130,10 +161,13 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This class provides storage for DirectWrite font resources.
+		/// </summary>
 		internal sealed class FontInfo : IDisposable
 		{
-			private readonly FontFace _Face;
-			private readonly Font _Font;
+			private FontFace _Face;
+			private Font _Font;
 
 			public FontInfo(Font font)
 			{
@@ -143,6 +177,9 @@ namespace Frost.DirectX.Formatting
 				_Face = new FontFace(font);
 			}
 
+			/// <summary>
+			///   This property exposes the DirectWrite font.
+			/// </summary>
 			public Font Font
 			{
 				get
@@ -154,6 +191,9 @@ namespace Frost.DirectX.Formatting
 				}
 			}
 
+			/// <summary>
+			///   This property exposes the DirectWrite font face.
+			/// </summary>
 			public FontFace FontFace
 			{
 				get
@@ -176,6 +216,9 @@ namespace Frost.DirectX.Formatting
 				{
 					_Face.Dispose();
 					_Font.Dispose();
+
+					_Face = null;
+					_Font = null;
 				}
 			}
 		}

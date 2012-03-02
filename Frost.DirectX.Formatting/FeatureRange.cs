@@ -10,22 +10,36 @@ using Frost.Formatting;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct provides association of feature collection with text ranges.
+	/// </summary>
 	internal struct FeatureRange : IEquatable<FeatureRange>
 	{
 		private readonly FontFeatureCollection _Features;
 		private readonly IndexedRange _Range;
 
+		/// <summary>
+		///   This constructor associates a given feature collection with a range of text.
+		/// </summary>
+		/// <param name="range"> This parameter indicates the text range. </param>
+		/// <param name="features"> This parameter indicates the feature collection. </param>
 		public FeatureRange(IndexedRange range, FontFeatureCollection features)
 		{
 			_Range = range;
 			_Features = features;
 		}
 
+		/// <summary>
+		///   This property indicates the text range to which the feature collection applies.
+		/// </summary>
 		public IndexedRange Range
 		{
 			get { return _Range; }
 		}
 
+		/// <summary>
+		///   This property references the feature collection associated with the text range.
+		/// </summary>
 		public FontFeatureCollection Features
 		{
 			get { return _Features; }

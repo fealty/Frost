@@ -16,6 +16,9 @@ using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This class provides management of font resources.
+	/// </summary>
 	public sealed class FontDevice : IDisposable
 	{
 		public const int CacheLimit = 20;
@@ -35,12 +38,15 @@ namespace Frost.DirectX.Formatting
 			_HandleCache = new Dictionary<FontKey, FontHandle>();
 		}
 
+		/// <summary>
+		///   This property exposes the DirectWrite factory.
+		/// </summary>
 		public Factory Factory
 		{
 			get
 			{
 				Contract.Ensures(Contract.Result<Factory>() != null);
-				
+
 				return _FontDevice;
 			}
 		}
@@ -50,9 +56,18 @@ namespace Frost.DirectX.Formatting
 			Dispose(true);
 		}
 
+		/// <summary>
+		///   This method finds the font best matching the given family, style, weight, and stretch.
+		/// </summary>
+		/// <param name="family"> This parameter references the font family to match. </param>
+		/// <param name="style"> This parameter indicates the font style to match. </param>
+		/// <param name="weight"> This parameter indicates the font weight to match. </param>
+		/// <param name="stretch"> This parameter indicates the font stretch to match. </param>
+		/// <returns> This methods returns the handle for the font best matching the given parameters. </returns>
 		public FontHandle FindFont(string family, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			Contract.Requires(!String.IsNullOrEmpty(family));
+			Contract.Ensures(Contract.Result<FontHandle>() != null);
 
 			FontKey key;
 
@@ -82,6 +97,11 @@ namespace Frost.DirectX.Formatting
 			return handle;
 		}
 
+		/// <summary>
+		///   This method resolves a <see cref="FontHandle" /> to its lazy information.
+		/// </summary>
+		/// <param name="handle"> This parameter references the font handle to resolve. </param>
+		/// <returns> This method returns the lazy information for the given font handle. </returns>
 		private FontHandle.FontInfo ResolveHandle(FontHandle handle)
 		{
 			Contract.Requires(handle != null);
@@ -140,6 +160,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This struct provides storage for variables identifying a unique font.
+		/// </summary>
 		private struct FontKey : IEquatable<FontKey>
 		{
 			public string Family;
@@ -149,8 +172,8 @@ namespace Frost.DirectX.Formatting
 
 			public bool Equals(FontKey other)
 			{
-				return Equals(other.Family, Family) && other.Style == Style &&
-				       other.Weight == Weight && other.Stretch == Stretch;
+				return Equals(other.Family, Family) && other.Style == Style && other.Weight == Weight &&
+				       other.Stretch == Stretch;
 			}
 
 			public override bool Equals(object obj)
