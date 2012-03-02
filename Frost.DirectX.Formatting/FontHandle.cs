@@ -71,8 +71,8 @@ namespace Frost.DirectX.Formatting
 				return true;
 			}
 
-			return Equals(other._Family, _Family) && Equals(other._Stretch, _Stretch) &&
-			       Equals(other._Style, _Style) && Equals(other._Weight, _Weight);
+			return Equals(other._Family, _Family) && other._Stretch == _Stretch && other._Style == _Style &&
+			       other._Weight == _Weight;
 		}
 
 		public Font ResolveFont()

@@ -836,7 +836,8 @@ namespace Frost.DirectX.Formatting
 				return other.Range.Equals(Range) && Equals(other.Culture, Culture) &&
 				       Equals(other.Family, Family) && other.PointSize.Equals(PointSize) &&
 				       Equals(other.NumberSubstitution, NumberSubstitution) && other.BidiLevel == BidiLevel &&
-				       other.ScriptAnalysis.Equals(ScriptAnalysis) && other.Stretch == Stretch &&
+				       other.ScriptAnalysis.Script == ScriptAnalysis.Script &&
+				       other.ScriptAnalysis.Shapes == ScriptAnalysis.Shapes && other.Stretch == Stretch &&
 				       other.Style == Style && other.Weight == Weight && other.Features == Features &&
 				       other.Text == Text;
 			}
@@ -862,9 +863,19 @@ namespace Frost.DirectX.Formatting
 					result = (result * 397) ^ (NumberSubstitution != null ? NumberSubstitution.GetHashCode() : 0);
 					result = (result * 397) ^ BidiLevel.GetHashCode();
 					result = (result * 397) ^ ScriptAnalysis.GetHashCode();
-					result = (result * 397) ^ Stretch.GetHashCode();
-					result = (result * 397) ^ Style.GetHashCode();
-					result = (result * 397) ^ Weight.GetHashCode();
+
+					int stretch = (int)Stretch;
+
+					result = (result * 397) ^ stretch.GetHashCode();
+
+					int style = (int)Style;
+
+					result = (result * 397) ^ style.GetHashCode();
+
+					int weight = (int)Weight;
+
+					result = (result * 397) ^ weight.GetHashCode();
+
 					result = (result * 397) ^ (Features != null ? Features.GetHashCode() : 0);
 					result = (result * 397) ^ (Text != null ? Text.GetHashCode() : 0);
 					return result;

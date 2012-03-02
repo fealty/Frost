@@ -55,7 +55,12 @@ namespace Frost.DirectX.Formatting
 
 		public CharacterFormat[] Characters
 		{
-			get { return _Characters; }
+			get
+			{
+				Contract.Ensures(Contract.Result<CharacterFormat[]>() != null);
+				
+				return _Characters;
+			}
 		}
 	}
 }

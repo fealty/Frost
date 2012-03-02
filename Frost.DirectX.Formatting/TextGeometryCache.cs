@@ -55,7 +55,7 @@ namespace Frost.DirectX.Formatting
 
 			for(int i = cluster.Glyphs.Start; i <= cluster.Glyphs.End; ++i)
 			{
-				_GlyphAdvances[index] = Convert.ToSingle(cluster.Region.Width);
+				_GlyphAdvances[index] = cluster.Region.Width;
 
 				_GlyphIndices[index] = input.Glyphs[i].Index;
 				_GlyphOffsets[index] = input.Glyphs[i].Offset;

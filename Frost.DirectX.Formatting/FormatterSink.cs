@@ -35,17 +35,32 @@ namespace Frost.DirectX.Formatting
 
 		public List<FormattedRun> Runs
 		{
-			get { return _Runs; }
+			get
+			{
+				Contract.Ensures(Contract.Result<List<FormattedRun>>() != null);
+				
+				return _Runs;
+			}
 		}
 
 		public List<FormattedGlyph> Glyphs
 		{
-			get { return _Glyphs; }
+			get
+			{
+				Contract.Ensures(Contract.Result<List<FormattedGlyph>>() != null);
+				
+				return _Glyphs;
+			}
 		}
 
 		public List<FormattedCluster> Clusters
 		{
-			get { return _Clusters; }
+			get
+			{
+				Contract.Ensures(Contract.Result<List<FormattedCluster>>() != null);
+				
+				return _Clusters;
+			}
 		}
 
 		public Rectangle LayoutRegion

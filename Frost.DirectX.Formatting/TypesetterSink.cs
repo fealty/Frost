@@ -15,6 +15,7 @@ namespace Frost.DirectX.Formatting
 		private readonly List<float> _LineLengths;
 		private readonly List<Rectangle> _Lines;
 
+		private Alignment _Alignment;
 		private string _FullText;
 		private float _Indentation;
 		private Rectangle _LayoutRegion;
@@ -34,20 +35,39 @@ namespace Frost.DirectX.Formatting
 
 		public List<TypesetGlyph> Glyphs
 		{
-			get { return _Glyphs; }
+			get
+			{
+				Contract.Ensures(Contract.Result<List<TypesetGlyph>>() != null);
+
+				return _Glyphs;
+			}
 		}
 
 		public List<TypesetCluster> Clusters
 		{
-			get { return _Clusters; }
+			get
+			{
+				Contract.Ensures(Contract.Result<List<TypesetCluster>>() != null);
+
+				return _Clusters;
+			}
 		}
 
 		public List<Rectangle> Lines
 		{
-			get { return _Lines; }
+			get
+			{
+				Contract.Ensures(Contract.Result<List<Rectangle>>() != null);
+
+				return _Lines;
+			}
 		}
 
-		public Alignment Alignment { get; set; }
+		public Alignment Alignment
+		{
+			get { return _Alignment; }
+			set { _Alignment = value; }
+		}
 
 		public Rectangle LayoutRegion
 		{
@@ -90,7 +110,12 @@ namespace Frost.DirectX.Formatting
 
 		public List<float> LineLengths
 		{
-			get { return _LineLengths; }
+			get
+			{
+				Contract.Ensures(Contract.Result<List<float>>() != null);
+
+				return _LineLengths;
+			}
 		}
 
 		public string FullText

@@ -37,7 +37,12 @@ namespace Frost.DirectX.Formatting
 
 		public Factory Factory
 		{
-			get { return _FontDevice; }
+			get
+			{
+				Contract.Ensures(Contract.Result<Factory>() != null);
+				
+				return _FontDevice;
+			}
 		}
 
 		public void Dispose()
@@ -144,8 +149,8 @@ namespace Frost.DirectX.Formatting
 
 			public bool Equals(FontKey other)
 			{
-				return Equals(other.Family, Family) && Equals(other.Style, Style) &&
-				       Equals(other.Weight, Weight) && Equals(other.Stretch, Stretch);
+				return Equals(other.Family, Family) && other.Style == Style &&
+				       other.Weight == Weight && other.Stretch == Stretch;
 			}
 
 			public override bool Equals(object obj)
@@ -163,9 +168,19 @@ namespace Frost.DirectX.Formatting
 				unchecked
 				{
 					int result = (Family != null ? Family.GetHashCode() : 0);
-					result = (result * 397) ^ Style.GetHashCode();
-					result = (result * 397) ^ Weight.GetHashCode();
-					result = (result * 397) ^ Stretch.GetHashCode();
+
+					int style = (int)Style;
+
+					result = (result * 397) ^ style.GetHashCode();
+
+					int weight = (int)Weight;
+
+					result = (result * 397) ^ weight.GetHashCode();
+
+					int stretch = (int)Stretch;
+
+					result = (result * 397) ^ stretch.GetHashCode();
+
 					return result;
 				}
 			}

@@ -24,12 +24,22 @@ namespace Frost.DirectX.Formatting
 
 		public List<ShapedGlyph> Glyphs
 		{
-			get { return _Glyphs; }
+			get
+			{
+				Contract.Ensures(Contract.Result<List<ShapedGlyph>>() != null);
+				
+				return _Glyphs;
+			}
 		}
 
 		public List<ShapedCluster> Clusters
 		{
-			get { return _Clusters; }
+			get
+			{
+				Contract.Ensures(Contract.Result<List<ShapedCluster>>() != null);
+				
+				return _Clusters;
+			}
 		}
 
 		public string FullText

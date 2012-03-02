@@ -68,8 +68,8 @@ namespace Frost.DirectX.Formatting
 					{
 						for(int i = 0; i < Offsets.Length; ++i)
 						{
-							if(Math.Abs(Offsets[i].AdvanceOffset - other.Offsets[i].AdvanceOffset) > float.Epsilon ||
-							   Math.Abs(Offsets[i].AscenderOffset - other.Offsets[i].AscenderOffset) > float.Epsilon)
+							if(!Offsets[i].AdvanceOffset.Equals(other.Offsets[i].AdvanceOffset) ||
+							   !Offsets[i].AscenderOffset.Equals(other.Offsets[i].AscenderOffset))
 							{
 								return false;
 							}

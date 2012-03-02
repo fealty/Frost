@@ -160,7 +160,6 @@ namespace Frost.DirectX.Formatting
 			Contract.Requires(input != null);
 
 			int lineNumber = -1;
-
 			int lineBidiLevel = -1;
 
 			float penPosition = 0.0f;

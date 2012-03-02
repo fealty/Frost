@@ -184,7 +184,7 @@ namespace Frost.DirectX.Formatting
 		private void FindLineHeight(ShaperSink input, float leadingEm)
 		{
 			Contract.Requires(input != null);
-			Contract.Requires(leadingEm >= 0.0 && leadingEm <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(leadingEm));
 
 			ResetLinesState();
 
@@ -242,10 +242,6 @@ namespace Frost.DirectX.Formatting
 		private void ProcessFreeSegment(ref int index, Rectangle box)
 		{
 			Contract.Requires(index >= 0);
-			Contract.Requires(box.X >= double.MinValue && box.X <= double.MaxValue);
-			Contract.Requires(box.Y >= double.MinValue && box.Y <= double.MaxValue);
-			Contract.Requires(box.Width >= 0.0 && box.Width <= double.MaxValue);
-			Contract.Requires(box.Height >= 0.0 && box.Height <= double.MaxValue);
 
 			Segment segment = _FreeSegments[index];
 
@@ -299,11 +295,6 @@ namespace Frost.DirectX.Formatting
 
 		private void IdentifyFreeSegments(Rectangle lineRegion)
 		{
-			Contract.Requires(lineRegion.X >= double.MinValue && lineRegion.X <= double.MaxValue);
-			Contract.Requires(lineRegion.Y >= double.MinValue && lineRegion.Y <= double.MaxValue);
-			Contract.Requires(lineRegion.Width >= 0.0 && lineRegion.Width <= double.MaxValue);
-			Contract.Requires(lineRegion.Height >= 0.0 && lineRegion.Height <= double.MaxValue);
-
 			_FreeSegments.Clear();
 
 			Segment fullLine;
@@ -361,11 +352,6 @@ namespace Frost.DirectX.Formatting
 			{
 				foreach(Rectangle box in boxes)
 				{
-					Contract.Assert(box.X >= double.MinValue && box.X <= double.MaxValue);
-					Contract.Assert(box.Y >= double.MinValue && box.Y <= double.MaxValue);
-					Contract.Assert(box.Width >= 0.0 && box.Width <= double.MaxValue);
-					Contract.Assert(box.Height >= 0.0 && box.Height <= double.MaxValue);
-
 					_Obstructions.Add(box);
 				}
 			}
@@ -463,7 +449,7 @@ namespace Frost.DirectX.Formatting
 		private void AddSoftHyphen(int index, double advance, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
-			Contract.Requires(advance >= 0.0 && advance <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(advance));
 
 			if(isRagged)
 			{
@@ -496,7 +482,7 @@ namespace Frost.DirectX.Formatting
 		private void AddVariableSpace(int index, double length, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
-			Contract.Requires(length >= 0.0 && length <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(length));
 
 			if(isRagged)
 			{
@@ -513,7 +499,7 @@ namespace Frost.DirectX.Formatting
 		private void AddWhitespace(int index, double length, ShaperSink input, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
-			Contract.Requires(length >= 0.0 && length <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(length));
 			Contract.Requires(input != null);
 
 			bool isForced = false;
@@ -540,7 +526,7 @@ namespace Frost.DirectX.Formatting
 		private void AddCluster(int index, double advance, ShaperSink input, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
-			Contract.Requires(advance >= 0.0 && advance <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(advance));
 			Contract.Requires(input != null);
 
 			_LineBreaker.AddBox(advance, index);
@@ -741,9 +727,9 @@ namespace Frost.DirectX.Formatting
 			ShaperSink input, Alignment alignment, double spacingEm, double trackingEm, double indentation)
 		{
 			Contract.Requires(input != null);
-			Contract.Requires(spacingEm >= 0.0 && spacingEm <= double.MaxValue);
-			Contract.Requires(trackingEm >= 0.0 && trackingEm <= double.MaxValue);
-			Contract.Requires(indentation >= 0.0 && indentation <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(spacingEm));
+			Contract.Requires(Check.IsPositive(trackingEm));
+			Contract.Requires(Check.IsPositive(indentation));
 
 			OutputGlyphs(input);
 
