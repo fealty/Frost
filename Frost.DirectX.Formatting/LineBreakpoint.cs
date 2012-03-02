@@ -10,6 +10,9 @@ using DxLineBreakpoint = SharpDX.DirectWrite.LineBreakpoint;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct stores break conditions for each character.
+	/// </summary>
 	internal struct LineBreakpoint : IEquatable<LineBreakpoint>
 	{
 		public readonly BreakCondition BreakConditionAfter;
@@ -17,6 +20,10 @@ namespace Frost.DirectX.Formatting
 
 		private readonly BreakType _BreakType;
 
+		/// <summary>
+		///   This constructor creates a new instance of this struct from a DirectWrite representation.
+		/// </summary>
+		/// <param name="breakpoint"> This parameter contains the DirectWrite representation to convert. </param>
 		public LineBreakpoint(DxLineBreakpoint breakpoint) : this()
 		{
 			switch(breakpoint.BreakConditionBefore)
@@ -65,11 +72,17 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property indicates whether the break is whitespace.
+		/// </summary>
 		public bool IsWhitespace
 		{
 			get { return _BreakType == BreakType.Whitespace; }
 		}
 
+		/// <summary>
+		///   This property indicates whether the break is a soft hyphen.
+		/// </summary>
 		public bool IsSoftHyphen
 		{
 			get { return _BreakType == BreakType.SoftHyphen; }
