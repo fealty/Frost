@@ -106,7 +106,6 @@
     <Compile Include="ShapedGlyph.cs" />
     <Compile Include="Shaper.cs" />
     <Compile Include="ShaperSink.cs" />
-    <Compile Include="ShapingException.cs" />
     <Compile Include="TextGeometryCache.cs" />
     <Compile Include="TextGeometryKey.cs" />
     <Compile Include="TextGeometrySink.cs" />

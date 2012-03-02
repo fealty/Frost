@@ -313,12 +313,12 @@ namespace Frost.DirectX.Formatting
 						_GlyphAdvances,
 						_GlyphOffsets).Failure)
 				{
-					throw new ShapingException(null);
+					throw new InvalidOperationException("Failed to place glyphs!");
 				}
 			}
 			catch(SharpDXException e)
 			{
-				throw new ShapingException(e);
+				throw new InvalidOperationException(e.Message, e);
 			}
 		}
 
@@ -357,7 +357,7 @@ namespace Frost.DirectX.Formatting
 
 					if(result.Failure)
 					{
-						throw new ShapingException(null);
+						throw new InvalidOperationException("Failed to shape glyphs!");
 					}
 				}
 				catch(SharpDXException e)
@@ -366,7 +366,7 @@ namespace Frost.DirectX.Formatting
 
 					if(result != InsufficientBufferError)
 					{
-						throw new ShapingException(e);
+						throw new InvalidOperationException(e.Message, e);
 					}
 
 					ResizeInternalBuffers(_InternalBufferLengths * 2);
