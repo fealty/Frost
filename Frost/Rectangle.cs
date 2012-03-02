@@ -250,6 +250,19 @@ namespace Frost
 			return new Rectangle(Location, _Width * amount.Width, _Height * amount.Height);
 		}
 
+		public Rectangle Resize(Size newSize)
+		{
+			Contracts.Requires(Check.IsPositive(newSize.Width));
+			Contracts.Requires(Check.IsPositive(newSize.Height));
+
+			return new Rectangle(Location, newSize);
+		}
+
+		public Rectangle Relocate(Point newLocation)
+		{
+			return new Rectangle(newLocation, Size);
+		}
+
 		public Rectangle Translate(Size amount)
 		{
 			return new Rectangle(_X + amount.Width, _Y + amount.Height, Size);
