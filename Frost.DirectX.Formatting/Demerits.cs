@@ -9,13 +9,14 @@ using System.Globalization;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct provides storage for text formatting penalty values.
+	/// </summary>
 	internal struct Demerits : IEquatable<Demerits>
 	{
 		public static readonly Demerits FlaggedPenalty;
 		public static readonly Demerits FitnessPenalty;
-
 		public static readonly Demerits Infinity;
-
 		public static readonly Demerits None;
 
 		private readonly double _Value;
@@ -30,6 +31,10 @@ namespace Frost.DirectX.Formatting
 			None = new Demerits(0.0);
 		}
 
+		/// <summary>
+		///   This constructor initializes a new instance of this struct.
+		/// </summary>
+		/// <param name="value"> This parameter contains the penalty value. </param>
 		public Demerits(double value)
 		{
 			Contract.Requires(Check.IsFinite(value));
@@ -37,6 +42,9 @@ namespace Frost.DirectX.Formatting
 			_Value = value;
 		}
 
+		/// <summary>
+		///   This property contains the penalty value.
+		/// </summary>
 		public double Value
 		{
 			get { return _Value; }
@@ -47,11 +55,21 @@ namespace Frost.DirectX.Formatting
 			return other._Value.Equals(_Value);
 		}
 
+		/// <summary>
+		///   This method determines whether a penalty value is positive infinity.
+		/// </summary>
+		/// <param name="value"> This parameter contains the value to test. </param>
+		/// <returns> This method returns <c>true</c> if the value is positive infinity; otherwise, this method returns <c>false</c> . </returns>
 		public static bool IsPositiveInfinity(Demerits value)
 		{
 			return value._Value >= Infinity._Value;
 		}
 
+		/// <summary>
+		///   This method determines whether a penalty value is negative infinity.
+		/// </summary>
+		/// <param name="value"> This parameter contains the value to test. </param>
+		/// <returns> This method returns <c>true</c> if the value is negative infinity; otherwise, this method returns <c>false</c> . </returns>
 		public static bool IsNegativeInfinity(Demerits value)
 		{
 			return value._Value <= -Infinity._Value;
