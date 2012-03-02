@@ -4,14 +4,14 @@
 // See LICENSE for more information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
-	internal sealed class LineBreaker : ILineItemList, IBreakingPointList
+	internal sealed class LineBreaker
 	{
 		public delegate void LineItemHandler(ref LineItem item);
 
@@ -19,7 +19,9 @@ namespace Frost.DirectX.Formatting
 		private readonly Breakpoint[] _Candidates;
 
 		private readonly List<BreakIndex> _Indices;
+		private readonly ReadOnlyCollection<BreakIndex> _IndicesReadOnly;
 		private readonly List<LineItem> _Items;
+		private readonly ReadOnlyCollection<LineItem> _ItemsReadOnly;
 		private readonly ILineProvider _LineProvider;
 
 		private bool _IsBuildingParagraph;
@@ -41,64 +43,22 @@ namespace Frost.DirectX.Formatting
 			_Indices = new List<BreakIndex>();
 			_Active = new LinkedList<Breakpoint>();
 
+			_IndicesReadOnly = _Indices.AsReadOnly();
+			_ItemsReadOnly = _Items.AsReadOnly();
+
 			_Candidates = new Breakpoint[4];
 
 			_IsBuildingParagraph = false;
 		}
 
-		public ILineItemList Items
+		public ReadOnlyCollection<LineItem> Items
 		{
-			get { return this; }
+			get { return _ItemsReadOnly; }
 		}
 
-		public IBreakingPointList Breakpoints
+		public ReadOnlyCollection<BreakIndex> Breakpoints
 		{
-			get { return this; }
-		}
-
-		BreakIndex IBreakingPointList.this[int index]
-		{
-			get { return _Indices[index]; }
-		}
-
-		List<BreakIndex>.Enumerator IBreakingPointList.GetEnumerator()
-		{
-			return _Indices.GetEnumerator();
-		}
-
-		int IBreakingPointList.Count
-		{
-			get { return _Indices.Count; }
-		}
-
-		IEnumerator<BreakIndex> IEnumerable<BreakIndex>.GetEnumerator()
-		{
-			return _Indices.GetEnumerator();
-		}
-
-		IEnumerator<LineItem> IEnumerable<LineItem>.GetEnumerator()
-		{
-			return _Items.GetEnumerator();
-		}
-
-		List<LineItem>.Enumerator ILineItemList.GetEnumerator()
-		{
-			return _Items.GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			throw new NotSupportedException();
-		}
-
-		int ILineItemList.Count
-		{
-			get { return _Items.Count; }
-		}
-
-		LineItem ILineItemList.this[int index]
-		{
-			get { return _Items[index]; }
+			get { return _IndicesReadOnly; }
 		}
 
 		public void BeginParagraph()

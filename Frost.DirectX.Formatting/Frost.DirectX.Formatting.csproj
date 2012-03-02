@@ -97,8 +97,6 @@
     <Compile Include="Formatter.cs" />
     <Compile Include="FormatterSink.cs" />
     <Compile Include="Deprecate\GlyphRange.cs" />
-    <Compile Include="Deprecate\IBreakingPointList.cs" />
-    <Compile Include="Deprecate\ILineItemList.cs" />
     <Compile Include="ILineProvider.cs" />
     <Compile Include="IndexingHelpers.cs" />
     <Compile Include="LineBreaker.cs" />
