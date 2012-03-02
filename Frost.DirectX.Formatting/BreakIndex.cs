@@ -8,11 +8,19 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct provides information about a chosen breaking point in the text.
+	/// </summary>
 	internal struct BreakIndex : IEquatable<BreakIndex>
 	{
 		private readonly int _Index;
 		private readonly double _Ratio;
 
+		/// <summary>
+		///   This constructor initialize a new instance of the struct.
+		/// </summary>
+		/// <param name="index"> This parameter indicates the text index of the break. </param>
+		/// <param name="ratio"> This parameter indicates the text spacing ratio of the break. </param>
 		public BreakIndex(int index, double ratio)
 		{
 			Contract.Requires(index >= 0);
@@ -22,6 +30,9 @@ namespace Frost.DirectX.Formatting
 			_Ratio = ratio;
 		}
 
+		/// <summary>
+		///   This property indicates the text spacing ratio of the break.
+		/// </summary>
 		public double Ratio
 		{
 			get
@@ -33,6 +44,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property indicates the text index of the break.
+		/// </summary>
 		public int Index
 		{
 			get

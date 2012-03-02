@@ -8,10 +8,12 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This class provides information for a possible breaking point in the text.
+	/// </summary>
 	internal sealed class Breakpoint : IEquatable<Breakpoint>
 	{
 		public static readonly Breakpoint Empty;
-
 		public static readonly Breakpoint MaxDemerits;
 
 		private readonly Demerits _Demerits;
@@ -34,6 +36,17 @@ namespace Frost.DirectX.Formatting
 			MaxDemerits = new Breakpoint(0, 0, LineFitness.Tight, 0.0, 0.0, 0.0, double.MaxValue, 0.0);
 		}
 
+		/// <summary>
+		///   This constructor initializes a new solitary instance of this class.
+		/// </summary>
+		/// <param name="position"> This parameter indicates the textual position of the breaking point. </param>
+		/// <param name="line"> This parameter indicates the line number of the breaking point. </param>
+		/// <param name="fitnessClass"> This parameter indicates the line's fitness when theoretically broken at the breaking point. </param>
+		/// <param name="totalWidth"> This parameter indicates the total width of the line before the breaking point. </param>
+		/// <param name="totalStretch"> This parameter indicates the total stretch of the line before the breaking point. </param>
+		/// <param name="totalShrink"> This parameter indicates the total shrink of the line before the breaking point. </param>
+		/// <param name="demerits"> This parameter indicates the penalty incurred for breaking at this breaking point. </param>
+		/// <param name="ratio"> This parameter indicates the line's ratio when theoretically broken at the breaking point. </param>
 		public Breakpoint(
 			int position,
 			int line,
@@ -54,6 +67,18 @@ namespace Frost.DirectX.Formatting
 			Contract.Requires(Check.IsFinite(ratio));
 		}
 
+		/// <summary>
+		///   This constructor initializes a new chained instance of this class.
+		/// </summary>
+		/// <param name="position"> This parameter indicates the textual position of the breaking point. </param>
+		/// <param name="line"> This parameter indicates the line number of the breaking point. </param>
+		/// <param name="fitnessClass"> This parameter indicates the line's fitness when theoretically broken at the breaking point. </param>
+		/// <param name="totalWidth"> This parameter indicates the total width of the line before the breaking point. </param>
+		/// <param name="totalStretch"> This parameter indicates the total stretch of the line before the breaking point. </param>
+		/// <param name="totalShrink"> This parameter indicates the total shrink of the line before the breaking point. </param>
+		/// <param name="demerits"> This parameter indicates the penalty incurred for breaking at this breaking point. </param>
+		/// <param name="ratio"> This parameter indicates the line's ratio when theoretically broken at the breaking point. </param>
+		/// <param name="previous"> This parameter references the previous breaking point in the chain. </param>
 		public Breakpoint(
 			int position,
 			int line,
@@ -83,46 +108,73 @@ namespace Frost.DirectX.Formatting
 			_Ratio = ratio;
 		}
 
+		/// <summary>
+		///   This property indicates the penalty incurred when breaking at this breakpoint.
+		/// </summary>
 		public Demerits Demerits
 		{
 			get { return _Demerits; }
 		}
 
+		/// <summary>
+		///   This property indicates the fitness class of the line when breaking at this breakpoint.
+		/// </summary>
 		public LineFitness Fitness
 		{
 			get { return _FitnessClass; }
 		}
 
+		/// <summary>
+		///   This property indicates the line number of the line when breaking at this breakpoint.
+		/// </summary>
 		public int Line
 		{
 			get { return _Line; }
 		}
 
+		/// <summary>
+		///   This property indicates the textual position of the breakpoint.
+		/// </summary>
 		public int Position
 		{
 			get { return _Position; }
 		}
 
+		/// <summary>
+		///   This property indicates the line ratio when breaking at this breakpoint.
+		/// </summary>
 		public double Ratio
 		{
 			get { return _Ratio; }
 		}
 
+		/// <summary>
+		///   This property references the previous breakpoint in the chain.
+		/// </summary>
 		public Breakpoint Previous
 		{
 			get { return _Previous; }
 		}
 
+		/// <summary>
+		///   This property indicates the total shrink of the line when broken at this breakpoint.
+		/// </summary>
 		public double TotalShrink
 		{
 			get { return _TotalShrink; }
 		}
 
+		/// <summary>
+		///   This property indicates the total stretch of the line when broken at this breakpoint.
+		/// </summary>
 		public double TotalStretch
 		{
 			get { return _TotalStretch; }
 		}
 
+		/// <summary>
+		///   This property indicates the total width of the line when broken at this breakpoint.
+		/// </summary>
 		public double TotalWidth
 		{
 			get { return _TotalWidth; }

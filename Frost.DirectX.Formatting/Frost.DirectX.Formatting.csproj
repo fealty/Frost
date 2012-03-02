@@ -77,7 +77,6 @@
   <ItemGroup>
     <Compile Include="Aggregator.cs" />
     <Compile Include="AggregatorSink.cs" />
-    <Compile Include="AnalysisException.cs" />
     <Compile Include="Analyzer.cs" />
     <Compile Include="BreakCondition.cs" />
     <Compile Include="BreakIndex.cs" />

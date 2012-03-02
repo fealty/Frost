@@ -16,6 +16,9 @@ using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct provides storage for all available character formatting properties.
+	/// </summary>
 	internal struct CharacterFormat : IEquatable<CharacterFormat>
 	{
 		public byte BidiLevel;
@@ -59,6 +62,7 @@ namespace Frost.DirectX.Formatting
 			unchecked
 			{
 				int result = BidiLevel.GetHashCode();
+
 				result = (result * 397) ^ (Culture != null ? Culture.GetHashCode() : 0);
 				result = (result * 397) ^ (Family != null ? Family.GetHashCode() : 0);
 				result = (result * 397) ^ (Features != null ? Features.GetHashCode() : 0);

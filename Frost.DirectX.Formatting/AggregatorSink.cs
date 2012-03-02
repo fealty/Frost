@@ -7,17 +7,26 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This class provides storage for results from an <see cref="Aggregator" /> .
+	/// </summary>
 	internal sealed class AggregatorSink
 	{
 		private CharacterFormat[] _Characters;
 
 		private string _FullText;
 
+		/// <summary>
+		///   This constructor initializes a new instance of this class.
+		/// </summary>
 		public AggregatorSink()
 		{
 			_Characters = new CharacterFormat[0];
 		}
 
+		/// <summary>
+		///   This property contains the text provided to the <see cref="Aggregator" /> for processing.
+		/// </summary>
 		public string FullText
 		{
 			get
@@ -34,6 +43,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property indicates the current capacity of the characters array.
+		/// </summary>
 		public int Capacity
 		{
 			get
@@ -53,12 +65,15 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property exposes the array of formatted characters.
+		/// </summary>
 		public CharacterFormat[] Characters
 		{
 			get
 			{
 				Contract.Ensures(Contract.Result<CharacterFormat[]>() != null);
-				
+
 				return _Characters;
 			}
 		}
