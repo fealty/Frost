@@ -7,8 +7,16 @@ using SharpDX.DirectWrite;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This class provides convenient extension methods.
+	/// </summary>
 	internal static class Extensions
 	{
+		/// <summary>
+		///   This method converts Frost's <see cref="Frost.Formatting.FontWeight" /> to a DirectWrite representation.
+		/// </summary>
+		/// <param name="weight"> This parameter contains the font weight to convert. </param>
+		/// <returns> This method returns the converted font weight. </returns>
 		internal static FontWeight ToDirectWrite(this Frost.Formatting.FontWeight weight)
 		{
 			switch(weight)
@@ -36,6 +44,11 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method converts Frost's <see cref="Frost.Formatting.FontStyle" /> to a DirectWrite representation.
+		/// </summary>
+		/// <param name="style"> This parameter contains the font style to convert. </param>
+		/// <returns> This method returns the converted font style. </returns>
 		internal static FontStyle ToDirectWrite(this Frost.Formatting.FontStyle style)
 		{
 			switch(style)
@@ -51,6 +64,11 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method converts Frost's <see cref="Frost.Formatting.FontStretch" /> to a DirectWrite representation.
+		/// </summary>
+		/// <param name="stretch"> This parameter contains the font stretch to convert. </param>
+		/// <returns> This method returns the converted font stretch. </returns>
 		internal static FontStretch ToDirectWrite(this Frost.Formatting.FontStretch stretch)
 		{
 			switch(stretch)
