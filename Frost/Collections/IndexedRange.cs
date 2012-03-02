@@ -50,6 +50,20 @@ namespace Frost.Collections
 			return Slice(0, _Length);
 		}
 
+		public IndexedRange Extend(int length)
+		{
+			Contract.Requires(length >= 0);
+
+			return new IndexedRange(StartIndex, Length + length);
+		}
+
+		public IndexedRange Shrink(int length)
+		{
+			Contract.Requires(length >= 0);
+
+			return new IndexedRange(StartIndex, Length - length);
+		}
+
 		public IndexedRange Slice(int startIndex, int length)
 		{
 			Contract.Requires(startIndex >= 0);

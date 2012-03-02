@@ -20,7 +20,7 @@ namespace Frost.DirectX.Formatting
 		public Rectangle Floater;
 		public FontHandle Font;
 
-		public GlyphRange Glyphs;
+		public IndexedRange Glyphs;
 
 		public int LineNumber;
 		public float PointSize;

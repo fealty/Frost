@@ -12,7 +12,7 @@ namespace Frost.DirectX.Formatting
 	internal struct FormattedRun : IEquatable<FormattedRun>
 	{
 		public byte BidiLevel;
-		public ClusterRange Clusters;
+		public IndexedRange Clusters;
 		public float EmSize;
 		public FontHandle Font;
 		public int LineNumber;

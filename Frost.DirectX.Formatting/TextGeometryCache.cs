@@ -50,15 +50,15 @@ namespace Frost.DirectX.Formatting
 			FormattedCluster cluster = input.Clusters[clusterIndex];
 
 			ResizeInternalBuffers(cluster.Glyphs.Length);
-
+			
 			int index = 0;
 
-			for(int i = cluster.Glyphs.Start; i <= cluster.Glyphs.End; ++i)
+			foreach(int itemIndex in cluster.Glyphs)
 			{
 				_GlyphAdvances[index] = cluster.Region.Width;
 
-				_GlyphIndices[index] = input.Glyphs[i].Index;
-				_GlyphOffsets[index] = input.Glyphs[i].Offset;
+				_GlyphIndices[index] = input.Glyphs[itemIndex].Index;
+				_GlyphOffsets[index] = input.Glyphs[itemIndex].Offset;
 
 				++index;
 			}

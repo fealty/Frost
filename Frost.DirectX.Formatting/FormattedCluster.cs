@@ -13,7 +13,7 @@ namespace Frost.DirectX.Formatting
 	{
 		public IndexedRange Characters;
 		public DisplayMode Display;
-		public GlyphRange Glyphs;
+		public IndexedRange Glyphs;
 		public Rectangle Region;
 
 		public bool Equals(FormattedCluster other)

@@ -59,7 +59,7 @@ namespace Frost.DirectX.Formatting
 			FormattedRun activeRun;
 
 			activeRun.BidiLevel = input.Clusters[0].BidiLevel;
-			activeRun.Clusters = ClusterRange.Empty;
+			activeRun.Clusters = IndexedRange.Empty;
 			activeRun.EmSize = Convert.ToSingle(input.Clusters[0].Advance.Height);
 			activeRun.Font = input.Clusters[0].Font;
 			activeRun.TextRange = IndexedRange.Empty;
@@ -83,14 +83,13 @@ namespace Frost.DirectX.Formatting
 
 				if(currentRun == activeRun)
 				{
-					ClusterRange range = activeRun.Clusters;
-
-					activeRun.Clusters = new ClusterRange(range.Start, range.Length + 1);
+					// extend the current cluster range by one cluster
+					activeRun.Clusters = activeRun.Clusters.Extend(1);
 				}
 				else
 				{
-					start = input.Clusters[activeRun.Clusters.Start].Characters.StartIndex;
-					end = input.Clusters[activeRun.Clusters.End].Characters.LastIndex;
+					start = input.Clusters[activeRun.Clusters.StartIndex].Characters.StartIndex;
+					end = input.Clusters[activeRun.Clusters.LastIndex].Characters.LastIndex;
 
 					activeRun.TextRange = new IndexedRange(start, (end - start) + 1);
 
@@ -98,12 +97,12 @@ namespace Frost.DirectX.Formatting
 
 					activeRun = currentRun;
 
-					activeRun.Clusters = new ClusterRange(i, 1);
+					activeRun.Clusters = new IndexedRange(i, 1);
 				}
 			}
 
-			start = input.Clusters[activeRun.Clusters.Start].Characters.StartIndex;
-			end = input.Clusters[activeRun.Clusters.End].Characters.LastIndex;
+			start = input.Clusters[activeRun.Clusters.StartIndex].Characters.StartIndex;
+			end = input.Clusters[activeRun.Clusters.LastIndex].Characters.LastIndex;
 
 			activeRun.TextRange = new IndexedRange(start, (end - start) + 1);
 
@@ -117,7 +116,7 @@ namespace Frost.DirectX.Formatting
 			FormattedRun activeRun;
 
 			activeRun.BidiLevel = input.Clusters[0].BidiLevel;
-			activeRun.Clusters = ClusterRange.Empty;
+			activeRun.Clusters = IndexedRange.Empty;
 			activeRun.EmSize = Convert.ToSingle(input.Clusters[0].Advance.Height);
 			activeRun.Font = input.Clusters[0].Font;
 			activeRun.PointSize = input.Clusters[0].PointSize;
@@ -138,9 +137,8 @@ namespace Frost.DirectX.Formatting
 
 				if(currentRun == activeRun)
 				{
-					ClusterRange range = activeRun.Clusters;
-
-					activeRun.Clusters = new ClusterRange(range.Start, range.Length + 1);
+					// extend the current cluster range by one cluster
+					activeRun.Clusters = activeRun.Clusters.Extend(1);
 				}
 				else
 				{
@@ -148,7 +146,7 @@ namespace Frost.DirectX.Formatting
 
 					activeRun = currentRun;
 
-					activeRun.Clusters = new ClusterRange(i, 1);
+					activeRun.Clusters = new IndexedRange(i, 1);
 				}
 			}
 
@@ -240,7 +238,7 @@ namespace Frost.DirectX.Formatting
 			// the run and the line have the same direction
 			if((run.BidiLevel % 2 == 0) == (lineBidiLevel % 2 == 0))
 			{
-				for(int i = run.Clusters.Start; i <= run.Clusters.End; ++i)
+				for(int i = run.Clusters.StartIndex; i <= run.Clusters.LastIndex; ++i)
 				{
 					FormattedCluster newCluster;
 
@@ -286,7 +284,7 @@ namespace Frost.DirectX.Formatting
 			else
 			{
 				// iterate over the clusters in reverse
-				for(int i = run.Clusters.End; i >= run.Clusters.Start; --i)
+				for(int i = run.Clusters.LastIndex; i >= run.Clusters.StartIndex; --i)
 				{
 					FormattedCluster newCluster;
 

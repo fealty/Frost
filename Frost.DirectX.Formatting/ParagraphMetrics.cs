@@ -92,7 +92,7 @@ namespace Frost.DirectX.Formatting
 
 			int lastLine = 0;
 
-			ClusterRange range = ClusterRange.Empty;
+			IndexedRange range = IndexedRange.Empty;
 
 			for(int i = 0; i < formattedData.Runs.Count; ++i)
 			{
@@ -100,12 +100,12 @@ namespace Frost.DirectX.Formatting
 				{
 					_LineListBuilder.Add(ToTextRange(range));
 
-					range = new ClusterRange(formattedData.Runs[i].Clusters.Start, 0);
+					range = new IndexedRange(formattedData.Runs[i].Clusters.StartIndex, 0);
 
 					lastLine = formattedData.Runs[i].LineNumber;
 				}
 
-				range = new ClusterRange(range.Start, range.Length + formattedData.Runs[i].Clusters.Length);
+				range = new IndexedRange(range.StartIndex, range.Length + formattedData.Runs[i].Clusters.Length);
 			}
 
 			if(range.Length > 0)
@@ -290,7 +290,7 @@ namespace Frost.DirectX.Formatting
 
 				float baseline = face.Metrics.Ascent / emSize;
 
-				for(int j = run.Clusters.Start; j <= run.Clusters.End; ++j)
+				for(int j = run.Clusters.StartIndex; j <= run.Clusters.LastIndex; ++j)
 				{
 					Geometry geometry = geometryCache.Retrieve(j, run.BidiLevel, run.Font, formattedData);
 
@@ -305,16 +305,16 @@ namespace Frost.DirectX.Formatting
 			return new OutlineCollection(_OutlineListBuilder);
 		}
 
-		private IndexedRange ToTextRange(ClusterRange clusters)
+		private IndexedRange ToTextRange(IndexedRange clusters)
 		{
 			int textLength = 0;
 
-			for(int i = clusters.Start; i <= clusters.End; ++i)
+			for(int i = clusters.StartIndex; i <= clusters.LastIndex; ++i)
 			{
 				textLength += _Clusters[i].Characters.Length;
 			}
 
-			return new IndexedRange(_Clusters[clusters.Start].Characters.StartIndex, textLength);
+			return new IndexedRange(_Clusters[clusters.StartIndex].Characters.StartIndex, textLength);
 		}
 	}
 }

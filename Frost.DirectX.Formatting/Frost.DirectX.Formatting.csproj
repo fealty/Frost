@@ -83,7 +83,6 @@
     <Compile Include="BreakIndex.cs" />
     <Compile Include="Breakpoint.cs" />
     <Compile Include="CharacterFormat.cs" />
-    <Compile Include="Deprecate\ClusterRange.cs" />
     <Compile Include="ContentType.cs" />
     <Compile Include="Demerits.cs" />
     <Compile Include="DisplayMode.cs" />
@@ -96,7 +95,6 @@
     <Compile Include="FormattedRun.cs" />
     <Compile Include="Formatter.cs" />
     <Compile Include="FormatterSink.cs" />
-    <Compile Include="Deprecate\GlyphRange.cs" />
     <Compile Include="ILineProvider.cs" />
     <Compile Include="IndexingHelpers.cs" />
     <Compile Include="LineBreaker.cs" />

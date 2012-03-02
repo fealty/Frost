@@ -159,7 +159,7 @@ namespace Frost.DirectX.Formatting
 
 					glyphsLength = Math.Max(glyphsLength, 1);
 
-					mapping.Glyphs = new GlyphRange(glyphIndex, glyphsLength);
+					mapping.Glyphs = new IndexedRange(glyphIndex, glyphsLength);
 
 					int characterIndex = lastIndex;
 					int charactersLength = (i + 1) - characterIndex;
@@ -209,13 +209,13 @@ namespace Frost.DirectX.Formatting
 			{
 				ShapedCluster cluster = new ShapedCluster();
 
-				int glyphIndex = mapping.Glyphs.Start + glyphsIndex;
+				int glyphIndex = mapping.Glyphs.StartIndex + glyphsIndex;
 				int glyphsLength = mapping.Glyphs.Length;
 
 				Debug.Assert(glyphIndex >= 0);
 				Debug.Assert(glyphsLength > 0);
 
-				cluster.Glyphs = new GlyphRange(glyphIndex, glyphsLength);
+				cluster.Glyphs = new IndexedRange(glyphIndex, glyphsLength);
 
 				int characterIndex = mapping.Characters.StartIndex + run.Range.StartIndex;
 				int charactersLength = mapping.Characters.Length;
@@ -244,7 +244,7 @@ namespace Frost.DirectX.Formatting
 					}
 
 					cluster.Advance = new Size(
-						_OutputSink.Glyphs[cluster.Glyphs.Start].Advance, ComputeEmHeight(run.PointSize, ref metrics));
+						_OutputSink.Glyphs[cluster.Glyphs.StartIndex].Advance, ComputeEmHeight(run.PointSize, ref metrics));
 				}
 				else
 				{
@@ -780,7 +780,7 @@ namespace Frost.DirectX.Formatting
 		private struct ClusterMapping : IEquatable<ClusterMapping>
 		{
 			public IndexedRange Characters;
-			public GlyphRange Glyphs;
+			public IndexedRange Glyphs;
 
 			public bool Equals(ClusterMapping other)
 			{
