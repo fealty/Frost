@@ -25,8 +25,16 @@ namespace Frost.DirectX.Formatting
 		}
 	}
 
+	/// <summary>
+	///   This interface provides the length of each line to the <see cref="LineBreaker" /> .
+	/// </summary>
 	[ContractClass(typeof(ILineProviderContract))] internal interface ILineProvider
 	{
+		/// <summary>
+		///   This method provides the length of the line at the given index.
+		/// </summary>
+		/// <param name="lineIndex"> This parameter indicates the line index or line number. </param>
+		/// <returns> This method returns the length of the line at the given index. </returns>
 		double ProduceLine(int lineIndex);
 	}
 }

@@ -8,6 +8,9 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This class provides storage for the formatted results from a <see cref="Formatter" /> .
+	/// </summary>
 	internal sealed class FormatterSink
 	{
 		private readonly List<FormattedCluster> _Clusters;
@@ -27,48 +30,61 @@ namespace Frost.DirectX.Formatting
 		public FormatterSink()
 		{
 			_Runs = new List<FormattedRun>();
-
 			_Glyphs = new List<FormattedGlyph>();
-
 			_Clusters = new List<FormattedCluster>();
 		}
 
+		/// <summary>
+		///   This property exposes the formatted runs.
+		/// </summary>
 		public List<FormattedRun> Runs
 		{
 			get
 			{
 				Contract.Ensures(Contract.Result<List<FormattedRun>>() != null);
-				
+
 				return _Runs;
 			}
 		}
 
+		/// <summary>
+		///   This property exposes the formatted glyphs.
+		/// </summary>
 		public List<FormattedGlyph> Glyphs
 		{
 			get
 			{
 				Contract.Ensures(Contract.Result<List<FormattedGlyph>>() != null);
-				
+
 				return _Glyphs;
 			}
 		}
 
+		/// <summary>
+		///   This property exposes the formatted clusters.
+		/// </summary>
 		public List<FormattedCluster> Clusters
 		{
 			get
 			{
 				Contract.Ensures(Contract.Result<List<FormattedCluster>>() != null);
-				
+
 				return _Clusters;
 			}
 		}
 
+		/// <summary>
+		///   This property indicates the paragraph layout region.
+		/// </summary>
 		public Rectangle LayoutRegion
 		{
 			get { return _LayoutRegion; }
 			set { _LayoutRegion = value; }
 		}
 
+		/// <summary>
+		///   This property indicates the common line height.
+		/// </summary>
 		public float LineHeight
 		{
 			get { return _LineHeight; }
@@ -80,6 +96,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property indicates the common leading.
+		/// </summary>
 		public float Leading
 		{
 			get { return _Leading; }
@@ -91,6 +110,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property contains the text that was formatted.
+		/// </summary>
 		public string FullText
 		{
 			get
@@ -107,6 +129,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property indicates the offset from the origin to the baseline.
+		/// </summary>
 		public float BaselineOffset
 		{
 			get { return _BaselineOffset; }
@@ -118,6 +143,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property indicates the offset from the baseline to the strikethrough line.
+		/// </summary>
 		public float StrikethroughOffset
 		{
 			get { return _StrikethroughOffset; }
@@ -129,6 +157,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property indicates the offset from the baseline to the underline line.
+		/// </summary>
 		public float UnderlineOffset
 		{
 			get { return _UnderlineOffset; }
@@ -140,6 +171,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property indicates the recommended thickness of the strikethrough line.
+		/// </summary>
 		public float StrikethroughThickness
 		{
 			get { return _StrikethroughThickness; }
@@ -151,6 +185,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This property indicates the recommended thickness of the underline line.
+		/// </summary>
 		public float UnderlineThickness
 		{
 			get { return _UnderlineThickness; }
@@ -162,6 +199,10 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method ensures that the glyph list can hold the given count of glyphs.
+		/// </summary>
+		/// <param name="count"> This parameter indicates how many glyphs the list must hold. </param>
 		public void PreallocateGlyphs(int count)
 		{
 			Contract.Requires(count >= 0);
@@ -172,6 +213,10 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method ensures that the clusters list can hold given count of clusters.
+		/// </summary>
+		/// <param name="count"> This parameter indicates how many clusters the list must hold. </param>
 		public void PreallocateClusters(int count)
 		{
 			Contract.Requires(count >= 0);
@@ -182,6 +227,10 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method prepares the sink for formatting output.
+		/// </summary>
+		/// <param name="fullText"> This parameter references the text to be formatted. </param>
 		public void Reset(string fullText)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(fullText));
