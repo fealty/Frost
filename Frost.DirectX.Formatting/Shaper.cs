@@ -26,7 +26,7 @@ namespace Frost.DirectX.Formatting
 {
 	// DIFFICULT: what about shaping for line breaks and stuff? To be proper,
 	// the text needs to be shaped with line breaks taken into account.
-
+	//TODO: cleanup/docs!
 	internal sealed class Shaper : IDisposable
 	{
 		public static readonly Result InsufficientBufferError;
