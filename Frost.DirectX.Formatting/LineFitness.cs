@@ -8,11 +8,29 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct indicates the fitness of a line.
+	/// </summary>
 	internal struct LineFitness : IEquatable<LineFitness>
 	{
+		/// <summary>
+		///   This field indicates a very tight line fitness.
+		/// </summary>
 		public static readonly LineFitness VeryTight;
+
+		/// <summary>
+		///   This field indicates a tight line fitness.
+		/// </summary>
 		public static readonly LineFitness Tight;
+
+		/// <summary>
+		///   This field indicates a loose line fitness.
+		/// </summary>
 		public static readonly LineFitness Loose;
+
+		/// <summary>
+		///   This field indicates a very loose line fitness.
+		/// </summary>
 		public static readonly LineFitness VeryLoose;
 
 		private readonly int _FitnessClass;
@@ -52,11 +70,21 @@ namespace Frost.DirectX.Formatting
 			return "VeryLoose";
 		}
 
+		/// <summary>
+		///   This method measures the fitness gap between this fitness and another.
+		/// </summary>
+		/// <param name="other"> This parameter contains the fitness to compare. </param>
+		/// <returns> This method returns the integral fitness gap between this fitness and another. </returns>
 		public int MeasureFitnessGap(LineFitness other)
 		{
 			return Math.Abs(_FitnessClass - other._FitnessClass);
 		}
 
+		/// <summary>
+		///   This method determines the line fitness from the line ratio.
+		/// </summary>
+		/// <param name="ratio"> This parameter specifies the line ratio. </param>
+		/// <returns> This method returns the line fitness for the given line ratio. </returns>
 		public static LineFitness FromLineRatio(double ratio)
 		{
 			Contract.Requires(Check.IsFinite(ratio));
