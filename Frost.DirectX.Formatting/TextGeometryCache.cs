@@ -13,6 +13,9 @@ using SharpDX.DirectWrite;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This class provides management of text geometry resources.
+	/// </summary>
 	internal sealed class TextGeometryCache : IDisposable
 	{
 		private readonly Dictionary<FontHandle, Dictionary<TextGeometryKey, Geometry>> _Cache;
@@ -41,6 +44,14 @@ namespace Frost.DirectX.Formatting
 			_Sink.Dispose();
 		}
 
+		/// <summary>
+		///   This method retrieves the geometry for a formatted cluster.
+		/// </summary>
+		/// <param name="clusterIndex"> This parameter indicates the formatted cluster index. </param>
+		/// <param name="bidiLevel"> This parameter indicates the bidi level of the cluster. </param>
+		/// <param name="font"> This parameter references the font for the cluster. </param>
+		/// <param name="input"> This parameter references the formatted text output. </param>
+		/// <returns> This method returns the geometry for the formatted cluster. </returns>
 		public Geometry Retrieve(int clusterIndex, byte bidiLevel, FontHandle font, FormatterSink input)
 		{
 			Contract.Requires(clusterIndex >= 0);
@@ -50,7 +61,7 @@ namespace Frost.DirectX.Formatting
 			FormattedCluster cluster = input.Clusters[clusterIndex];
 
 			ResizeInternalBuffers(cluster.Glyphs.Length);
-			
+
 			int index = 0;
 
 			foreach(int itemIndex in cluster.Glyphs)
@@ -100,6 +111,10 @@ namespace Frost.DirectX.Formatting
 			return geometry;
 		}
 
+		/// <summary>
+		///   This method resizes the internal buffers.
+		/// </summary>
+		/// <param name="count"> This parameter indicates the count of glyphs the internal buffers can hold. </param>
 		private void ResizeInternalBuffers(int count)
 		{
 			Contract.Requires(count >= 0);
