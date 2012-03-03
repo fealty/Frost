@@ -10,6 +10,9 @@ using Frost.Formatting;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This class provides the text processing pipeline that produces formatted and typeset text.
+	/// </summary>
 	public sealed class TextPipeline : IDisposable
 	{
 		private readonly Aggregator _Aggregator;
@@ -48,6 +51,13 @@ namespace Frost.DirectX.Formatting
 			Dispose(true);
 		}
 
+		/// <summary>
+		///   This method measures (or formats and typesets) a paragraph of text.
+		/// </summary>
+		/// <param name="paragraph"> This parameter references the paragraph to measure. </param>
+		/// <param name="region"> This parameter contains the region to measure the paragraph within. </param>
+		/// <param name="obstructions"> This parameter references floating obstructions that text will flow around. </param>
+		/// <returns> This method returns the final measured text metrics. </returns>
 		public ITextMetrics Measure(
 			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions)
 		{

@@ -14,6 +14,9 @@ using Geometry = Frost.Shaping.Geometry;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This class a cluster key to Frost geometry from the DirectWrite glyph outlines.
+	/// </summary>
 	internal sealed class TextGeometrySink : CallbackBase, SimplifiedGeometrySink
 	{
 		private Geometry.Builder _GeometryBuilder;
@@ -33,7 +36,7 @@ namespace Frost.DirectX.Formatting
 
 		void SimplifiedGeometrySink.AddLines(DrawingPointF[] ointsRef)
 		{
-			foreach (DrawingPointF point in ointsRef)
+			foreach(DrawingPointF point in ointsRef)
 			{
 				_GeometryBuilder.LineTo(point.X, point.Y);
 			}
@@ -65,6 +68,13 @@ namespace Frost.DirectX.Formatting
 		{
 		}
 
+		/// <summary>
+		///   This method creates a Frost cluster geometry from DirectWrite glyphs.
+		/// </summary>
+		/// <param name="key"> This parameter contains the cluster key information. </param>
+		/// <param name="bidiLevel"> This parameter contains the bidi level for the cluster. </param>
+		/// <param name="font"> This parameter references the font for the cluster. </param>
+		/// <returns> This method returns the geometry for the cluster key. </returns>
 		public Geometry CreateGeometry(TextGeometryKey key, byte bidiLevel, FontHandle font)
 		{
 			Contract.Requires(font != null);
@@ -77,8 +87,10 @@ namespace Frost.DirectX.Formatting
 
 			try
 			{
+				bool isRightToLeft = Convert.ToBoolean(bidiLevel & 1);
+
 				face.GetGlyphRunOutline(
-					1.0f, key.Indices, key.Advances, key.Offsets, false, Convert.ToBoolean(bidiLevel & 1), this);
+					1.0f, key.Indices, key.Advances, key.Offsets, false, isRightToLeft, this);
 			}
 			finally
 			{
