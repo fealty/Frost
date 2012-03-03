@@ -9,6 +9,9 @@ using SharpDX.DirectWrite;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct stores data required to identify a unique text geometry.
+	/// </summary>
 	internal struct TextGeometryKey : IEquatable<TextGeometryKey>
 	{
 		public float[] Advances;
