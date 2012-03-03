@@ -16,9 +16,17 @@ namespace Frost.DirectX
 	{
 		private readonly WeakReference _CanvasContext;
 
+		private readonly Canvas.ResolvedContext _SurfaceCanvas;
+
 		public PrivateSurface(ref Description surfaceDescription) : base(ref surfaceDescription)
 		{
 			_CanvasContext = new WeakReference(null);
+
+			Canvas canvas = new Canvas(Region.Size, SurfaceUsage.Private);
+
+			_SurfaceCanvas = new TargetContext(canvas, Region, this);
+
+			_SurfaceCanvas.BackingContext = _SurfaceCanvas;
 		}
 
 		public IEnumerable<Rectangle> UsedRegions
@@ -85,7 +93,7 @@ namespace Frost.DirectX
 
 				if(context != null)
 				{
-					context.Invalidate();
+					context.BackingContext = null;
 
 					invalidatedResources.Add(context.Target);
 				}
@@ -100,9 +108,14 @@ namespace Frost.DirectX
 
 		public void Forget(Canvas.ResolvedContext context)
 		{
-			context.Invalidate();
+			context.BackingContext = null;
 
 			_CanvasContext.Target = null;
+		}
+
+		public Canvas SurfaceCanvas
+		{
+			get { return _SurfaceCanvas.Target; }
 		}
 
 		private void ComputeOffsetRegion(Size desiredSize, out Rectangle result)

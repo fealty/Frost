@@ -19,6 +19,8 @@ namespace Frost.DirectX
 
 		private float _FreeArea;
 
+		private readonly Canvas.ResolvedContext _SurfaceCanvas;
+
 		public DynamicSurface(ref Description surfaceDescription) : base(ref surfaceDescription)
 		{
 			_FreeRegions = new LinkedList<Rectangle>();
@@ -28,6 +30,12 @@ namespace Frost.DirectX
 			_UsedRegions = new List<Canvas.ResolvedContext>();
 
 			_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
+
+			Canvas canvas = new Canvas(Region.Size, SurfaceUsage.Private);
+
+			_SurfaceCanvas = new TargetContext(canvas, Region, this);
+
+			_SurfaceCanvas.BackingContext = _SurfaceCanvas;
 		}
 
 		public bool InUse
@@ -52,7 +60,7 @@ namespace Frost.DirectX
 			{
 				foreach(Canvas.ResolvedContext item in _UsedRegions)
 				{
-					item.Invalidate();
+					item.BackingContext = null;
 				}
 
 				_UsedRegions.Clear();
@@ -66,9 +74,14 @@ namespace Frost.DirectX
 
 		public void Forget(Canvas.ResolvedContext context)
 		{
-			context.Invalidate();
+			context.BackingContext = null;
 
 			_UsedRegions.Remove(context);
+		}
+
+		public Canvas SurfaceCanvas
+		{
+			get { return _SurfaceCanvas.Target; }
 		}
 
 		public Surface2D Surface2D

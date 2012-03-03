@@ -21,12 +21,20 @@ namespace Frost.DirectX
 		private float _FragmentedArea;
 		private float _OccupiedArea;
 
+		private readonly Canvas.ResolvedContext _SurfaceCanvas;
+
 		public SharedSurface(ref Description surfaceDescription) : base(ref surfaceDescription)
 		{
 			_UsedRegions = new LinkedList<CanvasData>();
 			_FreeRegions = new LinkedList<Rectangle>();
 
 			_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
+
+			Canvas canvas = new Canvas(Region.Size, SurfaceUsage.Private);
+
+			_SurfaceCanvas = new TargetContext(canvas, Region, this, new LinkedListNode<CanvasData>(new CanvasData()));
+
+			_SurfaceCanvas.BackingContext = _SurfaceCanvas;
 		}
 
 		public float Occupancy
@@ -82,13 +90,18 @@ namespace Frost.DirectX
 		{
 			TargetContext targetContext = (TargetContext)context;
 
-			context.Invalidate();
+			context.BackingContext = null;
 
 			Rectangle region = targetContext.Node.Value.ActualRegion;
 
 			_UsedRegions.Remove(targetContext.Node);
 
 			_FragmentedArea += region.Area;
+		}
+
+		public Canvas SurfaceCanvas
+		{
+			get { return _SurfaceCanvas.Target; }
 		}
 
 		public Surface2D Surface2D
@@ -145,7 +158,7 @@ namespace Frost.DirectX
 
 						if(context != null)
 						{
-							context.Invalidate();
+							context.BackingContext = null;
 
 							invalidatedResources.Add(context.Target);
 						}
