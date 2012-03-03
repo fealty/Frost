@@ -39,7 +39,7 @@ namespace Demo.Formatting
 
 			Paragraph.Builder builder = Paragraph.Create();
 
-			builder.WithPointSize(10);
+			builder.WithPointSize(12);
 			builder.WithAlignment(Alignment.Stretch);
 			//builder.WithIndentation(2.0f);
 
