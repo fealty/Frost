@@ -15,7 +15,7 @@ using DxFontMetrics = SharpDX.DirectWrite.FontMetrics;
 namespace Frost.DirectX.Formatting
 {
 	/// <summary>
-	///   This class formats typeset clusters and glyphs, producing formatting information and outputting results to an output sink.
+	///   This class formats typeset clusters and glyphs, producing positioning information and outputting results to an output sink.
 	/// </summary>
 	internal sealed class Formatter
 	{
