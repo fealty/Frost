@@ -143,7 +143,6 @@ namespace Demo.Framework
 			Contract.Requires(canvas != null);
 			Contract.Requires(device2D != null);
 
-			//TODO: is there a better way to get the device handle?
 			IntPtr sharedHandle = canvas.GetDeviceHandle(device2D);
 
 			if(sharedHandle != _SharedHandle)
