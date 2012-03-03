@@ -299,14 +299,16 @@ namespace Frost
 					{
 						case Alignment.Stretch:
 							width = container.Width;
+							x = container.X;
 							break;
 						case Alignment.Trailing:
-							x = (container.Width - _Width) + _X;
+							x = container.Right - _Width;
 							break;
 						case Alignment.Center:
-							x = ((container.Width / 2.0f) - (_Width / 2.0f)) + _X;
+							x = container.Center.X - (_Width / 2.0f);
 							break;
 						case Alignment.Leading:
+							x = container.Left;
 							break;
 					}
 				}
@@ -316,14 +318,16 @@ namespace Frost
 					{
 						case Alignment.Stretch:
 							width = container.Width;
+							x = container.X;
 							break;
 						case Alignment.Center:
-							x = ((container.Width / 2.0f) - (_Width / 2.0f)) + _X;
+							x = container.Center.X - (_Width / 2.0f);
 							break;
 						case Alignment.Leading:
-							x = (container.Width - _Width) + _X;
+							x = container.Right - _Width;
 							break;
 						case Alignment.Trailing:
+							x = container.Left;
 							break;
 					}
 				}
@@ -335,14 +339,16 @@ namespace Frost
 				{
 					case Alignment.Stretch:
 						height = container.Height;
+						y = container.Y;
 						break;
 					case Alignment.Center:
-						y = ((container.Height / 2.0f) - (_Height / 2.0f)) + _Y;
+						y = container.Center.Y - (_Height / 2.0f);
 						break;
 					case Alignment.Leading:
-						y = (container.Height - _Height) + _Y;
+						y = container.Bottom - _Height;
 						break;
 					case Alignment.Trailing:
+						y = container.Top;
 						break;
 				}
 			}
