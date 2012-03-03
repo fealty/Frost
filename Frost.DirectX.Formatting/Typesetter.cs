@@ -150,10 +150,7 @@ namespace Frost.DirectX.Formatting
 
 					Rectangle occupiedRegion = new Rectangle(occupiedX, occupiedY, occupiedWidth, occupiedHeight);
 
-					if(cluster.HAlignment == Alignment.Stretch)
-					{
-						throw new InvalidOperationException("Horizontal stretch is not valid on floaters!");
-					}
+					Debug.Assert(cluster.HAlignment != Alignment.Stretch);
 
 					// determine the horizonal region the occupied region can reside within
 					Rectangle slideRegion = new Rectangle(
@@ -182,6 +179,11 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method determines the maximum line height in the paragraph.
+		/// </summary>
+		/// <param name="input"> This parameter references the input sink. </param>
+		/// <param name="leadingEm"> This parameter indicates the leading in EM units. </param>
 		private void FindLineHeight(ShaperSink input, float leadingEm)
 		{
 			Contract.Requires(input != null);
@@ -213,10 +215,15 @@ namespace Frost.DirectX.Formatting
 				}
 			}
 
-			// convert from EMs to pixels, cap value to a minimum of the gap
+			// convert from EMs to pixels; cap value to a minimum of the gap
 			_Leading = (_LineHeight * leadingEm) + gap;
 		}
 
+		/// <summary>
+		///   This method computes the region for the line at the given index.
+		/// </summary>
+		/// <param name="lineIndex"> This parameter indicates the line index. </param>
+		/// <returns> This method returns the computed line region. </returns>
 		private Rectangle GetLineRegion(int lineIndex)
 		{
 			Contract.Requires(lineIndex >= 0);
@@ -227,10 +234,8 @@ namespace Frost.DirectX.Formatting
 				return _ComputedLines[lineIndex];
 			}
 
-			Rectangle lineRegion =
-				new Rectangle(
-					new Point(_LayoutRegion.Left, _LayoutRegion.Top + _LineOffset),
-					new Size(_LayoutRegion.Width, _LineHeight));
+			Rectangle lineRegion = new Rectangle(
+				_LayoutRegion.Left, _LayoutRegion.Top + _LineOffset, _LayoutRegion.Width, _LineHeight);
 
 			IdentifyFreeSegments(lineRegion);
 
@@ -240,6 +245,11 @@ namespace Frost.DirectX.Formatting
 			return GetLineRegion(lineIndex);
 		}
 
+		/// <summary>
+		///   This method processes a free line segment.
+		/// </summary>
+		/// <param name="index"> This parameter references the index of the free segment. </param>
+		/// <param name="box"> This parameter contains the box to test against. </param>
 		private void ProcessFreeSegment(ref int index, Rectangle box)
 		{
 			Contract.Requires(index >= 0);
@@ -294,6 +304,10 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method identifies free segments within a line region.
+		/// </summary>
+		/// <param name="lineRegion"> This parameter contains the region of the line. </param>
 		private void IdentifyFreeSegments(Rectangle lineRegion)
 		{
 			_FreeSegments.Clear();
@@ -329,7 +343,7 @@ namespace Frost.DirectX.Formatting
 			foreach(Segment segment in _FreeSegments)
 			{
 				Rectangle newRegion = new Rectangle(
-					new Point(segment.Position, lineRegion.Y), new Size(segment.Length, lineRegion.Height));
+					segment.Position, lineRegion.Y, segment.Length, lineRegion.Height);
 
 				// reject lines that occupy less space than the line height
 				if(newRegion.Width > _LineHeight)
@@ -339,6 +353,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method resets the line state to allow for mutation.
+		/// </summary>
 		private void ResetLinesState()
 		{
 			_LineOffset = 0.0f;
@@ -347,6 +364,11 @@ namespace Frost.DirectX.Formatting
 			_ComputedLines.Clear();
 		}
 
+		/// <summary>
+		///   This method adds obstructions to the line state.
+		/// </summary>
+		/// <typeparam name="T"> This type parameter indicates the type of the obstruction enumeration. </typeparam>
+		/// <param name="boxes"> This parameter references an instance of the obstruction enumeration. </param>
 		private void AddObstructions<T>(T boxes) where T : class, IEnumerable<Rectangle>
 		{
 			if(boxes != null)
@@ -358,6 +380,11 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method determines the breaking points, taking into account the given obstructions.
+		/// </summary>
+		/// <typeparam name="T"> This type parameter indicates the type of the obstruction enumeration. </typeparam>
+		/// <param name="boxes"> This parameter references an instance of the obstruction enumeration. </param>
 		private void DetermineBreakingPoints<T>(T boxes) where T : class, IEnumerable<Rectangle>
 		{
 			AddObstructions(boxes);
@@ -382,6 +409,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method saves the breaking points in the proper order.
+		/// </summary>
 		private void SaveBreakingPoints()
 		{
 			_ClusterBreaks.Clear();
@@ -393,6 +423,14 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method determines whether the line is broken before the given cluster.
+		/// </summary>
+		/// <param name="index"> This parameter indicates the index of the current item. </param>
+		/// <param name="clusters"> This parameter references the shaped clusters. </param>
+		/// <param name="isForced"> This parameter indicates whether the break is forced. </param>
+		/// <param name="isAlone"> This parameter indicates whether the call to the method is recursive. </param>
+		/// <returns> This method returns <c>true</c> if the line is broken before the given cluster; otherwise, this method returns <c>false</c> . </returns>
 		private static bool IsBrokenBefore(
 			int index, List<ShapedCluster> clusters, ref bool isForced, bool isAlone = true)
 		{
@@ -420,6 +458,14 @@ namespace Frost.DirectX.Formatting
 			return false;
 		}
 
+		/// <summary>
+		///   This method determines whether the line is broken after the given cluster.
+		/// </summary>
+		/// <param name="index"> This parameter indicates the index of the current item. </param>
+		/// <param name="clusters"> This parameter references the shaped clusters. </param>
+		/// <param name="isForced"> This parameter indicates whether the break is forced. </param>
+		/// <param name="isAlone"> This parameter indicates whether the call to the method is recursive. </param>
+		/// <returns> This method returns <c>true</c> if the line is broken after the given cluster; otherwise, this method returns <c>false</c> . </returns>
 		private static bool IsBrokenAfter(
 			int index, List<ShapedCluster> clusters, ref bool isForced, bool isAlone = true)
 		{
@@ -447,6 +493,12 @@ namespace Frost.DirectX.Formatting
 			return false;
 		}
 
+		/// <summary>
+		///   This method adds a soft hyphen to the line breaker.
+		/// </summary>
+		/// <param name="index"> This parameter indicates the index of the item representing the soft hyphen. </param>
+		/// <param name="advance"> This parameter indicates the advance width of the soft hyphen. </param>
+		/// <param name="isRagged"> This parameter indicates whether the text is being set ragged or justified. </param>
 		private void AddSoftHyphen(int index, double advance, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
@@ -465,6 +517,11 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method adds a forced break to the line breaker.
+		/// </summary>
+		/// <param name="index"> This parameter indicates the index of the item representing the forced break. </param>
+		/// <param name="isRagged"> This parameter indicates whether the text is being set ragged or justified. </param>
 		private void AddForcedBreak(int index, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
@@ -480,6 +537,12 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method adds a variable space to the line breaker.
+		/// </summary>
+		/// <param name="index"> This parameter indicates the index of the item representing the variable space. </param>
+		/// <param name="length"> This parameter indicates the length of the space. </param>
+		/// <param name="isRagged"> This parameter indicates whether the text is being set ragged or justified. </param>
 		private void AddVariableSpace(int index, double length, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
@@ -497,6 +560,13 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method adds whitespace to the line breaker.
+		/// </summary>
+		/// <param name="index"> This parameter indicates the index of the item representing the whitespace. </param>
+		/// <param name="length"> This parameter indicates the length of the space. </param>
+		/// <param name="input"> This parameter references the input sink. </param>
+		/// <param name="isRagged"> This parameter indicates whether the text is being set ragged or justified. </param>
 		private void AddWhitespace(int index, double length, ShaperSink input, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
@@ -524,6 +594,13 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method adds a cluster to the line breaker.
+		/// </summary>
+		/// <param name="index"> This parameter indicates the index of the item representing the cluster. </param>
+		/// <param name="advance"> This parameter indicates the advance width of the cluster. </param>
+		/// <param name="input"> This parameter references the input sink. </param>
+		/// <param name="isRagged"> This parameter indicates whether the text is being set ragged or justified. </param>
 		private void AddCluster(int index, double advance, ShaperSink input, bool isRagged)
 		{
 			Contract.Requires(index >= 0);
@@ -555,6 +632,10 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method produces the typeset glyphs.
+		/// </summary>
+		/// <param name="input"> This parameter references the input sink. </param>
 		private void OutputGlyphs(ShaperSink input)
 		{
 			Contract.Requires(input != null);
@@ -571,6 +652,11 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method produces the typeset clusters.
+		/// </summary>
+		/// <param name="input"> This parameter references the input sink. </param>
+		/// <param name="alignment"> This parameter indicates the paragraph alignment. </param>
 		private void OutputClusters(ShaperSink input, Alignment alignment)
 		{
 			Contract.Requires(input != null);
@@ -674,11 +760,14 @@ namespace Frost.DirectX.Formatting
 
 					ShapedCluster cluster = input.Clusters[item.Position];
 
+					float newWidth = newCluster.Advance.Width;
+					float newHeight = cluster.Advance.Height;
+
 					newCluster.Characters = cluster.Characters;
 					newCluster.Glyphs = cluster.Glyphs;
 					newCluster.ContentType = cluster.ContentType;
 					newCluster.Font = cluster.Font;
-					newCluster.Advance = new Size(newCluster.Advance.Width, cluster.Advance.Height);
+					newCluster.Advance = new Size(newWidth, newHeight);
 					newCluster.BidiLevel = cluster.BidiLevel;
 					newCluster.PointSize = cluster.PointSize;
 
@@ -724,6 +813,14 @@ namespace Frost.DirectX.Formatting
 			_OutputSink.LineLengths.Add(lineLength);
 		}
 
+		/// <summary>
+		///   This method produces line items from analysis of the shaped data.
+		/// </summary>
+		/// <param name="input"> This parameter references the input sink. </param>
+		/// <param name="alignment"> This parameter indicates the paragraph alignment. </param>
+		/// <param name="spacingEm"> This parameter indicates the spacing length in EM units. </param>
+		/// <param name="trackingEm"> This parameter indicates the tracking length in EM units. </param>
+		/// <param name="indentation"> This parameter indicates the indentation in pixels. </param>
 		private void AnalyzeItems(
 			ShaperSink input, Alignment alignment, double spacingEm, double trackingEm, double indentation)
 		{
@@ -825,11 +922,22 @@ namespace Frost.DirectX.Formatting
 			_LineBreaker.EndParagraph();
 		}
 
+		/// <summary>
+		///   This method computes the advance width for a shaped cluster.
+		/// </summary>
+		/// <param name="cluster"> This parameter references the shaped cluster. </param>
+		/// <returns> This method returns the advance width for the shaped cluster. </returns>
 		private static double ComputeAdvance(ref ShapedCluster cluster)
 		{
 			return cluster.Advance.Width;
 		}
 
+		/// <summary>
+		///   This method computes the spacing for a shaped cluster.
+		/// </summary>
+		/// <param name="spacingEm"> This parameter indicates the spacing length in EM units. </param>
+		/// <param name="cluster"> This parameter references the shaped cluster. </param>
+		/// <returns> This method returns the computed spacing length for the cluster. </returns>
 		private double ComputeSpacing(double spacingEm, ref ShapedCluster cluster)
 		{
 			double spacing = cluster.Advance.Height * spacingEm;
@@ -838,6 +946,12 @@ namespace Frost.DirectX.Formatting
 			return Math.Min(spacing, _LayoutRegion.Width / 4.0);
 		}
 
+		/// <summary>
+		///   This method computes the tracking for a shaped cluster.
+		/// </summary>
+		/// <param name="trackingEm"> This parameter indicates the tracking length in EM units. </param>
+		/// <param name="cluster"> This parameter references the shaped cluster. </param>
+		/// <returns> This method returns the computed tracking length for the cluster. </returns>
 		private double ComputeTracking(double trackingEm, ref ShapedCluster cluster)
 		{
 			double tracking = trackingEm * cluster.Advance.Height;
@@ -846,12 +960,20 @@ namespace Frost.DirectX.Formatting
 			return Math.Min(_LayoutRegion.Width / 4.0, tracking);
 		}
 
+		/// <summary>
+		///   This method computes the inline length.
+		/// </summary>
+		/// <param name="inlineLength"> This parameter indicates the length of an inline object. </param>
+		/// <returns> This method returns the computed length of the inline object. </returns>
 		private double ComputeInline(double inlineLength)
 		{
 			// cap inlines at half the layout length
 			return Math.Min(_LayoutRegion.Width / 2.0, inlineLength);
 		}
 
+		/// <summary>
+		///   This struct stores data for segments of lines.
+		/// </summary>
 		private struct Segment : IEquatable<Segment>
 		{
 			public float Length;
