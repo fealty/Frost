@@ -492,7 +492,7 @@ namespace Frost.DirectX
 		{
 			Contract.Requires(atlas != null);
 
-			/*Painter.Begin(atlas.Canvas, Retention.RetainData);
+			Painter.Begin(atlas.SurfaceCanvas, Retention.RetainData);
 
 			Painter.IsAntialiased = Antialiasing.Aliased;
 			Painter.LineStyle = LineStyle.Dash;
@@ -511,7 +511,7 @@ namespace Frost.DirectX
 				Painter.Stroke(region);
 			}
 
-			Painter.End();*/
+			Painter.End();
 		}
 
 		private void DumpAtlases<T>(string path, SafeList<T> atlasCollections) where T : ISurfaceAtlas

@@ -21,6 +21,8 @@ namespace Frost.DirectX
 
 		void Forget(Canvas.ResolvedContext context);
 
+		Canvas SurfaceCanvas { get; }
+
 		Surface2D Surface2D { get; }
 
 		Canvas.ResolvedContext AcquireRegion(Size dimensions, Canvas target);

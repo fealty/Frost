@@ -83,9 +83,10 @@ namespace Frost
 			public abstract Canvas Target { get; }
 			public abstract Device2D Device2D { get; }
 
-			public void Invalidate()
+			public ResolvedContext BackingContext
 			{
-				Target.BackingContext = null;
+				get { return Target.BackingContext; }
+				set { Target.BackingContext = value; }
 			}
 		}
 
