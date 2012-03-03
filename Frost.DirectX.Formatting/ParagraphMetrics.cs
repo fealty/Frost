@@ -262,7 +262,11 @@ namespace Frost.DirectX.Formatting
 			foreach(int index in range)
 			{
 				// exclude invisible clusters from consideration
+<<<<<<< HEAD
 				if (IsClusterVisible(index))
+=======
+				if(IsClusterVisible(index))
+>>>>>>> 897be68... cleanup/docs
 				{
 					// get the cluster index from the text index
 					int cluster = _TextToCluster[index];
@@ -278,12 +282,21 @@ namespace Frost.DirectX.Formatting
 		}
 
 		/// <summary>
+<<<<<<< HEAD
 		/// This method creates an outline collection.
 		/// </summary>
 		/// <param name="formattedData">This parameter references the formatted input sink.</param>
 		/// <param name="geometryCache">This parameter references the text geometry cache.</param>
 		/// <param name="clusterBidiLevels">This parameter references the cluster bidi levels.</param>
 		/// <returns>This method returns a new outline collection containing an outline for each formatted cluster.</returns>
+=======
+		///   This method creates an outline collection.
+		/// </summary>
+		/// <param name="formattedData"> This parameter references the formatted input sink. </param>
+		/// <param name="geometryCache"> This parameter references the text geometry cache. </param>
+		/// <param name="clusterBidiLevels"> This parameter references the cluster bidi levels. </param>
+		/// <returns> This method returns a new outline collection containing an outline for each formatted cluster. </returns>
+>>>>>>> 897be68... cleanup/docs
 		private static OutlineCollection CreateOutlineList(
 			FormatterSink formattedData, TextGeometryCache geometryCache, out byte[] clusterBidiLevels)
 		{
