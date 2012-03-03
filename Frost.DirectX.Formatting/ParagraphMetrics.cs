@@ -15,7 +15,9 @@ using SharpDX.DirectWrite;
 
 namespace Frost.DirectX.Formatting
 {
-	//TODO: cleanup/docs!
+	/// <summary>
+	///   This class provides an implementation of <see cref="ITextMetrics" /> .
+	/// </summary>
 	internal sealed class ParagraphMetrics : ITextMetrics
 	{
 		private static readonly List<Outline> _OutlineListBuilder;
@@ -50,8 +52,6 @@ namespace Frost.DirectX.Formatting
 			Contract.Requires(formattedData != null);
 			Contract.Requires(geometryCache != null);
 
-			_LineListBuilder.Clear();
-
 			_Paragraph = paragraph;
 
 			_Leading = formattedData.Leading;
@@ -64,18 +64,18 @@ namespace Frost.DirectX.Formatting
 
 			_Outlines = CreateOutlineList(formattedData, geometryCache, out _ClusterBidiLevels);
 
+			// create the text index to cluster index transformation table
 			_TextToCluster = new int[formattedData.FullText.Length];
 
 			for(int i = 0; i < _Clusters.Length; ++i)
 			{
-				IndexedRange characters = _Clusters[i].Characters;
-
-				for(int j = characters.StartIndex; j <= characters.LastIndex; ++j)
+				foreach(int characterIndex in _Clusters[i].Characters)
 				{
-					_TextToCluster[j] = i;
+					_TextToCluster[characterIndex] = i;
 				}
 			}
 
+			// determine the region that encompasses all formatted clusters
 			float left = float.MaxValue;
 			float top = float.MaxValue;
 			float right = float.MinValue;
@@ -90,6 +90,9 @@ namespace Frost.DirectX.Formatting
 			}
 
 			_TextRegion = Rectangle.FromEdges(left, top, right, bottom);
+
+			// determine the ranges of each line
+			_LineListBuilder.Clear();
 
 			int lastLine = 0;
 
@@ -106,7 +109,7 @@ namespace Frost.DirectX.Formatting
 					lastLine = formattedData.Runs[i].LineNumber;
 				}
 
-				range = new IndexedRange(range.StartIndex, range.Length + formattedData.Runs[i].Clusters.Length);
+				range = range.Extend(formattedData.Runs[i].Clusters.Length);
 			}
 
 			if(range.Length > 0)
@@ -116,6 +119,7 @@ namespace Frost.DirectX.Formatting
 
 			_Lines = new LineCollection(_LineListBuilder);
 
+			// build a collection of regions mapping to text indexes
 			_RegionListBuilder.Clear();
 
 			for(int i = 0; i < paragraph.Text.Length; ++i)
@@ -255,12 +259,13 @@ namespace Frost.DirectX.Formatting
 			float right = float.MinValue;
 			float bottom = float.MinValue;
 
-			for(int i = range.StartIndex; i <= range.LastIndex; ++i)
+			foreach(int index in range)
 			{
 				// exclude invisible clusters from consideration
-				if(IsClusterVisible(i))
+				if (IsClusterVisible(index))
 				{
-					int cluster = _TextToCluster[i];
+					// get the cluster index from the text index
+					int cluster = _TextToCluster[index];
 
 					left = Math.Min(left, _Clusters[cluster].Region.Left);
 					top = Math.Min(top, _Clusters[cluster].Region.Top);
@@ -272,6 +277,13 @@ namespace Frost.DirectX.Formatting
 			region = Rectangle.FromEdges(left, top, right, bottom);
 		}
 
+		/// <summary>
+		/// This method creates an outline collection.
+		/// </summary>
+		/// <param name="formattedData">This parameter references the formatted input sink.</param>
+		/// <param name="geometryCache">This parameter references the text geometry cache.</param>
+		/// <param name="clusterBidiLevels">This parameter references the cluster bidi levels.</param>
+		/// <returns>This method returns a new outline collection containing an outline for each formatted cluster.</returns>
 		private static OutlineCollection CreateOutlineList(
 			FormatterSink formattedData, TextGeometryCache geometryCache, out byte[] clusterBidiLevels)
 		{
@@ -291,9 +303,10 @@ namespace Frost.DirectX.Formatting
 
 				float baseline = face.Metrics.Ascent / emSize;
 
-				for(int j = run.Clusters.StartIndex; j <= run.Clusters.LastIndex; ++j)
+				foreach(int clusterIndex in run.Clusters)
 				{
-					Geometry geometry = geometryCache.Retrieve(j, run.BidiLevel, run.Font, formattedData);
+					Geometry geometry = geometryCache.Retrieve(
+						clusterIndex, run.BidiLevel, run.Font, formattedData);
 
 					_OutlineListBuilder.Add(new Outline(geometry, run.EmSize, baseline));
 
@@ -306,16 +319,23 @@ namespace Frost.DirectX.Formatting
 			return new OutlineCollection(_OutlineListBuilder);
 		}
 
+		/// <summary>
+		///   This method converts a cluster range to a text range.
+		/// </summary>
+		/// <param name="clusters"> This parameter contains the cluster range to convert. </param>
+		/// <returns> This method returns the converted text range. </returns>
 		private IndexedRange ToTextRange(IndexedRange clusters)
 		{
 			int textLength = 0;
 
-			for(int i = clusters.StartIndex; i <= clusters.LastIndex; ++i)
+			foreach(int index in clusters)
 			{
-				textLength += _Clusters[i].Characters.Length;
+				textLength += _Clusters[index].Characters.Length;
 			}
 
-			return new IndexedRange(_Clusters[clusters.StartIndex].Characters.StartIndex, textLength);
+			int startIndex = _Clusters[clusters.StartIndex].Characters.StartIndex;
+
+			return new IndexedRange(startIndex, textLength);
 		}
 	}
 }
