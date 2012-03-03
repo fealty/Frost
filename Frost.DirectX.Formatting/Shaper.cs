@@ -24,9 +24,9 @@ using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX.Formatting
 {
-	// DIFFICULT: what about shaping for line breaks and stuff? To be proper,
-	// the text needs to be shaped with line breaks taken into account.
-	//TODO: cleanup/docs!
+	/// <summary>
+	///   This class produces shaped glyphs and clusters from an <see cref="AggregatorSink" /> .
+	/// </summary>
 	internal sealed class Shaper : IDisposable
 	{
 		public static readonly Result InsufficientBufferError;
@@ -57,24 +57,26 @@ namespace Frost.DirectX.Formatting
 			InsufficientBufferError = new Result(0x8007007A);
 		}
 
+		/// <summary>
+		///   This constructor links a new instance of this class to an output sink.
+		/// </summary>
+		/// <param name="fontDevice"> This parameter references the font device. </param>
+		/// <param name="outputSink"> This parameter references the output sink. </param>
 		public Shaper(FontDevice fontDevice, ShaperSink outputSink)
 		{
 			Contract.Requires(fontDevice != null);
 			Contract.Requires(outputSink != null);
 
 			_FontDevice = fontDevice;
-
 			_OutputSink = outputSink;
 
+			_FeatureRangeLengths = new int[0];
 			_Features = new DxFontFeature[0][];
 
-			_FeatureRangeLengths = new int[0];
-
 			_FeatureList = new List<DxFontFeature>();
+			_FeatureRanges = new List<FeatureRange>();
 
 			_TextAnalyzer = new TextAnalyzer(_FontDevice.Factory);
-
-			_FeatureRanges = new List<FeatureRange>();
 		}
 
 		public void Dispose()
@@ -82,10 +84,13 @@ namespace Frost.DirectX.Formatting
 			Dispose(true);
 		}
 
+		/// <summary>
+		///   This method shapes the character input from a <see cref="AggregatorSink" /> .
+		/// </summary>
+		/// <param name="input"> This parameter references the input sink. </param>
 		public void Shape(AggregatorSink input)
 		{
 			Contract.Requires(input != null);
-
 			Contract.Ensures(_OutputSink.Glyphs.Count > 0);
 			Contract.Ensures(_OutputSink.Clusters.Count > 0);
 
@@ -115,6 +120,11 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method shapes an internal run.
+		/// </summary>
+		/// <param name="run"> This parameter contains the internal run to shape. </param>
+		/// <param name="input"> This parameter references the input sink. </param>
 		private void Shape(InternalRun run, AggregatorSink input)
 		{
 			Contract.Requires(input != null);
@@ -125,59 +135,75 @@ namespace Frost.DirectX.Formatting
 
 			int actualGlyphCount;
 
+			// produce and position the run's glyphs
 			ProduceGlyphs(fontHandle, ref run, out actualGlyphCount);
-
 			PositionGlyphs(fontHandle, ref run, actualGlyphCount);
 
+			// preallocate and output the shaped glyphs
 			_OutputSink.PreallocateGlyphs(actualGlyphCount);
 
 			int glyphsIndex = _OutputSink.Glyphs.Count;
 
 			OutputGlyphs(actualGlyphCount);
 
+			// preallocate and output the shaped clusters
 			_OutputSink.PreallocateClusters(run.Text.Length);
 
 			OutputClusters(glyphsIndex, ref run, fontHandle, input);
 		}
 
-		private IEnumerable<ClusterMapping> ProduceClusters(int textLength)
+		/// <summary>
+		///   This method produces cluster to glyph mappings.
+		/// </summary>
+		/// <param name="textRange"> This parameter holds the text range of the run being processed. </param>
+		/// <returns> This method returns an enumeration of cluster mappings. </returns>
+		private IEnumerable<ClusterMapping> ProduceClusters(IndexedRange textRange)
 		{
-			Contract.Requires(textLength >= 0);
-
 			int lastIndex = 0;
 
-			for(int i = 0; i < textLength; ++i)
+			foreach(int index in textRange)
 			{
-				if(i + 1 == textLength || _ClusterMap[i + 1] != _ClusterMap[lastIndex])
+				// this is the last index or the next mapping has changed
+				if(index + 1 == textRange.Length || _ClusterMap[index + 1] != _ClusterMap[lastIndex])
 				{
 					ClusterMapping mapping;
 
+					// index of glyph run start and the length of the glyph run
 					int glyphIndex = _ClusterMap[lastIndex];
-					int glyphsLength = _ClusterMap[i + 1] - glyphIndex;
+					int glyphsLength = _ClusterMap[index + 1] - glyphIndex;
 
 					Debug.Assert(glyphIndex >= 0);
 
+					// the glyph run must be at least one glyph in length
 					glyphsLength = Math.Max(glyphsLength, 1);
 
+					// assign the new glyph range to the mapping
 					mapping.Glyphs = new IndexedRange(glyphIndex, glyphsLength);
 
+					// index of text run start and length of text run
 					int characterIndex = lastIndex;
-					int charactersLength = (i + 1) - characterIndex;
+					int charactersLength = (index + 1) - characterIndex;
 
 					Debug.Assert(characterIndex >= 0);
 					Debug.Assert(charactersLength >= 0);
 
+					// the text run must be at one character in length
 					charactersLength = Math.Max(charactersLength, 1);
 
+					// assign the new text range to the mapping
 					mapping.Characters = new IndexedRange(characterIndex, charactersLength);
 
 					yield return mapping;
 
-					lastIndex = i + 1;
+					lastIndex = index + 1;
 				}
 			}
 		}
 
+		/// <summary>
+		///   This method produces and stores shaped glyphs in the output sink.
+		/// </summary>
+		/// <param name="glyphCount"> This parameter indicates the number of glyphs to output. </param>
 		private void OutputGlyphs(int glyphCount)
 		{
 			Contract.Requires(glyphCount >= 0);
@@ -195,6 +221,13 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method produces and stores shaped clusters in the output sink.
+		/// </summary>
+		/// <param name="glyphsIndex"> This parameter indicates the current glyph run start index in the output sink. </param>
+		/// <param name="run"> This parameter references the run to process. </param>
+		/// <param name="fontHandle"> This parameter references the font for the run. </param>
+		/// <param name="input"> This parameter references the input sink. </param>
 		private void OutputClusters(
 			int glyphsIndex, ref InternalRun run, FontHandle fontHandle, AggregatorSink input)
 		{
@@ -205,7 +238,7 @@ namespace Frost.DirectX.Formatting
 			DxFontMetrics metrics = fontHandle.ResolveFace().Metrics;
 
 			// output each cluster specified by the cluster to glyph mappings
-			foreach(ClusterMapping mapping in ProduceClusters(run.Text.Length))
+			foreach(ClusterMapping mapping in ProduceClusters(run.Text))
 			{
 				ShapedCluster cluster = new ShapedCluster();
 
@@ -230,10 +263,12 @@ namespace Frost.DirectX.Formatting
 				cluster.BidiLevel = run.BidiLevel;
 				cluster.PointSize = run.PointSize;
 
+				// this cluster is not an inline object
 				if(character.Inline.Area.Equals(0.0f))
 				{
-					// identify clusters representing formatting characters
-					switch(CharUnicodeInfo.GetUnicodeCategory(_OutputSink.FullText[cluster.Characters.StartIndex]))
+					char c = _OutputSink.FullText[characterIndex];
+
+					switch(CharUnicodeInfo.GetUnicodeCategory(c))
 					{
 						case UnicodeCategory.Format:
 							cluster.ContentType = ContentType.Format;
@@ -243,22 +278,26 @@ namespace Frost.DirectX.Formatting
 							break;
 					}
 
-					cluster.Advance = new Size(
-						_OutputSink.Glyphs[cluster.Glyphs.StartIndex].Advance, ComputeEmHeight(run.PointSize, ref metrics));
+					float width = _OutputSink.Glyphs[glyphIndex].Advance;
+					float height = ComputeEmHeight(run.PointSize, ref metrics);
+
+					cluster.Advance = new Size(width, height);
 				}
 				else
 				{
+					Size inline = character.Inline;
+
 					switch(character.HAlignment)
 					{
 						case Alignment.Stretch:
 							cluster.ContentType = ContentType.Inline;
 
-							cluster.Advance = new Size(character.Inline.Width, character.Inline.Height);
+							cluster.Advance = inline;
 							break;
 						default:
 							cluster.ContentType = ContentType.Floater;
-							cluster.Floater = new Rectangle(
-								cluster.Floater.Location, new Size(character.Inline.Width, character.Inline.Height));
+
+							cluster.Floater = cluster.Floater.Resize(inline);
 							break;
 					}
 				}
@@ -272,9 +311,16 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method computes the EM height for a font.
+		/// </summary>
+		/// <param name="pointSize"> This parameter indicates the point size of the font. </param>
+		/// <param name="dxMetrics"> This parameter references the DirectWrite font metrics. </param>
+		/// <returns> This method returns the computed height of the EM unit for the given parameters. </returns>
 		private static float ComputeEmHeight(float pointSize, ref DxFontMetrics dxMetrics)
 		{
-			Contract.Requires(pointSize >= 0.0 && pointSize <= double.MaxValue);
+			Contract.Requires(Check.IsPositive(pointSize));
+			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
 			FontMetrics metrics = new FontMetrics(
 				dxMetrics.Ascent, dxMetrics.Descent, dxMetrics.DesignUnitsPerEm);
@@ -282,6 +328,12 @@ namespace Frost.DirectX.Formatting
 			return metrics.Measure(dxMetrics.Ascent + dxMetrics.Descent + dxMetrics.LineGap, pointSize);
 		}
 
+		/// <summary>
+		///   This method positions the glyphs in a run.
+		/// </summary>
+		/// <param name="fontHandle"> This parameter references the font for the run. </param>
+		/// <param name="run"> This parameter references the run to process. </param>
+		/// <param name="actualGlyphCount"> This parameter indicates the actual count of glyphs in the run. </param>
 		private void PositionGlyphs(FontHandle fontHandle, ref InternalRun run, int actualGlyphCount)
 		{
 			Contract.Requires(fontHandle != null);
@@ -322,6 +374,12 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method produces the glyphs in a run.
+		/// </summary>
+		/// <param name="fontHandle"> This parameter references the font for the run. </param>
+		/// <param name="run"> This parameter references the run to process. </param>
+		/// <param name="glyphCount"> This output parameter indicates the actual count of glyphs in the run. </param>
 		private void ProduceGlyphs(FontHandle fontHandle, ref InternalRun run, out int glyphCount)
 		{
 			Contract.Requires(fontHandle != null);
@@ -374,6 +432,10 @@ namespace Frost.DirectX.Formatting
 			} while(result == InsufficientBufferError);
 		}
 
+		/// <summary>
+		///   This method ensures that internal buffers can hold data for the given number of characters.
+		/// </summary>
+		/// <param name="textLength"> This parameter indicates how many characters the buffers should hold. </param>
 		private void ResizeInternalBuffers(int textLength)
 		{
 			Contract.Requires(textLength >= 0);
@@ -399,6 +461,10 @@ namespace Frost.DirectX.Formatting
 			_ClusterMap[originalTextLength] = -1;
 		}
 
+		/// <summary>
+		///   This method converts Frost font features to a DirectWrite representation.
+		/// </summary>
+		/// <param name="features"> This parameter references a list of font features to convert. </param>
 		private void ExtractTextFeatures(List<FeatureRange> features)
 		{
 			Contract.Requires(features != null);
@@ -682,6 +748,11 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This method produces runs to shape from an input <see cref="AggregatorSink" /> .
+		/// </summary>
+		/// <param name="input"> This parameter references the input sink. </param>
+		/// <returns> This method returns a enumeration of the runs produced. </returns>
 		private IEnumerable<InternalRun> ProduceRuns(AggregatorSink input)
 		{
 			Contract.Requires(input != null);
@@ -727,47 +798,58 @@ namespace Frost.DirectX.Formatting
 				{
 					IndexedRange range = activeRun.Range;
 
-					activeRun.Range = new IndexedRange(range.StartIndex, range.Length + 1);
+					// extend the text range by one character
+					activeRun.Range = range.Extend(1);
 
 					if(currentFeatures == activeFeatures)
 					{
-						range = activeFeatures.Range;
+						// extend the feature range by one feature
+						range = activeFeatures.Range.Extend(1);
 
-						activeFeatures = new FeatureRange(
-							new IndexedRange(range.StartIndex, range.Length + 1), activeFeatures.Features);
+						activeFeatures = new FeatureRange(range, activeFeatures.Features);
 					}
 					else
 					{
+						// save the active feature range
 						_FeatureRanges.Add(activeFeatures);
 
+						// start a new active feature range from the current
 						activeFeatures = currentFeatures;
 
-						activeFeatures = new FeatureRange(new IndexedRange(i, 1), activeFeatures.Features);
+						range = new IndexedRange(i, 1);
+
+						activeFeatures = new FeatureRange(range, activeFeatures.Features);
 					}
 				}
 				else
 				{
+					// save the active feature range
 					_FeatureRanges.Add(activeFeatures);
 
+					// grab the text for the run
 					activeRun.Text = input.FullText.Substring(activeRun.Range.StartIndex, activeRun.Range.Length);
 
 					yield return activeRun;
 
+					// start a new active run from the current run
 					activeRun.Text = null;
 
 					activeRun = currentRun;
 					activeFeatures = currentFeatures;
 
+					// restart the active ranges from the current character
 					activeRun.Range = new IndexedRange(i, 1);
 
-					activeFeatures = new FeatureRange(new IndexedRange(i, 1), activeFeatures.Features);
+					activeFeatures = new FeatureRange(activeRun.Range, activeFeatures.Features);
 
 					_FeatureRanges.Clear();
 				}
 			}
 
+			// save the active feature range
 			_FeatureRanges.Add(activeFeatures);
 
+			// grab the text for the final run
 			activeRun.Text = input.FullText.Substring(activeRun.Range.StartIndex, activeRun.Range.Length);
 
 			yield return activeRun;
@@ -777,6 +859,9 @@ namespace Frost.DirectX.Formatting
 			_FeatureRanges.Clear();
 		}
 
+		/// <summary>
+		///   This struct provides data for mapping from characters to glyphs.
+		/// </summary>
 		private struct ClusterMapping : IEquatable<ClusterMapping>
 		{
 			public IndexedRange Characters;
@@ -816,6 +901,9 @@ namespace Frost.DirectX.Formatting
 			}
 		}
 
+		/// <summary>
+		///   This struct holds data for internal runs.
+		/// </summary>
 		internal struct InternalRun : IEquatable<InternalRun>
 		{
 			public byte BidiLevel;
@@ -857,6 +945,7 @@ namespace Frost.DirectX.Formatting
 				unchecked
 				{
 					int result = Range.GetHashCode();
+
 					result = (result * 397) ^ (Culture != null ? Culture.GetHashCode() : 0);
 					result = (result * 397) ^ (Family != null ? Family.GetHashCode() : 0);
 					result = (result * 397) ^ PointSize.GetHashCode();
@@ -878,6 +967,7 @@ namespace Frost.DirectX.Formatting
 
 					result = (result * 397) ^ (Features != null ? Features.GetHashCode() : 0);
 					result = (result * 397) ^ (Text != null ? Text.GetHashCode() : 0);
+
 					return result;
 				}
 			}
