@@ -44,6 +44,7 @@ namespace Demo.Formatting
 			//builder.WithIndentation(2.0f);
 
 			builder.WithCulture(new CultureInfo("he"));
+
 			builder.WithAdditionalInline(obs.Size, Alignment.Leading);
 
 			builder.WithFamily("David");
