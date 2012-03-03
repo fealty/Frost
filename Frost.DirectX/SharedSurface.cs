@@ -16,7 +16,6 @@ namespace Frost.DirectX
 	internal sealed class SharedSurface : Surface2D, ISurfaceAtlas
 	{
 		private readonly LinkedList<Rectangle> _FreeRegions;
-		private readonly object _Lock = new object();
 		private readonly LinkedList<CanvasData> _UsedRegions;
 
 		private float _FragmentedArea;
@@ -34,12 +33,9 @@ namespace Frost.DirectX
 		{
 			get
 			{
-				lock(_Lock)
-				{
-					float totalArea = Region.Area;
+				float totalArea = Region.Area;
 
-					return (_OccupiedArea / totalArea) * 100.0f;
-				}
+				return (_OccupiedArea / totalArea) * 100.0f;
 			}
 		}
 
@@ -47,24 +43,15 @@ namespace Frost.DirectX
 		{
 			get
 			{
-				lock(_Lock)
-				{
-					float totalArea = Region.Area;
+				float totalArea = Region.Area;
 
-					return (_FragmentedArea / totalArea) * 100.0f;
-				}
+				return (_FragmentedArea / totalArea) * 100.0f;
 			}
 		}
 
 		public bool InUse
 		{
-			get
-			{
-				lock(_Lock)
-				{
-					return _UsedRegions.Count > 0;
-				}
-			}
+			get { return _UsedRegions.Count > 0; }
 		}
 
 		public IEnumerable<Rectangle> UsedRegions
@@ -76,24 +63,18 @@ namespace Frost.DirectX
 		{
 			if(isForced)
 			{
-				lock(_Lock)
-				{
-					_OccupiedArea = 0;
-					_FragmentedArea = 0;
+				_OccupiedArea = 0;
+				_FragmentedArea = 0;
 
-					_FreeRegions.Clear();
+				_FreeRegions.Clear();
 
-					_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
+				_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
 
-					PurgeUsedRegions(true, invalidatedResources);
-				}
+				PurgeUsedRegions(true, invalidatedResources);
 			}
 			else
 			{
-				lock(_Lock)
-				{
-					PurgeUsedRegions(false, invalidatedResources);
-				}
+				PurgeUsedRegions(false, invalidatedResources);
 			}
 		}
 
@@ -101,16 +82,13 @@ namespace Frost.DirectX
 		{
 			TargetContext targetContext = (TargetContext)context;
 
-			lock(_Lock)
-			{
-				context.Invalidate();
+			context.Invalidate();
 
-				Rectangle region = targetContext.Node.Value.ActualRegion;
+			Rectangle region = targetContext.Node.Value.ActualRegion;
 
-				_UsedRegions.Remove(targetContext.Node);
+			_UsedRegions.Remove(targetContext.Node);
 
-				_FragmentedArea += region.Area;
-			}
+			_FragmentedArea += region.Area;
 		}
 
 		public Surface2D Surface2D
@@ -147,10 +125,7 @@ namespace Frost.DirectX
 
 				context.Node.Value.CanvasReference.Target = context;
 
-				lock(_Lock)
-				{
-					_UsedRegions.AddLast(context.Node);
-				}
+				_UsedRegions.AddLast(context.Node);
 
 				return context;
 			}
@@ -272,28 +247,25 @@ namespace Frost.DirectX
 
 			double desiredArea = size.Area;
 
-			lock(_Lock)
+			if(!CheckAvailableArea(desiredArea))
 			{
-				if(!CheckAvailableArea(desiredArea))
+				return null;
+			}
+
+			for(var node = _FreeRegions.First; node != null; node = node.Next)
+			{
+				if(desiredArea > node.Value.Area)
 				{
-					return null;
+					continue;
 				}
 
-				for(var node = _FreeRegions.First; node != null; node = node.Next)
+				Rectangle? result = InsertIntoNode(size, node);
+
+				if(result != null)
 				{
-					if(desiredArea > node.Value.Area)
-					{
-						continue;
-					}
+					_OccupiedArea += result.Value.Area;
 
-					Rectangle? result = InsertIntoNode(size, node);
-
-					if(result != null)
-					{
-						_OccupiedArea += result.Value.Area;
-
-						return result;
-					}
+					return result;
 				}
 			}
 

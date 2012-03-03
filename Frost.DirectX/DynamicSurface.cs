@@ -15,7 +15,6 @@ namespace Frost.DirectX
 	internal sealed class DynamicSurface : Surface2D, ISurfaceAtlas
 	{
 		private readonly LinkedList<Rectangle> _FreeRegions;
-		private readonly object _Lock = new object();
 		private readonly List<Canvas.ResolvedContext> _UsedRegions;
 
 		private float _FreeArea;
@@ -33,13 +32,7 @@ namespace Frost.DirectX
 
 		public bool InUse
 		{
-			get
-			{
-				lock(_Lock)
-				{
-					return _FreeArea < Region.Area;
-				}
-			}
+			get { return _FreeArea < Region.Area; }
 		}
 
 		public IEnumerable<Rectangle> UsedRegions
@@ -55,33 +48,27 @@ namespace Frost.DirectX
 
 		public void Purge(bool isForced, SafeList<Canvas> invalidatedResources)
 		{
-			lock(_Lock)
+			if(isForced)
 			{
-				if(isForced)
+				foreach(Canvas.ResolvedContext item in _UsedRegions)
 				{
-					foreach(Canvas.ResolvedContext item in _UsedRegions)
-					{
-						item.Invalidate();
-					}
-
-					_UsedRegions.Clear();
-					_FreeRegions.Clear();
-
-					_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
-
-					_FreeArea = Region.Area;
+					item.Invalidate();
 				}
+
+				_UsedRegions.Clear();
+				_FreeRegions.Clear();
+
+				_FreeRegions.AddLast(new Rectangle(Point.Empty, Region.Size));
+
+				_FreeArea = Region.Area;
 			}
 		}
 
 		public void Forget(Canvas.ResolvedContext context)
 		{
-			lock(_Lock)
-			{
-				context.Invalidate();
+			context.Invalidate();
 
-				_UsedRegions.Remove(context);
-			}
+			_UsedRegions.Remove(context);
 		}
 
 		public Surface2D Surface2D
@@ -100,12 +87,9 @@ namespace Frost.DirectX
 
 			ComputeOffsetRegion(dimensions, out adjustedRegion);
 
-			lock(_Lock)
+			if(adjustedRegion.Area > _FreeArea)
 			{
-				if(adjustedRegion.Area > _FreeArea)
-				{
-					return null;
-				}
+				return null;
 			}
 
 			Rectangle? result = InsertIntoSurface(adjustedRegion.Size);
@@ -117,10 +101,7 @@ namespace Frost.DirectX
 
 				Rectangle region = new Rectangle(finalX, finalY, dimensions);
 
-				lock(_Lock)
-				{
-					_FreeArea -= adjustedRegion.Area;
-				}
+				_FreeArea -= adjustedRegion.Area;
 
 				var context = new TargetContext(target, region, this);
 
@@ -139,12 +120,12 @@ namespace Frost.DirectX
 
 			result = Rectangle.Empty;
 
-			if (!desiredSize.Width.Equals(Region.Width))
+			if(!desiredSize.Width.Equals(Region.Width))
 			{
 				result = new Rectangle(new Point(1, result.Y), new Size(2, result.Height));
 			}
 
-			if (!desiredSize.Height.Equals(Region.Height))
+			if(!desiredSize.Height.Equals(Region.Height))
 			{
 				result = new Rectangle(new Point(result.X, 1), new Size(result.Width, 2));
 			}
@@ -208,10 +189,7 @@ namespace Frost.DirectX
 			Contract.Requires(Check.IsPositive(size.Width));
 			Contract.Requires(Check.IsPositive(size.Height));
 
-			lock(_Lock)
-			{
-				return IterateFreeNodes(size);
-			}
+			return IterateFreeNodes(size);
 		}
 
 		private Rectangle? IterateFreeNodes(Size size)
