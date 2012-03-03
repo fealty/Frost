@@ -14,6 +14,9 @@ using DxFontMetrics = SharpDX.DirectWrite.FontMetrics;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This class typesets shaped cluster and glyph data provided by a <see cref="ShaperSink" /> .
+	/// </summary>
 	internal sealed class Typesetter : ILineProvider
 	{
 		private static readonly Comparison<Segment> _SegmentComparison;
@@ -39,6 +42,10 @@ namespace Frost.DirectX.Formatting
 			_SegmentComparison = (c1, c2) => c1.Position.CompareTo(c2.Position);
 		}
 
+		/// <summary>
+		///   This constructor creates a new instance of this class linked to an output sink.
+		/// </summary>
+		/// <param name="outputSink"> This parameter references the output sink to link. </param>
 		public Typesetter(TypesetterSink outputSink)
 		{
 			Contract.Requires(outputSink != null);
@@ -60,7 +67,15 @@ namespace Frost.DirectX.Formatting
 			return GetLineRegion(lineIndex).Width;
 		}
 
-		public void Break<T>(ShaperSink input, Paragraph paragraph, Rectangle region, T boxes)
+		/// <summary>
+		///   This method typesets a paragraph from the shaped input.
+		/// </summary>
+		/// <typeparam name="T"> This parameter indicates the type of enumeration. </typeparam>
+		/// <param name="input"> This parameter references the input sink. </param>
+		/// <param name="paragraph"> This parameter references the paragraph. </param>
+		/// <param name="region"> This parameter contains the region to typeset the paragraph within. </param>
+		/// <param name="boxes"> This parameter references an enumeration of floating regions. </param>
+		public void Typeset<T>(ShaperSink input, Paragraph paragraph, Rectangle region, T boxes)
 			where T : class, IEnumerable<Rectangle>
 		{
 			Contract.Requires(input != null);
@@ -85,8 +100,14 @@ namespace Frost.DirectX.Formatting
 			_OutputSink.Leading = _Leading;
 			_OutputSink.LineHeight = _LineHeight;
 
+			// the indentation caps to half of the layout region
+			float indentationCap = _LayoutRegion.Width / 2.0f;
+
 			// determine the amount of indentation in pixels
-			float indentation = Math.Min(_LayoutRegion.Width / 2.0f, paragraph.Indentation * _LineHeight);
+			float indentationValue = paragraph.Indentation * _LineHeight;
+
+			// cap the indentation
+			float indentation = Math.Min(indentationCap, indentationValue);
 
 			_OutputSink.Indentation = indentation;
 
@@ -101,6 +122,10 @@ namespace Frost.DirectX.Formatting
 			_OutputSink.Lines.AddRange(_ComputedLines);
 		}
 
+		/// <summary>
+		///   This method processes floating regions.
+		/// </summary>
+		/// <param name="item"> This parameter references the current line item. </param>
 		private void ProcessFloaters(ref LineItem item)
 		{
 			if(item.Position >= 0)
@@ -109,70 +134,46 @@ namespace Frost.DirectX.Formatting
 
 				if(cluster.ContentType == ContentType.Floater)
 				{
-					float floaterX = 0.0f;
-					float floaterY = 0.0f;
-					float floaterWidth = 0.0f;
-					float floaterHeight = 0.0f;
+					// determine the total height of each line
+					float lineHeight = _LineHeight + _Leading;
 
-					float occupiedHeight = (float)Math.Ceiling(cluster.Floater.Height / (_LineHeight + _Leading)) *
-					                       (_LineHeight + _Leading);
+					// determine how many lines exist in the occupied space
+					float occupiedLines = cluster.Floater.Height / lineHeight;
 
-					switch(cluster.VAlignment)
+					// round to a whole number of lines
+					occupiedLines = Convert.ToSingle(Math.Ceiling(occupiedLines));
+
+					float occupiedX = _LayoutRegion.Left;
+					float occupiedY = _LayoutRegion.Top + _LineOffset;
+					float occupiedWidth = cluster.Floater.Width;
+					float occupiedHeight = occupiedLines * lineHeight;
+
+					Rectangle occupiedRegion = new Rectangle(occupiedX, occupiedY, occupiedWidth, occupiedHeight);
+
+					if(cluster.HAlignment == Alignment.Stretch)
 					{
-						case Alignment.Stretch:
-							floaterWidth = cluster.Floater.Width + (occupiedHeight - cluster.Floater.Height);
-							floaterHeight = occupiedHeight;
-							floaterY = _LayoutRegion.Top + _LineOffset;
-							break;
-						case Alignment.Trailing:
-							floaterWidth = cluster.Floater.Width;
-							floaterHeight = cluster.Floater.Height;
-							floaterY = _LayoutRegion.Top + _LineOffset;
-							break;
-						case Alignment.Center:
-							floaterWidth = cluster.Floater.Width;
-							floaterHeight = cluster.Floater.Height;
-							floaterY = ((_LayoutRegion.Top + _LineOffset) + (occupiedHeight / 2.0f)) -
-							           (floaterHeight / 2.0f);
-							break;
-						case Alignment.Leading:
-							floaterWidth = cluster.Floater.Width;
-							floaterHeight = cluster.Floater.Height;
-							floaterY = (_LayoutRegion.Top + _LineOffset + occupiedHeight) - floaterHeight;
-							break;
+						throw new InvalidOperationException("Horizontal stretch is not valid on floaters!");
 					}
 
-					switch(cluster.HAlignment)
-					{
-						case Alignment.Stretch:
-							throw new InvalidOperationException();
-						case Alignment.Leading:
-							if(cluster.BidiLevel % 2 == 0)
-							{
-								floaterX = _LayoutRegion.Right - floaterWidth;
-							}
-							else
-							{
-								floaterX = _LayoutRegion.Left;
-							}
-							break;
-						case Alignment.Center:
-							floaterX = (_LayoutRegion.X + (_LayoutRegion.Width / 2.0f)) - (floaterWidth / 2.0f);
-							break;
-						case Alignment.Trailing:
-							if(cluster.BidiLevel % 2 == 0)
-							{
-								floaterX = _LayoutRegion.Left;
-							}
-							else
-							{
-								floaterX = _LayoutRegion.Right - floaterWidth;
-							}
-							break;
-					}
+					// determine the horizonal region the occupied region can reside within
+					Rectangle slideRegion = new Rectangle(
+						occupiedX, occupiedY, _LayoutRegion.Width, occupiedHeight);
 
-					cluster.Floater = Rectangle.FromEdges(
-						floaterX, floaterY, floaterX + floaterWidth, floaterY + floaterHeight);
+					LayoutDirection direction = cluster.BidiLevel % 2 == 0
+					                            	? LayoutDirection.LeftToRight
+					                            	: LayoutDirection.RightToLeft;
+
+					// align the occupied region within the slide region
+					occupiedRegion = occupiedRegion.AlignWithin(
+						slideRegion, cluster.HAlignment, Axis.Horizontal, direction);
+
+					// align the floater vertically within the occupied region
+					cluster.Floater = cluster.Floater.AlignWithin(
+						occupiedRegion, cluster.VAlignment, Axis.Vertical, direction);
+
+					// align the floater horizontally within the occupied region
+					cluster.Floater = cluster.Floater.AlignWithin(
+						occupiedRegion, cluster.HAlignment, Axis.Horizontal, direction);
 
 					_InputSink.Clusters[item.Position] = cluster;
 

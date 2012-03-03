@@ -87,7 +87,7 @@ namespace Frost.DirectX.Formatting
 
 			_Shaper.Shape(_AggregatorSink);
 
-			_Typesetter.Break(_ShaperSink, paragraph, region, obstructions);
+			_Typesetter.Typeset(_ShaperSink, paragraph, region, obstructions);
 
 			_Formatter.Format(_TypesetterSink);
 
