@@ -706,7 +706,6 @@ namespace Frost.Painting
 			Scale(size.Width, size.Height);
 		}
 
-		//TODO: do transformation origins need to be scaled?
 		public void Scale(float width, float height, float originX, float originY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);

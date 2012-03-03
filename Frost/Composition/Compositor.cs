@@ -632,7 +632,6 @@ namespace Frost.Composition
 			Scale(size.Width, size.Height);
 		}
 
-		//TODO: do origins need to be translated to 2d surface coordinate space?
 		public void Scale(float width, float height, float originX, float originY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
