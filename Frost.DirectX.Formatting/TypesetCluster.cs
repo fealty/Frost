@@ -9,6 +9,9 @@ using Frost.Collections;
 
 namespace Frost.DirectX.Formatting
 {
+	/// <summary>
+	///   This struct contains data for clusters that have been typeset.
+	/// </summary>
 	internal struct TypesetCluster : IEquatable<TypesetCluster>
 	{
 		public Size Advance;
@@ -49,6 +52,7 @@ namespace Frost.DirectX.Formatting
 			unchecked
 			{
 				int result = ContentType.GetHashCode();
+
 				result = (result * 397) ^ Advance.GetHashCode();
 				result = (result * 397) ^ BidiLevel;
 				result = (result * 397) ^ Characters.GetHashCode();
@@ -61,6 +65,7 @@ namespace Frost.DirectX.Formatting
 				result = (result * 397) ^ display.GetHashCode();
 				result = (result * 397) ^ PointSize.GetHashCode();
 				result = (result * 397) ^ Floater.GetHashCode();
+
 				return result;
 			}
 		}
