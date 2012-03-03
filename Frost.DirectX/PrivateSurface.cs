@@ -16,8 +16,7 @@ namespace Frost.DirectX
 	{
 		private readonly WeakReference _CanvasContext;
 
-		public PrivateSurface(ref Description surfaceDescription)
-			: base(ref surfaceDescription)
+		public PrivateSurface(ref Description surfaceDescription) : base(ref surfaceDescription)
 		{
 			_CanvasContext = new WeakReference(null);
 		}
@@ -26,14 +25,11 @@ namespace Frost.DirectX
 		{
 			get
 			{
-				lock (_CanvasContext)
-				{
-					var canvas = (Canvas.ResolvedContext)_CanvasContext.Target;
+				var canvas = (Canvas.ResolvedContext)_CanvasContext.Target;
 
-					if (canvas != null)
-					{
-						yield return canvas.Region;
-					}
+				if(canvas != null)
+				{
+					yield return canvas.Region;
 				}
 			}
 		}
@@ -47,84 +43,66 @@ namespace Frost.DirectX
 		{
 			get
 			{
-				lock (_CanvasContext)
-				{
-					var canvas = (Canvas.ResolvedContext)_CanvasContext.Target;
+				var canvas = (Canvas.ResolvedContext)_CanvasContext.Target;
 
-					if (canvas == null)
-					{
-						yield return Region;
-					}
+				if(canvas == null)
+				{
+					yield return Region;
 				}
 			}
 		}
 
 		public bool InUse
 		{
-			get
-			{
-				lock (_CanvasContext)
-				{
-					return _CanvasContext.IsAlive;
-				}
-			}
+			get { return _CanvasContext.IsAlive; }
 		}
 
 		public Canvas.ResolvedContext AcquireRegion(Size dimensions, Canvas target)
 		{
 			Rectangle region;
-			
-			if (!Region.Contains(new Rectangle(Region.Location, dimensions)))
+
+			if(!Region.Contains(new Rectangle(Region.Location, dimensions)))
 			{
 				return null;
 			}
-			
+
 			ComputeOffsetRegion(dimensions, out region);
 
 			TargetContext context = new TargetContext(target, region, this);
 
-			lock(_CanvasContext)
-			{
-				Contract.Assert(!_CanvasContext.IsAlive);
+			Contract.Assert(!_CanvasContext.IsAlive);
 
-				_CanvasContext.Target = context;
-			}
+			_CanvasContext.Target = context;
 
 			return context;
 		}
 
 		public void Purge(bool isForced, SafeList<Canvas> invalidatedResources)
 		{
-			lock (_CanvasContext)
+			if(isForced)
 			{
-				if(isForced)
+				var context = (Canvas.ResolvedContext)_CanvasContext.Target;
+
+				if(context != null)
 				{
-					var context = (Canvas.ResolvedContext)_CanvasContext.Target;
+					context.Invalidate();
 
-					if(context != null)
-					{
-						context.Invalidate();
-
-						invalidatedResources.Add(context.Target);
-					}
-
-					_CanvasContext.Target = null;
+					invalidatedResources.Add(context.Target);
 				}
-				else if (!_CanvasContext.IsAlive)
-				{
-					_CanvasContext.Target = null;
-				}
+
+				_CanvasContext.Target = null;
+			}
+			else if(!_CanvasContext.IsAlive)
+			{
+				_CanvasContext.Target = null;
 			}
 		}
 
 		public void Forget(Canvas.ResolvedContext context)
 		{
-			lock (_CanvasContext)
-			{
-				context.Invalidate();
+			context.Invalidate();
 
-				_CanvasContext.Target = null;
-			}
+			_CanvasContext.Target = null;
 		}
 
 		private void ComputeOffsetRegion(Size desiredSize, out Rectangle result)
@@ -134,12 +112,12 @@ namespace Frost.DirectX
 
 			result = Rectangle.Empty;
 
-			if (!desiredSize.Width.Equals(Region.Width))
+			if(!desiredSize.Width.Equals(Region.Width))
 			{
 				result = new Rectangle(new Point(1, result.Y), new Size(2, result.Height));
 			}
 
-			if (!desiredSize.Height.Equals(Region.Height))
+			if(!desiredSize.Height.Equals(Region.Height))
 			{
 				result = new Rectangle(new Point(result.X, 1), new Size(result.Width, 2));
 			}
