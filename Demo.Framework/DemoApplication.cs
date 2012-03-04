@@ -6,7 +6,10 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Drawing;
 using System.Windows.Forms;
+
+using Demo.Framework.Properties;
 
 using Frost;
 using Frost.Diagnostics;
@@ -20,6 +23,7 @@ using SharpDX.Windows;
 using Device1 = SharpDX.Direct3D10.Device1;
 using Device2D = Frost.DirectX.Device2D;
 using Resource = SharpDX.Direct3D10.Resource;
+using Size = Frost.Size;
 
 namespace Demo.Framework
 {
@@ -108,6 +112,11 @@ namespace Demo.Framework
 			_IsResetQueued = true;
 		}
 
+		public Form Form
+		{
+			get { return _Form; }
+		}
+
 		public void Dispose()
 		{
 			_Form.SafeDispose();
@@ -132,6 +141,8 @@ namespace Demo.Framework
 			try
 			{
 				_Form.Text = Application.ProductName;
+
+				_Form.Icon = new Icon(Resources.frost_icon, 256, 256);
 
 				RenderLoop.Run(_Form, () => Run(context));
 			}
