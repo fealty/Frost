@@ -60,6 +60,13 @@ namespace Demo.Framework.Properties {
             }
         }
         
+        internal static System.Drawing.Icon frost_icon {
+            get {
+                object obj = ResourceManager.GetObject("frost_icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
         internal static byte[] RenderingEffects {
             get {
                 object obj = ResourceManager.GetObject("RenderingEffects", resourceCulture);
