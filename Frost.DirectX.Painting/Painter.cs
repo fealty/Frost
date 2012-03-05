@@ -131,35 +131,35 @@ namespace Frost.DirectX.Painting
 			_Drawer.Clear(region);
 		}
 
-		protected override void OnStroke(ref Rectangle rectangleRegion)
+		protected override void OnStrokeRectangle(ref Rectangle rectangleRegion)
 		{
 			Reconfigure();
 
 			_Drawer.Stroke(rectangleRegion, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
 		}
 
-		protected override void OnStroke(ref Point lineStart, ref Point lineEnd)
+		protected override void OnStrokeLine(ref Point lineStart, ref Point lineEnd)
 		{
 			Reconfigure();
 
 			_Drawer.Stroke(lineStart, lineEnd, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
 		}
 
-		protected override void OnStroke(ref Rectangle rectangleRegion, ref Size roundedRadius)
+		protected override void OnStrokeRectangle(ref Rectangle rectangleRegion, ref Size roundedRadius)
 		{
 			Reconfigure();
 
 			_Drawer.Stroke(rectangleRegion, roundedRadius, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
 		}
 
-		protected override void OnFill(ref Rectangle rectangleRegion)
+		protected override void OnFillRectangle(ref Rectangle rectangleRegion)
 		{
 			Reconfigure();
 
 			_Drawer.Fill(rectangleRegion, _ActiveBrush);
 		}
 
-		protected override void OnFill(ref Rectangle rectangleRegion, ref Size roundedRadius)
+		protected override void OnFillRectangle(ref Rectangle rectangleRegion, ref Size roundedRadius)
 		{
 			Reconfigure();
 

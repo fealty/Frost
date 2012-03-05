@@ -502,14 +502,14 @@ namespace Frost.DirectX
 
 			foreach(Rectangle region in atlas.UsedRegions)
 			{
-				Painter.Stroke(region);
+				Painter.StrokeRectangle(region);
 			}
 
 			Painter.SetBrush(Color.Cyan);
 
 			foreach(Rectangle region in atlas.FreeRegions)
 			{
-				Painter.Stroke(region);
+				Painter.StrokeRectangle(region);
 			}
 
 			Painter.End();

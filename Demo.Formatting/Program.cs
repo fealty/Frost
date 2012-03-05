@@ -24,7 +24,7 @@ namespace Demo.Formatting
 
 			painter.SetBrush(Color.DarkBlue);
 
-			painter.Fill(target.Region.X, target.Region.Y, target.Region.Width, target.Region.Height, 0, 0);
+			painter.FillRectangle(target.Region.X, target.Region.Y, target.Region.Width, target.Region.Height, 0, 0);
 
 			Rectangle obs = new Rectangle(150, 55, 150, 100);
 			Rectangle obs2 = new Rectangle(150, 320, 175, 100);
@@ -32,8 +32,8 @@ namespace Demo.Formatting
 
 			painter.SetBrush(Color.Green);
 
-			painter.Fill(obs2.X, obs2.Y, obs2.Width, obs2.Height, 10, 10);
-			painter.Fill(obs3.X, obs3.Y, obs3.Width, obs3.Height, 10, 10);
+			painter.FillRectangle(obs2.X, obs2.Y, obs2.Width, obs2.Height, 10, 10);
+			painter.FillRectangle(obs3.X, obs3.Y, obs3.Width, obs3.Height, 10, 10);
 
 			painter.SetBrush(Color.WhiteSmoke);
 
@@ -74,7 +74,7 @@ namespace Demo.Formatting
 
 			painter.SetBrush(Color.Green);
 
-			painter.Fill(
+			painter.FillRectangle(
 				metrics.Regions[0].X,
 				metrics.Regions[0].Y,
 				metrics.Regions[0].Width,
@@ -111,7 +111,7 @@ namespace Demo.Formatting
 
 			painter.SetBrush(Color.Yellow);
 
-			painter.Stroke(
+			painter.StrokeRectangle(
 				metrics.TextRegion.X,
 				metrics.TextRegion.Y,
 				metrics.TextRegion.Width,
@@ -121,7 +121,7 @@ namespace Demo.Formatting
 
 			painter.SetBrush(Color.HotPink);
 
-			painter.Stroke(
+			painter.StrokeRectangle(
 				metrics.LayoutRegion.X,
 				metrics.LayoutRegion.Y,
 				metrics.LayoutRegion.Width,
