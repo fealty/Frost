@@ -296,7 +296,6 @@ namespace Frost.DirectX
 			}
 		}
 
-		//TODO: what about zero-sized?
 		protected override void OnSuggestPageDimensions(Size size)
 		{
 			lock(_Lock)

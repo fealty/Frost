@@ -114,7 +114,14 @@ namespace Frost
 			Contract.Requires(Check.IsPositive(dimensions.Width));
 			Contract.Requires(Check.IsPositive(dimensions.Height));
 
-			OnSuggestPageDimensions(dimensions);
+			if (dimensions.Area > 0)
+			{
+				OnSuggestPageDimensions(dimensions);
+
+				return;
+			}
+
+			throw new InvalidOperationException("Page size insufficient!");
 		}
 
 		public void Dump(string path, SurfaceUsage usage)
