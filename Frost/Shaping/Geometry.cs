@@ -10,7 +10,6 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Shaping
 {
-	//TODO: do not allow empty geometries... default to an existing geometry when an empty geometry is built
 	public sealed class Geometry : IEquatable<Geometry>
 	{
 		[ThreadStatic] private static Builder _Builder;
@@ -279,6 +278,9 @@ namespace Frost.Shaping
 			public Geometry Build()
 			{
 				Contract.Ensures(Contract.Result<Geometry>() != null);
+
+				Trace.Assert(_Points.Count > 0);
+				Trace.Assert(_Commands.Count > 0);
 
 				return new Geometry(_Points.ToArray(), _Commands.ToArray());
 			}
@@ -722,7 +724,7 @@ namespace Frost.Shaping
 				return true;
 			}
 
-			return obj is Geometry && this.Equals((Geometry)obj);
+			return obj is Geometry && Equals((Geometry)obj);
 		}
 
 		public override int GetHashCode()

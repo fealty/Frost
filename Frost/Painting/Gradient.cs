@@ -11,7 +11,6 @@ using System.Linq;
 
 namespace Frost.Painting
 {
-	//TODO: do not allow empty gradients; default to a default gradient when empty gradients are built
 	public sealed class Gradient : IEquatable<Gradient>
 	{
 		[ThreadStatic] private static Builder _Builder;
