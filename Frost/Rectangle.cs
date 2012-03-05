@@ -241,7 +241,7 @@ namespace Frost
 		{
 			get
 			{
-				return _Width * _Height > 0;
+				return _Width * _Height <= 0.0f;
 			}
 		}
 
