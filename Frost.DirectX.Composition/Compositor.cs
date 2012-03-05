@@ -117,12 +117,7 @@ namespace Frost.DirectX.Composition
 
 		internal ShaderHandle? Shader
 		{
-			set
-			{
-				Contract.Assert(_Target != null);
-				
-				_ActiveShader = value.HasValue ? _Shaders.Resolve(value.Value) : null;
-			}
+			set { _ActiveShader = value.HasValue ? _Shaders.Resolve(value.Value) : null; }
 		}
 
 		public void Dispose()
@@ -139,8 +134,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnSaveState()
 		{
-			Contract.Assert(_Target != null);
-
 			_States.Push(
 				new State
 				{
@@ -155,8 +148,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnRestoreState()
 		{
-			Contract.Assert(_Target != null);
-
 			State newState = _States.Pop();
 
 			Blend = newState.Blend;
@@ -175,15 +166,11 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnPushLayer()
 		{
-			Contract.Assert(_Target != null);
-
 			PushLayer(Retention.ClearData);
 		}
 
 		protected override void OnPushLayer(Retention retentionMode)
 		{
-			Contract.Assert(_Target != null);
-
 			Flush();
 
 			SaveState();
@@ -193,8 +180,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnPopLayer()
 		{
-			Contract.Assert(_Target != null);
-
 			Flush();
 
 			Canvas.ResolvedContext previousLayer;
@@ -219,8 +204,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnDiscardLayer()
 		{
-			Contract.Assert(_Target != null);
-
 			Flush();
 
 			_Renderer.PopLayer();
@@ -228,8 +211,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnFlatten()
 		{
-			Contract.Assert(_Target != null);
-
 			Flush();
 
 			while(_Renderer.HasExtraLayers)
@@ -240,8 +221,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnFlush()
 		{
-			Contract.Assert(_Target != null);
-
 			if(_BatchedItems != null && _BatchedItems.Count > 0)
 			{
 				BatchedItemQueue items = _BatchedItems;
@@ -272,8 +251,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnCompositeResult()
 		{
-			Contract.Assert(_Target != null);
-
 			Point location = _Renderer.ActiveLayer.Region.Location;
 
 			OnCompositeResult(ref location);
@@ -281,8 +258,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnCompositeResult(ref Point location)
 		{
-			Contract.Assert(_Target != null);
-
 			Rectangle region = _Renderer.ActiveLayer.Region;
 
 			OnCompositeResult(ref region, ref location);
@@ -290,8 +265,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnCompositeResult(ref Rectangle region)
 		{
-			Contract.Assert(_Target != null);
-
 			Rectangle activeRegion = _Renderer.ActiveLayer.Region;
 
 			OnCompositeResult(ref activeRegion, ref region);
@@ -299,8 +272,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnCompositeResult(ref Rectangle srcRegion, ref Point dstLocation)
 		{
-			Contract.Assert(_Target != null);
-
 			Size activeSize = _Renderer.ActiveLayer.Region.Size;
 
 			Rectangle dstRegion = new Rectangle(dstLocation, activeSize);
@@ -310,8 +281,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnCompositeResult(ref Rectangle srcRegion, ref Rectangle dstRegion)
 		{
-			Contract.Assert(_Target != null);
-
 			Flush();
 
 			_Renderer.PushLayer(Retention.RetainData, srcRegion.Size);
@@ -334,8 +303,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnBegin(Canvas.ResolvedContext target, Retention retention)
 		{
-			Contract.Assert(_Target == null);
-
 			_Watch.Reset();
 			_Watch.Start();
 
@@ -352,8 +319,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnEnd()
 		{
-			Contract.Assert(_Target != null);
-
 			try
 			{
 				Flatten();
@@ -374,8 +339,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnCopyResult(Canvas.ResolvedContext destination)
 		{
-			Contract.Assert(_Target != null);
-
 			Flush();
 
 			_Renderer.ActiveLayer.Surface2D.CopyTo(
@@ -385,8 +348,6 @@ namespace Frost.DirectX.Composition
 		protected override void OnCopyResult(
 			ref Rectangle sourceRegion, Canvas.ResolvedContext destination)
 		{
-			Contract.Assert(_Target != null);
-
 			Flush();
 
 			_Renderer.ActiveLayer.Surface2D.CopyTo(
@@ -395,8 +356,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnComposite(Canvas.ResolvedContext source)
 		{
-			Contract.Assert(_Target != null);
-
 			Rectangle region = new Rectangle(Point.Empty, source.Region.Size);
 
 			OnComposite(source, ref region);
@@ -404,8 +363,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnComposite(Canvas.ResolvedContext source, ref Point location)
 		{
-			Contract.Assert(_Target != null);
-
 			Rectangle region = new Rectangle(location, source.Region.Size);
 
 			OnComposite(source, ref region);
@@ -413,8 +370,6 @@ namespace Frost.DirectX.Composition
 
 		protected override void OnComposite(Canvas.ResolvedContext source, ref Rectangle region)
 		{
-			Contract.Assert(_Target != null);
-
 			Rectangle srcRegion = new Rectangle(Point.Empty, source.Region.Size);
 
 			OnComposite(source, ref srcRegion, ref region);
@@ -423,8 +378,6 @@ namespace Frost.DirectX.Composition
 		protected override void OnComposite(
 			Canvas.ResolvedContext source, ref Rectangle srcRegion, ref Point dstLocation)
 		{
-			Contract.Assert(_Target != null);
-
 			Rectangle dstRegion = new Rectangle(dstLocation, srcRegion.Size);
 
 			OnComposite(source, ref srcRegion, ref dstRegion);
@@ -433,8 +386,6 @@ namespace Frost.DirectX.Composition
 		protected override void OnComposite(
 			Canvas.ResolvedContext source, ref Rectangle srcRegion, ref Rectangle dstRegion)
 		{
-			Contract.Assert(_Target != null);
-
 			EffectContext effect = ActiveEffectContext;
 
 			if(effect != null)

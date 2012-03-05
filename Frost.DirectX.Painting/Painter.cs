@@ -77,7 +77,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnBegin(Canvas.ResolvedContext target, Retention retention)
 		{
-			Contract.Assert(_TargetSurface == null);
 			Contract.Assert(_ActiveBrush == null);
 
 			_Watch.Reset();
