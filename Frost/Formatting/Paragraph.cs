@@ -14,6 +14,8 @@ using Frost.Painting;
 
 namespace Frost.Formatting
 {
+	//TODO: enforce begin..end semantics? are there any?
+	//TODO: what about zero-sized stuff?
 	public sealed class Paragraph
 	{
 		private static readonly CultureInfo _DefaultCulture;
