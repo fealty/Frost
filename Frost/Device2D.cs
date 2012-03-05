@@ -51,36 +51,58 @@ namespace Frost
 		{
 			Contract.Requires(fromTarget != null);
 			Contract.Requires(toTarget != null);
-			Contract.Requires(fromTarget.Region.Size == toTarget.Region.Size);
 
-			Copy(fromTarget.Region, fromTarget, toTarget);
+			if(!fromTarget.IsEmpty)
+			{
+				Copy(fromTarget.Region, fromTarget, toTarget);
+			}
 		}
 
 		public void Copy(Rectangle fromRegion, Canvas fromTarget, Canvas toTarget)
 		{
 			Contract.Requires(fromTarget != null);
 			Contract.Requires(toTarget != null);
-			Contract.Requires(fromTarget.Region.Contains(fromRegion));
-			Contract.Requires(fromRegion.Size == toTarget.Region.Size);
 
-			Canvas.ResolvedContext fromContext = Resolve(fromTarget);
-			Canvas.ResolvedContext toContext = Resolve(toTarget);
+			if(!fromTarget.IsEmpty && !fromRegion.IsEmpty)
+			{
+				if(fromTarget.Region.Contains(fromRegion))
+				{
+					Rectangle srcRegion = new Rectangle(Point.Empty, fromRegion.Size);
 
-			// translate to 2D surface coordinate space
-			fromRegion = fromRegion.Translate(fromContext.Region.Location);
+					if(toTarget.Region.Contains(srcRegion))
+					{
+						Canvas.ResolvedContext fromContext = Resolve(fromTarget);
+						Canvas.ResolvedContext toContext = Resolve(toTarget);
 
-			OnCopy(fromRegion, fromContext, toContext);
+						// translate to 2D surface coordinate space
+						fromRegion = fromRegion.Translate(fromContext.Region.Location);
+
+						OnCopy(fromRegion, fromContext, toContext);
+					}
+
+					throw new InvalidOperationException("Destination cannot contain source!");
+				}
+
+				throw new InvalidOperationException("Source does not contain the source region!");
+			}
 		}
 
 		public void Copy(byte[] fromRgbaData, Canvas toTarget)
 		{
 			Contract.Requires(fromRgbaData != null);
 			Contract.Requires(toTarget != null);
-			Contract.Requires(fromRgbaData.Length >= toTarget.Region.Size.Area * 4);
 
-			Canvas.ResolvedContext toContext = Resolve(toTarget);
+			if(fromRgbaData.Length > 0)
+			{
+				if(fromRgbaData.Length >= toTarget.Region.Area * 4)
+				{
+					Canvas.ResolvedContext toContext = Resolve(toTarget);
 
-			OnCopy(fromRgbaData, toContext);
+					OnCopy(fromRgbaData, toContext);
+				}
+
+				throw new InvalidOperationException("Insufficient data provided!");
+			}
 		}
 
 		public void SuggestPageDimensions(Size dimensions)
@@ -170,9 +192,13 @@ namespace Frost
 			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions)
 		{
 			Contract.Requires(paragraph != null);
-			Contract.Ensures(Contract.Result<ITextMetrics>() != null);
 
-			return OnMeasureLayout(paragraph, region, obstructions);
+			if (!region.IsEmpty)
+			{
+				return OnMeasureLayout(paragraph, region, obstructions);
+			}
+
+			return null;
 		}
 
 		public float MeasureArea(Geometry path, float tolerance = _Flattening)
@@ -218,21 +244,28 @@ namespace Frost
 		{
 			Contract.Requires(target != null);
 
-			Canvas.ResolvedContext context = target.BackingContext;
-
-			if(context != null)
+			if(!target.IsEmpty)
 			{
-				if(context.Device2D == this)
+				Canvas.ResolvedContext context = target.BackingContext;
+
+				if(context != null)
 				{
-					return context;
+					if(context.Device2D == this)
+					{
+						return context;
+					}
 				}
+
+				context = OnResolve(target);
+
+				target.BackingContext = context;
+
+				return context;
 			}
 
-			context = OnResolve(target);
+			Forget(target);
 
-			target.BackingContext = context;
-
-			return context;
+			return null;
 		}
 
 		public void Forget(Canvas target)
