@@ -497,7 +497,7 @@ namespace Frost.Painting
 
 			ResetState();
 
-			if(!_IsTargetEmpty)
+			if(!isTargetEmpty)
 			{
 				var targetContext = _Device2D.Resolve(target);
 
