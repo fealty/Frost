@@ -181,12 +181,12 @@ namespace Frost.DirectX
 						new Point(nodeRegion.X + size.Width, nodeRegion.Y), new Size(w, nodeRegion.Height));
 				}
 
-				if(nodeLeft.Area > 0)
+				if(!nodeLeft.IsEmpty)
 				{
 					InsertNodeReverse(new LinkedListNode<Rectangle>(nodeLeft));
 				}
 
-				if(nodeRight.Area > 0)
+				if(!nodeRight.IsEmpty)
 				{
 					InsertNodeReverse(new LinkedListNode<Rectangle>(nodeRight));
 				}

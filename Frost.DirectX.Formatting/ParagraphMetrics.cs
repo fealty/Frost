@@ -238,7 +238,7 @@ namespace Frost.DirectX.Formatting
 			{
 				if(_Clusters[clusterIndex].Display == DisplayMode.Neutral)
 				{
-					if(_Clusters[clusterIndex].Region.Area > 0)
+					if(!_Clusters[clusterIndex].Region.IsEmpty)
 					{
 						return true;
 					}
