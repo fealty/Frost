@@ -22,6 +22,7 @@ namespace Frost.Painting
 		private LineCap _ActiveStrokeCap;
 		private LineJoin _ActiveStrokeJoin;
 		private float _ActiveStrokeWidth;
+		private Canvas _ActiveTarget;
 		private Matrix3X2 _ActiveTransformation;
 
 		private bool _IsAntialiasingInvalid;
@@ -31,6 +32,7 @@ namespace Frost.Painting
 		private bool _IsStrokeCapInvalid;
 		private bool _IsStrokeJoinInvalid;
 		private bool _IsStrokeWidthInvalid;
+		private bool _IsTargetEmpty;
 		private bool _IsTransformationInvalid;
 
 		private Size _TargetDelta;
@@ -45,92 +47,217 @@ namespace Frost.Painting
 			Contract.Assert(Device2D.Equals(device2D));
 		}
 
+		public Canvas ActiveTarget
+		{
+			get { return _ActiveTarget; }
+		}
+
 		protected bool IsTransformationInvalid
 		{
-			get { return _IsTransformationInvalid; }
-			set { _IsTransformationInvalid = value; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _IsTransformationInvalid;
+			}
+			set
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				_IsTransformationInvalid = value;
+			}
 		}
 
 		protected bool IsStrokeWidthInvalid
 		{
-			get { return _IsStrokeWidthInvalid; }
-			set { _IsStrokeWidthInvalid = value; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _IsStrokeWidthInvalid;
+			}
+			set
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				_IsStrokeWidthInvalid = value;
+			}
 		}
 
 		protected bool IsStrokeJoinInvalid
 		{
-			get { return _IsStrokeJoinInvalid; }
-			set { _IsStrokeJoinInvalid = value; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _IsStrokeJoinInvalid;
+			}
+			set
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				_IsStrokeJoinInvalid = value;
+			}
 		}
 
 		protected bool IsStrokeCapInvalid
 		{
-			get { return _IsStrokeCapInvalid; }
-			set { _IsStrokeCapInvalid = value; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _IsStrokeCapInvalid;
+			}
+			set
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				_IsStrokeCapInvalid = value;
+			}
 		}
 
 		protected bool IsMiterLimitInvalid
 		{
-			get { return _IsMiterLimitInvalid; }
-			set { _IsMiterLimitInvalid = value; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _IsMiterLimitInvalid;
+			}
+			set
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				_IsMiterLimitInvalid = value;
+			}
 		}
 
 		protected bool IsLineStyleInvalid
 		{
-			get { return _IsLineStyleInvalid; }
-			set { _IsLineStyleInvalid = value; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _IsLineStyleInvalid;
+			}
+			set
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				_IsLineStyleInvalid = value;
+			}
 		}
 
 		protected bool IsDashCapInvalid
 		{
-			get { return _IsDashCapInvalid; }
-			set { _IsDashCapInvalid = value; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _IsDashCapInvalid;
+			}
+			set
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				_IsDashCapInvalid = value;
+			}
 		}
 
 		protected bool IsAntialiasingInvalid
 		{
-			get { return _IsAntialiasingInvalid; }
-			set { _IsAntialiasingInvalid = value; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _IsAntialiasingInvalid;
+			}
+			set
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				_IsAntialiasingInvalid = value;
+			}
 		}
 
 		protected Matrix3X2 ActiveTransformation
 		{
-			get { return _ActiveTransformation; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _ActiveTransformation;
+			}
 		}
 
 		protected float ActiveStrokeWidth
 		{
-			get { return _ActiveStrokeWidth; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _ActiveStrokeWidth;
+			}
 		}
 
 		protected LineJoin ActiveStrokeJoin
 		{
-			get { return _ActiveStrokeJoin; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _ActiveStrokeJoin;
+			}
 		}
 
 		protected LineCap ActiveStrokeCap
 		{
-			get { return _ActiveStrokeCap; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _ActiveStrokeCap;
+			}
 		}
 
 		protected float ActiveMiterLimit
 		{
-			get { return _ActiveMiterLimit; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _ActiveMiterLimit;
+			}
 		}
 
 		protected LineStyle ActiveLineStyle
 		{
-			get { return _ActiveLineStyle; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _ActiveLineStyle;
+			}
 		}
 
 		protected LineCap ActiveDashCap
 		{
-			get { return _ActiveDashCap; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _ActiveDashCap;
+			}
 		}
 
 		protected Antialiasing ActiveAntialiasing
 		{
-			get { return _ActiveAntialiasing; }
+			get
+			{
+				Contract.Requires(ActiveTarget != null);
+
+				return _ActiveAntialiasing;
+			}
 		}
 
 		public Device2D Device2D
@@ -158,6 +285,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 				Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 				Contract.Ensures(Contract.Result<float>().Equals(_ActiveMiterLimit));
 
@@ -166,6 +294,7 @@ namespace Frost.Painting
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 				Contract.Requires(Check.IsPositive(value));
 
 				if(!value.Equals(_ActiveMiterLimit))
@@ -182,6 +311,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 				Contract.Ensures(Contract.Result<float>().Equals(_ActiveStrokeWidth));
 				Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
@@ -190,6 +320,7 @@ namespace Frost.Painting
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 				Contract.Requires(Check.IsPositive(value));
 
 				if(!value.Equals(_ActiveStrokeWidth))
@@ -206,6 +337,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 				Contract.Ensures(Contract.Result<LineCap>() == _ActiveStrokeCap);
 
 				return _ActiveStrokeCap;
@@ -213,6 +345,7 @@ namespace Frost.Painting
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 
 				if(value != _ActiveStrokeCap)
 				{
@@ -228,6 +361,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 				Contract.Ensures(Contract.Result<LineJoin>() == _ActiveStrokeJoin);
 
 				return _ActiveStrokeJoin;
@@ -235,6 +369,7 @@ namespace Frost.Painting
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 
 				if(value != _ActiveStrokeJoin)
 				{
@@ -250,6 +385,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 				Contract.Ensures(Contract.Result<Antialiasing>().Equals(_ActiveAntialiasing));
 
 				return _ActiveAntialiasing;
@@ -257,6 +393,7 @@ namespace Frost.Painting
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 
 				if(value != _ActiveAntialiasing)
 				{
@@ -272,6 +409,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 				Contract.Ensures(Contract.Result<LineCap>() == _ActiveDashCap);
 
 				return _ActiveDashCap;
@@ -279,6 +417,7 @@ namespace Frost.Painting
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 
 				if(value != _ActiveDashCap)
 				{
@@ -294,6 +433,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 				Contract.Ensures(Contract.Result<LineStyle>() == _ActiveLineStyle);
 
 				return _ActiveLineStyle;
@@ -301,6 +441,7 @@ namespace Frost.Painting
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 
 				if(value != _ActiveLineStyle)
 				{
@@ -316,6 +457,7 @@ namespace Frost.Painting
 			get
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 				Contract.Ensures(Contract.Result<Matrix3X2>().Equals(_ActiveTransformation));
 
 				return _ActiveTransformation;
@@ -323,6 +465,7 @@ namespace Frost.Painting
 			set
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
+				Contract.Requires(ActiveTarget != null);
 
 				if(_IsTransformationInvalid || !value.Equals(_ActiveTransformation))
 				{
@@ -336,9 +479,10 @@ namespace Frost.Painting
 		public void Begin(Canvas target, Retention retention = Retention.ClearData)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget == null);
 			Contract.Requires(target != null);
 
-			var targetContext = _Device2D.Resolve(target);
+			bool isTargetEmpty = target.Region.IsEmpty;
 
 			_IsAntialiasingInvalid = true;
 			_IsDashCapInvalid = true;
@@ -349,40 +493,69 @@ namespace Frost.Painting
 			_IsStrokeWidthInvalid = true;
 			_IsTransformationInvalid = true;
 
+			_ActiveTarget = target;
+
 			ResetState();
 
-			_TargetDelta = targetContext.Region.Location;
+			if(!_IsTargetEmpty)
+			{
+				var targetContext = _Device2D.Resolve(target);
 
-			OnBegin(targetContext, retention);
+				_TargetDelta = targetContext.Region.Location;
+
+				OnBegin(targetContext, retention);
+			}
+			else
+			{
+				// permit only nop and state operations on empty targets
+				_TargetDelta = Size.Empty;
+			}
+
+			_IsTargetEmpty = isTargetEmpty;
 		}
 
 		public void End()
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
-			OnEnd();
+			if(!_IsTargetEmpty)
+			{
+				OnEnd();
+			}
+
+			_ActiveTarget = null;
 		}
 
 		public void Clear()
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
-			OnClear();
+			if(!_IsTargetEmpty)
+			{
+				OnClear();
+			}
 		}
 
 		public void Clear(Rectangle region)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
-			// translate to 2D surface coordinate space
-			region = region.Translate(_TargetDelta);
+			if(!_IsTargetEmpty)
+			{
+				// translate to 2D surface coordinate space
+				region = region.Translate(_TargetDelta);
 
-			OnClear(ref region);
+				OnClear(ref region);
+			}
 		}
 
 		public void ResetState()
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
 			IsAntialiased = Antialiasing.Default;
 			MiterLimit = 10.0f;
@@ -399,13 +572,18 @@ namespace Frost.Painting
 		public void SetBrush(Color color)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
-			OnSetBrush(color);
+			if(!_IsTargetEmpty)
+			{
+				OnSetBrush(color);
+			}
 		}
 
 		public void SaveState()
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
 			OnSaveState();
 		}
@@ -413,6 +591,7 @@ namespace Frost.Painting
 		public void RestoreState()
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
 			OnRestoreState();
 		}
@@ -420,84 +599,116 @@ namespace Frost.Painting
 		public void Stroke(Point lineStart, Point lineEnd)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
-			// translate to 2D surface coordinate space
-			lineStart = lineStart.Translate(_TargetDelta);
-			lineEnd = lineEnd.Translate(_TargetDelta);
+			if(!_IsTargetEmpty)
+			{
+				// translate to 2D surface coordinate space
+				lineStart = lineStart.Translate(_TargetDelta);
+				lineEnd = lineEnd.Translate(_TargetDelta);
 
-			OnStroke(ref lineStart, ref lineEnd);
+				OnStroke(ref lineStart, ref lineEnd);
+			}
 		}
 
 		public void Stroke(Rectangle rectangleRegion)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
-			// translate to 2D surface coordinate space
-			rectangleRegion = rectangleRegion.Translate(_TargetDelta);
+			if(!_IsTargetEmpty)
+			{
+				// translate to 2D surface coordinate space
+				rectangleRegion = rectangleRegion.Translate(_TargetDelta);
 
-			OnStroke(ref rectangleRegion);
+				OnStroke(ref rectangleRegion);
+			}
 		}
 
 		public void Stroke(Rectangle rectangleRegion, Size roundedRadius)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsPositive(roundedRadius.Width));
 			Contract.Requires(Check.IsPositive(roundedRadius.Height));
 
-			// translate to 2D surface coordinate space
-			rectangleRegion = rectangleRegion.Translate(_TargetDelta);
+			if(!_IsTargetEmpty)
+			{
+				// translate to 2D surface coordinate space
+				rectangleRegion = rectangleRegion.Translate(_TargetDelta);
 
-			OnStroke(ref rectangleRegion, ref roundedRadius);
+				OnStroke(ref rectangleRegion, ref roundedRadius);
+			}
 		}
 
 		public void Fill(Rectangle rectangleRegion)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
-			// translate to 2D surface coordinate space
-			rectangleRegion = rectangleRegion.Translate(_TargetDelta);
+			if(!_IsTargetEmpty)
+			{
+				// translate to 2D surface coordinate space
+				rectangleRegion = rectangleRegion.Translate(_TargetDelta);
 
-			OnFill(ref rectangleRegion);
+				OnFill(ref rectangleRegion);
+			}
 		}
 
 		public void Fill(Rectangle rectangleRegion, Size roundedRadius)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsPositive(roundedRadius.Width));
 			Contract.Requires(Check.IsPositive(roundedRadius.Height));
 
-			// translate to 2D surface coordinate space
-			rectangleRegion = rectangleRegion.Translate(_TargetDelta);
+			if(!_IsTargetEmpty)
+			{
+				// translate to 2D surface coordinate space
+				rectangleRegion = rectangleRegion.Translate(_TargetDelta);
 
-			OnFill(ref rectangleRegion, ref roundedRadius);
+				OnFill(ref rectangleRegion, ref roundedRadius);
+			}
 		}
 
 		public void Stroke(Geometry geometry)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(geometry != null);
 
-			OnStroke(geometry);
+			if(!_IsTargetEmpty)
+			{
+				OnStroke(geometry);
+			}
 		}
 
 		public void Fill(Geometry geometry)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(geometry != null);
 
-			OnFill(geometry);
+			if(!_IsTargetEmpty)
+			{
+				OnFill(geometry);
+			}
 		}
 
 		public void SetBrush(Point linearGradientStart, Point linearGradientEnd, Gradient gradient)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(gradient != null);
 
-			// translate to 2D surface coordinate space
-			linearGradientStart = linearGradientStart.Translate(_TargetDelta);
-			linearGradientEnd = linearGradientEnd.Translate(_TargetDelta);
+			if(!_IsTargetEmpty)
+			{
+				// translate to 2D surface coordinate space
+				linearGradientStart = linearGradientStart.Translate(_TargetDelta);
+				linearGradientEnd = linearGradientEnd.Translate(_TargetDelta);
 
-			OnSetBrush(ref linearGradientStart, ref linearGradientEnd, gradient);
+				OnSetBrush(ref linearGradientStart, ref linearGradientEnd, gradient);
+			}
 		}
 
 		public void SetBrush(
@@ -507,57 +718,77 @@ namespace Frost.Painting
 			Gradient gradient)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsPositive(radialGradientRadius.Width));
 			Contract.Requires(Check.IsPositive(radialGradientRadius.Height));
 			Contract.Requires(gradient != null);
 
-			// translate to 2D surface coordinate space
-			radialGradientCenter = radialGradientCenter.Translate(_TargetDelta);
+			if(!_IsTargetEmpty)
+			{
+				// translate to 2D surface coordinate space
+				radialGradientCenter = radialGradientCenter.Translate(_TargetDelta);
 
-			OnSetBrush(
-				ref radialGradientCenter, ref radialGradientOffset, ref radialGradientRadius, gradient);
+				OnSetBrush(
+					ref radialGradientCenter, ref radialGradientOffset, ref radialGradientRadius, gradient);
+			}
 		}
 
 		public void SetBrush(Canvas source, Repetition extension)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(source != null);
 
-			OnSetBrush(_Device2D.Resolve(source), extension);
+			if(!_IsTargetEmpty)
+			{
+				// an empty brush source is a no operation
+				if (!source.Region.IsEmpty)
+				{
+					OnSetBrush(_Device2D.Resolve(source), extension);
+				}
+			}
 		}
 
 		public void Clear(float x, float y, float width, float height)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsFinite(x));
 			Contract.Requires(Check.IsFinite(y));
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 
-			Rectangle region = new Rectangle(x, y, width, height);
+			if(!_IsTargetEmpty)
+			{
+				Rectangle region = new Rectangle(x, y, width, height);
 
-			// translate to 2D surface coordinate space
-			region = region.Translate(_TargetDelta);
+				// translate to 2D surface coordinate space
+				region = region.Translate(_TargetDelta);
 
-			OnClear(ref region);
+				OnClear(ref region);
+			}
 		}
 
 		public void Stroke(float lineStartX, float lineStartY, float lineEndX, float lineEndY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsFinite(lineStartX));
 			Contract.Requires(Check.IsFinite(lineStartY));
 			Contract.Requires(Check.IsFinite(lineEndX));
 			Contract.Requires(Check.IsFinite(lineEndY));
 
-			Point start = new Point(lineStartX, lineStartY);
-			Point end = new Point(lineEndX, lineEndY);
+			if(!_IsTargetEmpty)
+			{
+				Point start = new Point(lineStartX, lineStartY);
+				Point end = new Point(lineEndX, lineEndY);
 
-			// translate to 2D surface coordinate space
-			start = start.Translate(_TargetDelta);
-			end = end.Translate(_TargetDelta);
+				// translate to 2D surface coordinate space
+				start = start.Translate(_TargetDelta);
+				end = end.Translate(_TargetDelta);
 
-			OnStroke(ref start, ref end);
+				OnStroke(ref start, ref end);
+			}
 		}
 
 		public void Stroke(
@@ -569,6 +800,7 @@ namespace Frost.Painting
 			float roundedRadiusHeight)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsFinite(rectangleX));
 			Contract.Requires(Check.IsFinite(rectangleY));
 			Contract.Requires(Check.IsPositive(rectangleWidth));
@@ -576,20 +808,23 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(roundedRadiusWidth));
 			Contract.Requires(Check.IsPositive(roundedRadiusHeight));
 
-			Rectangle region = new Rectangle(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
-
-			// translate to 2D surface coordinate space
-			region = region.Translate(_TargetDelta);
-
-			Size radius = new Size(roundedRadiusWidth, roundedRadiusHeight);
-
-			if(radius == Size.Empty)
+			if(!_IsTargetEmpty)
 			{
-				OnStroke(ref region);
-			}
-			else
-			{
-				OnStroke(ref region, ref radius);
+				Rectangle region = new Rectangle(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+
+				// translate to 2D surface coordinate space
+				region = region.Translate(_TargetDelta);
+
+				Size radius = new Size(roundedRadiusWidth, roundedRadiusHeight);
+
+				if(radius == Size.Empty)
+				{
+					OnStroke(ref region);
+				}
+				else
+				{
+					OnStroke(ref region, ref radius);
+				}
 			}
 		}
 
@@ -602,6 +837,7 @@ namespace Frost.Painting
 			float roundedRadiusHeight)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsFinite(rectangleX));
 			Contract.Requires(Check.IsFinite(rectangleY));
 			Contract.Requires(Check.IsPositive(rectangleWidth));
@@ -609,20 +845,23 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(roundedRadiusWidth));
 			Contract.Requires(Check.IsPositive(roundedRadiusHeight));
 
-			Rectangle region = new Rectangle(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
-
-			// translate to 2D surface coordinate space
-			region = region.Translate(_TargetDelta);
-
-			Size radius = new Size(roundedRadiusWidth, roundedRadiusHeight);
-
-			if(radius == Size.Empty)
+			if(!_IsTargetEmpty)
 			{
-				OnFill(ref region);
-			}
-			else
-			{
-				OnFill(ref region, ref radius);
+				Rectangle region = new Rectangle(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+
+				// translate to 2D surface coordinate space
+				region = region.Translate(_TargetDelta);
+
+				Size radius = new Size(roundedRadiusWidth, roundedRadiusHeight);
+
+				if(radius == Size.Empty)
+				{
+					OnFill(ref region);
+				}
+				else
+				{
+					OnFill(ref region, ref radius);
+				}
 			}
 		}
 
@@ -634,19 +873,23 @@ namespace Frost.Painting
 			Gradient gradient)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsFinite(linearGradientStartX));
 			Contract.Requires(Check.IsFinite(linearGradientStartY));
 			Contract.Requires(Check.IsFinite(linearGradientEndX));
 			Contract.Requires(Check.IsFinite(linearGradientEndY));
 			Contract.Requires(gradient != null);
 
-			Point linearGradientStart = new Point(linearGradientStartX, linearGradientStartY);
-			Point linearGradientEnd = new Point(linearGradientEndX, linearGradientEndY);
+			if(!_IsTargetEmpty)
+			{
+				Point linearGradientStart = new Point(linearGradientStartX, linearGradientStartY);
+				Point linearGradientEnd = new Point(linearGradientEndX, linearGradientEndY);
 
-			linearGradientStart = linearGradientStart.Translate(_TargetDelta);
-			linearGradientEnd = linearGradientEnd.Translate(_TargetDelta);
+				linearGradientStart = linearGradientStart.Translate(_TargetDelta);
+				linearGradientEnd = linearGradientEnd.Translate(_TargetDelta);
 
-			OnSetBrush(ref linearGradientStart, ref linearGradientEnd, gradient);
+				OnSetBrush(ref linearGradientStart, ref linearGradientEnd, gradient);
+			}
 		}
 
 		public void SetBrush(
@@ -659,6 +902,7 @@ namespace Frost.Painting
 			Gradient gradient)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsFinite(radialGradientCenterX));
 			Contract.Requires(Check.IsFinite(radialGradientCenterY));
 			Contract.Requires(Check.IsFinite(radialGradientOffsetWidth));
@@ -667,21 +911,25 @@ namespace Frost.Painting
 			Contract.Requires(Check.IsPositive(radialGradientRadiusHeight));
 			Contract.Requires(gradient != null);
 
-			Point radialGradientCenter = new Point(radialGradientCenterX, radialGradientCenterY);
-			
-			// translate to 2D surface coordinate space
-			radialGradientCenter = radialGradientCenter.Translate(_TargetDelta);
+			if(!_IsTargetEmpty)
+			{
+				Point radialGradientCenter = new Point(radialGradientCenterX, radialGradientCenterY);
 
-			Size radialGradientOffset = new Size(radialGradientOffsetWidth, radialGradientOffsetHeight);
-			Size radialGradientRadius = new Size(radialGradientRadiusWidth, radialGradientRadiusHeight);
+				// translate to 2D surface coordinate space
+				radialGradientCenter = radialGradientCenter.Translate(_TargetDelta);
 
-			OnSetBrush(
-				ref radialGradientCenter, ref radialGradientOffset, ref radialGradientRadius, gradient);
+				Size radialGradientOffset = new Size(radialGradientOffsetWidth, radialGradientOffsetHeight);
+				Size radialGradientRadius = new Size(radialGradientRadiusWidth, radialGradientRadiusHeight);
+
+				OnSetBrush(
+					ref radialGradientCenter, ref radialGradientOffset, ref radialGradientRadius, gradient);
+			}
 		}
 
 		public void Scale(float width, float height)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 
@@ -700,6 +948,7 @@ namespace Frost.Painting
 		public void Scale(Size size)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsPositive(size.Width));
 			Contract.Requires(Check.IsPositive(size.Height));
 
@@ -709,6 +958,7 @@ namespace Frost.Painting
 		public void Scale(float width, float height, float originX, float originY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 			Contract.Requires(Check.IsFinite(originX));
@@ -729,6 +979,7 @@ namespace Frost.Painting
 		public void Skew(float angleX, float angleY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsDegrees(angleX));
 			Contract.Requires(Check.IsDegrees(angleY));
 
@@ -747,6 +998,7 @@ namespace Frost.Painting
 		public void Rotate(float angle)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsDegrees(angle));
 
 			Matrix3X2 result;
@@ -764,6 +1016,7 @@ namespace Frost.Painting
 		public void Rotate(float angle, float originX, float originY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsDegrees(angle));
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
@@ -783,6 +1036,7 @@ namespace Frost.Painting
 		public void Rotate(float angle, Point origin)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsDegrees(angle));
 
 			Rotate(angle, origin.X, origin.Y);
@@ -791,6 +1045,7 @@ namespace Frost.Painting
 		public void Translate(float width, float height)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(Check.IsFinite(width));
 			Contract.Requires(Check.IsFinite(height));
 
@@ -809,6 +1064,7 @@ namespace Frost.Painting
 		public void Translate(Size value)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
 			Translate(value.Width, value.Height);
 		}
@@ -816,6 +1072,7 @@ namespace Frost.Painting
 		public void Transform(ref Matrix3X2 transformation)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
 
 			Matrix3X2 result;
 
