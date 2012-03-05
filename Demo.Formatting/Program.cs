@@ -92,7 +92,7 @@ namespace Demo.Formatting
 			{
 				Rectangle region = metrics.Regions[i];
 
-				if(region.Area > 0)
+				if(!region.IsEmpty)
 				{
 					//painter.Stroke(region);
 				}

@@ -237,6 +237,14 @@ namespace Frost
 			}
 		}
 
+		public bool IsEmpty
+		{
+			get
+			{
+				return _Width * _Height > 0;
+			}
+		}
+
 		public Point Center
 		{
 			get { return new Point(_X + (_Width / 2.0f), _Y + (_Height / 2.0f)); }

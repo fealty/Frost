@@ -326,7 +326,7 @@ namespace Frost.DirectX.Formatting
 				{
 					if(obstruction.Bottom > lineRegion.Top)
 					{
-						if(obstruction.Area > 0)
+						if(!obstruction.IsEmpty)
 						{
 							for(int i = 0; i < _FreeSegments.Count; ++i)
 							{
