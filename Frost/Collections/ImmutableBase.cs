@@ -10,7 +10,6 @@ using System.Linq;
 
 namespace Frost.Collections
 {
-	//TODO: Add code to convert a slice to a full ImmutableBase?
 	public abstract class ImmutableBase<T> : IEnumerable<T>
 	{
 		private readonly T[] _Items;
