@@ -394,6 +394,8 @@ namespace Frost.Composition
 						sourceRegion = sourceRegion.Translate(_TargetDelta);
 
 						OnCopyResult(ref sourceRegion, _Device2D.Resolve(destination));
+
+						return;
 					}
 
 					throw new InvalidOperationException("Destination cannot contain source!");
@@ -636,6 +638,8 @@ namespace Frost.Composition
 						sourceRegion = sourceRegion.Translate(_TargetDelta);
 
 						OnCopyResult(ref sourceRegion, _Device2D.Resolve(destination));
+
+						return;
 					}
 
 					throw new InvalidOperationException("Destination cannot contain source!");
