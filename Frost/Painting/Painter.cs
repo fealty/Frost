@@ -10,6 +10,7 @@ using Frost.Shaping;
 
 namespace Frost.Painting
 {
+	//TODO: strokes and fills should specify the primitive
 	public abstract class Painter
 	{
 		private readonly Thread _BoundThread;
