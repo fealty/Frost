@@ -78,6 +78,8 @@ namespace Frost
 						fromRegion = fromRegion.Translate(fromContext.Region.Location);
 
 						OnCopy(fromRegion, fromContext, toContext);
+
+						return;
 					}
 
 					throw new InvalidOperationException("Destination cannot contain source!");
@@ -94,11 +96,13 @@ namespace Frost
 
 			if(fromRgbaData.Length > 0)
 			{
-				if(fromRgbaData.Length >= toTarget.Region.Area * 4)
+				if(fromRgbaData.Length >= Convert.ToInt32(toTarget.Region.Area * 4))
 				{
 					Canvas.ResolvedContext toContext = Resolve(toTarget);
 
 					OnCopy(fromRgbaData, toContext);
+
+					return;
 				}
 
 				throw new InvalidOperationException("Insufficient data provided!");
