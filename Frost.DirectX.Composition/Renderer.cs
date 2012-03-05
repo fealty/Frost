@@ -356,6 +356,8 @@ namespace Frost.DirectX.Composition
 
 			var context = _Device2D.Resolve(newCanvas);
 
+			Contract.Assert(context != null);
+
 			Surface2D surface = (Surface2D)context.Surface2D;
 
 			_Device3D.ClearRenderTargetView(surface.TargetView, new Color4());
