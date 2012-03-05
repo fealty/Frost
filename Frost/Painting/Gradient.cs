@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -80,13 +79,15 @@ namespace Frost.Painting
 
 			public Gradient Build()
 			{
-				Contract.Ensures(Contract.Result<Gradient>() != null);
+				if(_Stops.Count >= 2)
+				{
+					_Stops[0] = new GradientStop(0.0f, _Stops[0].Color);
+					_Stops[_Stops.Count - 1] = new GradientStop(1.0f, _Stops[_Stops.Count - 1].Color);
 
-				Trace.Assert(_Stops.Count >= 2);
-				Trace.Assert(_Stops[0].Position.Equals(0.0f));
-				Trace.Assert(_Stops[_Stops.Count - 1].Position.Equals(1.0f));
+					return new Gradient(_Stops.ToArray());
+				}
 
-				return new Gradient(_Stops.ToArray());
+				return null;
 			}
 
 			internal void Reset()

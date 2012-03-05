@@ -277,12 +277,12 @@ namespace Frost.Shaping
 
 			public Geometry Build()
 			{
-				Contract.Ensures(Contract.Result<Geometry>() != null);
+				if(_Points.Count > 0 && _Commands.Count > 0)
+				{
+					return new Geometry(_Points.ToArray(), _Commands.ToArray());
+				}
 
-				Trace.Assert(_Points.Count > 0);
-				Trace.Assert(_Commands.Count > 0);
-
-				return new Geometry(_Points.ToArray(), _Commands.ToArray());
+				return null;
 			}
 
 			public Builder SaveState()
