@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Text;
@@ -14,8 +15,6 @@ using Frost.Painting;
 
 namespace Frost.Formatting
 {
-	//TODO: enforce begin..end semantics? are there any?
-	//TODO: what about zero-sized stuff?
 	public sealed class Paragraph
 	{
 		private static readonly CultureInfo _DefaultCulture;
@@ -557,6 +556,8 @@ namespace Frost.Formatting
 			public Paragraph Build()
 			{
 				Contract.Ensures(Contract.Result<Paragraph>() != null);
+
+				Trace.Assert(_Runs.Count > 0);
 
 				return new Paragraph(
 					_Text.ToString(),
