@@ -46,6 +46,11 @@ namespace Frost
 			}
 		}
 
+		public bool IsEmpty
+		{
+			get { return _Region.IsEmpty; }
+		}
+
 		public SurfaceUsage Usage
 		{
 			get

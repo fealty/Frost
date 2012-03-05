@@ -739,13 +739,9 @@ namespace Frost.Painting
 			Contract.Requires(ActiveTarget != null);
 			Contract.Requires(source != null);
 
-			if(!_IsTargetEmpty)
+			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				// an empty brush source is a no operation
-				if (!source.Region.IsEmpty)
-				{
-					OnSetBrush(_Device2D.Resolve(source), extension);
-				}
+				OnSetBrush(_Device2D.Resolve(source), extension);
 			}
 		}
 
