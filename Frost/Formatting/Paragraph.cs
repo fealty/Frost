@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Text;
@@ -555,18 +554,19 @@ namespace Frost.Formatting
 
 			public Paragraph Build()
 			{
-				Contract.Ensures(Contract.Result<Paragraph>() != null);
+				if(_Runs.Count > 0)
+				{
+					return new Paragraph(
+						_Text.ToString(),
+						_Alignment,
+						_Indentation,
+						_Leading,
+						_Spacing,
+						_Tracking,
+						new TextRunCollection(_Runs));
+				}
 
-				Trace.Assert(_Runs.Count > 0);
-
-				return new Paragraph(
-					_Text.ToString(),
-					_Alignment,
-					_Indentation,
-					_Leading,
-					_Spacing,
-					_Tracking,
-					new TextRunCollection(_Runs));
+				return null;
 			}
 
 			internal void Reset()
