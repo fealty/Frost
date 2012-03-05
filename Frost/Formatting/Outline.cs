@@ -18,7 +18,6 @@ namespace Frost.Formatting
 
 		public Outline(Geometry normalizedOutline, float emSize, float normalizedBaseline)
 		{
-			Contract.Requires(normalizedOutline != null);
 			Contract.Requires(Check.IsPositive(emSize));
 			Contract.Requires(Check.IsFinite(normalizedBaseline));
 
@@ -26,7 +25,7 @@ namespace Frost.Formatting
 			_EmSize = emSize;
 			_NormalizedBaseline = normalizedBaseline;
 
-			Contract.Assert(NormalizedOutline.Equals(normalizedOutline));
+			Contract.Assert(ReferenceEquals(NormalizedOutline, normalizedOutline));
 			Contract.Assert(NormalizedBaseline.Equals(normalizedBaseline));
 			Contract.Assert(EmSize.Equals(emSize));
 		}
@@ -36,7 +35,6 @@ namespace Frost.Formatting
 			get
 			{
 				Contract.Ensures(Contract.Result<Geometry>() == _NormalizedOutline);
-				Contract.Ensures(Contract.Result<Geometry>() != null);
 
 				return _NormalizedOutline;
 			}
@@ -102,7 +100,6 @@ namespace Frost.Formatting
 
 		[ContractInvariantMethod] private void Invariant()
 		{
-			Contract.Invariant(_NormalizedOutline != null);
 			Contract.Invariant(Check.IsFinite(_NormalizedBaseline));
 			Contract.Invariant(Check.IsPositive(_EmSize));
 		}

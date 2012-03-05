@@ -110,7 +110,10 @@ namespace Frost.Formatting
 
 						painterSink.Scale(outline.EmSize, outline.EmSize);
 
-						painterSink.Fill(outline.NormalizedOutline);
+						if (outline.NormalizedOutline != null)
+						{
+							painterSink.Fill(outline.NormalizedOutline);
+						}
 
 						painterSink.RestoreState();
 					}
