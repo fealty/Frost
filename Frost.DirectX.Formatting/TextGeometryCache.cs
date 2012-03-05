@@ -51,7 +51,7 @@ namespace Frost.DirectX.Formatting
 		/// <param name="bidiLevel"> This parameter indicates the bidi level of the cluster. </param>
 		/// <param name="font"> This parameter references the font for the cluster. </param>
 		/// <param name="input"> This parameter references the formatted text output. </param>
-		/// <returns> This method returns the geometry for the formatted cluster. </returns>
+		/// <returns> This method returns the geometry for the formatted cluster if available; otherwise, this method returns <c>null</c>. </returns>
 		public Geometry Retrieve(int clusterIndex, byte bidiLevel, FontHandle font, FormatterSink input)
 		{
 			Contract.Requires(clusterIndex >= 0);
