@@ -90,14 +90,12 @@ namespace Frost.DirectX.Painting
 			_TargetSurface.AcquireLock();
 
 			_Drawer.Begin(target);
-			
+
 			OnSetBrush(Color.Black);
 		}
 
 		protected override void OnEnd()
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			try
 			{
 				try
@@ -122,8 +120,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnClear()
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			Reconfigure();
 
 			_Drawer.Clear();
@@ -131,8 +127,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnClear(ref Rectangle region)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			Reconfigure();
 
 			_Drawer.Clear(region);
@@ -140,8 +134,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnStroke(ref Rectangle rectangleRegion)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			Reconfigure();
 
 			_Drawer.Stroke(rectangleRegion, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
@@ -149,8 +141,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnStroke(ref Point lineStart, ref Point lineEnd)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			Reconfigure();
 
 			_Drawer.Stroke(lineStart, lineEnd, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
@@ -158,8 +148,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnStroke(ref Rectangle rectangleRegion, ref Size roundedRadius)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			Reconfigure();
 
 			_Drawer.Stroke(rectangleRegion, roundedRadius, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
@@ -167,8 +155,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnFill(ref Rectangle rectangleRegion)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			Reconfigure();
 
 			_Drawer.Fill(rectangleRegion, _ActiveBrush);
@@ -176,8 +162,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnFill(ref Rectangle rectangleRegion, ref Size roundedRadius)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			Reconfigure();
 
 			_Drawer.Fill(rectangleRegion, roundedRadius, _ActiveBrush);
@@ -185,8 +169,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnStroke(Geometry geometry)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			Reconfigure();
 
 			_Drawer.Stroke(geometry, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
@@ -194,8 +176,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnFill(Geometry geometry)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			Reconfigure();
 
 			_Drawer.Fill(geometry, _ActiveBrush);
@@ -203,8 +183,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnSaveState()
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			_States.Push(
 				new State
 				{
@@ -221,8 +199,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnRestoreState()
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			State newState = _States.Pop();
 
 			IsAntialiased = newState.IsAntialiased;
@@ -241,8 +217,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnSetBrush(Color color)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			_ActiveBrushState.SolidColorColor = color;
 
 			_ActiveBrushState.BrushType = BrushType.SolidColor;
@@ -252,8 +226,6 @@ namespace Frost.DirectX.Painting
 
 		protected override void OnSetBrush(Canvas.ResolvedContext source, Repetition extension)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			_ActiveBrushState.PatternSurface.SafeDispose();
 
 			Surface2D.Description description;
@@ -278,8 +250,6 @@ namespace Frost.DirectX.Painting
 		protected override void OnSetBrush(
 			ref Point linearGradientStart, ref Point linearGradientEnd, Gradient gradient)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			_ActiveBrushState.Stops = gradient;
 
 			_ActiveBrushState.LinearGradientStart = linearGradientStart;
@@ -296,8 +266,6 @@ namespace Frost.DirectX.Painting
 			ref Size radialGradientRadius,
 			Gradient gradient)
 		{
-			Contract.Assert(_TargetSurface != null);
-
 			_ActiveBrushState.Stops = gradient;
 
 			_ActiveBrushState.RadialGradientCenter = radialGradientCenter;
