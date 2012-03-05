@@ -10,6 +10,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Shaping
 {
+	//TODO: do not allow empty geometries... default to an existing geometry when an empty geometry is built
 	public sealed class Geometry : IEquatable<Geometry>
 	{
 		[ThreadStatic] private static Builder _Builder;
