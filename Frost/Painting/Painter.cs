@@ -10,7 +10,6 @@ using Frost.Shaping;
 
 namespace Frost.Painting
 {
-	//TODO: strokes and fills should specify the primitive
 	public abstract class Painter
 	{
 		private readonly Thread _BoundThread;
@@ -597,7 +596,7 @@ namespace Frost.Painting
 			OnRestoreState();
 		}
 
-		public void Stroke(Point lineStart, Point lineEnd)
+		public void StrokeLine(Point lineStart, Point lineEnd)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -608,11 +607,11 @@ namespace Frost.Painting
 				lineStart = lineStart.Translate(_TargetDelta);
 				lineEnd = lineEnd.Translate(_TargetDelta);
 
-				OnStroke(ref lineStart, ref lineEnd);
+				OnStrokeLine(ref lineStart, ref lineEnd);
 			}
 		}
 
-		public void Stroke(Rectangle rectangleRegion)
+		public void StrokeRectangle(Rectangle rectangleRegion)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -622,41 +621,11 @@ namespace Frost.Painting
 				// translate to 2D surface coordinate space
 				rectangleRegion = rectangleRegion.Translate(_TargetDelta);
 
-				OnStroke(ref rectangleRegion);
+				OnStrokeRectangle(ref rectangleRegion);
 			}
 		}
 
-		public void Stroke(Rectangle rectangleRegion, Size roundedRadius)
-		{
-			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(ActiveTarget != null);
-			Contract.Requires(Check.IsPositive(roundedRadius.Width));
-			Contract.Requires(Check.IsPositive(roundedRadius.Height));
-
-			if(!_IsTargetEmpty)
-			{
-				// translate to 2D surface coordinate space
-				rectangleRegion = rectangleRegion.Translate(_TargetDelta);
-
-				OnStroke(ref rectangleRegion, ref roundedRadius);
-			}
-		}
-
-		public void Fill(Rectangle rectangleRegion)
-		{
-			Contract.Requires(Thread.CurrentThread == BoundThread);
-			Contract.Requires(ActiveTarget != null);
-
-			if(!_IsTargetEmpty)
-			{
-				// translate to 2D surface coordinate space
-				rectangleRegion = rectangleRegion.Translate(_TargetDelta);
-
-				OnFill(ref rectangleRegion);
-			}
-		}
-
-		public void Fill(Rectangle rectangleRegion, Size roundedRadius)
+		public void StrokeRectangle(Rectangle rectangleRegion, Size roundedRadius)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -668,7 +637,37 @@ namespace Frost.Painting
 				// translate to 2D surface coordinate space
 				rectangleRegion = rectangleRegion.Translate(_TargetDelta);
 
-				OnFill(ref rectangleRegion, ref roundedRadius);
+				OnStrokeRectangle(ref rectangleRegion, ref roundedRadius);
+			}
+		}
+
+		public void FillRectangle(Rectangle rectangleRegion)
+		{
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
+
+			if(!_IsTargetEmpty)
+			{
+				// translate to 2D surface coordinate space
+				rectangleRegion = rectangleRegion.Translate(_TargetDelta);
+
+				OnFillRectangle(ref rectangleRegion);
+			}
+		}
+
+		public void FillRectangle(Rectangle rectangleRegion, Size roundedRadius)
+		{
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(ActiveTarget != null);
+			Contract.Requires(Check.IsPositive(roundedRadius.Width));
+			Contract.Requires(Check.IsPositive(roundedRadius.Height));
+
+			if(!_IsTargetEmpty)
+			{
+				// translate to 2D surface coordinate space
+				rectangleRegion = rectangleRegion.Translate(_TargetDelta);
+
+				OnFillRectangle(ref rectangleRegion, ref roundedRadius);
 			}
 		}
 
@@ -766,7 +765,7 @@ namespace Frost.Painting
 			}
 		}
 
-		public void Stroke(float lineStartX, float lineStartY, float lineEndX, float lineEndY)
+		public void StrokeLine(float lineStartX, float lineStartY, float lineEndX, float lineEndY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -784,17 +783,17 @@ namespace Frost.Painting
 				start = start.Translate(_TargetDelta);
 				end = end.Translate(_TargetDelta);
 
-				OnStroke(ref start, ref end);
+				OnStrokeLine(ref start, ref end);
 			}
 		}
 
-		public void Stroke(
+		public void StrokeRectangle(
 			float rectangleX,
 			float rectangleY,
 			float rectangleWidth,
 			float rectangleHeight,
-			float roundedRadiusWidth,
-			float roundedRadiusHeight)
+			float roundedRadiusWidth = 0.0f,
+			float roundedRadiusHeight = 0.0f)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -816,22 +815,22 @@ namespace Frost.Painting
 
 				if(radius == Size.Empty)
 				{
-					OnStroke(ref region);
+					OnStrokeRectangle(ref region);
 				}
 				else
 				{
-					OnStroke(ref region, ref radius);
+					OnStrokeRectangle(ref region, ref radius);
 				}
 			}
 		}
 
-		public void Fill(
+		public void FillRectangle(
 			float rectangleX,
 			float rectangleY,
 			float rectangleWidth,
 			float rectangleHeight,
-			float roundedRadiusWidth,
-			float roundedRadiusHeight)
+			float roundedRadiusWidth = 0.0f,
+			float roundedRadiusHeight = 0.0f)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -853,11 +852,11 @@ namespace Frost.Painting
 
 				if(radius == Size.Empty)
 				{
-					OnFill(ref region);
+					OnFillRectangle(ref region);
 				}
 				else
 				{
-					OnFill(ref region, ref radius);
+					OnFillRectangle(ref region, ref radius);
 				}
 			}
 		}
@@ -1089,15 +1088,15 @@ namespace Frost.Painting
 		protected abstract void OnClear();
 		protected abstract void OnClear(ref Rectangle region);
 
-		protected abstract void OnStroke(ref Rectangle rectangleRegion);
+		protected abstract void OnStrokeRectangle(ref Rectangle rectangleRegion);
 
-		protected abstract void OnStroke(ref Point lineStart, ref Point lineEnd);
+		protected abstract void OnStrokeLine(ref Point lineStart, ref Point lineEnd);
 
-		protected abstract void OnStroke(ref Rectangle rectangleRegion, ref Size roundedRadius);
+		protected abstract void OnStrokeRectangle(ref Rectangle rectangleRegion, ref Size roundedRadius);
 
-		protected abstract void OnFill(ref Rectangle rectangleRegion);
+		protected abstract void OnFillRectangle(ref Rectangle rectangleRegion);
 
-		protected abstract void OnFill(ref Rectangle rectangleRegion, ref Size roundedRadius);
+		protected abstract void OnFillRectangle(ref Rectangle rectangleRegion, ref Size roundedRadius);
 
 		protected abstract void OnStroke(Geometry geometry);
 		protected abstract void OnFill(Geometry geometry);

@@ -97,7 +97,7 @@ namespace Demo.SDF
 		{
 			Rectangle region = s.Region;
 
-			device2D.Painter.Stroke(region);
+			device2D.Painter.StrokeRectangle(region);
 
 			/*float mag = 50;
 
