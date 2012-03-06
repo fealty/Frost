@@ -63,7 +63,7 @@ namespace Demo.Framework
 
 			_Device3D = device3D;
 
-			string shader = GetShaderText(Resources.RenderingEffects);
+			string shader = GetShaderText(Properties.Resources.RenderingEffects);
 
 			using(var byteCode = ShaderBytecode.Compile(shader, "fx_4_0", ShaderFlags.None, EffectFlags.None)
 				)
