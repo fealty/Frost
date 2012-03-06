@@ -258,6 +258,14 @@ namespace Frost
 			return new Rectangle(Location, _Width * amount.Width, _Height * amount.Height);
 		}
 
+		public Rectangle Scale(float width, float height)
+		{
+			Contracts.Requires(Check.IsPositive(width));
+			Contracts.Requires(Check.IsPositive(height));
+
+			return new Rectangle(Location, _Width * width, _Height * height);
+		}
+
 		public Rectangle Resize(Size newSize)
 		{
 			Contracts.Requires(Check.IsPositive(newSize.Width));
@@ -266,14 +274,38 @@ namespace Frost
 			return new Rectangle(Location, newSize);
 		}
 
+		public Rectangle Resize(float width, float height)
+		{
+			Contracts.Requires(Check.IsPositive(width));
+			Contracts.Requires(Check.IsPositive(height));
+
+			return new Rectangle(Location, width, height);
+		}
+
 		public Rectangle Relocate(Point newLocation)
 		{
 			return new Rectangle(newLocation, Size);
 		}
 
+		public Rectangle Relocate(float x, float y)
+		{
+			Contracts.Requires(Check.IsFinite(x));
+			Contracts.Requires(Check.IsFinite(y));
+
+			return new Rectangle(x, y, Size);
+		}
+
 		public Rectangle Translate(Size amount)
 		{
 			return new Rectangle(_X + amount.Width, _Y + amount.Height, Size);
+		}
+
+		public Rectangle Translate(float width, float height)
+		{
+			Contracts.Requires(Check.IsFinite(width));
+			Contracts.Requires(Check.IsFinite(height));
+
+			return new Rectangle(_X + width, _Y + height, Size);
 		}
 
 		public Rectangle Contract(Thickness amount)
