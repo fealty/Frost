@@ -7,9 +7,8 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
-
-using Demo.Framework.Properties;
 
 using Frost;
 using Frost.Diagnostics;
@@ -36,10 +35,11 @@ namespace Demo.Framework
 		private readonly Device2D _Device2D;
 		private readonly Factory1 _Factory;
 		private readonly RenderForm _Form;
-		private readonly D3D10Renderer _Renderer;
 		private readonly IDeviceCounter<TimeSpan> _PaintingFrameDuration;
+		private readonly D3D10Renderer _Renderer;
 		private readonly SwapChain _SwapChain;
 		private readonly Stopwatch _Timer;
+		private IDemoContext _Context;
 		private bool _IsResetQueued;
 
 		private RenderTargetView _RenderView;
@@ -67,7 +67,7 @@ namespace Demo.Framework
 			SwapChainDescription chainDescription = new SwapChainDescription
 			{
 				ModeDescription = displayMode,
-				SampleDescription =  new SampleDescription(1, 0),
+				SampleDescription = new SampleDescription(1, 0),
 				BufferCount = 2,
 				IsWindowed = true,
 				OutputHandle = _Form.Handle,
@@ -172,15 +172,32 @@ namespace Demo.Framework
 
 		private void HandleKeyPress(object sender, KeyPressEventArgs e)
 		{
-			if(e.KeyChar == '6')
+			if(char.IsNumber(e.KeyChar))
+			{
+				int keyIndex = int.Parse(Char.ToString(e.KeyChar)) - 1;
+
+				if(_Context != null && keyIndex >= 0)
+				{
+					int count = _Context.Settings.Count();
+
+					if(keyIndex < count)
+					{
+						var item = _Context.Settings.ElementAt(keyIndex);
+
+						item.Action();
+
+						_IsResetQueued = true;
+					}
+				}
+			}
+			else if(e.KeyChar == 'd')
 			{
 				_Device2D.Dump(string.Empty, SurfaceUsage.Normal);
 				_Device2D.Dump(string.Empty, SurfaceUsage.Dynamic);
 				_Device2D.Dump(string.Empty, SurfaceUsage.External);
 				_Device2D.Dump(string.Empty, SurfaceUsage.Private);
 			}
-
-			if(e.KeyChar == 'r')
+			else if(e.KeyChar == 'r')
 			{
 				_IsResetQueued = true;
 			}
@@ -225,12 +242,14 @@ namespace Demo.Framework
 			// reconfigure the Frost rendering surface
 			Size formSize = new Size(_Form.ClientSize.Width, _Form.ClientSize.Height);
 
-			if (_Target != null)
+			if(_Target != null)
 			{
 				_Target.Forget();
 			}
 
 			_Target = new Canvas(formSize, SurfaceUsage.External);
+
+			formSize = new Size(Math.Max(formSize.Width, 640), Math.Max(formSize.Height, 480));
 
 			_Device2D.SuggestPageDimensions(new Size(formSize.Width * 2, formSize.Height * 2));
 
@@ -241,11 +260,13 @@ namespace Demo.Framework
 		{
 			Contract.Requires(context != null);
 
+			_Context = context;
+
 			_Device2D.ProcessTick();
 
 			if(_IsResetQueued)
 			{
-				context.Reset(_Target, _Device2D);
+				DemoInterface.PerformReset(context, _Target, _Device2D);
 
 				_IsResetQueued = false;
 			}
@@ -258,7 +279,7 @@ namespace Demo.Framework
 
 			_Renderer.BeginRendering();
 
-			if (_Target != null)
+			if(_Target != null)
 			{
 				_Renderer.Render(_Target, _Device2D);
 			}
