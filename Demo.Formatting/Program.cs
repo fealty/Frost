@@ -50,7 +50,7 @@ namespace Demo.Formatting
 				Paragraph.Create().WithIndentation(1.5f).WithFamily("Calibri").WithLeading(0.25f).
 					WithAdditionalText(
 						"With sup\u00ADport for Uni\u00ADcode, Open\u00ADType, and ad\u00ADvanced lay\u00ADout and format\u00ADting, Frost provides many ty\u00ADpo\u00ADgraph\u00ADic fea\u00ADtures in\u00ADclud\u00ADing lead\u00ADing, track\u00ADing, spa\u00ADcing, in\u00ADdent\u00ADa\u00ADtion, op\u00ADtim\u00ADal line break\u00ADing, in\u00ADline ob\u00ADjects, bi\u00ADd\u00ADirec\u00ADtion\u00ADal text, float\u00ADing in\u00ADlines, hy\u00ADphen\u00ADa\u00ADtion, and flow ob\u00ADstruc\u00ADtions. The sys\u00ADtem also ex\u00ADposes the glyph cluster geo\u00ADmetry as ")
-					.WithFamily("Courier New").WithAdditionalText("Geometry").WithFamily("Calibri").
+					.SaveState().WithFamily("Lucida Console").WithAdditionalText("Geometry").RestoreState().
 					WithAdditionalText(
 						" to en\u00ADable ad\u00ADvanced or al\u00ADtern\u00ADat\u00ADive font ras\u00ADter\u00ADiz\u00ADa\u00ADtion tech\u00ADniques.")
 					.Build();
@@ -59,10 +59,10 @@ namespace Demo.Formatting
 				Paragraph.Create().WithIndentation(1.5f).WithFamily("Calibri").WithLeading(0.25f).
 					WithAdditionalText(
 						"These fea\u00ADtures in\u00ADteg\u00ADrate in\u00ADto the flu\u00ADent and flex\u00ADible design of Frost. Users may con\u00ADtrol in\u00ADdi\u00ADvidu\u00ADal char\u00ADac\u00ADters through trans\u00ADform\u00ADa\u00ADtions when ras\u00ADter\u00ADiz\u00ADing text through either the ")
-					.WithFamily("Courier New").WithAdditionalText("Painter").WithFamily("Calibri").
-					WithAdditionalText(" or ").WithFamily("Courier New").WithAdditionalText("Compositor").
-					WithFamily("Calibri").WithAdditionalText(
-						". The sys\u00ADtem op\u00ADer\u00ADates upon in\u00ADdi\u00ADvidu\u00ADal para\u00ADgraphs. This block-based ap\u00ADproach gives max\u00ADim\u00ADum flex\u00ADib\u00ADil\u00ADity to ap\u00ADplic\u00ADa\u00ADtions wish\u00ADing to finely con\u00ADtrol the lay\u00ADout of lar\u00ADger se\u00ADmant\u00ADic units.")
+					.SaveState().WithFamily("Lucida Console").WithAdditionalText("Painter").RestoreState().
+					WithAdditionalText(" or ").SaveState().WithFamily("Lucida Console").WithAdditionalText(
+						"Compositor").RestoreState().WithAdditionalText(
+							". The sys\u00ADtem op\u00ADer\u00ADates upon in\u00ADdi\u00ADvidu\u00ADal para\u00ADgraphs. This block-based ap\u00ADproach gives max\u00ADim\u00ADum flex\u00ADib\u00ADil\u00ADity to ap\u00ADplic\u00ADa\u00ADtions wish\u00ADing to finely con\u00ADtrol the lay\u00ADout of lar\u00ADger se\u00ADmant\u00ADic units.")
 					.Build();
 
 			ITextMetrics titleMetrics = device2D.MeasureLayout(title, columnRegion);
