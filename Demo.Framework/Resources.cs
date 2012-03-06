@@ -10,13 +10,22 @@ using System.Drawing;
 using Frost;
 using Frost.Surfacing;
 
-using Color = System.Drawing.Color;
+using Color = Frost.Color;
 using Size = Frost.Size;
 
 namespace Demo.Framework
 {
 	public static class Resources
 	{
+		public static readonly Color Background = new RGBColor(228, 228, 228);
+		public static readonly Color Foreground = new RGBColor(47, 43, 59);
+
+		internal static readonly Color UIColor = new RGBColor(205, 203, 209);
+		internal static readonly Color InactiveButton = new RGBColor(228, 228, 228);
+		internal static readonly Color ActiveButton = new RGBColor(153, 148, 166);
+
+		public static readonly Color FrostColor = new RGBColor(185, 217, 231);
+
 		public static Canvas CreateIcon(Device2D device2D)
 		{
 			Contract.Requires(device2D != null);
@@ -41,7 +50,7 @@ namespace Demo.Framework
 					{
 						for(int x = 0; x < width; ++x)
 						{
-							Color pixel = bitmap.GetPixel(x, y);
+							System.Drawing.Color pixel = bitmap.GetPixel(x, y);
 
 							float alpha = pixel.A / 255.0f;
 
