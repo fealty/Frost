@@ -31,8 +31,6 @@ namespace Demo.Formatting
 
 			painter.Begin(target, Retention.RetainData);
 
-			//CreatePanel(painter, device2D);
-
 			Canvas inlineIcon = Resources.CreateIcon(device2D);
 
 			Size inlineSize = new Size(inlineIcon.Region.Width + 5, inlineIcon.Region.Height);
@@ -167,10 +165,10 @@ namespace Demo.Formatting
 			{
 				yield return
 					new DemoSetting(
-						"Toggle Line Region", _AreLinesDisplayed, () => _AreLinesDisplayed = !_AreLinesDisplayed);
+						"", _AreLinesDisplayed, () => _AreLinesDisplayed = !_AreLinesDisplayed);
 				yield return
 					new DemoSetting(
-						"Toggle Character Regions",
+						"",
 						_AreRegionsDisplayed,
 						() => _AreRegionsDisplayed = !_AreRegionsDisplayed);
 			}
