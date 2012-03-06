@@ -17,17 +17,21 @@ namespace Frost
 
 		private ResolvedContext _BackingContext;
 
-		public Canvas(Size dimensions, SurfaceUsage usage = SurfaceUsage.Dynamic)
+		public Canvas(Size dimensions, SurfaceUsage usage = SurfaceUsage.Dynamic):
+			this(dimensions.Width, dimensions.Height, usage)
 		{
 			Contract.Requires(Check.IsPositive(dimensions.Width));
 			Contract.Requires(Check.IsPositive(dimensions.Height));
+		}
 
-			_Region = new Rectangle(Point.Empty, dimensions);
+		public Canvas(float width, float height, SurfaceUsage usage = SurfaceUsage.Dynamic)
+		{
+			Contract.Requires(Check.IsPositive(width));
+			Contract.Requires(Check.IsPositive(height));
+
+			_Region = new Rectangle(Point.Empty, width, height);
 
 			_Usage = usage;
-
-			Contract.Assert(Region.Size == dimensions);
-			Contract.Assert(Usage == usage);
 		}
 
 		internal ResolvedContext BackingContext
