@@ -142,7 +142,7 @@ namespace Demo.Framework
 			{
 				_Form.Text = Application.ProductName;
 
-				_Form.Icon = new Icon(Resources.frost_icon, 256, 256);
+				_Form.Icon = new Icon(Properties.Resources.frost_icon, 256, 256);
 
 				RenderLoop.Run(_Form, () => Run(context));
 			}
