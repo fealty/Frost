@@ -5,6 +5,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using System.IO;
 
 using SharpDX;
 using SharpDX.Direct3D10;
@@ -57,11 +58,19 @@ namespace Frost.DirectX.Common
 
 			try
 			{
-				int byteSize = (regionWidth * regionHeight) * 4;
+				int stageSize = data.Pitch * regionHeight;
 
-				using(DataStream stream = new DataStream(data.DataPointer, byteSize, false, true))
+				using(var stream = new DataStream(data.DataPointer, stageSize, false, true))
 				{
-					stream.Write(rgbaData, 0, byteSize);
+					int stride = regionWidth * 4;
+					int indexTotal = regionHeight * stride;
+
+					for(int index = 0; index < indexTotal; index += stride)
+					{
+						stream.Write(rgbaData, index, stride);
+
+						stream.Seek(data.Pitch - stride, SeekOrigin.Current);
+					}
 				}
 			}
 			finally
@@ -82,10 +91,10 @@ namespace Frost.DirectX.Common
 			ResourceRegion sourceRegion = new ResourceRegion
 			{
 				Front = 0,
-				Left = Convert.ToInt32(srcRegion.X),
-				Top = Convert.ToInt32(srcRegion.Y),
-				Right = Convert.ToInt32(srcRegion.Width),
-				Bottom = Convert.ToInt32(srcRegion.Height),
+				Left = Convert.ToInt32(srcRegion.Left),
+				Top = Convert.ToInt32(srcRegion.Top),
+				Right = Convert.ToInt32(srcRegion.Right),
+				Bottom = Convert.ToInt32(srcRegion.Bottom),
 				Back = 1
 			};
 

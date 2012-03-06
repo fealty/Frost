@@ -117,7 +117,10 @@ namespace Frost.DirectX
 		protected override void OnCopy(byte[] rgbaData, Canvas.ResolvedContext toTarget)
 		{
 			_StagingTexture.UploadData(toTarget.Region.Size, rgbaData);
-			_StagingTexture.CopyTo(toTarget.Region, toTarget);
+
+			var sourceRegion = new Rectangle(Point.Empty, toTarget.Region.Size);
+
+			_StagingTexture.CopyTo(sourceRegion, toTarget);
 		}
 
 		protected override Point OnDeterminePoint(
