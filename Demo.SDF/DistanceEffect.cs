@@ -67,7 +67,7 @@ namespace Demo.SDF
 
 				float alpha = rgba.a;
 
-				float delta = (abs(ddx(alpha)) + abs(ddy(alpha))) * 0.5;
+				float delta = (abs(ddx(alpha)) + abs(ddy(alpha))) * 0.65;
 
 				return float4(float3(0.0, 0.0, 0.0), smoothstep(center-delta,center+delta,alpha));
 			}
