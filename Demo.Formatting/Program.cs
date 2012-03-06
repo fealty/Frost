@@ -3,8 +3,6 @@
 // 
 // See LICENSE for more information.
 
-using System.Globalization;
-
 using Demo.Framework;
 
 using Frost;
@@ -12,21 +10,179 @@ using Frost.Collections;
 using Frost.Formatting;
 using Frost.Painting;
 
+using SD = System.Drawing;
+
 namespace Demo.Formatting
 {
 	internal sealed class Application : IDemoContext
 	{
+		private readonly Color _Background = new RGBColor(228, 228, 228);
+		private readonly Color _Foreground = new RGBColor(47, 43, 59);
+		private readonly Color _LayoutRegion = new RGBColor(185, 217, 231);
+
 		public void Reset(Canvas target, Device2D device2D)
 		{
+			Rectangle columnRegion = new Rectangle(0, 20, 440, target.Region.Height);
+
+			columnRegion = columnRegion.AlignWithin(target.Region, Alignment.Center, Axis.Horizontal);
+
 			Painter painter = device2D.Painter;
 
 			painter.Begin(target);
+			painter.SetBrush(_Background);
+			painter.FillRectangle(target.Region);
 
-			painter.SetBrush(Color.DarkBlue);
+			Canvas inlineIcon = Resources.CreateIcon(device2D);
 
-			painter.FillRectangle(target.Region.X, target.Region.Y, target.Region.Width, target.Region.Height, 0, 0);
+			Size inlineSize = new Size(inlineIcon.Region.Width + 5, inlineIcon.Region.Height);
 
-			Rectangle obs = new Rectangle(150, 55, 150, 100);
+			Paragraph title =
+				Paragraph.Create().WithTracking(0.1f).WithAlignment(Alignment.Center).WithFamily("Cambria").
+					WithWeight(FontWeight.Bold).WithAdditionalText("A BRIEF MANIFESTO").Build();
+
+			Paragraph foreword =
+				Paragraph.Create().WithAdditionalInline(inlineSize, Alignment.Trailing, Alignment.Center).
+					WithFamily("Calibri").WithLeading(0.25f).WithAdditionalText(
+						"ost chal\u00ADlenges the con\u00ADven\u00ADtion\u00ADal lack of el\u00ADeg\u00ADant and ex\u00ADpress\u00ADive text in video games. Why should play\u00ADers struggle to read small quest text with in\u00ADad\u00ADequate lead\u00ADing and jagged rags? We care for the read\u00ADer's eyes in prin\u00ADted works. Can't we care for the eyes star\u00ADing at a glow\u00ADing mon\u00ADit\u00ADor? We can, and we will.")
+					.Build();
+
+			Paragraph features =
+				Paragraph.Create().WithIndentation(1.5f).WithFamily("Calibri").WithLeading(0.25f).
+					WithAdditionalText(
+						"With sup\u00ADport for Uni\u00ADcode, Open\u00ADType, and ad\u00ADvanced lay\u00ADout and format\u00ADting, Frost provides many ty\u00ADpo\u00ADgraph\u00ADic fea\u00ADtures in\u00ADclud\u00ADing lead\u00ADing, track\u00ADing, spa\u00ADcing, in\u00ADdent\u00ADa\u00ADtion, op\u00ADtim\u00ADal line break\u00ADing, in\u00ADline ob\u00ADjects, bi\u00ADd\u00ADirec\u00ADtion\u00ADal text, float\u00ADing in\u00ADlines, hy\u00ADphen\u00ADa\u00ADtion, and flow ob\u00ADstruc\u00ADtions. The sys\u00ADtem also ex\u00ADposes the glyph cluster geo\u00ADmetry as ")
+					.WithFamily("Courier New").WithAdditionalText("Geometry").WithFamily("Calibri").
+					WithAdditionalText(
+						" to en\u00ADable ad\u00ADvanced or al\u00ADtern\u00ADat\u00ADive font ras\u00ADter\u00ADiz\u00ADa\u00ADtion tech\u00ADniques.")
+					.Build();
+
+			Paragraph api =
+				Paragraph.Create().WithIndentation(1.5f).WithFamily("Calibri").WithLeading(0.25f).
+					WithAdditionalText(
+						"These fea\u00ADtures in\u00ADteg\u00ADrate in\u00ADto the flu\u00ADent and flex\u00ADible design of Frost. Users may con\u00ADtrol in\u00ADdi\u00ADvidu\u00ADal char\u00ADac\u00ADters through trans\u00ADform\u00ADa\u00ADtions when ras\u00ADter\u00ADiz\u00ADing text through either the ")
+					.WithFamily("Courier New").WithAdditionalText("Painter").WithFamily("Calibri").
+					WithAdditionalText(" or ").WithFamily("Courier New").WithAdditionalText("Compositor").
+					WithFamily("Calibri").WithAdditionalText(
+						". The sys\u00ADtem op\u00ADer\u00ADates upon in\u00ADdi\u00ADvidu\u00ADal para\u00ADgraphs. This block-based ap\u00ADproach gives max\u00ADim\u00ADum flex\u00ADib\u00ADil\u00ADity to ap\u00ADplic\u00ADa\u00ADtions wish\u00ADing to finely con\u00ADtrol the lay\u00ADout of lar\u00ADger se\u00ADmant\u00ADic units.")
+					.Build();
+
+			ITextMetrics titleMetrics = device2D.MeasureLayout(title, columnRegion);
+			ITextMetrics forewordMetrics = device2D.MeasureLayout(
+				foreword, columnRegion.Translate(new Size(0, 25)));
+			ITextMetrics featuresMetrics = device2D.MeasureLayout(
+				features,
+				new Rectangle(
+					columnRegion.X, forewordMetrics.TextRegion.Bottom + 7, columnRegion.Width, columnRegion.Height));
+			ITextMetrics apiMetrics = device2D.MeasureLayout(
+				api,
+				new Rectangle(
+					columnRegion.X, featuresMetrics.TextRegion.Bottom + 7, columnRegion.Width, columnRegion.Height));
+
+			painter.SetBrush(_LayoutRegion);
+			painter.FillRectangle(
+				Rectangle.FromEdges(
+					columnRegion.Expand(new Thickness(10)).Left,
+					columnRegion.Expand(new Thickness(10)).Top,
+					apiMetrics.TextRegion.Expand(new Thickness(10)).Right,
+					apiMetrics.TextRegion.Expand(new Thickness(10)).Bottom),
+				new Size(10));
+
+			painter.SetBrush(_Foreground);
+
+			Paragraph.Draw(painter, titleMetrics);
+			Paragraph.Draw(painter, forewordMetrics);
+			Paragraph.Draw(painter, featuresMetrics);
+			Paragraph.Draw(painter, apiMetrics);
+
+			painter.SetBrush(Color.Green);
+
+			/*painter.FillRectangle(
+				metrics.Regions[0].X,
+				metrics.Regions[0].Y,
+				metrics.Regions[0].Width,
+				metrics.Regions[0].Height,
+				10,
+				10);*/
+
+			painter.SetBrush(Color.Green);
+			painter.IsAntialiased = Antialiasing.Aliased;
+			painter.StrokeWidth = 1.0f;
+
+			painter.LineStyle = LineStyle.Dash;
+
+			for(int i = 0; i < forewordMetrics.Regions.Count; ++i)
+			{
+				Rectangle region = forewordMetrics.Regions[i];
+
+				if(!region.IsEmpty)
+				{
+					//painter.StrokeRectangle(region);
+				}
+			}
+
+			painter.SetBrush(Color.OrangeRed);
+
+			foreach(IndexedRange line in forewordMetrics.Lines)
+			{
+				Rectangle region;
+
+				forewordMetrics.ComputeRegion(line, out region);
+
+				//painter.StrokeRectangle(region);
+			}
+
+			painter.SetBrush(Color.Yellow);
+
+			/*painter.StrokeRectangle(
+				metrics.TextRegion.X,
+				metrics.TextRegion.Y,
+				metrics.TextRegion.Width,
+				metrics.TextRegion.Height,
+				0,
+				0);
+
+			painter.SetBrush(Color.HotPink);
+
+			painter.StrokeRectangle(
+				metrics.LayoutRegion.X,
+				metrics.LayoutRegion.Y,
+				metrics.LayoutRegion.Width,
+				metrics.LayoutRegion.Height,
+				0,
+				0);*/
+
+			painter.End();
+
+			device2D.Compositor.Begin(target, Retention.RetainData);
+			device2D.Compositor.Composite(
+				inlineIcon,
+				forewordMetrics.Regions[0].X,
+				forewordMetrics.Regions[0].Y,
+				inlineIcon.Region.Width,
+				forewordMetrics.Regions[0].Height);
+			device2D.Compositor.End();
+		}
+
+		public void Dispose()
+		{
+			//throw new NotImplementedException();
+		}
+	}
+
+	internal static class Program
+	{
+		private static void Main()
+		{
+			using(Application application = new Application())
+			{
+				using(DemoApplication demo = new DemoApplication())
+				{
+					demo.Execute(application);
+				}
+			}
+		}
+	}
+
+	/*Rectangle obs = new Rectangle(150, 55, 150, 100);
 			Rectangle obs2 = new Rectangle(150, 320, 175, 100);
 			Rectangle obs3 = new Rectangle(550, 80, 150, 280);
 
@@ -34,8 +190,6 @@ namespace Demo.Formatting
 
 			painter.FillRectangle(obs2.X, obs2.Y, obs2.Width, obs2.Height, 10, 10);
 			painter.FillRectangle(obs3.X, obs3.Y, obs3.Width, obs3.Height, 10, 10);
-
-			painter.SetBrush(Color.WhiteSmoke);
 
 			Paragraph.Builder builder = Paragraph.Create();
 
@@ -66,89 +220,5 @@ namespace Demo.Formatting
 
 			builder.WithAdditionalText(
 				"בקר תורת משפטית לויקיפדים ב, ביוני טכניים סטטיסטיקה את תנך, מה קרן הרוח מיתולוגיה. בה ליום נוסחאות זאת, סדר שאלות לעריכת ב. שתי את יוני שימושי תיקונים, על מונחים פיסיקה מאמרשיחהצפה שמו. את ראשי כניסה מתן, גם מלא הבאים זכויות, בדף אודות לחיבור על. מה החברה תיאטרון בדף, לערכים תיאטרון צעד גם. מה רפואה כלכלה ויש. מיזמי ביולי תאולוגיה ויש את, כימיה לחשבון מאמרשיחהצפה רבה אם. מוגש לעתים של היא, מה ערבית לציין כלל. של העיר ביולי קישורים אחר. צ'ט כדור כלכלה צרפתית מה, ויקי המלחמה את שמו.");
-
-			ITextMetrics metrics = device2D.MeasureLayout(
-				builder.Build(), new Rectangle(180, 50, 440, 500), obs2, obs3);
-
-			Paragraph.Draw(painter, metrics);
-
-			painter.SetBrush(Color.Green);
-
-			painter.FillRectangle(
-				metrics.Regions[0].X,
-				metrics.Regions[0].Y,
-				metrics.Regions[0].Width,
-				metrics.Regions[0].Height,
-				10,
-				10);
-
-			painter.SetBrush(Color.Green);
-			painter.IsAntialiased = Antialiasing.Aliased;
-			painter.StrokeWidth = 1.0f;
-
-			painter.LineStyle = LineStyle.Dash;
-
-			for(int i = 0; i < metrics.Regions.Count; ++i)
-			{
-				Rectangle region = metrics.Regions[i];
-
-				if(!region.IsEmpty)
-				{
-					//painter.Stroke(region);
-				}
-			}
-
-			painter.SetBrush(Color.OrangeRed);
-
-			foreach(IndexedRange line in metrics.Lines)
-			{
-				Rectangle region;
-
-				metrics.ComputeRegion(line, out region);
-
-				//painter.Stroke(region);
-			}
-
-			painter.SetBrush(Color.Yellow);
-
-			painter.StrokeRectangle(
-				metrics.TextRegion.X,
-				metrics.TextRegion.Y,
-				metrics.TextRegion.Width,
-				metrics.TextRegion.Height,
-				0,
-				0);
-
-			painter.SetBrush(Color.HotPink);
-
-			painter.StrokeRectangle(
-				metrics.LayoutRegion.X,
-				metrics.LayoutRegion.Y,
-				metrics.LayoutRegion.Width,
-				metrics.LayoutRegion.Height,
-				0,
-				0);
-
-			painter.End();
-		}
-
-		public void Dispose()
-		{
-			//throw new NotImplementedException();
-		}
-	}
-
-	internal static class Program
-	{
-		private static void Main()
-		{
-			using(Application application = new Application())
-			{
-				using(DemoApplication demo = new DemoApplication())
-				{
-					demo.Execute(application);
-				}
-			}
-		}
-	}
+			*/
 }
