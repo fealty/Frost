@@ -3,6 +3,7 @@
 // 
 // See LICENSE for more information.
 
+using System;
 using System.Diagnostics.Contracts;
 using System.Drawing;
 
@@ -42,9 +43,11 @@ namespace Demo.Framework
 						{
 							Color pixel = bitmap.GetPixel(x, y);
 
-							rgbaData[index + 0] = pixel.R;
-							rgbaData[index + 1] = pixel.G;
-							rgbaData[index + 2] = pixel.B;
+							float alpha = pixel.A / 255.0f;
+
+							rgbaData[index + 0] = Convert.ToByte(pixel.R * alpha);
+							rgbaData[index + 1] = Convert.ToByte(pixel.G * alpha);
+							rgbaData[index + 2] = Convert.ToByte(pixel.B * alpha);
 							rgbaData[index + 3] = pixel.A;
 
 							index += 4;
