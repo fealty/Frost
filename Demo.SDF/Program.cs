@@ -4,6 +4,8 @@
 // See LICENSE for more information.
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 using Demo.Framework;
@@ -23,7 +25,7 @@ namespace Demo.SDF
 			_Distance = new DistanceField();
 		}
 
-		public void Reset(Canvas target, Device2D device2D)
+		public void Reset(Rectangle region, Canvas target, Device2D device2D)
 		{
 			if(device2D.Effects.Find<DistanceEffectSettings>() == null)
 			{
@@ -86,6 +88,11 @@ namespace Demo.SDF
 			device2D.Painter.End();
 
 			device2D.Dump(null, SurfaceUsage.Normal); //*/
+		}
+
+		public IEnumerable<DemoSetting> Settings
+		{
+			get { return Enumerable.Empty<DemoSetting>(); }
 		}
 
 		public void Dispose()
