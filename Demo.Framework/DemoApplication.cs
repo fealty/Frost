@@ -266,7 +266,7 @@ namespace Demo.Framework
 
 			if(_IsResetQueued)
 			{
-				DemoInterface.PerformReset(context, _Target, _Device2D);
+				DemoInterface.ResetDemo(context, _Target, _Device2D);
 
 				_IsResetQueued = false;
 			}
