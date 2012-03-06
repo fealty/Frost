@@ -3,6 +3,8 @@
 // 
 // See LICENSE for more information.
 
+using System.Collections.Generic;
+
 using Demo.Framework;
 
 using Frost;
@@ -16,21 +18,20 @@ namespace Demo.Formatting
 {
 	internal sealed class Application : IDemoContext
 	{
-		private readonly Color _Background = new RGBColor(228, 228, 228);
-		private readonly Color _Foreground = new RGBColor(47, 43, 59);
-		private readonly Color _LayoutRegion = new RGBColor(185, 217, 231);
+		private bool _AreLinesDisplayed;
+		private bool _AreRegionsDisplayed;
 
-		public void Reset(Canvas target, Device2D device2D)
+		public void Reset(Rectangle region, Canvas target, Device2D device2D)
 		{
-			Rectangle columnRegion = new Rectangle(0, 20, 440, target.Region.Height);
+			Rectangle columnRegion = new Rectangle(0, region.Y + 20, 440, region.Height);
 
-			columnRegion = columnRegion.AlignWithin(target.Region, Alignment.Center, Axis.Horizontal);
+			columnRegion = columnRegion.AlignWithin(region, Alignment.Center, Axis.Horizontal);
 
 			Painter painter = device2D.Painter;
 
-			painter.Begin(target);
-			painter.SetBrush(_Background);
-			painter.FillRectangle(target.Region);
+			painter.Begin(target, Retention.RetainData);
+
+			//CreatePanel(painter, device2D);
 
 			Canvas inlineIcon = Resources.CreateIcon(device2D);
 
@@ -77,7 +78,7 @@ namespace Demo.Formatting
 				new Rectangle(
 					columnRegion.X, featuresMetrics.TextRegion.Bottom + 7, columnRegion.Width, columnRegion.Height));
 
-			painter.SetBrush(_LayoutRegion);
+			painter.SetBrush(Resources.FrostColor);
 			painter.FillRectangle(
 				Rectangle.FromEdges(
 					columnRegion.Expand(new Thickness(10)).Left,
@@ -86,7 +87,7 @@ namespace Demo.Formatting
 					apiMetrics.TextRegion.Expand(new Thickness(10)).Bottom),
 				new Size(10));
 
-			painter.SetBrush(_Foreground);
+			painter.SetBrush(Resources.Foreground);
 
 			Paragraph.Draw(painter, titleMetrics);
 			Paragraph.Draw(painter, forewordMetrics);
@@ -111,7 +112,7 @@ namespace Demo.Formatting
 
 			for(int i = 0; i < forewordMetrics.Regions.Count; ++i)
 			{
-				Rectangle region = forewordMetrics.Regions[i];
+				region = forewordMetrics.Regions[i];
 
 				if(!region.IsEmpty)
 				{
@@ -123,8 +124,6 @@ namespace Demo.Formatting
 
 			foreach(IndexedRange line in forewordMetrics.Lines)
 			{
-				Rectangle region;
-
 				forewordMetrics.ComputeRegion(line, out region);
 
 				//painter.StrokeRectangle(region);
@@ -162,9 +161,39 @@ namespace Demo.Formatting
 			device2D.Compositor.End();
 		}
 
+		public IEnumerable<DemoSetting> Settings
+		{
+			get
+			{
+				yield return
+					new DemoSetting(
+						"Toggle Line Region", _AreLinesDisplayed, () => _AreLinesDisplayed = !_AreLinesDisplayed);
+				yield return
+					new DemoSetting(
+						"Toggle Character Regions",
+						_AreRegionsDisplayed,
+						() => _AreRegionsDisplayed = !_AreRegionsDisplayed);
+			}
+		}
+
 		public void Dispose()
 		{
 			//throw new NotImplementedException();
+		}
+
+		public bool KeyPressed(char keyCharacter)
+		{
+			switch(keyCharacter)
+			{
+				case '1':
+					_AreLinesDisplayed = !_AreLinesDisplayed;
+					return true;
+				case '2':
+					_AreRegionsDisplayed = !_AreRegionsDisplayed;
+					return true;
+			}
+
+			return false;
 		}
 	}
 
