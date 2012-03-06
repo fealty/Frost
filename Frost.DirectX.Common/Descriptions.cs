@@ -54,7 +54,7 @@ namespace Frost.DirectX.Common
 		{
 			description.Width = 0;
 			description.ArraySize = 1;
-			description.MipLevels = 1;
+			description.MipLevels = 0;
 			description.Format = Format.R8G8B8A8_UNorm;
 			description.Usage = ResourceUsage.Staging;
 			description.BindFlags = BindFlags.None;
