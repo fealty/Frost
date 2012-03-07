@@ -64,6 +64,11 @@ namespace Frost.Collections
 			return new IndexedRange(StartIndex, Length - length);
 		}
 
+		public bool Contains(int index)
+		{
+			return index >= StartIndex && index <= LastIndex;
+		}
+
 		public IndexedRange Slice(int startIndex, int length)
 		{
 			Contract.Requires(startIndex >= 0);

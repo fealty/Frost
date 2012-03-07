@@ -90,7 +90,7 @@ namespace Frost.Formatting
 			{
 				if(metrics.IsClusterStart(i))
 				{
-					if(metrics.IsClusterVisible(i))
+					if(metrics.IsVisible(i))
 					{
 						Rectangle region = metrics.Regions[i];
 

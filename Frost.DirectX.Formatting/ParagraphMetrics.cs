@@ -170,7 +170,38 @@ namespace Frost.DirectX.Formatting
 			get { return _Outlines; }
 		}
 
-		public bool FindIndexNear(Point position, out int textIndex)
+		public bool GetLineForText(int textIndex, out int lineIndex)
+		{
+			for(int i = 0; i < Lines.Count; ++i)
+			{
+				if(Lines[i].Contains(textIndex))
+				{
+					lineIndex = i;
+
+					return true;
+				}
+			}
+
+			lineIndex = 0;
+
+			return false;
+		}
+
+		public bool FindLineNear(Point position, out int lineIndex)
+		{
+			int textIndex;
+
+			if(FindTextNear(position, out textIndex))
+			{
+				return GetLineForText(textIndex, out lineIndex);
+			}
+
+			lineIndex = 0;
+
+			return false;
+		}
+
+		public bool FindTextNear(Point position, out int textIndex)
 		{
 			int nearestCluster = 0;
 
@@ -230,7 +261,20 @@ namespace Frost.DirectX.Formatting
 			return true;
 		}
 
-		public bool IsClusterVisible(int textIndex)
+		public bool IsClusterEnd(int textIndex)
+		{
+			if(textIndex < _Paragraph.Text.Length - 1)
+			{
+				if(_TextToCluster[textIndex] == _TextToCluster[textIndex + 1])
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public bool IsVisible(int textIndex)
 		{
 			int clusterIndex = _TextToCluster[textIndex];
 
@@ -252,6 +296,30 @@ namespace Frost.DirectX.Formatting
 			return false;
 		}
 
+		public bool IsLineStart(int textIndex)
+		{
+			int lineIndex;
+
+			if(GetLineForText(textIndex, out lineIndex))
+			{
+				return textIndex == _Lines[lineIndex].StartIndex;
+			}
+
+			return false;
+		}
+
+		public bool IsLineEnd(int textIndex)
+		{
+			int lineIndex;
+
+			if (GetLineForText(textIndex, out lineIndex))
+			{
+				return textIndex == _Lines[lineIndex].LastIndex;
+			}
+
+			return false;
+		}
+
 		public void ComputeRegion(IndexedRange range, out Rectangle region)
 		{
 			float left = float.MaxValue;
@@ -262,7 +330,7 @@ namespace Frost.DirectX.Formatting
 			foreach(int index in range)
 			{
 				// exclude invisible clusters from consideration
-				if(IsClusterVisible(index))
+				if(IsVisible(index))
 				{
 					// get the cluster index from the text index
 					int cluster = _TextToCluster[index];
