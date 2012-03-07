@@ -161,15 +161,15 @@ namespace Frost.DirectX.Formatting
 					                            	: LayoutDirection.RightToLeft;
 
 					// align the occupied region within the slide region
-					occupiedRegion = occupiedRegion.AlignWithin(
+					occupiedRegion = occupiedRegion.AlignRelativeTo(
 						slideRegion, cluster.HAlignment, Axis.Horizontal, direction);
 
 					// align the floater vertically within the occupied region
-					cluster.Floater = cluster.Floater.AlignWithin(
+					cluster.Floater = cluster.Floater.AlignRelativeTo(
 						occupiedRegion, cluster.VAlignment, Axis.Vertical, direction);
 
 					// align the floater horizontally within the occupied region
-					cluster.Floater = cluster.Floater.AlignWithin(
+					cluster.Floater = cluster.Floater.AlignRelativeTo(
 						occupiedRegion, cluster.HAlignment, Axis.Horizontal, direction);
 
 					_InputSink.Clusters[item.Position] = cluster;

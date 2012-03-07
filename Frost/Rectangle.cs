@@ -367,7 +367,7 @@ namespace Frost
 				Left - amount.Left, Top - amount.Top, Right + amount.Right, Bottom + amount.Bottom);
 		}
 
-		public Rectangle AlignWithin(
+		public Rectangle AlignRelativeTo(
 			Rectangle container,
 			Alignment alignment,
 			Axis alignmentAxis,
@@ -555,96 +555,96 @@ namespace Frost
 		{
 			Assert.Equal(
 				FromEdges(50, 0, 100, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 50, 50, 100),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Vertical));
 			Assert.Equal(
 				FromEdges(0, 50, 50, 100),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(50, 50, 100, 100),
-				FromEdges(0, 0, 50, 50).AlignWithin(FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Both));
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Both));
 			Assert.Equal(
 				FromEdges(0, 50, 50, 100),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal));
 			Assert.Equal(
 				FromEdges(50, 0, 100, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Both));
 			Assert.Equal(
 				FromEdges(50, 0, 100, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(25, 0, 75, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Horizontal));
 			Assert.Equal(
 				FromEdges(25, 0, 75, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 25, 50, 75),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Vertical));
 			Assert.Equal(
 				FromEdges(0, 25, 50, 75),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(25, 25, 75, 75),
-				FromEdges(0, 0, 50, 50).AlignWithin(FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Both));
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Both));
 			Assert.Equal(
 				FromEdges(25, 25, 75, 75),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Both, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 100, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal));
 			Assert.Equal(
 				FromEdges(0, 0, 100, 50),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 100),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 100),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical, LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 100, 100),
-				FromEdges(0, 0, 50, 50).AlignWithin(FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Both));
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Both));
 			Assert.Equal(
 				FromEdges(0, 0, 100, 100),
-				FromEdges(0, 0, 50, 50).AlignWithin(
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
 					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Both, LayoutDirection.RightToLeft));
 		}
 #endif
