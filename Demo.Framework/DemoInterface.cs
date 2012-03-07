@@ -89,6 +89,7 @@ namespace Demo.Framework
 			device2D.Painter.FillRectangle(headerBar, new Size(headerRegion.Height));
 
 			device2D.Painter.SetBrush(Resources.Foreground);
+
 			Paragraph.Draw(device2D.Painter, metrics);
 
 			device2D.Painter.End();
