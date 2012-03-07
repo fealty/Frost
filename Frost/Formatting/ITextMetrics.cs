@@ -71,7 +71,25 @@ namespace Frost.Formatting
 				}
 			}
 
-			public bool FindIndexNear(Point position, out int textIndex)
+			public bool GetLineForText(int textIndex, out int lineIndex)
+			{
+				Contract.Requires(textIndex >= 0);
+				Contract.Requires(textIndex < Regions.Count);
+				Contract.Ensures(Contract.ValueAtReturn(out lineIndex) >= 0);
+				Contract.Ensures(Contract.ValueAtReturn(out lineIndex) < Lines.Count);
+
+				throw new NotSupportedException();
+			}
+
+			public bool FindLineNear(Point position, out int lineIndex)
+			{
+				Contract.Ensures(Contract.ValueAtReturn(out lineIndex) >= 0);
+				Contract.Ensures(Contract.ValueAtReturn(out lineIndex) < Lines.Count);
+
+				throw new NotSupportedException();
+			}
+
+			public bool FindTextNear(Point position, out int textIndex)
 			{
 				Contract.Ensures(Contract.ValueAtReturn(out textIndex) >= 0);
 				Contract.Ensures(Contract.ValueAtReturn(out textIndex) < Regions.Count);
@@ -95,7 +113,31 @@ namespace Frost.Formatting
 				throw new NotSupportedException();
 			}
 
-			public bool IsClusterVisible(int textIndex)
+			public bool IsClusterEnd(int textIndex)
+			{
+				Contract.Requires(textIndex >= 0);
+				Contract.Requires(textIndex < Regions.Count);
+
+				throw new NotSupportedException();
+			}
+
+			public bool IsVisible(int textIndex)
+			{
+				Contract.Requires(textIndex >= 0);
+				Contract.Requires(textIndex < Regions.Count);
+
+				throw new NotSupportedException();
+			}
+
+			public bool IsLineStart(int textIndex)
+			{
+				Contract.Requires(textIndex >= 0);
+				Contract.Requires(textIndex < Regions.Count);
+
+				throw new NotSupportedException();
+			}
+
+			public bool IsLineEnd(int textIndex)
 			{
 				Contract.Requires(textIndex >= 0);
 				Contract.Requires(textIndex < Regions.Count);
@@ -131,13 +173,23 @@ namespace Frost.Formatting
 
 		OutlineCollection Outlines { get; }
 
-		bool FindIndexNear(Point position, out int textIndex);
+		bool GetLineForText(int textIndex, out int lineIndex);
+
+		bool FindLineNear(Point position, out int lineIndex);
+
+		bool FindTextNear(Point position, out int textIndex);
 
 		bool IsRightToLeft(int textIndex);
 
 		bool IsClusterStart(int textIndex);
 
-		bool IsClusterVisible(int textIndex);
+		bool IsClusterEnd(int textIndex);
+
+		bool IsVisible(int textIndex);
+
+		bool IsLineStart(int textIndex);
+
+		bool IsLineEnd(int textIndex);
 
 		void ComputeRegion(IndexedRange textRange, out Rectangle result);
 	}
