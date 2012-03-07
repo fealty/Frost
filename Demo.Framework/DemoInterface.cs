@@ -37,14 +37,6 @@ namespace Demo.Framework
 			device2D.Painter.SetBrush(Resources.Background);
 			device2D.Painter.FillRectangle(target.Region);
 
-			// draw the header bar
-			Thickness barExpansion = new Thickness(0, headerRegion.Height, 0, 0);
-
-			Rectangle headerBar = headerRegion.Expand(barExpansion);
-
-			device2D.Painter.SetBrush(Resources.UIColor);
-			device2D.Painter.FillRectangle(headerBar, new Size(headerRegion.Height));
-
 			// generate the settings display
 			float menuWidth = GenerateMenu(context, target, device2D);
 
@@ -53,7 +45,9 @@ namespace Demo.Framework
 			_Watch.Reset();
 
 			Rectangle availableRegion = Rectangle.FromEdges(
-				menuWidth, headerRegion.Bottom, target.Region.Right, target.Region.Bottom);
+				menuWidth, headerRegion.Bottom + headerRegion.Height, target.Region.Right, target.Region.Bottom);
+
+			Debug.WriteLine(availableRegion);
 
 			long oldMemoryUsage = GC.GetTotalMemory(true);
 
@@ -69,21 +63,32 @@ namespace Demo.Framework
 			device2D.Diagnostics.Query("Composition", "FrameDuration", out compositionFrameDuration);
 			device2D.Diagnostics.Query("Painting", "FrameDuration", out paintingFrameDuration);
 
-			Paragraph stats =
-				Paragraph.Create().WithAlignment(Alignment.Center).WithFamily("Lucida Console").
-					WithAdditionalText(
-						String.Format(
-							"Memory: {0:N0} KB  \u25A0  Garbage: {1:N0} KB  \u25A0  Time: {2} ms  \u25A0  Painting: {3} ms  \u25A0  Composition: {4} ms",
-							GC.GetTotalMemory(true) / 1024,
-							memoryDelta / 1024,
-							_Watch.ElapsedMilliseconds,
-							paintingFrameDuration.Value.Milliseconds,
-							compositionFrameDuration.Value.Milliseconds)).Build();
+			Paragraph stats = Paragraph.Create()
+				.WithAlignment(Alignment.Center)
+				.WithFamily("Lucida Console")
+				.WithAdditionalText(
+					String.Format(
+						"Memory:\u00A0{0:N0}\u00A0KB  \u25A0  Garbage:\u00A0{1:N0}\u00A0KB  \u25A0  Time:\u00A0{2}\u00A0ms  \u25A0  Painting:\u00A0{3}\u00A0ms  \u25A0  Composition:\u00A0{4}\u00A0ms",
+						GC.GetTotalMemory(true) / 1024,
+						memoryDelta / 1024,
+						_Watch.ElapsedMilliseconds,
+						paintingFrameDuration.Value.Milliseconds,
+						compositionFrameDuration.Value.Milliseconds))
+				.Build();
 
-			ITextMetrics metrics = device2D.MeasureLayout(stats, headerRegion);
+			ITextMetrics metrics = device2D.MeasureLayout(
+				stats, headerRegion.Contract(headerRegion.Height, 0));
 
 			device2D.Painter.Begin(target, Retention.RetainData);
 
+			// draw the header bar
+			Rectangle headerBar = headerRegion.Expand(
+				0, headerRegion.Height, 0, Math.Max(0, metrics.TextRegion.Height - headerRegion.Height));
+
+			device2D.Painter.SetBrush(Resources.UIColor);
+			device2D.Painter.FillRectangle(headerBar, new Size(headerRegion.Height));
+
+			device2D.Painter.SetBrush(Resources.Foreground);
 			Paragraph.Draw(device2D.Painter, metrics);
 
 			device2D.Painter.End();
@@ -96,11 +101,11 @@ namespace Demo.Framework
 
 			float headerHeight = MeasureHeader(device2D);
 
-			Size headerSize = new Size(target.Region.Width, headerHeight);
+			Size headerSize = new Size(Math.Max(target.Region.Width, headerHeight * 30), headerHeight);
 
 			Rectangle region = new Rectangle(Point.Empty, headerSize);
 
-			return region.Contract(new Thickness(headerHeight, 0.0f));
+			return region.Contract(headerHeight, 0.0f);
 		}
 
 		private static float MeasureHeader(Device2D device2D)
@@ -135,9 +140,11 @@ namespace Demo.Framework
 
 			foreach(var item in context.Settings)
 			{
-				Paragraph paragraph =
-					Paragraph.Create().WithFamily("Lucida Console").WithAdditionalText(
-						String.Format("[{0}]", items.Count + 1)).Build();
+				Paragraph paragraph = Paragraph.Create()
+					.WithFamily("Lucida Console")
+					.WithAdditionalText(
+						String.Format("[{0}]", items.Count + 1))
+					.Build();
 
 				var metrics = device2D.MeasureLayout(paragraph, region);
 
@@ -167,7 +174,7 @@ namespace Demo.Framework
 				Rectangle settingRegion = item.Key.TextRegion.Expand(itemExpansion);
 
 				settingRegion = settingRegion.Resize(maxWidth, settingRegion.Height);
-				settingRegion = settingRegion.Expand(new Thickness(itemHeight, 0, 0, 0));
+				settingRegion = settingRegion.Expand(itemHeight, 0, 0, 0);
 
 				device2D.Painter.SetBrush(item.Value ? Resources.ActiveButton : Resources.UIColor);
 				device2D.Painter.FillRectangle(settingRegion, new Size(itemHeight / 3.0f));
