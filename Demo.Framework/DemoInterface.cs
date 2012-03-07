@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 using Frost;
+using Frost.Diagnostics;
 using Frost.Formatting;
 
 namespace Demo.Framework
@@ -62,14 +63,22 @@ namespace Demo.Framework
 
 			long memoryDelta = GC.GetTotalMemory(false) - oldMemoryUsage;
 
+			IDeviceCounter<TimeSpan> compositionFrameDuration;
+			IDeviceCounter<TimeSpan> paintingFrameDuration;
+
+			device2D.Diagnostics.Query("Composition", "FrameDuration", out compositionFrameDuration);
+			device2D.Diagnostics.Query("Painting", "FrameDuration", out paintingFrameDuration);
+
 			Paragraph stats =
 				Paragraph.Create().WithAlignment(Alignment.Center).WithFamily("Lucida Console").
 					WithAdditionalText(
 						String.Format(
-							"Memory: {0:N0} bytes  \u25A0  Garbage: {1:N0} bytes  \u25A0  Time Taken: {2} ms",
-							GC.GetTotalMemory(true),
-							memoryDelta,
-							_Watch.ElapsedMilliseconds)).Build();
+							"Memory: {0:N0} KB  \u25A0  Garbage: {1:N0} KB  \u25A0  Time: {2} ms  \u25A0  Painting: {3} ms  \u25A0  Composition: {4} ms",
+							GC.GetTotalMemory(true) / 1024,
+							memoryDelta / 1024,
+							_Watch.ElapsedMilliseconds,
+							paintingFrameDuration.Value.Milliseconds,
+							compositionFrameDuration.Value.Milliseconds)).Build();
 
 			ITextMetrics metrics = device2D.MeasureLayout(stats, headerRegion);
 
