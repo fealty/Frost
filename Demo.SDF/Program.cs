@@ -25,7 +25,7 @@ namespace Demo.SDF
 			_Distance = new DistanceField();
 		}
 
-		public void Reset(Rectangle region, Canvas target, Device2D device2D)
+		public void Reset(Canvas target, Device2D device2D)
 		{
 			if(device2D.Effects.Find<DistanceEffectSettings>() == null)
 			{
@@ -35,7 +35,7 @@ namespace Demo.SDF
 			Paragraph p = Paragraph.Create().WithPointSize(12)
 				//.ChangeFontStyle(FontStyle.Italic)
 				.WithFeatures(new FontFeatureCollection(new[] {new FontFeature("swsh", 1)})).WithFamily(
-					"Brioso Pro").WithAdditionalText("R").Build();
+					"Brioso Pro").AddText("R").Build();
 
 			ITextMetrics metrics = device2D.MeasureLayout(p, new Rectangle(Point.Empty, Size.MaxValue), null);
 
