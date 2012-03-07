@@ -239,10 +239,7 @@ namespace Frost
 
 		public bool IsEmpty
 		{
-			get
-			{
-				return _Width * _Height <= 0.0f;
-			}
+			get { return _Width * _Height <= 0.0f; }
 		}
 
 		public Point Center
@@ -312,6 +309,56 @@ namespace Frost
 		{
 			return FromEdges(
 				Left + amount.Left, Top + amount.Top, Right - amount.Right, Bottom - amount.Bottom);
+		}
+
+		public Rectangle Contract(float left, float top, float right, float bottom)
+		{
+			Contracts.Requires(Check.IsPositive(left));
+			Contracts.Requires(Check.IsPositive(top));
+			Contracts.Requires(Check.IsPositive(right));
+			Contracts.Requires(Check.IsPositive(bottom));
+
+			return Contract(new Thickness(left, top, right, bottom));
+		}
+
+		public Rectangle Contract(float leftRight, float topBottom)
+		{
+			Contracts.Requires(Check.IsPositive(leftRight));
+			Contracts.Requires(Check.IsPositive(topBottom));
+
+			return Contract(new Thickness(leftRight, topBottom));
+		}
+
+		public Rectangle Contract(float leftRightTopBottom)
+		{
+			Contracts.Requires(Check.IsPositive(leftRightTopBottom));
+
+			return Contract(new Thickness(leftRightTopBottom));
+		}
+
+		public Rectangle Expand(float left, float top, float right, float bottom)
+		{
+			Contracts.Requires(Check.IsPositive(left));
+			Contracts.Requires(Check.IsPositive(top));
+			Contracts.Requires(Check.IsPositive(right));
+			Contracts.Requires(Check.IsPositive(bottom));
+
+			return Expand(new Thickness(left, top, right, bottom));
+		}
+
+		public Rectangle Expand(float leftRight, float topBottom)
+		{
+			Contracts.Requires(Check.IsPositive(leftRight));
+			Contracts.Requires(Check.IsPositive(topBottom));
+
+			return Expand(new Thickness(leftRight, topBottom));
+		}
+
+		public Rectangle Expand(float leftRightTopBottom)
+		{
+			Contracts.Requires(Check.IsPositive(leftRightTopBottom));
+
+			return Expand(new Thickness(leftRightTopBottom));
 		}
 
 		public Rectangle Expand(Thickness amount)
