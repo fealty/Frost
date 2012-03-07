@@ -426,7 +426,7 @@ namespace Frost.Formatting
 				return this;
 			}
 
-			public Builder WithAdditionalInline(
+			public Builder AddInline(
 				Size inline, Alignment hAlignment = Alignment.Stretch, Alignment vAlignment = Alignment.Stretch)
 			{
 				Contract.Requires(Check.IsPositive(inline.Width));
@@ -464,10 +464,15 @@ namespace Frost.Formatting
 				return this;
 			}
 
-			public Builder WithAdditionalText(string text)
+			public Builder AddText(string text, params object[] objects)
 			{
 				Contract.Requires(text != null);
 				Contract.Ensures(Contract.Result<Builder>() != null);
+
+				if(objects != null)
+				{
+					text = string.Format(text, objects);
+				}
 
 				TextRun newRun = new TextRun(
 					_ActiveTextRange,
@@ -718,10 +723,10 @@ namespace Frost.Formatting
 		[Fact] internal static void Test0()
 		{
 			Paragraph paragraph =
-				Create().WithAlignment(Alignment.Center).WithAdditionalText("para").WithCulture(
-					new CultureInfo("en-us")).WithWeight(FontWeight.Bold).WithAdditionalText("graph").WithPointSize
-					(12).WithAdditionalText("-").WithStyle(FontStyle.Regular).WithAdditionalText("test").
-					WithTracking(5).WithIndentation(1).WithSpacing(3).WithLeading(7).WithAdditionalInline(
+				Create().WithAlignment(Alignment.Center).AddText("para").WithCulture(
+					new CultureInfo("en-us")).WithWeight(FontWeight.Bold).AddText("graph").WithPointSize
+					(12).AddText("-").WithStyle(FontStyle.Regular).AddText("test").
+					WithTracking(5).WithIndentation(1).WithSpacing(3).WithLeading(7).AddInline(
 						new Size(5, 5)).Build();
 
 			Assert.Equal(paragraph.Runs.Count, 4);
