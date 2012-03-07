@@ -30,7 +30,7 @@ namespace Demo.Formatting
 			_Paragraphs = new List<ITextMetrics>();
 		}
 
-		public void Reset(Rectangle region, Canvas target, Device2D device2D)
+		public void Reset(Canvas target, Device2D device2D)
 		{
 			_Paragraphs.Clear();
 
@@ -39,11 +39,14 @@ namespace Demo.Formatting
 
 			float emSize = fontMetrics.MeasureEm(10.0f);
 
+			Rectangle region = target.Region;
+
 			Rectangle columnRegion = new Rectangle(0, region.Y + (2 * emSize), 33 * emSize, region.Height);
 
 			columnRegion = columnRegion.AlignRelativeTo(region, Alignment.Center, Axis.Horizontal);
 
-			columnRegion = columnRegion.Relocate(Math.Max(columnRegion.X, region.X + (emSize / 2.0f)), columnRegion.Y);
+			columnRegion = columnRegion.Relocate(
+				Math.Max(columnRegion.X, region.X + (emSize / 2.0f)), columnRegion.Y);
 
 			Canvas inlineIcon = Resources.CreateIcon(device2D);
 
@@ -54,14 +57,14 @@ namespace Demo.Formatting
 				.WithAlignment(Alignment.Center)
 				.WithFamily("Cambria")
 				.WithWeight(FontWeight.Bold)
-				.WithAdditionalText("A BRIEF MANIFESTO")
+				.AddText("A BRIEF MANIFESTO")
 				.Build();
 
 			Paragraph foreword = Paragraph.Create()
-				.WithAdditionalInline(inlineSize, Alignment.Trailing, Alignment.Center)
+				.AddInline(inlineSize, Alignment.Trailing, Alignment.Center)
 				.WithFamily("Calibri")
 				.WithLeading(0.25f)
-				.WithAdditionalText(
+				.AddText(
 					"ost chal\u00ADlenges the con\u00ADven\u00ADtion\u00ADal lack of el\u00ADeg\u00ADant and ex\u00ADpress\u00ADive text in video games. Why should play\u00ADers struggle to read small quest text with in\u00ADad\u00ADequate lead\u00ADing and jagged rags? We care for the read\u00ADer's eyes in prin\u00ADted works. Can't we care for the eyes star\u00ADing at a glow\u00ADing mon\u00ADit\u00ADor? We can, and we will.")
 				.Build();
 
@@ -69,13 +72,13 @@ namespace Demo.Formatting
 				.WithIndentation(1.5f)
 				.WithFamily("Calibri")
 				.WithLeading(0.25f)
-				.WithAdditionalText(
+				.AddText(
 					"With sup\u00ADport for Uni\u00ADcode, Open\u00ADType, and ad\u00ADvanced lay\u00ADout and format\u00ADting, Frost provides many ty\u00ADpo\u00ADgraph\u00ADic fea\u00ADtures in\u00ADclud\u00ADing lead\u00ADing, track\u00ADing, spa\u00ADcing, in\u00ADdent\u00ADa\u00ADtion, op\u00ADtim\u00ADal line break\u00ADing, in\u00ADline ob\u00ADjects, bi\u00ADd\u00ADirec\u00ADtion\u00ADal text, float\u00ADing in\u00ADlines, hy\u00ADphen\u00ADa\u00ADtion, and flow ob\u00ADstruc\u00ADtions. The sys\u00ADtem also ex\u00ADposes the glyph cluster geo\u00ADmetry as ")
 				.SaveState()
 				.WithFamily("Lucida Console")
-				.WithAdditionalText("Geometry")
+				.AddText("Geometry")
 				.RestoreState()
-				.WithAdditionalText(
+				.AddText(
 					" to en\u00ADable ad\u00ADvanced or al\u00ADtern\u00ADat\u00ADive font ras\u00ADter\u00ADiz\u00ADa\u00ADtion tech\u00ADniques.")
 				.Build();
 
@@ -83,18 +86,18 @@ namespace Demo.Formatting
 				.WithIndentation(1.5f)
 				.WithFamily("Calibri")
 				.WithLeading(0.25f)
-				.WithAdditionalText(
+				.AddText(
 					"These fea\u00ADtures in\u00ADteg\u00ADrate in\u00ADto the flu\u00ADent and flex\u00ADible design of Frost. Users may con\u00ADtrol in\u00ADdi\u00ADvidu\u00ADal char\u00ADac\u00ADters through trans\u00ADform\u00ADa\u00ADtions when ras\u00ADter\u00ADiz\u00ADing text through either the ")
 				.SaveState()
 				.WithFamily("Lucida Console")
-				.WithAdditionalText("Painter")
+				.AddText("Painter")
 				.RestoreState()
-				.WithAdditionalText(" or ")
+				.AddText(" or ")
 				.SaveState()
 				.WithFamily("Lucida Console")
-				.WithAdditionalText("Compositor")
+				.AddText("Compositor")
 				.RestoreState()
-				.WithAdditionalText(
+				.AddText(
 					". The sys\u00ADtem op\u00ADer\u00ADates upon in\u00ADdi\u00ADvidu\u00ADal para\u00ADgraphs. This block-based ap\u00ADproach gives max\u00ADim\u00ADum flex\u00ADib\u00ADil\u00ADity to ap\u00ADplic\u00ADa\u00ADtions wish\u00ADing to finely con\u00ADtrol the lay\u00ADout of lar\u00ADger se\u00ADmant\u00ADic units.")
 				.Build();
 
@@ -174,10 +177,14 @@ namespace Demo.Formatting
 			{
 				yield return
 					new DemoSetting(
-						"", _AreLinesDisplayed, () => _AreLinesDisplayed = !_AreLinesDisplayed);
+						"Hide Lines",
+						"Show Lines",
+						_AreLinesDisplayed,
+						() => _AreLinesDisplayed = !_AreLinesDisplayed);
 				yield return
 					new DemoSetting(
-						"",
+						"Hide Regions",
+						"Show Regions",
 						_AreRegionsDisplayed,
 						() => _AreRegionsDisplayed = !_AreRegionsDisplayed);
 			}
