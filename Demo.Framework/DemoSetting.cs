@@ -1,20 +1,28 @@
-﻿using System;
+﻿// Copyright (c) 2012, Joshua Burke
+// All rights reserved.
+// 
+// See LICENSE for more information.
+
+using System;
 using System.Diagnostics.Contracts;
 
 namespace Demo.Framework
 {
 	public struct DemoSetting
 	{
-		private readonly string _Text;
-		private readonly bool _IsActive;
 		private readonly Action _Action;
+		private readonly string _ActiveText;
+		private readonly string _InactiveText;
+		private readonly bool _IsActive;
 
-		public DemoSetting(string text, bool isActive, Action action)
+		public DemoSetting(string activeText, string inactiveText, bool isActive, Action action)
 		{
-			Contract.Requires(text != null);
+			Contract.Requires(activeText != null);
+			Contract.Requires(inactiveText != null);
 			Contract.Requires(action != null);
 
-			_Text = text;
+			_ActiveText = activeText;
+			_InactiveText = inactiveText;
 			_IsActive = isActive;
 			_Action = action;
 		}
@@ -29,9 +37,14 @@ namespace Demo.Framework
 			get { return _IsActive; }
 		}
 
-		public string Text
+		public string InactiveText
 		{
-			get { return _Text; }
+			get { return _InactiveText; }
+		}
+
+		public string ActiveText
+		{
+			get { return _ActiveText; }
 		}
 	}
 }
