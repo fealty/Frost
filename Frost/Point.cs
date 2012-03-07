@@ -203,6 +203,14 @@ namespace Frost
 			return new Point(_X + amount.Width, _Y + amount.Height);
 		}
 
+		public Point Translate(float width, float height)
+		{
+			Contract.Requires(Check.IsFinite(width));
+			Contract.Requires(Check.IsFinite(height));
+
+			return new Point(_X + width, _Y + height);
+		}
+
 		public override bool Equals(object obj)
 		{
 			if(ReferenceEquals(null, obj))
