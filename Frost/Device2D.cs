@@ -114,7 +114,7 @@ namespace Frost
 			Contract.Requires(Check.IsPositive(dimensions.Width));
 			Contract.Requires(Check.IsPositive(dimensions.Height));
 
-			if (dimensions.Area > 0)
+			if(dimensions.Area > 0)
 			{
 				OnSuggestPageDimensions(dimensions);
 
@@ -199,12 +199,26 @@ namespace Frost
 			OnTessellate(path, tolerance, sink);
 		}
 
+		public ITextMetrics MeasureLayout(Paragraph paragraph)
+		{
+			Contract.Requires(paragraph != null);
+
+			return MeasureLayout(paragraph, new Rectangle(Point.Empty, Size.MaxValue));
+		}
+
+		public ITextMetrics MeasureLayout(Paragraph paragraph, Point location)
+		{
+			Contract.Requires(paragraph != null);
+
+			return MeasureLayout(paragraph, new Rectangle(location, Size.MaxValue));
+		}
+
 		public ITextMetrics MeasureLayout(
 			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions)
 		{
 			Contract.Requires(paragraph != null);
 
-			if (!region.IsEmpty)
+			if(!region.IsEmpty)
 			{
 				return OnMeasureLayout(paragraph, region, obstructions);
 			}
