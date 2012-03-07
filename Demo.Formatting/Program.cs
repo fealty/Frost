@@ -3,6 +3,7 @@
 // 
 // See LICENSE for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
@@ -40,7 +41,9 @@ namespace Demo.Formatting
 
 			Rectangle columnRegion = new Rectangle(0, region.Y + (2 * emSize), 33 * emSize, region.Height);
 
-			columnRegion = columnRegion.AlignWithin(region, Alignment.Center, Axis.Horizontal);
+			columnRegion = columnRegion.AlignRelativeTo(region, Alignment.Center, Axis.Horizontal);
+
+			columnRegion = columnRegion.Relocate(Math.Max(columnRegion.X, region.X + (emSize / 2.0f)), columnRegion.Y);
 
 			Canvas inlineIcon = Resources.CreateIcon(device2D);
 
