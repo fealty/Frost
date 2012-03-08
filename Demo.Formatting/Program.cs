@@ -41,7 +41,9 @@ namespace Demo.Formatting
 			Rectangle region = target.Region;
 
 			Rectangle columnRegion = new Rectangle(
-				region.X + (emSize / 2.0f), region.Y + (emSize / 2.0f), 33 * emSize, region.Height);
+				region.X + (emSize / 2.0f), region.Y + (emSize / 2.0f), 30 * emSize, region.Height);
+
+			columnRegion = columnRegion.AlignRelativeTo(region, Alignment.Center, Axis.Horizontal);
 
 			Canvas inlineIcon = Resources.CreateIcon(device2D);
 
