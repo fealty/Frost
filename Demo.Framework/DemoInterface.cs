@@ -128,7 +128,8 @@ namespace Demo.Framework
 			device2D.Painter.End();
 
 			device2D.Compositor.Begin(target, Retention.RetainData);
-			device2D.Compositor.Composite(demoTarget, menuWidth, statsPanel.Bottom);
+			device2D.Compositor.Composite(
+				demoTarget, menuWidth + (lineHeight * 0.25f), statsPanel.Bottom + lineHeight);
 			device2D.Compositor.End();
 		}
 
