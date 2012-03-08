@@ -52,6 +52,15 @@ namespace Demo.Framework
 			_Form = new RenderForm();
 			_Timer = new Stopwatch();
 
+			_Form.Width = 1280;
+			_Form.Height = 720;
+
+			_Form.MaximumSize = new System.Drawing.Size(1280, 720);
+			_Form.MinimumSize = new System.Drawing.Size(1280, 720);
+
+			_Form.MaximizeBox = false;
+			_Form.SizeGripStyle = SizeGripStyle.Hide;
+
 			_Form.KeyPress += HandleKeyPress;
 			_Form.ClientSizeChanged += HandleClientSizeChanged;
 			_Form.KeyDown += HandleKeyDown;
