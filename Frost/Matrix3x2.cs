@@ -149,6 +149,11 @@ namespace Frost
 			       other._22.Equals(_22) && other._31.Equals(_31) && other._32.Equals(_32);
 		}
 
+		public void Translate(Size amount, out Matrix3X2 result)
+		{
+			Translate(amount.Width, amount.Height, out result);
+		}
+
 		public void Translate(float width, float height, out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsFinite(width));
@@ -178,6 +183,11 @@ namespace Frost
 			skew.Multiply(ref this, out result);
 		}
 
+		public void Scale(Size amount, out Matrix3X2 result)
+		{
+			Scale(amount.Width, amount.Height, out result);
+		}
+
 		public void Scale(float width, float height, out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsPositive(width));
@@ -186,6 +196,11 @@ namespace Frost
 			Matrix3X2 scaling = new Matrix3X2(width, 0.0f, 0.0f, height, 0.0f, 0.0f);
 
 			scaling.Multiply(ref this, out result);
+		}
+
+		public void Scale(Size amount, Point origin, out Matrix3X2 result)
+		{
+			Scale(amount.Width, amount.Height, origin.X, origin.Y, out result);
 		}
 
 		public void Scale(float width, float height, float originX, float originY, out Matrix3X2 result)
@@ -215,6 +230,11 @@ namespace Frost
 			Matrix3X2 rotation = new Matrix3X2(rcos, rsin, -rsin, rcos, 0.0f, 0.0f);
 
 			rotation.Multiply(ref this, out result);
+		}
+
+		public void Rotate(float angle, Point origin, out Matrix3X2 result)
+		{
+			Rotate(angle, origin.X, origin.Y, out result);
 		}
 
 		public void Rotate(float angle, float originX, float originY, out Matrix3X2 result)
