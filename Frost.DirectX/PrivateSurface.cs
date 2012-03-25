@@ -164,6 +164,11 @@ namespace Frost.DirectX
 				get { return _Region; }
 			}
 
+			public override Canvas SurfaceTarget
+			{
+				get { return _Layer.SurfaceCanvas; }
+			}
+
 			public override ISurface2D Surface2D
 			{
 				get { return _Layer; }

@@ -34,6 +34,8 @@ namespace Frost
 			get { return _Flattening; }
 		}
 
+		//TODO: add a Resources property that exposes a class for resource management. This includes resolution, forget, suggested size?
+
 		public DeviceCounterCollection Diagnostics
 		{
 			get { return _CounterCollection; }
