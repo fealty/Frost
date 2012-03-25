@@ -90,6 +90,7 @@ namespace Frost
 			public abstract Rectangle Region { get; }
 			public abstract ISurface2D Surface2D { get; }
 			public abstract Canvas Target { get; }
+			public abstract Canvas SurfaceTarget { get; }
 			public abstract Device2D Device2D { get; }
 
 			public ResolvedContext BackingContext
