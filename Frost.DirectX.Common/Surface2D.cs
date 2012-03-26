@@ -5,7 +5,6 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using System.Threading;
 
 using Frost.Painting;
 using Frost.Surfacing;
@@ -27,10 +26,9 @@ namespace Frost.DirectX.Common
 	{
 		public const int CacheLimit = 5;
 
-		private static long _AvailableUniqueId;
-
 		private readonly Device2D _Device2D;
 		private readonly Device _Device3D;
+		private readonly Guid _Id;
 
 		private readonly CacheDictionary<Gradient, LinearGradientBrush> _LinearGradientBrushes;
 
@@ -42,7 +40,6 @@ namespace Frost.DirectX.Common
 		private readonly RenderTarget _Target2D;
 		private readonly RenderTargetView _TargetView;
 		private readonly Texture2D _Texture;
-		private readonly long _UniqueId;
 		private readonly SurfaceUsage _Usage;
 
 		private Bitmap _Bitmap;
@@ -68,7 +65,7 @@ namespace Frost.DirectX.Common
 			_LinearGradientBrushes = new CacheDictionary<Gradient, LinearGradientBrush>(CacheLimit);
 			_RadialGradientBrushes = new CacheDictionary<Gradient, RadialGradientBrush>(CacheLimit);
 
-			_UniqueId = Interlocked.Increment(ref _AvailableUniqueId) - 1;
+			_Id = Guid.NewGuid();
 
 			textureDescription.Width = Convert.ToInt32(surfaceDescription.Size.Width);
 			textureDescription.Height = Convert.ToInt32(surfaceDescription.Size.Height);
@@ -156,13 +153,11 @@ namespace Frost.DirectX.Common
 			{
 				return false;
 			}
-
 			if(ReferenceEquals(this, other))
 			{
 				return true;
 			}
-
-			return other._UniqueId == _UniqueId;
+			return other._Id.Equals(_Id);
 		}
 
 		public void CopyTo(Rectangle srcRegion, ISurface2D destination, Point dstLocation)
@@ -203,6 +198,11 @@ namespace Frost.DirectX.Common
 
 		public virtual void ReleaseLock()
 		{
+		}
+
+		public Guid Id
+		{
+			get { return _Id; }
 		}
 
 		public Device2D Device2D
@@ -397,12 +397,12 @@ namespace Frost.DirectX.Common
 				return true;
 			}
 
-			return obj is Surface2D && Equals((Surface2D)obj);
+			return obj.GetType() == typeof(Surface2D) && Equals((Surface2D)obj);
 		}
 
 		public override int GetHashCode()
 		{
-			return _UniqueId.GetHashCode();
+			return _Id.GetHashCode();
 		}
 
 		protected virtual void Dispose(bool disposing)

@@ -36,6 +36,8 @@ namespace Frost.Surfacing
 
 			public abstract void AcquireLock();
 			public abstract void ReleaseLock();
+
+			public abstract Guid Id { get; }
 		}
 	}
 
@@ -53,5 +55,7 @@ namespace Frost.Surfacing
 
 		void AcquireLock();
 		void ReleaseLock();
+
+		Guid Id { get; }
 	}
 }
