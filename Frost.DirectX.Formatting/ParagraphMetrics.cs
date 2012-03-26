@@ -346,12 +346,12 @@ namespace Frost.DirectX.Formatting
 		}
 
 		/// <summary>
-		/// This method creates an outline collection.
+		///   This method creates an outline collection.
 		/// </summary>
-		/// <param name="formattedData">This parameter references the formatted input sink.</param>
-		/// <param name="geometryCache">This parameter references the text geometry cache.</param>
-		/// <param name="clusterBidiLevels">This parameter references the cluster bidi levels.</param>
-		/// <returns>This method returns a new outline collection containing an outline for each formatted cluster.</returns>
+		/// <param name="formattedData"> This parameter references the formatted input sink. </param>
+		/// <param name="geometryCache"> This parameter references the text geometry cache. </param>
+		/// <param name="clusterBidiLevels"> This parameter references the cluster bidi levels. </param>
+		/// <returns> This method returns a new outline collection containing an outline for each formatted cluster. </returns>
 		private static OutlineCollection CreateOutlineList(
 			FormatterSink formattedData, TextGeometryCache geometryCache, out byte[] clusterBidiLevels)
 		{
