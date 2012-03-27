@@ -153,11 +153,8 @@ namespace Frost.DirectX.Common
 			{
 				return false;
 			}
-			if(ReferenceEquals(this, other))
-			{
-				return true;
-			}
-			return other._Id.Equals(_Id);
+
+			return ReferenceEquals(this, other) || other._Id.Equals(_Id);
 		}
 
 		public void CopyTo(Rectangle srcRegion, ISurface2D destination, Point dstLocation)
