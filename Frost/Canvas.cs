@@ -12,26 +12,34 @@ namespace Frost
 {
 	public sealed class Canvas
 	{
+		private readonly object _Tag;
 		private readonly Rectangle _Region;
 		private readonly SurfaceUsage _Usage;
 
 		private ResolvedContext _BackingContext;
 
-		public Canvas(Size dimensions, SurfaceUsage usage = SurfaceUsage.Dynamic):
-			this(dimensions.Width, dimensions.Height, usage)
+		public Canvas(Size dimensions, SurfaceUsage usage = SurfaceUsage.Dynamic, object tag = null):
+			this(dimensions.Width, dimensions.Height, usage, tag)
 		{
 			Contract.Requires(Check.IsPositive(dimensions.Width));
 			Contract.Requires(Check.IsPositive(dimensions.Height));
 		}
 
-		public Canvas(float width, float height, SurfaceUsage usage = SurfaceUsage.Dynamic)
+		public Canvas(float width, float height, SurfaceUsage usage = SurfaceUsage.Dynamic, object tag = null)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 
+			_Tag = tag;
+
 			_Region = new Rectangle(Point.Empty, width, height);
 
 			_Usage = usage;
+		}
+
+		public object Tag
+		{
+			get { return _Tag; }
 		}
 
 		internal ResolvedContext BackingContext
