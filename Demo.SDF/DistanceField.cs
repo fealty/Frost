@@ -201,7 +201,7 @@ namespace Demo.SDF
 
 			Canvas newCanvas = new Canvas(new Size(ResolvedLength, ResolvedLength), Frost.Surfacing.SurfaceUsage.Normal);
 
-			device2D.Copy(mRgbaData, newCanvas);
+			device2D.Resources.Copy(mRgbaData, newCanvas);
 
 			return newCanvas;
 		}

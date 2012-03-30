@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 using Frost.Composition;
@@ -11,17 +12,20 @@ using Frost.Diagnostics;
 using Frost.Effects;
 using Frost.Formatting;
 using Frost.Painting;
+using Frost.Resources;
 using Frost.Shaping;
 using Frost.Surfacing;
 
 namespace Frost
 {
-	public abstract class Device2D
+	public abstract class Device2D : IResourceManager
 	{
 		private const float _Flattening = 0.25f;
 
 		private readonly DeviceCounterCollection _CounterCollection;
 		private readonly EffectCollection _EffectCollection;
+		private readonly object _Lock = new object();
+		private Action<IEnumerable<Canvas>> _ResourcesInvalidated;
 
 		protected Device2D()
 		{
@@ -34,7 +38,10 @@ namespace Frost
 			get { return _Flattening; }
 		}
 
-		//TODO: add a Resources property that exposes a class for resource management. This includes resolution, forget, suggested size?
+		public IResourceManager Resources
+		{
+			get { return this; }
+		}
 
 		public DeviceCounterCollection Diagnostics
 		{
@@ -49,22 +56,10 @@ namespace Frost
 		public abstract Painter Painter { get; }
 		public abstract Compositor Compositor { get; }
 
-		public void Copy(Canvas fromTarget, Canvas toTarget)
+		protected abstract Size PageSize { set; }
+
+		void IResourceManager.Copy(Rectangle fromRegion, Canvas fromTarget, Canvas toTarget)
 		{
-			Contract.Requires(fromTarget != null);
-			Contract.Requires(toTarget != null);
-
-			if(!fromTarget.IsEmpty)
-			{
-				Copy(fromTarget.Region, fromTarget, toTarget);
-			}
-		}
-
-		public void Copy(Rectangle fromRegion, Canvas fromTarget, Canvas toTarget)
-		{
-			Contract.Requires(fromTarget != null);
-			Contract.Requires(toTarget != null);
-
 			if(!fromTarget.IsEmpty && !fromRegion.IsEmpty)
 			{
 				if(fromTarget.Region.Contains(fromRegion))
@@ -73,8 +68,8 @@ namespace Frost
 
 					if(toTarget.Region.Contains(srcRegion))
 					{
-						Canvas.ResolvedContext fromContext = Resolve(fromTarget);
-						Canvas.ResolvedContext toContext = Resolve(toTarget);
+						var fromContext = Resources.Resolve(fromTarget);
+						var toContext = Resources.Resolve(toTarget);
 
 						// translate to 2D surface coordinate space
 						fromRegion = fromRegion.Translate(fromContext.Region.Location);
@@ -91,16 +86,13 @@ namespace Frost
 			}
 		}
 
-		public void Copy(byte[] fromRgbaData, Canvas toTarget)
+		void IResourceManager.Copy(byte[] fromRgbaData, Canvas toTarget)
 		{
-			Contract.Requires(fromRgbaData != null);
-			Contract.Requires(toTarget != null);
-
 			if(fromRgbaData.Length > 0)
 			{
 				if(fromRgbaData.Length >= Convert.ToInt32(toTarget.Region.Area * 4))
 				{
-					Canvas.ResolvedContext toContext = Resolve(toTarget);
+					var toContext = Resources.Resolve(toTarget);
 
 					OnCopy(fromRgbaData, toContext);
 
@@ -111,24 +103,91 @@ namespace Frost
 			}
 		}
 
-		public void SuggestPageDimensions(Size dimensions)
+		void IResourceManager.Copy(Canvas fromTarget, Canvas toTarget)
 		{
-			Contract.Requires(Check.IsPositive(dimensions.Width));
-			Contract.Requires(Check.IsPositive(dimensions.Height));
-
-			if(dimensions.Area > 0)
+			if(!fromTarget.IsEmpty)
 			{
-				OnSuggestPageDimensions(dimensions);
-
-				return;
+				Resources.Copy(fromTarget.Region, fromTarget, toTarget);
 			}
-
-			throw new InvalidOperationException("Page size insufficient!");
 		}
 
-		public void Dump(string path, SurfaceUsage usage)
+		event Action<IEnumerable<Canvas>> IResourceManager.Invalidated
 		{
-			OnDump(path, usage);
+			add
+			{
+				lock(_Lock)
+				{
+					_ResourcesInvalidated += value;
+				}
+			}
+			remove
+			{
+				lock(_Lock)
+				{
+					if(_ResourcesInvalidated != null)
+					{
+						_ResourcesInvalidated -= value;
+					}
+				}
+			}
+		}
+
+		Size IResourceManager.PageSize
+		{
+			set
+			{
+				if(value.Area > 0)
+				{
+					PageSize = value;
+
+					return;
+				}
+
+				throw new InvalidOperationException("Page size insufficient!");
+			}
+		}
+
+		void IResourceManager.DumpToFiles(string path, SurfaceUsage usage)
+		{
+			OnDumpToFiles(path, usage);
+		}
+
+		Canvas.ResolvedContext IResourceManager.Resolve(Canvas target)
+		{
+			if(!target.IsEmpty)
+			{
+				Canvas.ResolvedContext context = target.BackingContext;
+
+				if(context != null)
+				{
+					if(context.Device2D == this)
+					{
+						return context;
+					}
+				}
+
+				context = OnResolve(target);
+
+				target.BackingContext = context;
+
+				return context;
+			}
+
+			Resources.Forget(target);
+
+			return null;
+		}
+
+		void IResourceManager.Forget(Canvas target)
+		{
+			Canvas.ResolvedContext context = target.BackingContext;
+
+			if(context != null)
+			{
+				OnForget(context);
+
+				target.BackingContext = null;
+			}
 		}
 
 		public abstract void ProcessTick();
@@ -267,48 +326,6 @@ namespace Frost
 			return OnDeterminePoint(path, length, tolerance, out tangentVector);
 		}
 
-		public Canvas.ResolvedContext Resolve(Canvas target)
-		{
-			Contract.Requires(target != null);
-
-			if(!target.IsEmpty)
-			{
-				Canvas.ResolvedContext context = target.BackingContext;
-
-				if(context != null)
-				{
-					if(context.Device2D == this)
-					{
-						return context;
-					}
-				}
-
-				context = OnResolve(target);
-
-				target.BackingContext = context;
-
-				return context;
-			}
-
-			Forget(target);
-
-			return null;
-		}
-
-		public void Forget(Canvas target)
-		{
-			Contract.Requires(target != null);
-
-			Canvas.ResolvedContext context = target.BackingContext;
-
-			if(context != null)
-			{
-				OnForget(context);
-
-				target.BackingContext = null;
-			}
-		}
-
 		protected abstract void OnCopy(
 			Rectangle fromRegion, Canvas.ResolvedContext fromTarget, Canvas.ResolvedContext toTarget);
 
@@ -340,14 +357,27 @@ namespace Frost
 
 		protected abstract bool OnContains(Geometry path, Point point, float tolerance);
 
-		protected abstract void OnSuggestPageDimensions(Size dimensions);
-
-		protected abstract void OnDump(string path, SurfaceUsage usage);
+		protected abstract void OnDumpToFiles(string path, SurfaceUsage usage);
 
 		protected abstract void OnForget(Canvas.ResolvedContext target);
 
 		protected abstract Canvas.ResolvedContext OnResolve(Canvas target);
 
-		public abstract event Action<Canvas> ResourceInvalidated;
+		protected void DispatchInvalidated(IEnumerable<Canvas> resources)
+		{
+			Contract.Requires(resources != null);
+
+			Action<IEnumerable<Canvas>> evt;
+
+			lock(_Lock)
+			{
+				evt = _ResourcesInvalidated;
+			}
+
+			if(evt != null)
+			{
+				evt(resources);
+			}
+		}
 	}
 }

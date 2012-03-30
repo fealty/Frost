@@ -364,7 +364,7 @@ namespace Frost.Composition
 
 				if(dstRegion.Contains(srcRegion))
 				{
-					OnCopyResult(_Device2D.Resolve(destination));
+					OnCopyResult(_Device2D.Resources.Resolve(destination));
 
 					return;
 				}
@@ -393,7 +393,7 @@ namespace Frost.Composition
 						// translate to 2D surface coordinate space
 						sourceRegion = sourceRegion.Translate(_TargetDelta);
 
-						OnCopyResult(ref sourceRegion, _Device2D.Resolve(destination));
+						OnCopyResult(ref sourceRegion, _Device2D.Resources.Resolve(destination));
 
 						return;
 					}
@@ -493,7 +493,7 @@ namespace Frost.Composition
 
 			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				OnComposite(_Device2D.Resolve(source));
+				OnComposite(_Device2D.Resources.Resolve(source));
 			}
 		}
 
@@ -508,7 +508,7 @@ namespace Frost.Composition
 				// translate to 2D surface coordinate space
 				location = location.Translate(_TargetDelta);
 
-				OnComposite(_Device2D.Resolve(source), ref location);
+				OnComposite(_Device2D.Resources.Resolve(source), ref location);
 			}
 		}
 
@@ -523,7 +523,7 @@ namespace Frost.Composition
 				// translate to 2D surface coordinate space
 				region = region.Translate(_TargetDelta);
 
-				OnComposite(_Device2D.Resolve(source), ref region);
+				OnComposite(_Device2D.Resources.Resolve(source), ref region);
 			}
 		}
 
@@ -535,7 +535,7 @@ namespace Frost.Composition
 
 			if(!_IsTargetEmpty && !source.Region.IsEmpty)
 			{
-				var sourceContext = _Device2D.Resolve(source);
+				var sourceContext = _Device2D.Resources.Resolve(source);
 
 				// translate to 2D surface coordinate space
 				srcRegion = srcRegion.Translate(sourceContext.Region.Location);
@@ -553,7 +553,7 @@ namespace Frost.Composition
 
 			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				var sourceContext = _Device2D.Resolve(source);
+				var sourceContext = _Device2D.Resources.Resolve(source);
 
 				// translate to 2D surface coordinate space
 				srcRegion = srcRegion.Translate(sourceContext.Region.Location);
@@ -582,7 +582,7 @@ namespace Frost.Composition
 
 			if(!isTargetEmpty)
 			{
-				var targetContext = _Device2D.Resolve(target);
+				var targetContext = _Device2D.Resources.Resolve(target);
 
 				_TargetDelta = targetContext.Region.Location;
 
@@ -637,7 +637,7 @@ namespace Frost.Composition
 						// translate to 2D surface coordinate space
 						sourceRegion = sourceRegion.Translate(_TargetDelta);
 
-						OnCopyResult(ref sourceRegion, _Device2D.Resolve(destination));
+						OnCopyResult(ref sourceRegion, _Device2D.Resources.Resolve(destination));
 
 						return;
 					}
@@ -762,7 +762,7 @@ namespace Frost.Composition
 				// translate to 2D surface coordinate space
 				location = location.Translate(_TargetDelta);
 
-				OnComposite(_Device2D.Resolve(source), ref location);
+				OnComposite(_Device2D.Resources.Resolve(source), ref location);
 			}
 		}
 
@@ -783,7 +783,7 @@ namespace Frost.Composition
 				// translate to 2D surface coordinate space
 				region = region.Translate(_TargetDelta);
 
-				OnComposite(_Device2D.Resolve(source), ref region);
+				OnComposite(_Device2D.Resources.Resolve(source), ref region);
 			}
 		}
 
@@ -802,7 +802,7 @@ namespace Frost.Composition
 
 			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				var sourceContext = _Device2D.Resolve(source);
+				var sourceContext = _Device2D.Resources.Resolve(source);
 
 				Rectangle srcRegion = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
@@ -841,7 +841,7 @@ namespace Frost.Composition
 
 			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				var sourceContext = _Device2D.Resolve(source);
+				var sourceContext = _Device2D.Resources.Resolve(source);
 
 				Rectangle srcRegion = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 				Rectangle dstRegion = new Rectangle(dstX, dstY, dstWidth, dstHeight);

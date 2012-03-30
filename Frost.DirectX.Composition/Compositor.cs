@@ -515,7 +515,7 @@ namespace Frost.DirectX.Composition
 		{
 			Contract.Ensures(Contract.ValueAtReturn(out shader) != null);
 
-			using(ShaderBytecode code = ShaderBytecode.Compile(Resources.PixelShader, "Main", "ps_4_0"))
+			using(ShaderBytecode code = ShaderBytecode.Compile(Properties.Resources.PixelShader, "Main", "ps_4_0"))
 			{
 				shader = new PixelShader(_Device3D, code);
 			}

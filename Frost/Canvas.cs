@@ -83,7 +83,7 @@ namespace Frost
 
 				if(device2D != null)
 				{
-					device2D.Forget(this);
+					device2D.Resources.Forget(this);
 				}
 			}
 		}

@@ -87,7 +87,7 @@ namespace Demo.SDF
 			TestTest(_Distance.Sample, device2D);
 			device2D.Painter.End();
 
-			device2D.Dump(null, SurfaceUsage.Normal); //*/
+			device2D.Resources.DumpToFiles(null, SurfaceUsage.Normal); //*/
 		}
 
 		public IEnumerable<DemoSetting> Settings

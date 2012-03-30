@@ -354,7 +354,7 @@ namespace Frost.DirectX.Composition
 
 			Canvas newCanvas = new Canvas(dimensions, SurfaceUsage.Private);
 
-			var context = _Device2D.Resolve(newCanvas);
+			var context = _Device2D.Resources.Resolve(newCanvas);
 
 			Contract.Assert(context != null);
 
@@ -412,7 +412,7 @@ namespace Frost.DirectX.Composition
 			Contract.Ensures(Contract.ValueAtReturn(out shader) != null);
 			Contract.Ensures(Contract.ValueAtReturn(out layout) != null);
 
-			using(ShaderBytecode code = ShaderBytecode.Compile(Resources.VertexShader, "Main", "vs_4_0"))
+			using(ShaderBytecode code = ShaderBytecode.Compile(Properties.Resources.VertexShader, "Main", "vs_4_0"))
 			{
 				shader = new VertexShader(_Device3D, code);
 

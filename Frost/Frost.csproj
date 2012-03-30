@@ -152,6 +152,7 @@
     <Compile Include="Painting\Gradient.cs" />
     <Compile Include="Painting\GradientStop.cs" />
     <Compile Include="Painting\Painter.cs" />
+    <Compile Include="Resources\IResourceManager.cs" />
     <Compile Include="Shaping\Enumerations.cs" />
     <Compile Include="Shaping\Geometry.cs" />
     <Compile Include="Shaping\IGeometrySink.cs" />

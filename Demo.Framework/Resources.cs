@@ -67,7 +67,7 @@ namespace Demo.Framework
 
 			Canvas canvas = new Canvas(new Size(width, height), SurfaceUsage.Normal);
 
-			device2D.Copy(rgbaData, canvas);
+			device2D.Resources.Copy(rgbaData, canvas);
 
 			return canvas;
 		}

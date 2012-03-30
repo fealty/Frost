@@ -499,7 +499,7 @@ namespace Frost.Painting
 
 			if(!isTargetEmpty)
 			{
-				var targetContext = _Device2D.Resolve(target);
+				var targetContext = _Device2D.Resources.Resolve(target);
 
 				_TargetDelta = targetContext.Region.Location;
 
@@ -741,7 +741,7 @@ namespace Frost.Painting
 
 			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				OnSetBrush(_Device2D.Resolve(source), extension);
+				OnSetBrush(_Device2D.Resources.Resolve(source), extension);
 			}
 		}
 

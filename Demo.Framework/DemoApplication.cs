@@ -201,10 +201,10 @@ namespace Demo.Framework
 			}
 			else if(e.KeyChar == 'd')
 			{
-				_Device2D.Dump(string.Empty, SurfaceUsage.Normal);
-				_Device2D.Dump(string.Empty, SurfaceUsage.Dynamic);
-				_Device2D.Dump(string.Empty, SurfaceUsage.External);
-				_Device2D.Dump(string.Empty, SurfaceUsage.Private);
+				_Device2D.Resources.DumpToFiles(string.Empty, SurfaceUsage.Normal);
+				_Device2D.Resources.DumpToFiles(string.Empty, SurfaceUsage.Dynamic);
+				_Device2D.Resources.DumpToFiles(string.Empty, SurfaceUsage.External);
+				_Device2D.Resources.DumpToFiles(string.Empty, SurfaceUsage.Private);
 			}
 			else if(e.KeyChar == 'r')
 			{
@@ -260,7 +260,7 @@ namespace Demo.Framework
 
 			formSize = new Size(Math.Max(formSize.Width, 640), Math.Max(formSize.Height, 480));
 
-			_Device2D.SuggestPageDimensions(new Size(formSize.Width * 2, formSize.Height * 2));
+			_Device2D.Resources.PageSize = new Size(formSize.Width * 2, formSize.Height * 2);
 
 			_IsResetQueued = true;
 		}
