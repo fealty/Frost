@@ -33,9 +33,10 @@ namespace Demo.SDF
 		{
 			mGeometry = geometry;
 
-			mRegion = device2D.MeasureRegion(geometry);
+			mRegion = device2D.Geometry.MeasureRegion(geometry);
 
-			Geometry simplified = device2D.Simplify(geometry, 1.0f / DistanceField.ResolvedLength);
+			Geometry simplified = device2D.Geometry.Simplify(
+				geometry, 1.0f / DistanceField.ResolvedLength);
 
 			simplified.Extract(this);
 
@@ -290,7 +291,7 @@ namespace Demo.SDF
 		{
 			Geometry tg = geometry.Transform(ref transform);
 
-			mRegion = device2D.MeasureRegion(tg);
+			mRegion = device2D.Geometry.MeasureRegion(tg);
 
 			mGeometry = geometry;
 
@@ -392,7 +393,7 @@ namespace Demo.SDF
 
 			Geometry tg = mGeometry.Transform(ref mTransform);
 
-			if(device2D.Contains(tg, point, 1))
+			if(device2D.Geometry.Contains(tg, point, 1))
 			{
 				distance = -distance;
 			}

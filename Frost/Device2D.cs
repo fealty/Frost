@@ -18,9 +18,9 @@ using Frost.Surfacing;
 
 namespace Frost
 {
-	public abstract class Device2D : IResourceManager
+	public abstract class Device2D : IResourceManager, IGeometryManipulator
 	{
-		private const float _Flattening = 0.25f;
+		public const float Flattening = 0.25f;
 
 		private readonly DeviceCounterCollection _CounterCollection;
 		private readonly EffectCollection _EffectCollection;
@@ -31,11 +31,6 @@ namespace Frost
 		{
 			_CounterCollection = new DeviceCounterCollection();
 			_EffectCollection = new EffectCollection();
-		}
-
-		public static float Flattening
-		{
-			get { return _Flattening; }
 		}
 
 		public IResourceManager Resources
@@ -53,10 +48,72 @@ namespace Frost
 			get { return _EffectCollection; }
 		}
 
+		public IGeometryManipulator Geometry
+		{
+			get { return this; }
+		}
+
 		public abstract Painter Painter { get; }
 		public abstract Compositor Compositor { get; }
 
 		protected abstract Size PageSize { set; }
+
+		bool IGeometryManipulator.Contains(Geometry path, Point point, float tolerance)
+		{
+			return OnContains(path, point, tolerance);
+		}
+
+		Geometry IGeometryManipulator.Simplify(Geometry path, float tolerance)
+		{
+			return OnSimplify(path, tolerance);
+		}
+
+		Geometry IGeometryManipulator.Widen(Geometry path, float width, float tolerance)
+		{
+			return OnWiden(path, width, tolerance);
+		}
+
+		Rectangle IGeometryManipulator.MeasureRegion(Geometry path)
+		{
+			return OnMeasureRegion(path);
+		}
+
+		Geometry IGeometryManipulator.Combine(
+			Geometry sourcePath,
+			Geometry destinationPath,
+			CombinationOperation operation,
+			float tolerance)
+		{
+			return OnCombine(sourcePath, destinationPath, tolerance, operation);
+		}
+
+		void IGeometryManipulator.Tessellate(Geometry path, ITessellationSink sink, float tolerance)
+		{
+			OnTessellate(path, tolerance, sink);
+		}
+
+		float IGeometryManipulator.MeasureArea(Geometry path, float tolerance)
+		{
+			return OnMeasureArea(path, tolerance);
+		}
+
+		float IGeometryManipulator.MeasureLength(Geometry path, float tolerance)
+		{
+			return OnMeasureLength(path, tolerance);
+		}
+
+		Point IGeometryManipulator.DeterminePoint(Geometry path, float length, float tolerance)
+		{
+			Point stub;
+
+			return OnDeterminePoint(path, length, tolerance, out stub);
+		}
+
+		Point IGeometryManipulator.DeterminePoint(
+			Geometry path, float length, out Point tangentVector, float tolerance)
+		{
+			return OnDeterminePoint(path, length, tolerance, out tangentVector);
+		}
 
 		void IResourceManager.Copy(Rectangle fromRegion, Canvas fromTarget, Canvas toTarget)
 		{
@@ -192,40 +249,6 @@ namespace Frost
 
 		public abstract void ProcessTick();
 
-		public bool Contains(Geometry path, Point point, float tolerance = _Flattening)
-		{
-			Contract.Requires(path != null);
-			Contract.Requires(Check.IsPositive(tolerance));
-
-			return OnContains(path, point, tolerance);
-		}
-
-		public Geometry Simplify(Geometry path, float tolerance = _Flattening)
-		{
-			Contract.Requires(path != null);
-			Contract.Requires(Check.IsPositive(tolerance));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
-
-			return OnSimplify(path, tolerance);
-		}
-
-		public Geometry Widen(Geometry path, float width, float tolerance = _Flattening)
-		{
-			Contract.Requires(path != null);
-			Contract.Requires(Check.IsFinite(width));
-			Contract.Requires(Check.IsPositive(tolerance));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
-
-			return OnWiden(path, width, tolerance);
-		}
-
-		public Rectangle MeasureRegion(Geometry path)
-		{
-			Contract.Requires(path != null);
-
-			return OnMeasureRegion(path);
-		}
-
 		public FontMetrics MeasureFont(
 			string family, FontWeight weight, FontStyle style, FontStretch stretch)
 		{
@@ -235,29 +258,6 @@ namespace Frost
 			}
 
 			return OnMeasureFont(family, weight, style, stretch);
-		}
-
-		public Geometry Combine(
-			Geometry sourcePath,
-			Geometry destinationPath,
-			CombinationOperation operation,
-			float tolerance = _Flattening)
-		{
-			Contract.Requires(sourcePath != null);
-			Contract.Requires(destinationPath != null);
-			Contract.Requires(Check.IsPositive(tolerance));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
-
-			return OnCombine(sourcePath, destinationPath, tolerance, operation);
-		}
-
-		public void Tessellate(Geometry path, ITessellationSink sink, float tolerance = _Flattening)
-		{
-			Contract.Requires(path != null);
-			Contract.Requires(Check.IsPositive(tolerance));
-			Contract.Requires(sink != null);
-
-			OnTessellate(path, tolerance, sink);
 		}
 
 		public ITextMetrics MeasureLayout(Paragraph paragraph)
@@ -285,45 +285,6 @@ namespace Frost
 			}
 
 			return null;
-		}
-
-		public float MeasureArea(Geometry path, float tolerance = _Flattening)
-		{
-			Contract.Requires(path != null);
-			Contract.Requires(Check.IsPositive(tolerance));
-			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
-
-			return OnMeasureArea(path, tolerance);
-		}
-
-		public float MeasureLength(Geometry path, float tolerance = _Flattening)
-		{
-			Contract.Requires(path != null);
-			Contract.Requires(Check.IsPositive(tolerance));
-			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
-
-			return OnMeasureLength(path, tolerance);
-		}
-
-		public Point DeterminePoint(Geometry path, float length, float tolerance = _Flattening)
-		{
-			Contract.Requires(path != null);
-			Contract.Requires(Check.IsPositive(length));
-			Contract.Requires(Check.IsPositive(tolerance));
-
-			Point stub;
-
-			return OnDeterminePoint(path, length, tolerance, out stub);
-		}
-
-		public Point DeterminePoint(
-			Geometry path, float length, out Point tangentVector, float tolerance = _Flattening)
-		{
-			Contract.Requires(path != null);
-			Contract.Requires(Check.IsPositive(length));
-			Contract.Requires(Check.IsPositive(tolerance));
-
-			return OnDeterminePoint(path, length, tolerance, out tangentVector);
 		}
 
 		protected abstract void OnCopy(

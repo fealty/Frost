@@ -155,6 +155,7 @@
     <Compile Include="Resources\IResourceManager.cs" />
     <Compile Include="Shaping\Enumerations.cs" />
     <Compile Include="Shaping\Geometry.cs" />
+    <Compile Include="Shaping\IGeometryManipulator.cs" />
     <Compile Include="Shaping\IGeometrySink.cs" />
     <Compile Include="Shaping\ITessellationSink.cs" />
     <Compile Include="Surfacing\Enumerations.cs" />

@@ -55,7 +55,7 @@ namespace Demo.SDF
 
 			Debug.WriteLine("Time: {0}", watch.ElapsedMilliseconds);
 
-			Rectangle reg = device2D.MeasureRegion(outline.NormalizedOutline);
+			Rectangle reg = device2D.Geometry.MeasureRegion(outline.NormalizedOutline);
 
 			device2D.Painter.Begin(target);
 			device2D.Painter.Translate(test.Region.X, test.Region.Y);
