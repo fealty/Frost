@@ -18,7 +18,7 @@ using Frost.Surfacing;
 
 namespace Frost
 {
-	public abstract class Device2D : IResourceManager, IGeometryManipulator
+	public abstract class Device2D : IResourceManager, IShaper, IFormatter
 	{
 		public const float Flattening = 0.25f;
 
@@ -48,7 +48,12 @@ namespace Frost
 			get { return _EffectCollection; }
 		}
 
-		public IGeometryManipulator Geometry
+		public IFormatter Formatter
+		{
+			get { return this; }
+		}
+
+		public IShaper Shaper
 		{
 			get { return this; }
 		}
@@ -58,27 +63,59 @@ namespace Frost
 
 		protected abstract Size PageSize { set; }
 
-		bool IGeometryManipulator.Contains(Geometry path, Point point, float tolerance)
+		FontMetrics IFormatter.MeasureFont(
+			string family, FontWeight weight, FontStyle style, FontStretch stretch)
+		{
+			if(String.IsNullOrWhiteSpace(family))
+			{
+				return OnMeasureFont(Paragraph.DefaultFamily, weight, style, stretch);
+			}
+
+			return OnMeasureFont(family, weight, style, stretch);
+		}
+
+		ITextMetrics IFormatter.MeasureLayout(Paragraph paragraph)
+		{
+			return Formatter.MeasureLayout(paragraph, new Rectangle(Point.Empty, Size.MaxValue));
+		}
+
+		ITextMetrics IFormatter.MeasureLayout(Paragraph paragraph, Point location)
+		{
+			return Formatter.MeasureLayout(paragraph, new Rectangle(location, Size.MaxValue));
+		}
+
+		ITextMetrics IFormatter.MeasureLayout(
+			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions)
+		{
+			if(!region.IsEmpty)
+			{
+				return OnMeasureLayout(paragraph, region, obstructions);
+			}
+
+			return null;
+		}
+
+		bool IShaper.Contains(Geometry path, Point point, float tolerance)
 		{
 			return OnContains(path, point, tolerance);
 		}
 
-		Geometry IGeometryManipulator.Simplify(Geometry path, float tolerance)
+		Geometry IShaper.Simplify(Geometry path, float tolerance)
 		{
 			return OnSimplify(path, tolerance);
 		}
 
-		Geometry IGeometryManipulator.Widen(Geometry path, float width, float tolerance)
+		Geometry IShaper.Widen(Geometry path, float width, float tolerance)
 		{
 			return OnWiden(path, width, tolerance);
 		}
 
-		Rectangle IGeometryManipulator.MeasureRegion(Geometry path)
+		Rectangle IShaper.MeasureRegion(Geometry path)
 		{
 			return OnMeasureRegion(path);
 		}
 
-		Geometry IGeometryManipulator.Combine(
+		Geometry IShaper.Combine(
 			Geometry sourcePath,
 			Geometry destinationPath,
 			CombinationOperation operation,
@@ -87,32 +124,37 @@ namespace Frost
 			return OnCombine(sourcePath, destinationPath, tolerance, operation);
 		}
 
-		void IGeometryManipulator.Tessellate(Geometry path, ITessellationSink sink, float tolerance)
+		void IShaper.Tessellate(Geometry path, ITessellationSink sink, float tolerance)
 		{
 			OnTessellate(path, tolerance, sink);
 		}
 
-		float IGeometryManipulator.MeasureArea(Geometry path, float tolerance)
+		float IShaper.MeasureArea(Geometry path, float tolerance)
 		{
 			return OnMeasureArea(path, tolerance);
 		}
 
-		float IGeometryManipulator.MeasureLength(Geometry path, float tolerance)
+		float IShaper.MeasureLength(Geometry path, float tolerance)
 		{
 			return OnMeasureLength(path, tolerance);
 		}
 
-		Point IGeometryManipulator.DeterminePoint(Geometry path, float length, float tolerance)
+		Point IShaper.DeterminePoint(Geometry path, float length, float tolerance)
 		{
 			Point stub;
 
 			return OnDeterminePoint(path, length, tolerance, out stub);
 		}
 
-		Point IGeometryManipulator.DeterminePoint(
+		Point IShaper.DeterminePoint(
 			Geometry path, float length, out Point tangentVector, float tolerance)
 		{
 			return OnDeterminePoint(path, length, tolerance, out tangentVector);
+		}
+
+		Canvas IShaper.CreateDistanceField(Geometry path, Size resolution, float tolerance)
+		{
+			throw new NotImplementedException();
 		}
 
 		void IResourceManager.Copy(Rectangle fromRegion, Canvas fromTarget, Canvas toTarget)
@@ -248,44 +290,6 @@ namespace Frost
 		}
 
 		public abstract void ProcessTick();
-
-		public FontMetrics MeasureFont(
-			string family, FontWeight weight, FontStyle style, FontStretch stretch)
-		{
-			if(String.IsNullOrWhiteSpace(family))
-			{
-				return OnMeasureFont(Paragraph.DefaultFamily, weight, style, stretch);
-			}
-
-			return OnMeasureFont(family, weight, style, stretch);
-		}
-
-		public ITextMetrics MeasureLayout(Paragraph paragraph)
-		{
-			Contract.Requires(paragraph != null);
-
-			return MeasureLayout(paragraph, new Rectangle(Point.Empty, Size.MaxValue));
-		}
-
-		public ITextMetrics MeasureLayout(Paragraph paragraph, Point location)
-		{
-			Contract.Requires(paragraph != null);
-
-			return MeasureLayout(paragraph, new Rectangle(location, Size.MaxValue));
-		}
-
-		public ITextMetrics MeasureLayout(
-			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions)
-		{
-			Contract.Requires(paragraph != null);
-
-			if(!region.IsEmpty)
-			{
-				return OnMeasureLayout(paragraph, region, obstructions);
-			}
-
-			return null;
-		}
 
 		protected abstract void OnCopy(
 			Rectangle fromRegion, Canvas.ResolvedContext fromTarget, Canvas.ResolvedContext toTarget);

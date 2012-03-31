@@ -120,7 +120,7 @@ namespace Demo.SDF
 
 		public Canvas CreateField(Geometry geometry, double normalizedBaseline, Device2D device2D)
 		{
-			Rectangle normalizedRegion = device2D.Geometry.MeasureRegion(geometry);
+			Rectangle normalizedRegion = device2D.Shaper.MeasureRegion(geometry);
 
 			Matrix3X2 transform = Matrix3X2.Identity;
 

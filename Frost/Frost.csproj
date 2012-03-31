@@ -137,6 +137,7 @@
     <Compile Include="Formatting\FontFeature.cs" />
     <Compile Include="Formatting\FontFeatureCollection.cs" />
     <Compile Include="Formatting\FontMetrics.cs" />
+    <Compile Include="Formatting\IFormatter.cs" />
     <Compile Include="Formatting\ITextMetrics.cs" />
     <Compile Include="Formatting\LineCollection.cs" />
     <Compile Include="Formatting\Outline.cs" />
@@ -155,7 +156,7 @@
     <Compile Include="Resources\IResourceManager.cs" />
     <Compile Include="Shaping\Enumerations.cs" />
     <Compile Include="Shaping\Geometry.cs" />
-    <Compile Include="Shaping\IGeometryManipulator.cs" />
+    <Compile Include="Shaping\IShaper.cs" />
     <Compile Include="Shaping\IGeometrySink.cs" />
     <Compile Include="Shaping\ITessellationSink.cs" />
     <Compile Include="Surfacing\Enumerations.cs" />

@@ -33,7 +33,7 @@ namespace Demo.Formatting
 		{
 			_Paragraphs.Clear();
 
-			FontMetrics fontMetrics = device2D.MeasureFont(
+			FontMetrics fontMetrics = device2D.Formatter.MeasureFont(
 				"Calibri", FontWeight.Regular, FontStyle.Regular, FontStretch.Regular);
 
 			float emSize = fontMetrics.MeasureEm(10.0f);
@@ -98,9 +98,9 @@ namespace Demo.Formatting
 					". The sys\u00ADtem op\u00ADer\u00ADates upon in\u00ADdi\u00ADvidu\u00ADal para\u00ADgraphs. This block-based ap\u00ADproach gives max\u00ADim\u00ADum flex\u00ADib\u00ADil\u00ADity to ap\u00ADplic\u00ADa\u00ADtions wish\u00ADing to finely con\u00ADtrol the lay\u00ADout of lar\u00ADger se\u00ADmant\u00ADic units.")
 				.Build();
 
-			ITextMetrics titleMetrics = device2D.MeasureLayout(title, columnRegion);
+			ITextMetrics titleMetrics = device2D.Formatter.MeasureLayout(title, columnRegion);
 
-			ITextMetrics forewordMetrics = device2D.MeasureLayout(
+			ITextMetrics forewordMetrics = device2D.Formatter.MeasureLayout(
 				foreword,
 				new Rectangle(
 					columnRegion.X,
@@ -108,7 +108,7 @@ namespace Demo.Formatting
 					columnRegion.Width,
 					columnRegion.Height));
 
-			ITextMetrics featuresMetrics = device2D.MeasureLayout(
+			ITextMetrics featuresMetrics = device2D.Formatter.MeasureLayout(
 				features,
 				new Rectangle(
 					columnRegion.X,
@@ -116,7 +116,7 @@ namespace Demo.Formatting
 					columnRegion.Width,
 					columnRegion.Height));
 
-			ITextMetrics apiMetrics = device2D.MeasureLayout(
+			ITextMetrics apiMetrics = device2D.Formatter.MeasureLayout(
 				api,
 				new Rectangle(
 					columnRegion.X,

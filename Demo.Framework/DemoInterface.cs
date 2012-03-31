@@ -101,23 +101,23 @@ namespace Demo.Framework
 				.AddText("Garbage: {0:N0} KB", memoryDelta / 1024)
 				.Build();
 
-			ITextMetrics timeMetrics = device2D.MeasureLayout(timeTaken);
+			ITextMetrics timeMetrics = device2D.Formatter.MeasureLayout(timeTaken);
 
 			Rectangle timeRegion = timeMetrics.TextRegion.AlignRelativeTo(
 				middle, Alignment.Center, Axis.Horizontal);
 
-			ITextMetrics subsystemMetrics = device2D.MeasureLayout(subsystemTimes);
+			ITextMetrics subsystemMetrics = device2D.Formatter.MeasureLayout(subsystemTimes);
 
 			Rectangle subsystemRegion = subsystemMetrics.TextRegion.AlignRelativeTo(
 				middle, Alignment.Center, Axis.Horizontal);
 
 			subsystemRegion = subsystemRegion.Translate(0, middle.Bottom - subsystemRegion.Height);
 
-			ITextMetrics memoryMetrics = device2D.MeasureLayout(totalMemory);
-			ITextMetrics garbageMetrics = device2D.MeasureLayout(totalGarbage);
+			ITextMetrics memoryMetrics = device2D.Formatter.MeasureLayout(totalMemory);
+			ITextMetrics garbageMetrics = device2D.Formatter.MeasureLayout(totalGarbage);
 
-			ITextMetrics snapshotMetrics = device2D.MeasureLayout(snapshot, right);
-			ITextMetrics optionsMetrics = device2D.MeasureLayout(options, left);
+			ITextMetrics snapshotMetrics = device2D.Formatter.MeasureLayout(snapshot, right);
+			ITextMetrics optionsMetrics = device2D.Formatter.MeasureLayout(options, left);
 
 			device2D.Painter.Begin(target);
 
@@ -233,7 +233,7 @@ namespace Demo.Framework
 					.AddText("[{0}] {1}", items.Count + 1, currentText)
 					.Build();
 
-				var metrics = device2D.MeasureLayout(paragraph, region);
+				var metrics = device2D.Formatter.MeasureLayout(paragraph, region);
 
 				if(itemHeight.Equals(0.0f) && itemSpacing.Equals(0.0f))
 				{

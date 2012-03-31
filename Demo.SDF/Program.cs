@@ -37,7 +37,7 @@ namespace Demo.SDF
 				.WithFeatures(new FontFeatureCollection(new[] {new FontFeature("swsh", 1)})).WithFamily(
 					"Brioso Pro").AddText("R").Build();
 
-			ITextMetrics metrics = device2D.MeasureLayout(p, new Rectangle(Point.Empty, Size.MaxValue), null);
+			ITextMetrics metrics = device2D.Formatter.MeasureLayout(p, new Rectangle(Point.Empty, Size.MaxValue), null);
 
 			Outline outline = metrics.Outlines[0];
 
@@ -55,7 +55,7 @@ namespace Demo.SDF
 
 			Debug.WriteLine("Time: {0}", watch.ElapsedMilliseconds);
 
-			Rectangle reg = device2D.Geometry.MeasureRegion(outline.NormalizedOutline);
+			Rectangle reg = device2D.Shaper.MeasureRegion(outline.NormalizedOutline);
 
 			device2D.Painter.Begin(target);
 			device2D.Painter.Translate(test.Region.X, test.Region.Y);
