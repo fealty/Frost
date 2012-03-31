@@ -68,6 +68,7 @@ namespace Frost
 		{
 			if(String.IsNullOrWhiteSpace(family))
 			{
+				/// 
 				return OnMeasureFont(Paragraph.DefaultFamily, weight, style, stretch);
 			}
 
