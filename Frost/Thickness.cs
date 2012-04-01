@@ -502,7 +502,7 @@ namespace Frost
 		// by using the following operators:
 
 		/// <summary>
-		/// determines whether two <see cref="Thickness"/>es are equal
+		/// determines whether two instances of <see cref="Thickness"/> are equal
 		/// </summary>
 		/// <param name="left">the left operand</param>
 		/// <param name="right">the right operand</param>
@@ -516,7 +516,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// determines whether two <see cref="Thickness"/>es are not equal
+		/// determines whether two instances of <see cref="Thickness"/> are not equal
 		/// </summary>
 		/// <param name="left">the left operand</param>
 		/// <param name="right">the right operand</param>
