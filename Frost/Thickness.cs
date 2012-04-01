@@ -169,7 +169,7 @@ namespace Frost
 		public Thickness(float left, float top, float right, float bottom)
 		#endregion
 		{
-			#region <<constructor requires>>
+			#region <<constructor requires>>=
 			CContract.Requires(Check.IsPositive(left));
 			CContract.Requires(Check.IsPositive(top));
 			CContract.Requires(Check.IsPositive(right));
@@ -187,7 +187,22 @@ namespace Frost
 			CContract.Assert(Bottom.Equals(bottom));
 		}
 
-		//      
+		// The user may specify the value of each side. What happens if the user
+		// gives an invalid value? In debug, the code asserts. In release, the
+		// code behaves in an undefined manner. Why? Our friendly contract 
+		// invariants do not protect us in release builds. To solve this problem,
+		// we restrict the signature of the constructor with further contracts:
+		//
+		// <<constructor requires>>
+		//
+		// `Contract.Requires()` will verify parameters in release builds. Why
+		// don't we give default values to the parameters?
+
+		/// <summary>
+		/// constructs a <see cref="Thickness"/> from two dual sides
+		/// </summary>
+		/// <param name="leftRight">the thickness of the left and right sides</param>
+		/// <param name="topBottom">the thickness of the top and bottom sides</param>
 
 		#region <<left-right constructor>>
 		public Thickness(float leftRight, float topBottom)
@@ -198,6 +213,15 @@ namespace Frost
 			CContract.Requires(Check.IsPositive(topBottom));
 		}
 
+		// We believe users will find the ability to easily assign the same
+		// value to multiple sides more useful than optional parameters. This
+ 		// idea culminates in the final constructor:
+
+		/// <summary>
+		/// constructs a <see cref="Thickness"/> from a thickness value
+		/// </summary>
+		/// <param name="leftRightTopBottom">the thickness of the left, top, right, and bottom sides</param>
+
 		#region <<left-right-top-bottom constructor>>
 		public Thickness(float leftRightTopBottom)
 		#endregion
@@ -206,53 +230,16 @@ namespace Frost
 			CContract.Requires(Check.IsPositive(leftRightTopBottom));
 		}
 
-		// 
+		// Users may access the individual thicknesses of the sides through the 
+		// following properties:
 
+		/// <summary>
+		/// gets the thickness of the left side
+		/// </summary>
 
-		static Thickness()
-		{
-			_MinValue = new Thickness(0.0f);
-			_MaxValue = new Thickness(float.MaxValue);
-
-			_Empty = new Thickness(0.0f);
-		}
-
-		
-
-		public float Bottom
-		{
-			get
-			{
-				CContract.Ensures(Check.IsPositive(CContract.Result<float>()));
-				CContract.Ensures(CContract.Result<float>().Equals(_Bottom));
-
-				return _Bottom;
-			}
-		}
-
-		public float Right
-		{
-			get
-			{
-				CContract.Ensures(Check.IsPositive(CContract.Result<float>()));
-				CContract.Ensures(CContract.Result<float>().Equals(_Right));
-
-				return _Right;
-			}
-		}
-
-		public float Top
-		{
-			get
-			{
-				CContract.Ensures(Check.IsPositive(CContract.Result<float>()));
-				CContract.Ensures(CContract.Result<float>().Equals(_Top));
-
-				return _Top;
-			}
-		}
-
+		#region <<left property>>
 		public float Left
+		#endregion
 		{
 			get
 			{
@@ -263,9 +250,71 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the thickness of the top side
+		/// </summary>
 		
+		#region <<top property>>
+		public float Top
+		#endregion
+		{
+			get
+			{
+				CContract.Ensures(Check.IsPositive(CContract.Result<float>()));
+				CContract.Ensures(CContract.Result<float>().Equals(_Top));
 
+				return _Top;
+			}
+		}
+
+		/// <summary>
+		/// gets the thickness of the right side
+		/// </summary>
+
+		#region <<right property>>
+		public float Right
+		#endregion
+		{
+			get
+			{
+				CContract.Ensures(Check.IsPositive(CContract.Result<float>()));
+				CContract.Ensures(CContract.Result<float>().Equals(_Right));
+
+				return _Right;
+			}
+		}
+	
+		/// <summary>
+		/// gets the thickness of the bottom side
+		/// </summary>
+
+		#region <<bottom property>>
+		public float Bottom
+		#endregion
+		{
+			get
+			{
+				CContract.Ensures(Check.IsPositive(CContract.Result<float>()));
+				CContract.Ensures(CContract.Result<float>().Equals(_Bottom));
+
+				return _Bottom;
+			}
+		}
+
+		// Imagine we have zero-sized rectangle. What happens if we attempt to
+		// expand it by five units on all sides? `Thicknesses` have a width and
+ 		// height from their spatial nature. If `Left = 5 units` and `Right = 5
+		// units`, we can say the `Width` of the `Thickness` is ten. The same
+		// applies to the `Top` and `Bottom` sides, which constitute `Height`.
+		// Users may access these values via the following properties:
+
+		/// <summary>
+		/// gets the width (<see cref="Left"/> + <see cref="Right"/>) of the <see cref="Thickness"/>
+		/// </summary>
+
+		#region <<width property>>
 		public float Width
+		#endregion
 		{
 			get
 			{
@@ -275,7 +324,13 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the height (<see cref="Top"/> + <see cref="Bottom"/>) of the <see cref="Thickness"/>
+		/// </summary>
+
+		#region <<height property>>
 		public float Height
+		#endregion
 		{
 			get
 			{
@@ -284,24 +339,43 @@ namespace Frost
 				return _Top + _Bottom;
 			}
 		}
+		
+		// Now we get to the meat -- the operations we can perform. Users may
+		// perform two operations on a `Thickness`: 
 
-		public bool Equals(Thickness other)
-		{
-			return other._Bottom.Equals(_Bottom) && other._Left.Equals(_Left) && other._Right.Equals(_Right) &&
-			       other._Top.Equals(_Top);
-		}
+		/// <summary>
+		/// produces a <see cref="Thickness"/> by contracting an existing <see cref="Thickness"/> on all sides
+		/// </summary>
+		/// <param name="left">the amount to contract the left side</param>
+		/// <param name="top">the amount to contract the top side</param>
+		/// <param name="right">the amount to contract the right side</param>
+		/// <param name="bottom">the amount to contract the bottom side</param>
+		/// <returns>the <see cref="Thickness"/> contracted by the specified amounts</returns>
 
+		#region <<contract all sides>>
 		public Thickness Contract(float left, float top, float right, float bottom)
+		#endregion
 		{
+			#region <<contract-expand contracts>>=
 			CContract.Requires(Check.IsFinite(left));
 			CContract.Requires(Check.IsFinite(top));
 			CContract.Requires(Check.IsFinite(right));
 			CContract.Requires(Check.IsFinite(bottom));
+			#endregion
 
 			return new Thickness(_Left - left, _Top - top, _Right - right, _Bottom - bottom);
 		}
 
+		/// <summary>
+		/// produces a <see cref="Thickness"/> by contracting an existing <see cref="Thickness"/> on two dual sides
+		/// </summary>
+		/// <param name="leftRight">the amount to contract the left and right sides</param>
+		/// <param name="topBottom">the amount to contract the top and bottom sides</param>
+		/// <returns>the <see cref="Thickness"/> contracted by the specified amounts</returns>
+
+		#region <<contract left-right, top-bottom>>
 		public Thickness Contract(float leftRight, float topBottom)
+		#endregion
 		{
 			CContract.Requires(Check.IsFinite(leftRight));
 			CContract.Requires(Check.IsFinite(topBottom));
@@ -309,14 +383,51 @@ namespace Frost
 			return Contract(leftRight, topBottom, leftRight, topBottom);
 		}
 
+		/// <summary>
+		/// produces a <see cref="Thickness"/> by contracting an existing <see cref="Thickness"/> on all sides
+		/// </summary>
+		/// <param name="leftRightTopBottom">the amount to contract the left, top, right, and bottom sides</param>
+		/// <returns>the <see cref="Thickness"/> contracted by the specified amount</returns>
+
+		#region <<contract left-right-top-bottom>>
 		public Thickness Contract(float leftRightTopBottom)
+		#endregion
 		{
 			CContract.Requires(Check.IsFinite(leftRightTopBottom));
 
 			return Contract(leftRightTopBottom, leftRightTopBottom, leftRightTopBottom, leftRightTopBottom);
 		}
 
+		/// <summary>
+		/// produces a <see cref="Thickness"/> by contracting an existing <see cref="Thickness"/> by a <see cref="Thickness"/>
+		/// </summary>
+		/// <param name="left">the <see cref="Thickness"/> to contract</param>
+		/// <param name="right">the <see cref="Thickness"/> to contract by</param>
+		/// <returns>the result of <paramref name="left"/> contracted by <see cref="right"/></returns>
+
+		#region <<contraction operator>>
+		public static Thickness operator -(Thickness left, Thickness right)
+		#endregion
+		{
+			return left.Contract(right.Left, right.Top, right.Right, right.Bottom);
+		}
+
+		// The `Contract` operation produces a `Thickness` by subtracting the
+		// values of the sides of an existing `Thickness` by either specified
+		// amounts or an existing `Thickness`.
+
+		/// <summary>
+		/// produces a <see cref="Thickness"/> by expanding an existing <see cref="Thickness"/> on all sides
+		/// </summary>
+		/// <param name="left">the amount to expand the left side</param>
+		/// <param name="top">the amount to expand the top side</param>
+		/// <param name="right">the amount to expand the right side</param>
+		/// <param name="bottom">the amount to expand the bottom side</param>
+		/// <returns>the <see cref="Thickness"/> expanded by the specified amounts</returns>
+
+		#region <<expand all sides>>
 		public Thickness Expand(float left, float top, float right, float bottom)
+		#endregion
 		{
 			CContract.Requires(Check.IsFinite(left));
 			CContract.Requires(Check.IsFinite(top));
@@ -326,7 +437,16 @@ namespace Frost
 			return new Thickness(_Left + left, _Top + top, _Right + right, _Bottom + bottom);
 		}
 
+		/// <summary>
+		/// produces a <see cref="Thickness"/> by expanding an existing <see cref="Thickness"/> on two dual sides
+		/// </summary>
+		/// <param name="leftRight">the amount to expand the left and right sides</param>
+		/// <param name="topBottom">the amount to expand the top and bottom sides</param>
+		/// <returns>the <see cref="Thickness"/> expanded by the specified amounts</returns>
+
+		#region <<expand left-right, top-bottom>>
 		public Thickness Expand(float leftRight, float topBottom)
+		#endregion
 		{
 			CContract.Requires(Check.IsFinite(leftRight));
 			CContract.Requires(Check.IsFinite(topBottom));
@@ -334,12 +454,96 @@ namespace Frost
 			return Expand(leftRight, topBottom, leftRight, topBottom);
 		}
 
+		/// <summary>
+		/// produces a <see cref="Thickness"/> by expanding an existing <see cref="Thickness"/> on all sides
+		/// </summary>
+		/// <param name="leftRightTopBottom">the amount to expand the left, top, right, and bottom sides</param>
+		/// <returns>the <see cref="Thickness"/> expanded by the specified amount</returns>
+
+		#region <<expand left-top-right-bottom>>
 		public Thickness Expand(float leftRightTopBottom)
+		#endregion
 		{
 			CContract.Requires(Check.IsFinite(leftRightTopBottom));
 
 			return Expand(leftRightTopBottom, leftRightTopBottom, leftRightTopBottom, leftRightTopBottom);
 		}
+
+		/// <summary>
+		/// produces a <see cref="Thickness"/> by expanding an existing <see cref="Thickness"/> by a <see cref="Thickness"/>
+		/// </summary>
+		/// <param name="left">the <see cref="Thickness"/> to expand</param>
+		/// <param name="right">the <see cref="Thickness"/> to expand by</param>
+		/// <returns>the result of <paramref name="left"/> expanded by <see cref="right"/></returns>
+
+		#region <<expansion operator>>
+		public static Thickness operator +(Thickness left, Thickness right)
+		#endregion
+		{
+			return left.Expand(right.Left, right.Top, right.Right, right.Bottom);
+		}
+
+		// The `Expand` operation produces a `Thickness` by adding the values
+		// of the sides of an existing `Thickness` by either specified amounts
+		// or an existing `Thickness`.
+		//
+		// Unlike the constructors, both the `Contract` and `Expand` operations
+  		// allow negative values:
+		//
+		// <<contract-expand contracts>>
+		//
+		// We permit negative values because adding or subtracting negative values
+		// will not always produce an invalid `Thickness`. For example, if we
+		// have a `Thickness(0)` and `Contract(-1)`, we end up with a `Thickness(1)`.
+		//
+		//  Misc.
+		// =======
+		// Users may determine the equality and inequality of two `Thicknesses`
+		// by using the following operators:
+
+		/// <summary>
+		/// determines whether two <see cref="Thickness"/>es are equal
+		/// </summary>
+		/// <param name="left">the left operand</param>
+		/// <param name="right">the right operand</param>
+		/// <returns><c>true</c> if <paramref name="left"/> equals <paramref name="right"/>; otherwise, <c>false</c></returns>
+
+		#region <<equals operator>>
+		public static bool operator ==(Thickness left, Thickness right)
+		#endregion
+		{
+			return left.Equals(right);
+		}
+
+		/// <summary>
+		/// determines whether two <see cref="Thickness"/>es are not equal
+		/// </summary>
+		/// <param name="left">the left operand</param>
+		/// <param name="right">the right operand</param>
+		/// <returns><c>true</c> if <paramref name="left"/> does not equal <paramref name="right"/>; otherwise, <c>false</c></returns>
+
+		#region <<notequal operator>>
+		public static bool operator !=(Thickness left, Thickness right)
+		#endregion
+		{
+			return !left.Equals(right);
+		}
+
+		// `Thickness` also implements `IEquatable<T>`.
+		
+		/// <inheritdoc/>
+		
+		#region <<equals iequatable>>
+		public bool Equals(Thickness other)
+		#endregion
+		{
+			return other._Bottom.Equals(_Bottom) &&
+			       other._Left.Equals(_Left) &&
+			       other._Right.Equals(_Right) &&
+			       other._Top.Equals(_Top);
+		}
+
+		// `Thickness` also overrides `object` members.
 
 		public override bool Equals(object obj)
 		{
@@ -375,14 +579,12 @@ namespace Frost
 				_Bottom);
 		}
 
-		public static bool operator ==(Thickness left, Thickness right)
+		static Thickness()
 		{
-			return left.Equals(right);
-		}
+			_MinValue = new Thickness(0.0f);
+			_MaxValue = new Thickness(float.MaxValue);
 
-		public static bool operator !=(Thickness left, Thickness right)
-		{
-			return !left.Equals(right);
+			_Empty = new Thickness(0.0f);
 		}
 
 #if(UNIT_TESTING)
