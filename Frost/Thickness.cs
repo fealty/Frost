@@ -12,21 +12,45 @@ using CContract = System.Diagnostics.Contracts.Contract;
 
 namespace Frost
 {
-	//  Introduction
-	// ==============
-	// The *Thickness* structure solves the problem: How do we represent margins
-	// and padding in a clean and efficient manner? 
+	//  The Problem
+	// =============
+	// We need a way to represent the expansion and compaction of a `Rectangle`,
+	// which the concept of margins and other delta changes require. The primitive
+	// may change by four methods:
+	//
+	// * The left side of a rectangle may either contract or expand by 
+	//	 modifying the `X` component of the rectangle.
+	// * The top side of a rectangle may either contract or expand by
+	//	 modifying the `Y` component of the rectangle.
+	// * The right side of a rectangle may either contract or expand by
+	//	 modifying the `Width` component of the rectangle.
+	// * The bottom side of a rectangle may either contract or expand by
+	//	 modifying the `Height` component of the rectangle.
+	// 
+	// The resulting `Rectangle` from any of the above operations loses the
+	// amount of change, whether contraction or expansion, applied to each side.
+	// This loss of information necessitates the need for a type that stores the
+	// changes applied to each side:
+
+	#region <<struct declaration>>
 	public struct Thickness : IEquatable<Thickness>
+	#endregion
 	{
+		//  The Solution
+		// ==============
+		// 
+
 		private static readonly Thickness _MinValue;
 		private static readonly Thickness _MaxValue;
 
 		private static readonly Thickness _Empty;
 
+		# region <<declare instance members>>=
 		private readonly float _Bottom;
 		private readonly float _Left;
 		private readonly float _Right;
 		private readonly float _Top;
+		# endregion
 
 		static Thickness()
 		{
