@@ -31,9 +31,6 @@ namespace Frost
 	// amount of change, whether contraction or expansion, applied to each side.
 	// This loss of information necessitates the need for a type that stores the
 	// changes applied to each side:
-	//
-	// <<struct declaration>>
-	// 
 
 	/// <summary>
 	///   represents the expansion or contraction of one or more sides of a <see cref="Rectangle" />
@@ -45,19 +42,54 @@ namespace Frost
 	{
 		//  The Solution
 		// ==============
-		// 
+		// We need an immutable value type that represents each of the four
+		// sides of a `Rectangle` that can change, so we need one read-only
+		// variable for each side:
 
-		private static readonly Thickness _MinValue;
-		private static readonly Thickness _MaxValue;
-
-		private static readonly Thickness _Empty;
-
-		# region <<declare instance members>>=
+		# region <<declare instance members>>
 		private readonly float _Bottom;
 		private readonly float _Left;
 		private readonly float _Right;
 		private readonly float _Top;
 		# endregion
+
+		// We use floating point numbers to make using fractional portions
+		// simple, but floating point numbers pose a few problems: 
+		// 
+		// * A `float` may indicate an infinite value.
+		// * A `float` may indicate an invalid number (NaN).
+		// * A `float` may indicate a negative number.
+		// 
+		// If you're using a display of infinite resolution, I apologize, but
+		// for the rest of us mortals, infinity only spreads infinity, which
+		// we cannot reconcile into a finite representation; thus, infinite
+		// values pose a problem.
+		//
+		// Neither can we reconcile an invalid number to a valid numerical
+		// representation.
+		//
+		// As for negative values, how can we have something that is negative
+		// five units thick? If something has less than zero thickness, it 
+		// simply does not have presence, which is equivalent to zero thickness.
+		// 
+		// How can we stop the user from filling a `Thickness` with these bad
+		// values? We use invariants to guarantee values are always positive
+		// finite numbers:
+
+		[ContractInvariantMethod] private void Invariant()
+		{
+			#region <<declare invariants>>
+			CContract.Invariant(Check.IsPositive(_Left));
+			CContract.Invariant(Check.IsPositive(_Top));
+			CContract.Invariant(Check.IsPositive(_Right));
+			CContract.Invariant(Check.IsPositive(_Bottom));
+			#endregion
+		}
+
+		private static readonly Thickness _MinValue;
+		private static readonly Thickness _MaxValue;
+
+		private static readonly Thickness _Empty;
 
 		static Thickness()
 		{
@@ -65,14 +97,6 @@ namespace Frost
 			_MaxValue = new Thickness(float.MaxValue);
 
 			_Empty = new Thickness(0.0f);
-		}
-
-		[ContractInvariantMethod] private void Invariant()
-		{
-			CContract.Invariant(Check.IsPositive(_Left));
-			CContract.Invariant(Check.IsPositive(_Top));
-			CContract.Invariant(Check.IsPositive(_Right));
-			CContract.Invariant(Check.IsPositive(_Bottom));
 		}
 
 		public Thickness(float left, float top, float right, float bottom)
