@@ -6,7 +6,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02794A13-6992-4FCD-9C82-7913365C21CE}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
-		README = README
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frost.DirectX", "Frost.DirectX\Frost.DirectX.csproj", "{47E1516A-0345-408E-B762-7E4F9D0361F8}"

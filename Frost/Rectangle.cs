@@ -10,6 +10,7 @@ using Contracts = System.Diagnostics.Contracts.Contract;
 
 namespace Frost
 {
+	//TODO: - and + operators that take Rectangle, Thickness
 	public struct Rectangle : IEquatable<Rectangle>
 	{
 		private static readonly Rectangle _MinValue;

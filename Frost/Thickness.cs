@@ -105,7 +105,7 @@ namespace Frost
 		// conveniently exposed to the user:
 
 		/// <summary>
-		/// exposes the minimum value a <see cref="Thickness"/> can represent
+		/// gets the minimum value a <see cref="Thickness"/> can represent
 		/// </summary>
 
 		#region <<minimum representable>>
@@ -121,7 +121,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// exposes the maximum value a <see cref="Thickness"/> can represent
+		/// gets the maximum value a <see cref="Thickness"/> can represent
 		/// </summary>
 
 		#region <<maximum representable>>
@@ -137,7 +137,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// exposes the default value of a <see cref="Thickness"/>
+		/// gets the default value of a <see cref="Thickness"/>
 		/// </summary>
 
 		#region <<empty value>>
@@ -508,7 +508,7 @@ namespace Frost
 		/// <param name="right">the right operand</param>
 		/// <returns><c>true</c> if <paramref name="left"/> equals <paramref name="right"/>; otherwise, <c>false</c></returns>
 
-		#region <<equals operator>>
+		#region <<equality operator>>
 		public static bool operator ==(Thickness left, Thickness right)
 		#endregion
 		{
@@ -522,20 +522,19 @@ namespace Frost
 		/// <param name="right">the right operand</param>
 		/// <returns><c>true</c> if <paramref name="left"/> does not equal <paramref name="right"/>; otherwise, <c>false</c></returns>
 
-		#region <<notequal operator>>
+		#region <<inequality operator>>
 		public static bool operator !=(Thickness left, Thickness right)
 		#endregion
 		{
 			return !left.Equals(right);
 		}
 
-		// `Thickness` also implements `IEquatable<T>`.
+		// Per .NET recommendations, we implement `IEquatable<T>` and override
+ 		// `Equals(object)`, `GetHashCode()`, and `ToString()`. The source file
+		// contains the full type implementation.
 		
 		/// <inheritdoc/>
-		
-		#region <<equals iequatable>>
 		public bool Equals(Thickness other)
-		#endregion
 		{
 			return other._Bottom.Equals(_Bottom) &&
 			       other._Left.Equals(_Left) &&
@@ -543,8 +542,7 @@ namespace Frost
 			       other._Top.Equals(_Top);
 		}
 
-		// `Thickness` also overrides `object` members.
-
+		/// <inheritdoc/>
 		public override bool Equals(object obj)
 		{
 			if(ReferenceEquals(null, obj))
@@ -555,6 +553,7 @@ namespace Frost
 			return obj is Thickness && Equals((Thickness)obj);
 		}
 
+		/// <inheritdoc/>
 		public override int GetHashCode()
 		{
 			unchecked
@@ -569,6 +568,7 @@ namespace Frost
 			}
 		}
 
+		/// <inheritdoc/>
 		public override string ToString()
 		{
 			return string.Format(
