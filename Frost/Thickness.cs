@@ -61,7 +61,7 @@ namespace Frost
 		// * A `float` may indicate a negative number.
 		// 
 		// If you're using a display of infinite resolution, I apologize, but
-		// for the rest of us mortals, infinity only spreads infinity, which
+		// for the rest of us mortals, infinity only begets infinity, which
 		// we cannot reconcile into a finite representation; thus, infinite
 		// values pose a problem.
 		//
@@ -86,25 +86,95 @@ namespace Frost
 			#endregion
 		}
 
+		//  The Interface
+		// ===============
+		// Since `Thickness` is a value type, we want to expose information about
+		// the type that a user may expect of value types. These include the
+		// minimum value representable by the type, the maximum value representable
+		// by the type, and the default or empty value.
+
+		#region <<static type members>>
 		private static readonly Thickness _MinValue;
 		private static readonly Thickness _MaxValue;
-
 		private static readonly Thickness _Empty;
+		#endregion
 
-		static Thickness()
+		// The minimum representable value must equal of exceed zero to meet the
+		// previously mentioned invariants. The maximum representable value may
+		// not exceed the max finite storeable in a `float`. These limits are
+		// conveniently exposed to the user:
+
+		/// <summary>
+		/// exposes the minimum value a <see cref="Thickness"/> can represent
+		/// </summary>
+
+		#region <<minimum representable>>
+		public static Thickness MinValue
+		#endregion
 		{
-			_MinValue = new Thickness(0.0f);
-			_MaxValue = new Thickness(float.MaxValue);
+			get
+			{
+				CContract.Ensures(CContract.Result<Thickness>().Equals(_MinValue));
 
-			_Empty = new Thickness(0.0f);
+				return _MinValue;
+			}
 		}
 
-		public Thickness(float left, float top, float right, float bottom)
+		/// <summary>
+		/// exposes the maximum value a <see cref="Thickness"/> can represent
+		/// </summary>
+
+		#region <<maximum representable>>
+		public static Thickness MaxValue
+		#endregion
 		{
+			get
+			{
+				CContract.Ensures(CContract.Result<Thickness>().Equals(_MaxValue));
+
+				return _MaxValue;
+			}
+		}
+
+		/// <summary>
+		/// exposes the default value of a <see cref="Thickness"/>
+		/// </summary>
+
+		#region <<empty value>>
+		public static Thickness Empty
+		#endregion
+		{
+			get
+			{
+				CContract.Ensures(CContract.Result<Thickness>().Equals(_Empty));
+
+				return _Empty;
+			}
+		}
+
+		// Why? The user may wish to start with an empty or max representable
+		// value then perform an operation to change the value. We will address
+		// these operations later. For now, let us examine how the user can
+		// create a `Thickness` with custom values.
+
+		/// <summary>
+		/// constructs a <see cref="Thickness"/> from the thicknesses of four sides
+		/// </summary>
+		/// <param name="left">the thickness of the left side</param>
+		/// <param name="top">the thickness of the top side</param>
+		/// <param name="right">the thickness of the right side</param>
+		/// <param name="bottom">the thickness of the bottom side</param>
+
+		#region <<all sides constructor>>
+		public Thickness(float left, float top, float right, float bottom)
+		#endregion
+		{
+			#region <<constructor requires>>
 			CContract.Requires(Check.IsPositive(left));
 			CContract.Requires(Check.IsPositive(top));
 			CContract.Requires(Check.IsPositive(right));
 			CContract.Requires(Check.IsPositive(bottom));
+			#endregion
 
 			_Left = left;
 			_Top = top;
@@ -117,18 +187,37 @@ namespace Frost
 			CContract.Assert(Bottom.Equals(bottom));
 		}
 
+		//      
+
+		#region <<left-right constructor>>
 		public Thickness(float leftRight, float topBottom)
+		#endregion
 			: this(leftRight, topBottom, leftRight, topBottom)
 		{
 			CContract.Requires(Check.IsPositive(leftRight));
 			CContract.Requires(Check.IsPositive(topBottom));
 		}
 
+		#region <<left-right-top-bottom constructor>>
 		public Thickness(float leftRightTopBottom)
+		#endregion
 			: this(leftRightTopBottom, leftRightTopBottom, leftRightTopBottom, leftRightTopBottom)
 		{
 			CContract.Requires(Check.IsPositive(leftRightTopBottom));
 		}
+
+		// 
+
+
+		static Thickness()
+		{
+			_MinValue = new Thickness(0.0f);
+			_MaxValue = new Thickness(float.MaxValue);
+
+			_Empty = new Thickness(0.0f);
+		}
+
+		
 
 		public float Bottom
 		{
@@ -174,35 +263,7 @@ namespace Frost
 			}
 		}
 
-		public static Thickness Empty
-		{
-			get
-			{
-				CContract.Ensures(CContract.Result<Thickness>().Equals(_Empty));
-
-				return _Empty;
-			}
-		}
-
-		public static Thickness MaxValue
-		{
-			get
-			{
-				CContract.Ensures(CContract.Result<Thickness>().Equals(_MaxValue));
-
-				return _MaxValue;
-			}
-		}
-
-		public static Thickness MinValue
-		{
-			get
-			{
-				CContract.Ensures(CContract.Result<Thickness>().Equals(_MinValue));
-
-				return _MinValue;
-			}
-		}
+		
 
 		public float Width
 		{
