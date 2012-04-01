@@ -31,6 +31,13 @@ namespace Frost
 	// amount of change, whether contraction or expansion, applied to each side.
 	// This loss of information necessitates the need for a type that stores the
 	// changes applied to each side:
+	//
+	// <<struct declaration>>
+	// 
+
+	/// <summary>
+	///   represents the expansion or contraction of one or more sides of a <see cref="Rectangle" />
+	/// </summary>
 
 	#region <<struct declaration>>
 	public struct Thickness : IEquatable<Thickness>
