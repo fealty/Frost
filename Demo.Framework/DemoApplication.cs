@@ -85,28 +85,57 @@ namespace Demo.Framework
 			};
 
 			_Factory = new Factory1();
+
+			int availableAdapters = _Factory.GetAdapterCount1();
+
+			if(availableAdapters == 0)
+			{
+				throw new Exception("no adapters are available");
+			}
+
+			for(int i = 0; i < availableAdapters; ++i)
+			{
 #if DEBUG
-			using(Adapter1 dxgiSurfaceAdapter = _Factory.GetAdapter1(0))
-			{
-				Device1.CreateWithSwapChain(
-					dxgiSurfaceAdapter,
-					DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug,
-					chainDescription,
-					out _Device,
-					out _SwapChain);
-			}
+				using(Adapter1 dxgiSurfaceAdapter = _Factory.GetAdapter1(i))
+				{
+					try
+					{
+					Device1.CreateWithSwapChain(
+						dxgiSurfaceAdapter,
+						DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug,
+						chainDescription,
+						out _Device,
+						out _SwapChain);
+					}
+					catch(SharpDXException)
+					{
+						continue;
+					}
+
+					_Device2D = new Device2D(dxgiSurfaceAdapter);
+				}
 #else
-			using(Adapter1 dxgiSurfaceAdapter = _Factory.GetAdapter1(0))
-			{
-				Device1.CreateWithSwapChain(
-					dxgiSurfaceAdapter,
-					DeviceCreationFlags.BgraSupport,
-					chainDescription,
-					out _Device,
-					out _SwapChain);
-			}
+				using (Adapter1 dxgiSurfaceAdapter = _Factory.GetAdapter1(i))
+				{
+					try
+					{
+						Device1.CreateWithSwapChain(
+							dxgiSurfaceAdapter,
+							DeviceCreationFlags.BgraSupport,
+							chainDescription,
+							out _Device,
+							out _SwapChain);
+
+					}
+					catch(SharpDXException)
+					{
+						continue;
+					}
+
+					_Device2D = new Device2D(dxgiSurfaceAdapter);
+				}
 #endif
-			_Device2D = new Device2D();
+			}
 
 			_Device2D.Diagnostics.Query("Composition", "FrameBatchCount", out _CompositionFrameBatchCount);
 			_Device2D.Diagnostics.Query("Composition", "FrameDuration", out _CompositionFrameDuration);
