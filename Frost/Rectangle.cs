@@ -10,6 +10,9 @@ using Contracts = System.Diagnostics.Contracts.Contract;
 
 namespace Frost
 {
+	/// <summary>
+	/// represents a two-dimensional region having a finite non-negative area
+	/// </summary>
 	public struct Rectangle : IEquatable<Rectangle>
 	{
 		private static readonly Rectangle _MinValue;
@@ -39,6 +42,14 @@ namespace Frost
 			Contracts.Invariant(Check.IsPositive(_Height));
 		}
 
+		/// <summary>
+		/// creates a new <see cref="Rectangle"/> from the given left, top, right, and bottom sides
+		/// </summary>
+		/// <param name="left">the left side of the new <see cref="Rectangle"/></param>
+		/// <param name="top">the top side of the new <see cref="Rectangle"/></param>
+		/// <param name="right">the right side of the new <see cref="Rectangle"/></param>
+		/// <param name="bottom">the bottom side of the new <see cref="Rectangle"/></param>
+		/// <returns>the <see cref="Rectangle"/> formed by the <paramref name="left"/>, <paramref name="top"/>, <paramref name="right"/>, and <paramref name="bottom"/> sides</returns>
 		public static Rectangle FromEdges(float left, float top, float right, float bottom)
 		{
 			Contracts.Requires(Check.IsFinite(left));
@@ -51,6 +62,13 @@ namespace Frost
 			return new Rectangle(left, top, right - left, bottom - top);
 		}
 
+		/// <summary>
+		/// constructs a new <see cref="Rectangle"/> from the given X and Y coordinates and width and height
+		/// </summary>
+		/// <param name="x">the X coordinate of the new <see cref="Rectangle"/></param>
+		/// <param name="y">the Y coordinate of the new <see cref="Rectangle"/></param>
+		/// <param name="width">the width of the new <see cref="Rectangle"/></param>
+		/// <param name="height">the height of the new <see cref="Rectangle"/></param>
 		public Rectangle(float x, float y, float width, float height)
 		{
 			Contracts.Requires(Check.IsFinite(x));
@@ -69,6 +87,12 @@ namespace Frost
 			Contracts.Assert(Height.Equals(_Height));
 		}
 
+		/// <summary>
+		/// constructs a new <see cref="Rectangle"/> from the given X and Y coordinates and size
+		/// </summary>
+		/// <param name="x">the X coordinate of the new <see cref="Rectangle"/></param>
+		/// <param name="y">the Y coordinate of the new <see cref="Rectangle"/></param>
+		/// <param name="size">the size of the new <see cref="Rectangle"/></param>
 		public Rectangle(float x, float y, Size size) : this(x, y, size.Width, size.Height)
 		{
 			Contracts.Requires(Check.IsFinite(x));
@@ -77,6 +101,12 @@ namespace Frost
 			Contracts.Requires(Check.IsPositive(size.Height));
 		}
 
+		/// <summary>
+		/// constructs a new <see cref="Rectangle"/> from the given location and width and height
+		/// </summary>
+		/// <param name="location">the location of the new <see cref="Rectangle"/></param>
+		/// <param name="width">the width of the new <see cref="Rectangle"/></param>
+		/// <param name="height">the height of the new <see cref="Rectangle"/></param>
 		public Rectangle(Point location, float width, float height)
 			: this(location.X, location.Y, width, height)
 		{
@@ -84,6 +114,11 @@ namespace Frost
 			Contracts.Requires(Check.IsPositive(height));
 		}
 
+		/// <summary>
+		/// constructs a new <see cref="Rectangle"/> from the given location and size
+		/// </summary>
+		/// <param name="location">the location of the new <see cref="Rectangle"/></param>
+		/// <param name="size">the size of the new <see cref="Rectangle"/></param>
 		public Rectangle(Point location, Size size)
 			: this(location.X, location.Y, size.Width, size.Height)
 		{
@@ -91,6 +126,9 @@ namespace Frost
 			Contracts.Requires(Check.IsPositive(size.Height));
 		}
 
+		/// <summary>
+		/// gets the height of the <see cref="Rectangle"/>
+		/// </summary>
 		public float Height
 		{
 			get
@@ -102,6 +140,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the width of the <see cref="Rectangle"/>
+		/// </summary>
 		public float Width
 		{
 			get
@@ -113,6 +154,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the Y coordinate of the <see cref="Rectangle"/>
+		/// </summary>
 		public float Y
 		{
 			get
@@ -124,6 +168,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the X coordinate of the <see cref="Rectangle"/>
+		/// </summary>
 		public float X
 		{
 			get
@@ -135,6 +182,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		///   gets the default value for <see cref="Rectangle" />
+		/// </summary>
 		public static Rectangle Empty
 		{
 			get
@@ -145,6 +195,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the maximum value a <see cref="Rectangle"/> can represent
+		/// </summary>
 		public static Rectangle MaxValue
 		{
 			get
@@ -155,6 +208,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		///   gets the minimum value a <see cref="Rectangle" /> can represent
+		/// </summary>
 		public static Rectangle MinValue
 		{
 			get
@@ -165,6 +221,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the <see cref="Rectangle.X"/> and <see cref="Rectangle.Y"/> of the <see cref="Rectangle"/> as a <see cref="Point"/>
+		/// </summary>
 		public Point Location
 		{
 			get
@@ -175,6 +234,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the <see cref="Rectangle.Width"/> and <see cref="Rectangle.Height"/> of the <see cref="Rectangle"/> as a <see cref="Size"/>
+		/// </summary>
 		public Size Size
 		{
 			get
@@ -185,6 +247,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the left side coordinate of the <see cref="Rectangle"/>
+		/// </summary>
 		public float Left
 		{
 			get
@@ -196,6 +261,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the top side coordinate of the <see cref="Rectangle"/>
+		/// </summary>
 		public float Top
 		{
 			get
@@ -207,6 +275,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the right side coordinate of the <see cref="Rectangle"/>
+		/// </summary>
 		public float Right
 		{
 			get
@@ -217,6 +288,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the bottom side coordinate of the <see cref="Rectangle"/>
+		/// </summary>
 		public float Bottom
 		{
 			get
@@ -227,6 +301,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the area of the <see cref="Rectangle"/>
+		/// </summary>
 		public float Area
 		{
 			get
@@ -237,16 +314,27 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets a value indicating whether the <see cref="Rectangle"/> has an area of zero or less
+		/// </summary>
 		public bool IsEmpty
 		{
 			get { return _Width * _Height <= 0.0f; }
 		}
 
+		/// <summary>
+		/// gets the <see cref="Point"/> located in the center of the <see cref="Rectangle"/>
+		/// </summary>
 		public Point Center
 		{
 			get { return new Point(_X + (_Width / 2.0f), _Y + (_Height / 2.0f)); }
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> scaled by the given amount
+		/// </summary>
+		/// <param name="amount">the amount to scale by</param>
+		/// <returns>the <see cref="Rectangle"/> scaled by <paramref name="amount"/></returns>
 		public Rectangle Scale(Size amount)
 		{
 			Contracts.Requires(Check.IsPositive(amount.Width));
@@ -255,6 +343,12 @@ namespace Frost
 			return new Rectangle(Location, _Width * amount.Width, _Height * amount.Height);
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> scaled by the given amounts
+		/// </summary>
+		/// <param name="width">the positive amount to scale along the horizontal axis</param>
+		/// <param name="height">the positive amount to scale along the vertical axis</param>
+		/// <returns>the <see cref="Rectangle"/> scaled by <paramref name="width"/> and <paramref name="height"/></returns>
 		public Rectangle Scale(float width, float height)
 		{
 			Contracts.Requires(Check.IsPositive(width));
@@ -263,6 +357,11 @@ namespace Frost
 			return new Rectangle(Location, _Width * width, _Height * height);
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> resized to the given size
+		/// </summary>
+		/// <param name="newSize">the size to resize to</param>
+		/// <returns>the <see cref="Rectangle"/> resized to <paramref name="newSize"/></returns>
 		public Rectangle Resize(Size newSize)
 		{
 			Contracts.Requires(Check.IsPositive(newSize.Width));
@@ -271,6 +370,12 @@ namespace Frost
 			return new Rectangle(Location, newSize);
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> resized to the given width and height
+		/// </summary>
+		/// <param name="width">the positive width to resize to</param>
+		/// <param name="height">the positive height to resize to</param>
+		/// <returns>the <see cref="Rectangle"/> resized to <paramref name="width"/> and <paramref name="height"/></returns>
 		public Rectangle Resize(float width, float height)
 		{
 			Contracts.Requires(Check.IsPositive(width));
@@ -279,11 +384,22 @@ namespace Frost
 			return new Rectangle(Location, width, height);
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> with its <see cref="Rectangle.X"/> and <see cref="Rectangle.Y"/> components set to the given location
+		/// </summary>
+		/// <param name="newLocation">the location</param>
+		/// <returns>the <see cref="Rectangle"/> relocated to <paramref name="newLocation"/></returns>
 		public Rectangle Relocate(Point newLocation)
 		{
 			return new Rectangle(newLocation, Size);
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> with its <see cref="Rectangle.X"/> and <see cref="Rectangle.Y"/> components set to the given coordinates
+		/// </summary>
+		/// <param name="x">the finite coordinate along the horizontal axis</param>
+		/// <param name="y">the finite coordinate along the vertical axis</param>
+		/// <returns>the <see cref="Rectangle"/> relocated to (<paramref name="x"/>, <paramref name="y"/>)</returns>
 		public Rectangle Relocate(float x, float y)
 		{
 			Contracts.Requires(Check.IsFinite(x));
