@@ -13,40 +13,16 @@ namespace Frost.Formatting
 	/// </summary>
 	public struct LineItem : IEquatable<LineItem>
 	{
-		/// <summary>
-		///   the infinite value within the line breaking algorithm
-		/// </summary>
-		public static readonly double Infinity = 10000.0;
+		private const double _Infinity = 10000.0;
 
-		/// <summary>
-		///   the demerits given for flagged items
-		/// </summary>
-		public readonly Demerits Flagged;
+		private readonly Demerits _Flagged;
+		private readonly Demerits _Penalty;
 
-		/// <summary>
-		///   the demerits given for penalty items
-		/// </summary>
-		public readonly Demerits Penalty;
+		private readonly int _Position;
 
-		/// <summary>
-		///   the user-defined index position
-		/// </summary>
-		public readonly int Position;
-
-		/// <summary>
-		///   the shrink set on the item
-		/// </summary>
-		public readonly double Shrink;
-
-		/// <summary>
-		///   the stretch set on the item
-		/// </summary>
-		public readonly double Stretch;
-
-		/// <summary>
-		///   the width of the item
-		/// </summary>
-		public readonly double Width;
+		private readonly double _Shrink;
+		private readonly double _Stretch;
+		private readonly double _Width;
 
 		private readonly ItemType _Type;
 
@@ -61,8 +37,8 @@ namespace Frost.Formatting
 
 			_Type = ItemType.Box;
 
-			Width = width;
-			Position = position;
+			_Width = width;
+			_Position = position;
 		}
 
 		/// <summary>
@@ -81,10 +57,10 @@ namespace Frost.Formatting
 
 			_Type = ItemType.Glue;
 
-			Width = width;
-			Position = position;
-			Stretch = stretch;
-			Shrink = shrink;
+			_Width = width;
+			_Position = position;
+			_Stretch = stretch;
+			_Shrink = shrink;
 		}
 
 		/// <summary>
@@ -101,10 +77,66 @@ namespace Frost.Formatting
 
 			_Type = ItemType.Penalty;
 
-			Width = width;
-			Position = position;
-			Penalty = penalty;
-			Flagged = flagged;
+			_Width = width;
+			_Position = position;
+			_Penalty = penalty;
+			_Flagged = flagged;
+		}
+
+		/// <summary>
+		///   the width of the item
+		/// </summary>
+		public double Width
+		{
+			get { return _Width; }
+		}
+
+		/// <summary>
+		///   the stretch set on the item
+		/// </summary>
+		public double Stretch
+		{
+			get { return _Stretch; }
+		}
+
+		/// <summary>
+		///   the shrink set on the item
+		/// </summary>
+		public double Shrink
+		{
+			get { return _Shrink; }
+		}
+
+		/// <summary>
+		///   the user-defined index position
+		/// </summary>
+		public int Position
+		{
+			get { return _Position; }
+		}
+
+		/// <summary>
+		///   the demerits given for penalty items
+		/// </summary>
+		public Demerits Penalty
+		{
+			get { return _Penalty; }
+		}
+
+		/// <summary>
+		///   the demerits given for flagged items
+		/// </summary>
+		public Demerits Flagged
+		{
+			get { return _Flagged; }
+		}
+
+		/// <summary>
+		///   the infinite value within the line breaking algorithm
+		/// </summary>
+		public static double Infinity
+		{
+			get { return _Infinity; }
 		}
 
 		/// <summary>

@@ -14,36 +14,21 @@ namespace Frost.Formatting
 	/// </summary>
 	public struct Demerits : IEquatable<Demerits>
 	{
-		/// <summary>
-		///   the penalty incurred for flagged
-		/// </summary>
-		public static readonly Demerits FlaggedPenalty;
-
-		/// <summary>
-		///   the penalty incurred for fitness
-		/// </summary>
-		public static readonly Demerits FitnessPenalty;
-
-		/// <summary>
-		///   infinite demerits
-		/// </summary>
-		public static readonly Demerits Infinity;
-
-		/// <summary>
-		///   zero demerits
-		/// </summary>
-		public static readonly Demerits None;
+		private static readonly Demerits _FlaggedPenalty;
+		private static readonly Demerits _FitnessPenalty;
+		private static readonly Demerits _Infinity;
+		private static readonly Demerits _None;
 
 		private readonly double _Value;
 
 		static Demerits()
 		{
-			FlaggedPenalty = new Demerits(100.0);
-			FitnessPenalty = new Demerits(3000.0);
+			_FlaggedPenalty = new Demerits(100.0);
+			_FitnessPenalty = new Demerits(3000.0);
 
-			Infinity = new Demerits(10000.0);
+			_Infinity = new Demerits(10000.0);
 
-			None = new Demerits(0.0);
+			_None = new Demerits(0.0);
 		}
 
 		/// <summary>
@@ -55,6 +40,38 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsFinite(value));
 
 			_Value = value;
+		}
+
+		/// <summary>
+		///   zero demerits
+		/// </summary>
+		public static Demerits None
+		{
+			get { return _None; }
+		}
+
+		/// <summary>
+		///   infinite demerits
+		/// </summary>
+		public static Demerits Infinity
+		{
+			get { return _Infinity; }
+		}
+
+		/// <summary>
+		///   the penalty incurred for fitness
+		/// </summary>
+		public static Demerits FitnessPenalty
+		{
+			get { return _FitnessPenalty; }
+		}
+
+		/// <summary>
+		///   the penalty incurred for flagged
+		/// </summary>
+		public static Demerits FlaggedPenalty
+		{
+			get { return _FlaggedPenalty; }
 		}
 
 		/// <summary>

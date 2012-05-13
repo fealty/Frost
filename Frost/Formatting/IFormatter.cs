@@ -14,6 +14,16 @@ namespace Frost.Formatting
 	{
 		[ContractClassFor(typeof(IFormatter))] internal abstract class IFormatterContract : IFormatter
 		{
+			public LineBreaker LineBreaker
+			{
+				get
+				{
+					Contract.Ensures(Contract.Result<LineBreaker>() != null);
+
+					throw new NotSupportedException();
+				}
+			}
+
 			public abstract FontMetrics MeasureFont(
 				string family, FontWeight weight, FontStyle style, FontStretch stretch);
 
@@ -43,6 +53,8 @@ namespace Frost.Formatting
 
 	[ContractClass(typeof(IFormatterContract))] public interface IFormatter
 	{
+		LineBreaker LineBreaker { get; }
+
 		FontMetrics MeasureFont(
 			string family, FontWeight weight, FontStyle style, FontStretch stretch);
 

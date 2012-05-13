@@ -63,6 +63,22 @@ namespace Frost
 
 		protected abstract Size PageSize { set; }
 
+		[ThreadStatic]
+		private static LineBreaker _LineBreaker;
+
+		LineBreaker IFormatter.LineBreaker
+		{
+			get
+			{
+				if(_LineBreaker == null)
+				{
+					_LineBreaker = new LineBreaker();
+				}
+
+				return _LineBreaker;
+			}
+		}
+
 		FontMetrics IFormatter.MeasureFont(
 			string family, FontWeight weight, FontStyle style, FontStretch stretch)
 		{

@@ -13,8 +13,8 @@ namespace Frost.Formatting
 	/// </summary>
 	internal sealed class Breakpoint : IEquatable<Breakpoint>
 	{
-		public static readonly Breakpoint Empty;
-		public static readonly Breakpoint MaxDemerits;
+		private static readonly Breakpoint _Empty;
+		private static readonly Breakpoint _MaxDemerits;
 
 		private readonly Demerits _Demerits;
 		private readonly LineFitness _FitnessClass;
@@ -31,9 +31,9 @@ namespace Frost.Formatting
 
 		static Breakpoint()
 		{
-			Empty = new Breakpoint(0, 0, LineFitness.Tight, 0.0, 0.0, 0.0, 0.0, 0.0);
+			_Empty = new Breakpoint(0, 0, LineFitness.Tight, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-			MaxDemerits = new Breakpoint(
+			_MaxDemerits = new Breakpoint(
 				0, 0, LineFitness.Tight, 0.0, 0.0, 0.0, double.MaxValue, 0.0);
 		}
 
@@ -116,6 +116,16 @@ namespace Frost.Formatting
 			_Demerits = demerits;
 			_Previous = previous;
 			_Ratio = ratio;
+		}
+
+		public static Breakpoint MaxDemerits
+		{
+			get { return _MaxDemerits; }
+		}
+
+		public static Breakpoint Empty
+		{
+			get { return _Empty; }
 		}
 
 		/// <summary>
