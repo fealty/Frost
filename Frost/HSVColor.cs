@@ -8,6 +8,9 @@ using System.Diagnostics.Contracts;
 
 namespace Frost
 {
+	/// <summary>
+	/// represents a color defined by its hue, saturation, value, and alpha components
+	/// </summary>
 	public struct HSVColor : IEquatable<HSVColor>
 	{
 		private readonly float _A;
@@ -23,6 +26,13 @@ namespace Frost
 			Contract.Invariant(Check.IsPercentage(_A));
 		}
 
+		/// <summary>
+		/// constructs a <see cref="HSVColor"/> from hue, saturation, value, and optionally alpha values
+		/// </summary>
+		/// <param name="hue">the hue in degrees ranging from zero to three hundred and sixty</param>
+		/// <param name="saturation">the saturation in percentage ranging from zero to one hundred</param>
+		/// <param name="value">the value in percentage ranging from zero to one hundred</param>
+		/// <param name="alpha">the alpha in percentage ranging from zero to one hundred</param>
 		public HSVColor(float hue, float saturation, float value, float alpha = 100.0f)
 		{
 			Contract.Requires(Check.IsDegrees(hue));
@@ -46,6 +56,9 @@ namespace Frost
 			Contract.Assert(A.Equals(alpha));
 		}
 
+		/// <summary>
+		/// gets the value in percentage ranging from zero to one hundred
+		/// </summary>
 		public float V
 		{
 			get
@@ -57,6 +70,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the saturation value in percentage ranging from zero to one hundred
+		/// </summary>
 		public float S
 		{
 			get
@@ -68,6 +84,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the hue value in degrees ranging from zero to three hundred and sixty
+		/// </summary>
 		public float H
 		{
 			get
@@ -79,6 +98,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the alpha value ranging from zero to one hundred
+		/// </summary>
 		public float A
 		{
 			get
@@ -197,6 +219,11 @@ namespace Frost
 			return new Color(r, g, b, _A / 100.0f);
 		}
 
+		/// <summary>
+		///   implicitly converts a <see cref="Color" /> to a <see cref="HSVColor" />
+		/// </summary>
+		/// <param name="color"> the <see cref="Color" /> to convert </param>
+		/// <returns> the <paramref name="color" /> converted to a <see cref="HSVColor" /> </returns>
 		public static implicit operator HSVColor(Color color)
 		{
 			float r = color.R;
@@ -249,11 +276,23 @@ namespace Frost
 			return new HSVColor(h * 360.0f, s * 100.0f, v * 100.0f, a * 100.0f);
 		}
 
+		/// <summary>
+		///   determines whether two instances of <see cref="HSVColor" /> are equal
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> <c>true</c> if <paramref name="left" /> equals <paramref name="right" /> ; otherwise, <c>false</c> </returns>
 		public static bool operator ==(HSVColor left, HSVColor right)
 		{
 			return left.Equals(right);
 		}
 
+		/// <summary>
+		///   determines whether two instances of <see cref="HSVColor" /> are not equal
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> <c>true</c> if <paramref name="left" /> does not equal <paramref name="right" /> ; otherwise, <c>false</c> </returns>
 		public static bool operator !=(HSVColor left, HSVColor right)
 		{
 			return !left.Equals(right);
