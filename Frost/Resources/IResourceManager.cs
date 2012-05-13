@@ -35,6 +35,13 @@ namespace Frost.Resources
 				Contract.Requires(toTarget != null);
 			}
 
+			public IEnumerable<ISurface2D> GetSurfaces(SurfaceUsage usage)
+			{
+				Contract.Ensures(Contract.Result<IEnumerable<ISurface2D>>() != null);
+
+				throw new NotSupportedException();
+			}
+
 			public abstract event Action<IEnumerable<Canvas>> Invalidated;
 
 			public Size PageSize
@@ -45,8 +52,6 @@ namespace Frost.Resources
 					Contract.Requires(Check.IsPositive(value.Height));
 				}
 			}
-
-			public abstract void DumpToFiles(string path, SurfaceUsage usage);
 
 			public Canvas.ResolvedContext Resolve(Canvas target)
 			{
@@ -72,8 +77,7 @@ namespace Frost.Resources
 
 		void Copy(Canvas fromTarget, Canvas toTarget);
 
-		//TODO: should this work on streams instead of files?
-		void DumpToFiles(string path, SurfaceUsage usage);
+		IEnumerable<ISurface2D> GetSurfaces(SurfaceUsage usage);
 
 		Canvas.ResolvedContext Resolve(Canvas target);
 

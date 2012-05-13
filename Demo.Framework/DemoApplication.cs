@@ -4,9 +4,11 @@
 // See LICENSE for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -230,14 +232,30 @@ namespace Demo.Framework
 			}
 			else if(e.KeyChar == 'd')
 			{
-				_Device2D.Resources.DumpToFiles(string.Empty, SurfaceUsage.Normal);
-				_Device2D.Resources.DumpToFiles(string.Empty, SurfaceUsage.Dynamic);
-				_Device2D.Resources.DumpToFiles(string.Empty, SurfaceUsage.External);
-				_Device2D.Resources.DumpToFiles(string.Empty, SurfaceUsage.Private);
+				DumpToPNGFiles(_Device2D.Resources.GetSurfaces(SurfaceUsage.Normal));
+				DumpToPNGFiles(_Device2D.Resources.GetSurfaces(SurfaceUsage.Dynamic));
+				DumpToPNGFiles(_Device2D.Resources.GetSurfaces(SurfaceUsage.External));
+				DumpToPNGFiles(_Device2D.Resources.GetSurfaces(SurfaceUsage.Private));
 			}
 			else if(e.KeyChar == 'r')
 			{
 				_IsResetQueued = true;
+			}
+		}
+
+		private static void DumpToPNGFiles(IEnumerable<ISurface2D> surfaces)
+		{
+			int index = 0;
+
+			foreach(ISurface2D surface in surfaces)
+			{
+				using (FileStream file = File.Open(
+					surface.Usage + index + ".png", FileMode.Create))
+				{
+					surface.DumpToPNG(file);
+				}
+
+				index++;
 			}
 		}
 

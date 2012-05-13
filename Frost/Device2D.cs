@@ -226,6 +226,11 @@ namespace Frost
 			}
 		}
 
+		IEnumerable<ISurface2D> IResourceManager.GetSurfaces(SurfaceUsage usage)
+		{
+			return OnGetSurfaces(usage);
+		}
+
 		event Action<IEnumerable<Canvas>> IResourceManager.Invalidated
 		{
 			add
@@ -260,11 +265,6 @@ namespace Frost
 
 				throw new InvalidOperationException("Page size insufficient!");
 			}
-		}
-
-		void IResourceManager.DumpToFiles(string path, SurfaceUsage usage)
-		{
-			OnDumpToFiles(path, usage);
 		}
 
 		Canvas.ResolvedContext IResourceManager.Resolve(Canvas target)
@@ -338,7 +338,7 @@ namespace Frost
 
 		protected abstract bool OnContains(Geometry path, Point point, float tolerance);
 
-		protected abstract void OnDumpToFiles(string path, SurfaceUsage usage);
+		protected abstract IEnumerable<ISurface2D> OnGetSurfaces(SurfaceUsage usage);
 
 		protected abstract void OnForget(Canvas.ResolvedContext target);
 

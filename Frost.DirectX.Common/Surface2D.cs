@@ -5,6 +5,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using System.IO;
 
 using Frost.Painting;
 using Frost.Surfacing;
@@ -217,13 +218,13 @@ namespace Frost.DirectX.Common
 			get { return _Region; }
 		}
 
-		public void DumpToFile(string file)
+		public void DumpToPNG(Stream stream)
 		{
 			try
 			{
 				AcquireLock();
 
-				Resource.ToFile(_Texture, ImageFileFormat.Png, file + ".png");
+				Resource.ToStream(_Texture, ImageFileFormat.Png, stream);
 			}
 			finally
 			{

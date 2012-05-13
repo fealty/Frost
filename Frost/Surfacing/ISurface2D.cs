@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System;
+using System.IO;
 using System.Diagnostics.Contracts;
 
 using Frost.Surfacing.Contracts;
@@ -27,7 +28,10 @@ namespace Frost.Surfacing
 			public abstract SurfaceUsage Usage { get; }
 			public abstract Rectangle Region { get; }
 
-			public abstract void DumpToFile(string file);
+			public void DumpToPNG(Stream stream)
+			{
+				Contract.Requires(stream != null);
+			}
 
 			public void CopyTo(Rectangle srcRegion, ISurface2D destination, Point dstLocation)
 			{
@@ -49,8 +53,7 @@ namespace Frost.Surfacing
 
 		Rectangle Region { get; }
 
-		//TODO: should this work on streams instead of files?
-		void DumpToFile(string file);
+		void DumpToPNG(Stream stream);
 
 		void CopyTo(Rectangle srcRegion, ISurface2D destination, Point dstLocation);
 

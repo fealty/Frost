@@ -1,9 +1,11 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 using Frost.Composition;
@@ -136,12 +138,16 @@ namespace Frost.DirectX
 		}
 
 		protected override void OnCopy(
-			Rectangle fromRegion, Canvas.ResolvedContext fromTarget, Canvas.ResolvedContext toTarget)
+			Rectangle fromRegion,
+			Canvas.ResolvedContext fromTarget,
+			Canvas.ResolvedContext toTarget)
 		{
-			fromTarget.Surface2D.CopyTo(fromRegion, toTarget.Surface2D, toTarget.Region.Location);
+			fromTarget.Surface2D.CopyTo(
+				fromRegion, toTarget.Surface2D, toTarget.Region.Location);
 		}
 
-		protected override void OnCopy(byte[] rgbaData, Canvas.ResolvedContext toTarget)
+		protected override void OnCopy(
+			byte[] rgbaData, Canvas.ResolvedContext toTarget)
 		{
 			_StagingTexture.UploadData(toTarget.Region.Size, rgbaData);
 
@@ -212,7 +218,8 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override void OnTessellate(Geometry path, float tolerance, ITessellationSink sink)
+		protected override void OnTessellate(
+			Geometry path, float tolerance, ITessellationSink sink)
 		{
 			lock(_Lock)
 			{
@@ -228,11 +235,15 @@ namespace Frost.DirectX
 		}
 
 		protected override Geometry OnCombine(
-			Geometry sourcePath, Geometry destinationPath, float tolerance, CombinationOperation operation)
+			Geometry sourcePath,
+			Geometry destinationPath,
+			float tolerance,
+			CombinationOperation operation)
 		{
 			lock(_Lock)
 			{
-				DxGeometry resolvedDestination = _GeometryCache.ResolveGeometry(destinationPath);
+				DxGeometry resolvedDestination =
+					_GeometryCache.ResolveGeometry(destinationPath);
 
 				if(resolvedDestination != null)
 				{
@@ -244,10 +255,12 @@ namespace Frost.DirectX
 							resolvedDestination, resolvedSource, operation, tolerance);
 					}
 
-					throw new InvalidOperationException("Failed to resolve source geometry path!");
+					throw new InvalidOperationException(
+						"Failed to resolve source geometry path!");
 				}
 
-				throw new InvalidOperationException("Failed to resolve destination geometry path!");
+				throw new InvalidOperationException(
+					"Failed to resolve destination geometry path!");
 			}
 		}
 
@@ -260,7 +273,8 @@ namespace Frost.DirectX
 
 				Font font = handle.ResolveFont();
 
-				return new FontMetrics(font.Metrics.Ascent, font.Metrics.Descent, font.Metrics.DesignUnitsPerEm);
+				return new FontMetrics(
+					font.Metrics.Ascent, font.Metrics.Descent, font.Metrics.DesignUnitsPerEm);
 			}
 		}
 
@@ -274,14 +288,16 @@ namespace Frost.DirectX
 				{
 					RectangleF dxResult = resolvedPath.GetBounds();
 
-					return new Rectangle(dxResult.Left, dxResult.Top, dxResult.Width, dxResult.Height);
+					return new Rectangle(
+						dxResult.Left, dxResult.Top, dxResult.Width, dxResult.Height);
 				}
 
 				throw new InvalidOperationException("Failed to resolve geometry path!");
 			}
 		}
 
-		protected override Geometry OnWiden(Geometry path, float width, float tolerance)
+		protected override Geometry OnWiden(
+			Geometry path, float width, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -311,7 +327,8 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override bool OnContains(Geometry path, Point point, float tolerance)
+		protected override bool OnContains(
+			Geometry path, Point point, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -326,26 +343,35 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override void OnDumpToFiles(string path, SurfaceUsage usage)
+		protected override IEnumerable<ISurface2D> OnGetSurfaces(SurfaceUsage usage)
 		{
 			lock(_Lock)
 			{
 				switch(usage)
 				{
 					case SurfaceUsage.Dynamic:
-						DumpAtlases(path, _DynamicSurfaces);
-						break;
+						return DumpAtlases(_DynamicSurfaces);
 					case SurfaceUsage.External:
-						DumpAtlases(path, _ExternalSurfaces);
-						break;
+						return DumpAtlases(_ExternalSurfaces);
 					case SurfaceUsage.Private:
-						DumpAtlases(path, _PrivateSurfaces);
-						break;
+						return DumpAtlases(_PrivateSurfaces);
 					default:
-						DumpAtlases(path, _DefaultSurfaces);
-						break;
+						return DumpAtlases(_DefaultSurfaces);
 				}
 			}
+		}
+
+		private IEnumerable<T> DumpAtlases<T>(SafeList<T> atlasCollections)
+			where T : ISurfaceAtlas
+		{
+			Contract.Requires(atlasCollections != null);
+
+			foreach(ISurfaceAtlas atlas in atlasCollections)
+			{
+				MarkAtlas(atlas);
+			}
+
+			return atlasCollections.ToArray();
 		}
 
 		protected override void OnForget(Canvas.ResolvedContext target)
@@ -438,7 +464,8 @@ namespace Frost.DirectX
 		{
 			long tickTime = DateTime.UtcNow.Ticks;
 
-			if(Math.Abs(tickTime - _LastInvalidationTickTime) > (TimeSpan.TicksPerMillisecond * 500))
+			if(Math.Abs(tickTime - _LastInvalidationTickTime) >
+				(TimeSpan.TicksPerMillisecond * 500))
 			{
 				PurgeSurfaces(_DefaultSurfaces, false);
 				PurgeSurfaces(_DynamicSurfaces, false);
@@ -469,7 +496,8 @@ namespace Frost.DirectX
 			_InvalidatedResources.Clear();
 		}
 
-		private void PurgeSurfaces<T>(SafeList<T> atlasCollection, bool isForced) where T : ISurfaceAtlas
+		private void PurgeSurfaces<T>(SafeList<T> atlasCollection, bool isForced)
+			where T : ISurfaceAtlas
 		{
 			Contract.Requires(atlasCollection != null);
 
@@ -517,27 +545,8 @@ namespace Frost.DirectX
 			Painter.End();
 		}
 
-		private void DumpAtlases<T>(string path, SafeList<T> atlasCollections) where T : ISurfaceAtlas
-		{
-			Contract.Requires(atlasCollections != null);
-
-			path = path ?? string.Empty;
-
-			int index = 0;
-
-			foreach(ISurfaceAtlas atlas in atlasCollections)
-			{
-				ISurface2D surface = atlas.Surface2D;
-
-				MarkAtlas(atlas);
-
-				surface.DumpToFile(path + surface.Usage + index);
-
-				++index;
-			}
-		}
-
-		private static void ReleaseSurfaces<T>(SafeList<T> atlasCollection) where T : ISurfaceAtlas
+		private static void ReleaseSurfaces<T>(SafeList<T> atlasCollection)
+			where T : ISurfaceAtlas
 		{
 			Contract.Requires(atlasCollection != null);
 
@@ -586,7 +595,8 @@ namespace Frost.DirectX
 			}
 		}
 
-		private Canvas.ResolvedContext AddToExternalCollection(Size canvasSize, Canvas target)
+		private Canvas.ResolvedContext AddToExternalCollection(
+			Size canvasSize, Canvas target)
 		{
 			Contract.Requires(canvasSize.Area > 0);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
@@ -594,10 +604,15 @@ namespace Frost.DirectX
 			Contract.Requires(target != null);
 
 			return AddNewSurfaceAtlas(
-				target, ref canvasSize, ref canvasSize, _ExternalSurfaces, CreateExternalSurface);
+				target,
+				ref canvasSize,
+				ref canvasSize,
+				_ExternalSurfaces,
+				CreateExternalSurface);
 		}
 
-		private Canvas.ResolvedContext AddToPrivateCollection(Size canvasSize, Canvas target)
+		private Canvas.ResolvedContext AddToPrivateCollection(
+			Size canvasSize, Canvas target)
 		{
 			Contract.Requires(canvasSize.Area > 0);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
@@ -605,11 +620,16 @@ namespace Frost.DirectX
 			Contract.Requires(target != null);
 
 			return AddNewSurfaceAtlas(
-				target, ref canvasSize, ref canvasSize, _PrivateSurfaces, CreatePrivateSurface);
+				target,
+				ref canvasSize,
+				ref canvasSize,
+				_PrivateSurfaces,
+				CreatePrivateSurface);
 		}
 
 		private static Canvas.ResolvedContext InsertIntoAtlas<T>(
-			Size canvasSize, SafeList<T> atlasCollection, Canvas target) where T : ISurfaceAtlas
+			Size canvasSize, SafeList<T> atlasCollection, Canvas target)
+			where T : ISurfaceAtlas
 		{
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
 			Contract.Requires(Check.IsPositive(canvasSize.Height));
@@ -629,42 +649,54 @@ namespace Frost.DirectX
 			return null;
 		}
 
-		private Canvas.ResolvedContext InsertIntoDefaultAtlas(Size canvasSize, Canvas target)
+		private Canvas.ResolvedContext InsertIntoDefaultAtlas(
+			Size canvasSize, Canvas target)
 		{
 			Contract.Requires(canvasSize.Area > 0);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
 			Contract.Requires(Check.IsPositive(canvasSize.Height));
 			Contract.Requires(target != null);
 
-			Canvas.ResolvedContext canvas = InsertIntoAtlas(canvasSize, _DefaultSurfaces, target);
+			Canvas.ResolvedContext canvas = InsertIntoAtlas(
+				canvasSize, _DefaultSurfaces, target);
 
 			if(canvas == null)
 			{
 				lock(_Lock)
 				{
 					return AddNewSurfaceAtlas(
-						target, ref canvasSize, ref _DefaultAtlasSize, _DefaultSurfaces, CreateDefaultSurface);
+						target,
+						ref canvasSize,
+						ref _DefaultAtlasSize,
+						_DefaultSurfaces,
+						CreateDefaultSurface);
 				}
 			}
 
 			return canvas;
 		}
 
-		private Canvas.ResolvedContext InsertIntoDynamicAtlas(Size canvasSize, Canvas target)
+		private Canvas.ResolvedContext InsertIntoDynamicAtlas(
+			Size canvasSize, Canvas target)
 		{
 			Contract.Requires(canvasSize.Area > 0);
 			Contract.Requires(Check.IsPositive(canvasSize.Width));
 			Contract.Requires(Check.IsPositive(canvasSize.Height));
 			Contract.Requires(target != null);
 
-			Canvas.ResolvedContext canvas = InsertIntoAtlas(canvasSize, _DynamicSurfaces, target);
+			Canvas.ResolvedContext canvas = InsertIntoAtlas(
+				canvasSize, _DynamicSurfaces, target);
 
 			if(canvas == null)
 			{
 				lock(_Lock)
 				{
 					return AddNewSurfaceAtlas(
-						target, ref canvasSize, ref _DynamicAtlasSize, _DynamicSurfaces, CreateDynamicSurface);
+						target,
+						ref canvasSize,
+						ref _DynamicAtlasSize,
+						_DynamicSurfaces,
+						CreateDynamicSurface);
 				}
 			}
 
