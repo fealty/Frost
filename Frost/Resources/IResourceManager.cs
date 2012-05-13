@@ -72,11 +72,13 @@ namespace Frost.Resources
 
 		void Copy(Canvas fromTarget, Canvas toTarget);
 
+		//TODO: should this work on streams instead of files?
 		void DumpToFiles(string path, SurfaceUsage usage);
 
 		Canvas.ResolvedContext Resolve(Canvas target);
 
 		void Forget(Canvas target);
+
 		event Action<IEnumerable<Canvas>> Invalidated;
 	}
 }

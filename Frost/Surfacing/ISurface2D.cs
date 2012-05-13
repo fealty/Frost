@@ -49,6 +49,7 @@ namespace Frost.Surfacing
 
 		Rectangle Region { get; }
 
+		//TODO: should this work on streams instead of files?
 		void DumpToFile(string file);
 
 		void CopyTo(Rectangle srcRegion, ISurface2D destination, Point dstLocation);
