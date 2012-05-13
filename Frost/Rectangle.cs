@@ -10,7 +10,6 @@ using Contracts = System.Diagnostics.Contracts.Contract;
 
 namespace Frost
 {
-	//TODO: - and + operators that take Rectangle, Thickness
 	public struct Rectangle : IEquatable<Rectangle>
 	{
 		private static readonly Rectangle _MinValue;
@@ -293,11 +292,22 @@ namespace Frost
 			return new Rectangle(x, y, Size);
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> translated by the given amount
+		/// </summary>
+		/// <param name="amount">the amount to translate along both the horizontal and vertical axes</param>
+		/// <returns>the <see cref="Rectangle"/> translated by <paramref name="amount"/></returns>
 		public Rectangle Translate(Size amount)
 		{
 			return new Rectangle(_X + amount.Width, _Y + amount.Height, Size);
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> translated by the given amounts
+		/// </summary>
+		/// <param name="width">the finite amount to translate along the horizontal axis</param>
+		/// <param name="height">the finite amount to translate along the vertical axis</param>
+		/// <returns>the <see cref="Rectangle"/> translated by <paramref name="width"/> and <paramref name="height"/></returns>
 		public Rectangle Translate(float width, float height)
 		{
 			Contracts.Requires(Check.IsFinite(width));
@@ -306,12 +316,25 @@ namespace Frost
 			return new Rectangle(_X + width, _Y + height, Size);
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> contracted by the given amount
+		/// </summary>
+		/// <param name="amount">the amount to contract the left, top, right, and bottom sides</param>
+		/// <returns>the <see cref="Rectangle"/> contracted by <paramref name="amount"/></returns>
 		public Rectangle Contract(Thickness amount)
 		{
 			return FromEdges(
 				Left + amount.Left, Top + amount.Top, Right - amount.Right, Bottom - amount.Bottom);
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> contracted by the given amounts
+		/// </summary>
+		/// <param name="left">the positive amount to contract the left side</param>
+		/// <param name="top">the positive amount to contract the top side</param>
+		/// <param name="right">the positive amount to contract the right side</param>
+		/// <param name="bottom">the positive amount to contract the bottom side</param>
+		/// <returns>the <see cref="Rectangle"/> contracted by <paramref name="left"/>, <paramref name="top"/>, <paramref name="right"/>, and <paramref name="bottom"/></returns>
 		public Rectangle Contract(float left, float top, float right, float bottom)
 		{
 			Contracts.Requires(Check.IsPositive(left));
@@ -322,6 +345,12 @@ namespace Frost
 			return Contract(new Thickness(left, top, right, bottom));
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> contracted by the given amounts
+		/// </summary>
+		/// <param name="leftRight">the positive amount to contract the left and right sides</param>
+		/// <param name="topBottom">the positive amount to contract the top and bottom sides</param>
+		/// <returns>the <see cref="Rectangle"/> contracted by <paramref name="leftRight"/> and <paramref name="topBottom"/></returns>
 		public Rectangle Contract(float leftRight, float topBottom)
 		{
 			Contracts.Requires(Check.IsPositive(leftRight));
@@ -330,6 +359,11 @@ namespace Frost
 			return Contract(new Thickness(leftRight, topBottom));
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> contracted by the given amount
+		/// </summary>
+		/// <param name="leftRightTopBottom">the positive amount to contract the left, top, right, and bottom sides</param>
+		/// <returns>the <see cref="Rectangle"/> contracted by <paramref name="leftRightTopBottom"/></returns>
 		public Rectangle Contract(float leftRightTopBottom)
 		{
 			Contracts.Requires(Check.IsPositive(leftRightTopBottom));
@@ -337,6 +371,14 @@ namespace Frost
 			return Contract(new Thickness(leftRightTopBottom));
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> expanded by the given amounts
+		/// </summary>
+		/// <param name="left">the positive amount to expand the left side</param>
+		/// <param name="top">the positive amount to expand the top side</param>
+		/// <param name="right">the positive amount to expand the right side</param>
+		/// <param name="bottom">the positive amount to expand the bottom side</param>
+		/// <returns>the <see cref="Rectangle"/> expanded by <paramref name="left"/>, <paramref name="top"/>, <paramref name="right"/>, and <paramref name="bottom"/></returns>
 		public Rectangle Expand(float left, float top, float right, float bottom)
 		{
 			Contracts.Requires(Check.IsPositive(left));
@@ -347,6 +389,12 @@ namespace Frost
 			return Expand(new Thickness(left, top, right, bottom));
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> expanded by the given amounts
+		/// </summary>
+		/// <param name="leftRight">the positive amount to expand the left and right sides</param>
+		/// <param name="topBottom">the positive amount to expand the top and bottom sides</param>
+		/// <returns>the <see cref="Rectangle"/> expanded by <paramref name="leftRight"/> and <paramref name="topBottom"/></returns>
 		public Rectangle Expand(float leftRight, float topBottom)
 		{
 			Contracts.Requires(Check.IsPositive(leftRight));
@@ -355,6 +403,11 @@ namespace Frost
 			return Expand(new Thickness(leftRight, topBottom));
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> expanded by the given amount
+		/// </summary>
+		/// <param name="leftRightTopBottom">the positive amount to expand the left, top, right, and bottom sides</param>
+		/// <returns>the <see cref="Rectangle"/> expanded by <paramref name="leftRightTopBottom"/></returns>
 		public Rectangle Expand(float leftRightTopBottom)
 		{
 			Contracts.Requires(Check.IsPositive(leftRightTopBottom));
@@ -362,13 +415,26 @@ namespace Frost
 			return Expand(new Thickness(leftRightTopBottom));
 		}
 
+		/// <summary>
+		/// produces the <see cref="Rectangle"/> expanded by the given amount
+		/// </summary>
+		/// <param name="amount">the amount to expand the left, top, right, and bottom sides</param>
+		/// <returns>the <see cref="Rectangle"/> expanded by <paramref name="amount"/></returns>
 		public Rectangle Expand(Thickness amount)
 		{
 			return FromEdges(
 				Left - amount.Left, Top - amount.Top, Right + amount.Right, Bottom + amount.Bottom);
 		}
 
-		public Rectangle AlignRelativeTo(
+		/// <summary>
+		/// aligns the <see cref="Rectangle"/> relative to another <see cref="Rectangle"/>
+		/// </summary>
+		/// <param name="container">the <see cref="Rectangle"/> to align relative to</param>
+		/// <param name="alignment">the alignment operation</param>
+		/// <param name="alignmentAxis">the axis to align on</param>
+		/// <param name="direction">the reading direction for the alignment</param>
+		/// <returns>the <see cref="Rectangle"/> aligned relative to <paramref name="container"/> using the given alignment options</returns>
+		public Rectangle AlignRelativeTo( 
 			Rectangle container,
 			Alignment alignment,
 			Axis alignmentAxis,
@@ -444,6 +510,11 @@ namespace Frost
 			return new Rectangle(x, y, width, height);
 		}
 
+		/// <summary>
+		/// determines whether the <see cref="Rectangle"/> contains the given <see cref="Point"/>
+		/// </summary>
+		/// <param name="point">the location to test</param>
+		/// <returns><c>true</c> if the instance contains <paramref name="point"/>; otherwise, <c>false</c></returns>
 		[Pure] public bool Contains(Point point)
 		{
 			if((point.X >= Left) && (point.X <= Right))
@@ -457,6 +528,11 @@ namespace Frost
 			return false;
 		}
 
+		/// <summary>
+		/// determines whether the <see cref="Rectangle"/> contains the given <see cref="Rectangle"/>
+		/// </summary>
+		/// <param name="region">the <see cref="Rectangle"/> to test</param>
+		/// <returns><c>true</c> if the instance contains <paramref name="region"/>; otherwise, <c>false</c></returns>
 		[Pure] public bool Contains(Rectangle region)
 		{
 			if((region.Left >= Left) && (region.Right <= Right))
@@ -498,11 +574,23 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		///   determines whether two instances of <see cref="RGBColor" /> are equal
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> <c>true</c> if <paramref name="left" /> equals <paramref name="right" /> ; otherwise, <c>false</c> </returns>
 		public static bool operator ==(Rectangle left, Rectangle right)
 		{
 			return left.Equals(right);
 		}
 
+		/// <summary>
+		///   determines whether two instances of <see cref="Rectangle" /> are not equal
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> <c>true</c> if <paramref name="left" /> does not equal <paramref name="right" /> ; otherwise, <c>false</c> </returns>
 		public static bool operator !=(Rectangle left, Rectangle right)
 		{
 			return !left.Equals(right);
