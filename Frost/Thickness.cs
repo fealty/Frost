@@ -333,8 +333,7 @@ namespace Frost
 		{
 			return !left.Equals(right);
 		}
-		
-		/// <inheritdoc/>
+	
 		public bool Equals(Thickness other)
 		{
 			return other._Bottom.Equals(_Bottom) &&
@@ -343,7 +342,6 @@ namespace Frost
 			       other._Top.Equals(_Top);
 		}
 
-		/// <inheritdoc/>
 		public override bool Equals(object obj)
 		{
 			if(ReferenceEquals(null, obj))
@@ -354,7 +352,6 @@ namespace Frost
 			return obj is Thickness && Equals((Thickness)obj);
 		}
 
-		/// <inheritdoc/>
 		public override int GetHashCode()
 		{
 			unchecked
@@ -369,7 +366,6 @@ namespace Frost
 			}
 		}
 
-		/// <inheritdoc/>
 		public override string ToString()
 		{
 			return string.Format(

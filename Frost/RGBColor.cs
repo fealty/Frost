@@ -137,6 +137,7 @@ namespace Frost
 			return left.Equals(right);
 		}
 
+
 		public static bool operator !=(RGBColor left, RGBColor right)
 		{
 			return !left.Equals(right);
