@@ -8,6 +8,9 @@ using System.Diagnostics.Contracts;
 
 namespace Frost
 {
+	/// <summary>
+	/// represents a normalized RGBA color
+	/// </summary>
 	public struct Color : IEquatable<Color>
 	{
 		/// <summary>
@@ -728,6 +731,13 @@ namespace Frost
 			Contract.Invariant(Check.IsNormalized(_R));
 		}
 
+		/// <summary>
+		/// constructs a <see cref="Color"/> from normalized red, green, blue, and optionally alpha components
+		/// </summary>
+		/// <param name="red">the normalized red component</param>
+		/// <param name="green">the normalized green component</param>
+		/// <param name="blue">the normalized blue component</param>
+		/// <param name="alpha">the normalized alpha component</param>
 		public Color(float red, float green, float blue, float alpha = 1.0f)
 		{
 			Contract.Requires(Check.IsNormalized(green));
@@ -746,6 +756,9 @@ namespace Frost
 			Contract.Assert(A.Equals(alpha));
 		}
 
+		/// <summary>
+		/// gets the normalized red component of the <see cref="Color"/>
+		/// </summary>
 		public float R
 		{
 			get
@@ -757,6 +770,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the normalized green component of the <see cref="Color"/>
+		/// </summary>
 		public float G
 		{
 			get
@@ -768,6 +784,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the normalized blue component of the <see cref="Color"/>
+		/// </summary>
 		public float B
 		{
 			get
@@ -779,6 +798,9 @@ namespace Frost
 			}
 		}
 
+		/// <summary>
+		/// gets the normalized alpha component of the <see cref="Color"/>
+		/// </summary>
 		public float A
 		{
 			get
@@ -822,21 +844,43 @@ namespace Frost
 			return string.Format("R: {1}, G: {2}, B: {3}, A: {0}", _R, _G, _B, _A);
 		}
 
+		/// <summary>
+		/// implicitly converts a <see cref="RGBColor"/> to a <see cref="Color"/>
+		/// </summary>
+		/// <param name="color">the <see cref="RGBColor"/> to convert</param>
+		/// <returns>the <see cref="Color"/> representing <paramref name="color"/></returns>
 		public static implicit operator Color(RGBColor color)
 		{
 			return color.ToColor();
 		}
 
+		/// <summary>
+		/// implicitly converts a <see cref="HSVColor"/> to a <see cref="Color"/>
+		/// </summary>
+		/// <param name="color">the <see cref="HSVColor"/> to convert</param>
+		/// <returns>the <see cref="Color"/> representing <paramref name="color"/></returns>
 		public static implicit operator Color(HSVColor color)
 		{
 			return color.ToColor();
 		}
 
+		/// <summary>
+		///   determines whether two instances of <see cref="Color" /> are equal
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> <c>true</c> if <paramref name="left" /> equals <paramref name="right" /> ; otherwise, <c>false</c> </returns>
 		public static bool operator ==(Color left, Color right)
 		{
 			return left.Equals(right);
 		}
 
+		/// <summary>
+		///   determines whether two instances of <see cref="Color" /> are not equal
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> <c>true</c> if <paramref name="left" /> does not equal <paramref name="right" /> ; otherwise, <c>false</c> </returns>
 		public static bool operator !=(Color left, Color right)
 		{
 			return !left.Equals(right);
