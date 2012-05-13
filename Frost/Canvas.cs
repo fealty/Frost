@@ -25,18 +25,6 @@ namespace Frost
 			Contract.Requires(Check.IsPositive(dimensions.Height));
 		}
 
-		public Canvas(float width, float height, SurfaceUsage usage = SurfaceUsage.Dynamic, object tag = null)
-		{
-			Contract.Requires(Check.IsPositive(width));
-			Contract.Requires(Check.IsPositive(height));
-
-			_Tag = tag;
-
-			_Region = new Rectangle(Point.Empty, width, height);
-
-			_Usage = usage;
-		}
-
 		public object Tag
 		{
 			get { return _Tag; }
@@ -106,6 +94,18 @@ namespace Frost
 				get { return Target.BackingContext; }
 				set { Target.BackingContext = value; }
 			}
+		}
+		
+		public Canvas(float width, float height, SurfaceUsage usage = SurfaceUsage.Dynamic, object yourTag = null)
+		{
+			Contract.Requires(Check.IsPositive(width));
+			Contract.Requires(Check.IsPositive(height));
+
+			_Tag = yourTag;
+
+			_Region = new Rectangle(Point.Empty, width, height);
+
+			_Usage = usage;
 		}
 
 #if(UNIT_TESTING)
