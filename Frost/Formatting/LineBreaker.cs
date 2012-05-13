@@ -216,6 +216,9 @@ namespace Frost.Formatting
 			_IsActive = false;
 		}
 
+		//TODO: tolerance should probably be a property
+		//TODO: emergency stretch should probably be a property
+
 		/// <summary>
 		///   finds the optimal breakpoints in the item sequence
 		/// </summary>
