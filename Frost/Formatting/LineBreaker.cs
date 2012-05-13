@@ -6,13 +6,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 namespace Frost.Formatting
 {
 	/// <summary>
-	/// optimally distributes items on a series of lines by determining the optimal breaking points
+	///   optimally distributes items on a series of lines by determining the optimal breaking points
 	/// </summary>
 	public sealed class LineBreaker
 	{
@@ -26,9 +25,7 @@ namespace Frost.Formatting
 		private readonly List<LineItem> _Items;
 		private readonly ReadOnlyCollection<LineItem> _ItemsReadOnly;
 
-		private ILineProvider _LineProvider;
-
-		private bool _IsBuildingParagraph;
+		private bool _IsActive;
 		private Breakpoint _LastDeactivated;
 
 		private Demerits _MinimumCandidate;
@@ -48,11 +45,11 @@ namespace Frost.Formatting
 
 			_Candidates = new Breakpoint[4];
 
-			_IsBuildingParagraph = false;
+			_IsActive = false;
 		}
 
 		/// <summary>
-		///   This property exposes a read-only view of the items to process.
+		///   exposes a read-only view of the items to process
 		/// </summary>
 		public ReadOnlyCollection<LineItem> Items
 		{
@@ -60,7 +57,7 @@ namespace Frost.Formatting
 		}
 
 		/// <summary>
-		///   This property exposes a read-only view of the computed breaking points.
+		///   exposes a read-only view of the discovered breaking points
 		/// </summary>
 		public ReadOnlyCollection<BreakIndex> Breakpoints
 		{
@@ -68,68 +65,68 @@ namespace Frost.Formatting
 		}
 
 		/// <summary>
-		///   This method prepares the breaker for a sequences of new input items.
+		///   prepares the instance for a sequence of new line items
 		/// </summary>
-		public void BeginParagraph(ILineProvider lineProvider)
+		public void Begin()
 		{
-			_LineProvider = lineProvider;
+			Contract.Assert(!_IsActive);
 
 			_Items.Clear();
 
-			_IsBuildingParagraph = true;
+			_IsActive = true;
 		}
 
 		/// <summary>
-		///   This method appends a new box to the item list.
+		///   appends a new box to the item list
 		/// </summary>
-		/// <param name="width"> This parameter contains the width of the box. </param>
-		/// <param name="position"> This parameter contains the user-defined index position of the item. </param>
+		/// <param name="width"> the width of the box </param>
+		/// <param name="position"> the user-defined index position of the item </param>
 		public void AddBox(double width, int position)
 		{
 			Contract.Requires(Check.IsPositive(width));
 
-			Debug.Assert(_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
 			_Items.Add(LineItem.CreateBox(width, position));
 		}
 
 		/// <summary>
-		///   This method appends a new box to the item list.
+		///   appends a new box to the item list
 		/// </summary>
-		/// <param name="width"> This parameter contains the width of the box. </param>
+		/// <param name="width"> the width of the box </param>
 		public void AddBox(double width)
 		{
 			Contract.Requires(Check.IsPositive(width));
 
-			Debug.Assert(_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
 			_Items.Add(LineItem.CreateBox(width, -1));
 		}
 
 		/// <summary>
-		///   This method appends new glue to the item list.
+		///   appends new glue to the item list
 		/// </summary>
-		/// <param name="width"> This parameter indicates the width of the glue. </param>
-		/// <param name="stretch"> This parameter indicates how many units the glue may stretch. </param>
-		/// <param name="shrink"> This parameter indicates how many units the glue may shrink. </param>
+		/// <param name="width"> indicates the width of the glue </param>
+		/// <param name="stretch"> indicates how many units the glue may stretch </param>
+		/// <param name="shrink"> indicates how many units the glue may shrink </param>
 		public void AddGlue(double width, double stretch, double shrink)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsFinite(shrink));
 			Contract.Requires(Check.IsFinite(stretch));
 
-			Debug.Assert(_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
 			_Items.Add(LineItem.CreateGlue(width, -1, shrink, stretch));
 		}
 
 		/// <summary>
-		///   This method appends new glue to the item list.
+		///   appends new glue to the item list
 		/// </summary>
-		/// <param name="width"> This parameter indicates the width of the glue. </param>
-		/// <param name="position"> This parameter contains the user-defined index position of the item. </param>
-		/// <param name="stretch"> This parameter indicates how many units the glue may stretch. </param>
-		/// <param name="shrink"> This parameter indicates how many units the glue may shrink. </param>
+		/// <param name="width"> indicates the width of the glue </param>
+		/// <param name="position"> the user-defined index position of the item </param>
+		/// <param name="stretch"> indicates how many units the glue may stretch </param>
+		/// <param name="shrink"> indicates how many units the glue may shrink </param>
 		public void AddGlue(
 			double width, int position, double stretch, double shrink)
 		{
@@ -137,66 +134,66 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsFinite(shrink));
 			Contract.Requires(Check.IsFinite(stretch));
 
-			Debug.Assert(_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
 			_Items.Add(LineItem.CreateGlue(width, position, shrink, stretch));
 		}
 
 		/// <summary>
-		///   This method appends a new penalty to the item list.
+		///   appends a new penalty to the item list
 		/// </summary>
-		/// <param name="width"> This parameter indicates the width of the penalty. </param>
-		/// <param name="penalty"> This parameter indicates the penalty incurred when chosen. </param>
+		/// <param name="width"> indicates the width of the penalty </param>
+		/// <param name="penalty"> indicates the penalty incurred when chosen </param>
 		public void AddPenalty(double width, double penalty)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsFinite(penalty));
 
-			Debug.Assert(_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
 			AddPenalty(width, penalty, 0.0);
 		}
 
 		/// <summary>
-		///   This method appends a new penalty to the item list.
+		///   appends a new penalty to the item list
 		/// </summary>
-		/// <param name="width"> This parameter indicates the width of the penalty. </param>
-		/// <param name="position"> This parameter contains the user-defined index position of the item. </param>
-		/// <param name="penalty"> This parameter indicates the penalty incurred when chosen. </param>
+		/// <param name="width"> indicates the width of the penalty </param>
+		/// <param name="position"> the user-defined index position of the item </param>
+		/// <param name="penalty"> indicates the penalty incurred when chosen </param>
 		public void AddPenalty(double width, int position, double penalty)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsFinite(penalty));
 
-			Debug.Assert(_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
 			AddPenalty(width, position, penalty, 0.0);
 		}
 
 		/// <summary>
-		///   This method appends a new penalty to the item list.
+		///   appends a new penalty to the item list
 		/// </summary>
-		/// <param name="width"> This parameter indicates the width of the penalty. </param>
-		/// <param name="penalty"> This parameter indicates the penalty incurred when chosen. </param>
-		/// <param name="flagged"> This parameter indicates the flagged value for the penalty. </param>
+		/// <param name="width"> indicates the width of the penalty </param>
+		/// <param name="penalty"> indicates the penalty incurred when chosen </param>
+		/// <param name="flagged"> indicates the flagged value for the penalty </param>
 		public void AddPenalty(double width, double penalty, double flagged)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsFinite(penalty));
 			Contract.Requires(Check.IsFinite(flagged));
 
-			Debug.Assert(_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
 			_Items.Add(LineItem.CreatePenalty(width, -1, penalty, flagged));
 		}
 
 		/// <summary>
-		///   This method appends a new penalty to the item list.
+		///   appends a new penalty to the item list
 		/// </summary>
-		/// <param name="width"> This parameter indicates the width of the penalty. </param>
-		/// <param name="position"> This parameter contains the user-defined index position of the item. </param>
-		/// <param name="penalty"> This parameter indicates the penalty incurred when chosen. </param>
-		/// <param name="flagged"> This parameter indicates the flagged value for the penalty. </param>
+		/// <param name="width"> indicates the width of the penalty </param>
+		/// <param name="position"> the user-defined index position of the item </param>
+		/// <param name="penalty"> indicates the penalty incurred when chosen </param>
+		/// <param name="flagged"> indicates the flagged value for the penalty </param>
 		public void AddPenalty(
 			double width, int position, double penalty, double flagged)
 		{
@@ -204,67 +201,70 @@ namespace Frost.Formatting
 			Contract.Requires(Check.IsFinite(penalty));
 			Contract.Requires(Check.IsFinite(flagged));
 
-			Debug.Assert(_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
 			_Items.Add(LineItem.CreatePenalty(width, position, penalty, flagged));
 		}
 
 		/// <summary>
-		///   This method signals the end of the item sequence.
+		///   signals the end of the item sequence
 		/// </summary>
-		public void EndParagraph()
+		public void End()
 		{
-			Debug.Assert(_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
-			_IsBuildingParagraph = false;
+			_IsActive = false;
 		}
 
 		/// <summary>
-		///   This method finds the optimal breakpoints in the item sequence.
+		///   finds the optimal breakpoints in the item sequence
 		/// </summary>
-		/// <param name="tolerance"> This parameter indicates the tolerance for suboptimal lines. </param>
-		/// <returns> This method returns <c>true</c> if the sequence of items was successfully broken into lines; otherwise, this method returns <c>false</c> . </returns>
-		public bool FindBreakpoints(double tolerance)
+		/// <param name="tolerance"> indicates the tolerance for suboptimal lines </param>
+		/// <param name="lineProvider"> the line provider </param>
+		/// <returns> <c>true</c> if the sequence of items was successfully broken into lines; otherwise, <c>false</c> </returns>
+		public bool FindBreakpoints(double tolerance, ILineProvider lineProvider)
 		{
 			Contract.Requires(Check.IsFinite(tolerance));
 			Contract.Requires(tolerance >= 1.0);
+			Contract.Requires(lineProvider != null);
 
-			Debug.Assert(!_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
-			return FindBreakpoints(tolerance, false);
+			return FindBreakpoints(tolerance, lineProvider, false);
 		}
 
 		/// <summary>
-		///   This method finds the optimal breakpoints in the item sequence.
+		///   finds the optimal breakpoints in the item sequence
 		/// </summary>
-		/// <param name="tolerance"> This parameter indicates the tolerance for suboptimal lines. </param>
-		/// <param name="isOverfullAllowed"> This parameter indicates whether overfull lines are permitted. </param>
-		/// <returns> This method returns <c>true</c> if the sequence of items was successfully broken into lines; otherwise, this method returns <c>false</c> . </returns>
-		public bool FindBreakpoints(double tolerance, bool isOverfullAllowed)
+		/// <param name="tolerance"> indicates the tolerance for suboptimal lines </param>
+		/// <param name="lineProvider"> the line provider </param>
+		/// <param name="isOverfullAllowed"> indicates whether overfull lines are permitted </param>
+		/// <returns> <c>true</c> if the sequence of items was successfully broken into lines; otherwise, <c>false</c> </returns>
+		public bool FindBreakpoints(
+			double tolerance, ILineProvider lineProvider, bool isOverfullAllowed)
 		{
 			Contract.Requires(Check.IsFinite(tolerance));
 			Contract.Requires(tolerance >= 1.0);
+			Contract.Requires(lineProvider != null);
 
-			Debug.Assert(!_IsBuildingParagraph);
+			Contract.Assert(_IsActive);
 
 			if(_Items.Count > 0)
 			{
-				return FindBreakpointsInternal(tolerance, isOverfullAllowed);
+				return FindBreakpointsInternal(tolerance, lineProvider, isOverfullAllowed);
 			}
 
 			return false;
 		}
 
 		/// <summary>
-		///   This method determines whether the item at the given index is a possible breaking point.
+		///   determines whether the item at the given index is a possible breaking point
 		/// </summary>
-		/// <param name="itemIndex"> This parameter contains the item index to test. </param>
-		/// <returns> This method returns <c>true</c> if the item is a possible breaking point; otherwise, this method returns <c>false</c> . </returns>
+		/// <param name="itemIndex"> the item index to test </param>
+		/// <returns> <c>true</c> if the item is a possible breaking point; otherwise, <c>false</c> </returns>
 		private bool IsFeasibleBreakpoint(int itemIndex)
 		{
 			Contract.Requires(itemIndex >= 0);
-
-			Debug.Assert(!_IsBuildingParagraph);
 
 			LineItem item = _Items[itemIndex];
 
@@ -288,16 +288,18 @@ namespace Frost.Formatting
 		}
 
 		/// <summary>
-		///   This method finds the optimal breakpoints in the item sequence.
+		///   finds the optimal breakpoints in the item sequence
 		/// </summary>
-		/// <param name="tolerance"> This parameter indicates the tolerance for suboptimal lines. </param>
-		/// <param name="isOverfullAllowed"> This parameter indicates whether overfull lines are permitted. </param>
-		/// <returns> This method returns <c>true</c> if the sequence of items was successfully broken into lines; otherwise, this method returns <c>false</c> . </returns>
+		/// <param name="tolerance"> indicates the tolerance for suboptimal lines </param>
+		/// <param name="lineProvider"> the line provider </param>
+		/// <param name="isOverfullAllowed"> indicates whether overfull lines are permitted </param>
+		/// <returns> <c>true</c> if the sequence of items was successfully broken into lines; otherwise, <c>false</c> </returns>
 		private bool FindBreakpointsInternal(
-			double tolerance, bool isOverfullAllowed)
+			double tolerance, ILineProvider lineProvider, bool isOverfullAllowed)
 		{
 			Contract.Requires(Check.IsFinite(tolerance));
 			Contract.Requires(tolerance >= 1.0);
+			Contract.Requires(lineProvider != null);
 
 			_Active.AddFirst(Breakpoint.Empty);
 
@@ -317,7 +319,7 @@ namespace Frost.Formatting
 				// analyze each possible breaking point
 				if(IsFeasibleBreakpoint(i))
 				{
-					AnalyzeBreakpoint(i, tolerance);
+					AnalyzeBreakpoint(i, tolerance, lineProvider);
 				}
 
 				if(ItemExamined != null)
@@ -382,12 +384,12 @@ namespace Frost.Formatting
 		}
 
 		/// <summary>
-		///   This method computes the running sum for an index.
+		///   computes the running sum for an index
 		/// </summary>
-		/// <param name="index"> This parameter indicates the index from which to start. </param>
-		/// <param name="sumWidth"> This output parameter holds the total width. </param>
-		/// <param name="sumShrink"> This output parameter holds the total shrink. </param>
-		/// <param name="sumStretch"> This output parameter holds the total stretch. </param>
+		/// <param name="index"> indicates the index from which to start </param>
+		/// <param name="sumWidth"> holds the total width </param>
+		/// <param name="sumShrink"> holds the total shrink </param>
+		/// <param name="sumStretch"> holds the total stretch </param>
 		private void ComputeSum(
 			int index, out double sumWidth, out double sumShrink, out double sumStretch)
 		{
@@ -415,19 +417,22 @@ namespace Frost.Formatting
 		}
 
 		/// <summary>
-		///   This method computes the ratio for the given line and node.
+		///   computes the ratio for the given line and node
 		/// </summary>
-		/// <param name="indexItem"> This parameter indicates the index of the line item. </param>
-		/// <param name="activeNode"> This parameter references the active breakpoint node. </param>
-		/// <param name="lineNumber"> This parameter indicates the active line number. </param>
-		/// <returns> This method returns the ratio of the line. </returns>
+		/// <param name="indexItem"> indicates the index of the line item </param>
+		/// <param name="activeNode"> the active breakpoint node </param>
+		/// <param name="lineNumber"> indicates the active line number </param>
+		/// <param name="lineProvider"> the line provider </param>
+		/// <returns> the ratio of the line. </returns>
 		private double ComputeRatio(
 			ref LineItem indexItem,
 			LinkedListNode<Breakpoint> activeNode,
-			int lineNumber)
+			int lineNumber,
+			ILineProvider lineProvider)
 		{
 			Contract.Requires(lineNumber >= 0);
 			Contract.Requires(activeNode != null);
+			Contract.Requires(lineProvider != null);
 
 			double length = _RunningWidthSum - activeNode.Value.TotalWidth;
 
@@ -436,7 +441,7 @@ namespace Frost.Formatting
 				length = length + indexItem.Width;
 			}
 
-			double availableLength = _LineProvider.ProduceLine(lineNumber);
+			double availableLength = lineProvider.ProduceLine(lineNumber);
 
 			if(length < availableLength)
 			{
@@ -456,19 +461,24 @@ namespace Frost.Formatting
 		}
 
 		/// <summary>
-		///   This method analyzes a node.
+		///   analyzes a node
 		/// </summary>
-		/// <param name="activeNode"> This parameter references the active node. </param>
-		/// <param name="index"> This parameter indicates the index of the item. </param>
-		/// <param name="tolerance"> This parameter indicates the tolerance for badness. </param>
-		/// <returns> This method returns the next node. </returns>
+		/// <param name="activeNode"> the active node </param>
+		/// <param name="index"> indicates the index of the item </param>
+		/// <param name="tolerance"> indicates the tolerance for badness </param>
+		/// <param name="lineProvider"> the line provider </param>
+		/// <returns> the next node </returns>
 		private LinkedListNode<Breakpoint> AnalyzeNode(
-			LinkedListNode<Breakpoint> activeNode, int index, double tolerance)
+			LinkedListNode<Breakpoint> activeNode,
+			int index,
+			double tolerance,
+			ILineProvider lineProvider)
 		{
 			Contract.Requires(activeNode != null);
 			Contract.Requires(index >= 0);
 			Contract.Requires(Check.IsFinite(tolerance));
 			Contract.Requires(tolerance >= 1.0);
+			Contract.Requires(lineProvider != null);
 
 			LinkedListNode<Breakpoint> nextNode = activeNode.Next;
 
@@ -476,7 +486,8 @@ namespace Frost.Formatting
 
 			LineItem indexItem = _Items[index];
 
-			double ratio = ComputeRatio(ref indexItem, activeNode, currentLine);
+			double ratio = ComputeRatio(
+				ref indexItem, activeNode, currentLine, lineProvider);
 
 			if(ratio < -1.0 || indexItem.IsForcedBreak)
 			{
@@ -529,15 +540,18 @@ namespace Frost.Formatting
 		}
 
 		/// <summary>
-		///   This method analyzes a breaking point.
+		///   analyzes a breaking point
 		/// </summary>
-		/// <param name="index"> This parameter indicates the index of the breaking point. </param>
-		/// <param name="tolerance"> This parameter indicates the tolerance for badness. </param>
-		private void AnalyzeBreakpoint(int index, double tolerance)
+		/// <param name="index"> indicates the index of the breaking point </param>
+		/// <param name="tolerance"> indicates the tolerance for badness </param>
+		/// <param name="lineProvider"> the line provider </param>
+		private void AnalyzeBreakpoint(
+			int index, double tolerance, ILineProvider lineProvider)
 		{
 			Contract.Requires(index >= 0);
 			Contract.Requires(Check.IsFinite(tolerance));
 			Contract.Requires(tolerance >= 1.0);
+			Contract.Requires(lineProvider != null);
 
 			LinkedListNode<Breakpoint> activeNode = _Active.First;
 
@@ -552,7 +566,7 @@ namespace Frost.Formatting
 
 				while(activeNode != null)
 				{
-					activeNode = AnalyzeNode(activeNode, index, tolerance);
+					activeNode = AnalyzeNode(activeNode, index, tolerance, lineProvider);
 				}
 
 				if(_MinimumCandidate < Demerits.Infinity)
@@ -571,12 +585,12 @@ namespace Frost.Formatting
 		}
 
 		/// <summary>
-		///   This event fires before an item is examined.
+		///   fires before an item is examined
 		/// </summary>
 		public event LineItemHandler ExaminingItem;
 
 		/// <summary>
-		///   This event fires after an item is examined.
+		///   fires after an item is examined
 		/// </summary>
 		public event LineItemHandler ItemExamined;
 	}
