@@ -52,7 +52,7 @@ namespace Frost.DirectX.Formatting
 
 			_OutputSink = outputSink;
 
-			_LineBreaker = new LineBreaker(this);
+			_LineBreaker = new LineBreaker();
 
 			_FreeSegments = new List<Segment>();
 			_ComputedLines = new List<Rectangle>();
@@ -111,11 +111,15 @@ namespace Frost.DirectX.Formatting
 
 			_OutputSink.Indentation = indentation;
 
+			_LineBreaker.Begin();
+
 			AnalyzeItems(input, paragraph.Alignment, paragraph.Spacing, paragraph.Tracking, indentation);
 
 			DetermineBreakingPoints(boxes);
 
 			SaveBreakingPoints();
+
+			_LineBreaker.End();
 
 			OutputClusters(input, paragraph.Alignment);
 
@@ -392,7 +396,7 @@ namespace Frost.DirectX.Formatting
 			// five attempts to find a feasible set of breaking points
 			for(int i = 1; i <= 5; ++i)
 			{
-				if(_LineBreaker.FindBreakpoints(((i - 1) * 2) + 1))
+				if(_LineBreaker.FindBreakpoints(((i - 1) * 2) + 1, this))
 				{
 					break;
 				}
@@ -404,7 +408,7 @@ namespace Frost.DirectX.Formatting
 				if(i == 5)
 				{
 					// give up by forcing the text to set
-					_LineBreaker.FindBreakpoints(20, true);
+					_LineBreaker.FindBreakpoints(20, this, true);
 				}
 			}
 		}
@@ -831,8 +835,6 @@ namespace Frost.DirectX.Formatting
 
 			OutputGlyphs(input);
 
-			_LineBreaker.BeginParagraph();
-
 			_LineBreaker.AddBox(indentation);
 
 			for(int i = 0; i < input.Clusters.Count; ++i)
@@ -918,8 +920,6 @@ namespace Frost.DirectX.Formatting
 			// add the final items required by the line breaking algorithm
 			_LineBreaker.AddGlue(0.0, LineItem.Infinity, 0.0);
 			_LineBreaker.AddPenalty(0.0, -LineItem.Infinity, 1.0);
-
-			_LineBreaker.EndParagraph();
 		}
 
 		/// <summary>
