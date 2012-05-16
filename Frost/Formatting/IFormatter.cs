@@ -55,6 +55,13 @@ namespace Frost.Formatting
 	{
 		LineBreaker LineBreaker { get; }
 
+		// Aggregator
+		// Shaper
+		// Typesetter
+		// Layouter
+
+		//TODO: adds the collater? aggregator? what to call it?
+
 		FontMetrics MeasureFont(
 			string family, FontWeight weight, FontStyle style, FontStretch stretch);
 
