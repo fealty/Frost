@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System;
+using System.Diagnostics.Contracts;
 
 namespace Frost.Formatting
 {
@@ -49,8 +50,8 @@ namespace Frost.Formatting
 		{
 			return Equals(other._Family, _Family) &&
 				other._Style == _Style &&
-				other._Weight == _Weight && 
-				other._Stretch == _Stretch;
+					other._Weight == _Weight &&
+						other._Stretch == _Stretch;
 		}
 
 		public override bool Equals(object obj)
@@ -83,6 +84,16 @@ namespace Frost.Formatting
 		public static bool operator !=(FontIdentifier left, FontIdentifier right)
 		{
 			return !left.Equals(right);
+		}
+
+		public override string ToString()
+		{
+			return string.Format(
+				"Family: {0}, Style: {1}, Weight: {2}, Stretch: {3}",
+				_Family,
+				_Style,
+				_Weight,
+				_Stretch);
 		}
 	}
 }

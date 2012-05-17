@@ -18,7 +18,11 @@ namespace Frost.Formatting
 		private readonly IndexedRange _Text;
 		private readonly IndexedRange _Glyphs;
 
-		public ShapedCluster(float advance, LineBreakpoint breakpoint, IndexedRange glyphs, IndexedRange text)
+		public ShapedCluster(
+			float advance,
+			LineBreakpoint breakpoint,
+			IndexedRange glyphs,
+			IndexedRange text)
 		{
 			Contract.Requires(Check.IsFinite(advance));
 
@@ -28,9 +32,31 @@ namespace Frost.Formatting
 			_Text = text;
 		}
 
+		public IndexedRange Glyphs
+		{
+			get { return _Glyphs; }
+		}
+
+		public IndexedRange Text
+		{
+			get { return _Text; }
+		}
+
+		public LineBreakpoint Breakpoint
+		{
+			get { return _Breakpoint; }
+		}
+
+		public float Advance
+		{
+			get { return _Advance; }
+		}
+
 		public bool Equals(ShapedCluster other)
 		{
-			return other._Advance.Equals(_Advance) && other._Breakpoint.Equals(_Breakpoint) && other._Text.Equals(_Text) && other._Glyphs.Equals(_Glyphs);
+			return other._Advance.Equals(_Advance) &&
+				other._Breakpoint.Equals(_Breakpoint) && other._Text.Equals(_Text) &&
+					other._Glyphs.Equals(_Glyphs);
 		}
 
 		public override bool Equals(object obj)
@@ -63,6 +89,17 @@ namespace Frost.Formatting
 		public static bool operator !=(ShapedCluster left, ShapedCluster right)
 		{
 			return !left.Equals(right);
+		}
+
+		public override string ToString()
+		{
+			return
+				string.Format(
+					"Advance: {0}, Breakpoint: {1}, Glyphs: {2}, Text: {3}",
+					_Advance,
+					_Breakpoint,
+					_Glyphs,
+					_Text);
 		}
 	}
 }

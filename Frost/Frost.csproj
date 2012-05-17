@@ -136,6 +136,7 @@
     <Compile Include="Formatting\BreakCondition.cs" />
     <Compile Include="Formatting\BreakIndex.cs" />
     <Compile Include="Formatting\Breakpoint.cs" />
+    <Compile Include="Formatting\FontIdentifier.cs" />
     <Compile Include="Formatting\ShapedCluster.cs" />
     <Compile Include="Formatting\Demerits.cs" />
     <Compile Include="Formatting\Enumerations.cs" />
