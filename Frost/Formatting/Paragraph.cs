@@ -14,6 +14,7 @@ using Frost.Painting;
 
 namespace Frost.Formatting
 {
+	//TODO: add support for decorations to Paragraph?
 	public sealed class Paragraph
 	{
 		private static readonly CultureInfo _DefaultCulture;

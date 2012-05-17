@@ -5,6 +5,8 @@
 
 using System;
 
+using Frost.Formatting;
+
 using DxBreakCondition = SharpDX.DirectWrite.BreakCondition;
 using DxLineBreakpoint = SharpDX.DirectWrite.LineBreakpoint;
 

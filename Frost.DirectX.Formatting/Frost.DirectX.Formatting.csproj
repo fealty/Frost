@@ -121,7 +121,6 @@
     <Compile Include="Aggregator.cs" />
     <Compile Include="AggregatorSink.cs" />
     <Compile Include="Analyzer.cs" />
-    <Compile Include="BreakCondition.cs" />
     <Compile Include="CharacterFormat.cs" />
     <Compile Include="ContentType.cs" />
     <Compile Include="DisplayMode.cs" />

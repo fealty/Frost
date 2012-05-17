@@ -133,7 +133,7 @@
     <Compile Include="Effects\IEffectSettings.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="Check.cs" />
-    <Compile Include="Formatting\Aggregator.cs" />
+    <Compile Include="Formatting\BreakCondition.cs" />
     <Compile Include="Formatting\BreakIndex.cs" />
     <Compile Include="Formatting\Breakpoint.cs" />
     <Compile Include="Formatting\Demerits.cs" />
@@ -141,12 +141,15 @@
     <Compile Include="Formatting\FontFeature.cs" />
     <Compile Include="Formatting\FontFeatureCollection.cs" />
     <Compile Include="Formatting\FontMetrics.cs" />
-    <Compile Include="Formatting\IAggregatorSink.cs" />
-    <Compile Include="Formatting\IAnalysisProvider.cs" />
+    <Compile Include="Formatting\IDecoration.cs" />
     <Compile Include="Formatting\IFormatter.cs" />
     <Compile Include="Formatting\ILineProvider.cs" />
+    <Compile Include="Formatting\ITextItem.cs" />
+    <Compile Include="Formatting\TextShaper.cs" />
+    <Compile Include="Formatting\IShapedText.cs" />
     <Compile Include="Formatting\ITextMetrics.cs" />
     <Compile Include="Formatting\LineBreaker.cs" />
+    <Compile Include="Formatting\LineBreakpoint.cs" />
     <Compile Include="Formatting\LineCollection.cs" />
     <Compile Include="Formatting\LineFitness.cs" />
     <Compile Include="Formatting\LineItem.cs" />
