@@ -11,22 +11,15 @@ using System.Diagnostics.Contracts;
 using Frost.Composition;
 using Frost.DirectX.Common;
 using Frost.DirectX.Composition;
-using Frost.DirectX.Formatting;
 using Frost.DirectX.Painting;
-using Frost.Formatting;
 using Frost.Painting;
 using Frost.Shaping;
 using Frost.Surfacing;
 
 using SharpDX;
 using SharpDX.DXGI;
-using SharpDX.DirectWrite;
 
 using DxGeometry = SharpDX.Direct2D1.Geometry;
-using FontMetrics = Frost.Formatting.FontMetrics;
-using FontStretch = Frost.Formatting.FontStretch;
-using FontStyle = Frost.Formatting.FontStyle;
-using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX
 {
@@ -42,7 +35,6 @@ namespace Frost.DirectX
 		private readonly SafeList<DynamicSurface> _DynamicSurfaces;
 		private readonly SafeList<ExternalSurface> _ExternalSurfaces;
 
-		private readonly FontDevice _FontDevice;
 		private readonly GeometryCache _GeometryCache;
 		private readonly SafeList<Canvas> _InvalidatedResources;
 
@@ -52,7 +44,6 @@ namespace Frost.DirectX
 		private readonly SimplificationSink _SimplificationSink;
 		private readonly StagingTexture _StagingTexture;
 		private readonly TessellationSink _TessellationSink;
-		private readonly TextPipeline _TextPipeline;
 		private readonly WideningSink _WideningSink;
 
 		private Size _DefaultAtlasSize;
@@ -72,12 +63,10 @@ namespace Frost.DirectX
 			_PrivateSurfaces = new SafeList<PrivateSurface>();
 			_InvalidatedResources = new SafeList<Canvas>();
 
-			_FontDevice = new FontDevice();
 			_CompositionDevice = new CompositionDevice(adapter, this);
 			_DrawingDevice = new PaintingDevice(this, _CompositionDevice.Device3D);
 
 			_GeometryCache = new GeometryCache(_DrawingDevice.Factory2D);
-			_TextPipeline = new TextPipeline(_FontDevice);
 
 			_SimplificationSink = new SimplificationSink();
 			_TessellationSink = new TessellationSink();
@@ -209,15 +198,6 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override ITextMetrics OnMeasureLayout(
-			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions)
-		{
-			lock(_Lock)
-			{
-				return _TextPipeline.Measure(paragraph, region, obstructions);
-			}
-		}
-
 		protected override void OnTessellate(
 			Geometry path, float tolerance, ITessellationSink sink)
 		{
@@ -261,20 +241,6 @@ namespace Frost.DirectX
 
 				throw new InvalidOperationException(
 					"Failed to resolve destination geometry path!");
-			}
-		}
-
-		protected override FontMetrics OnMeasureFont(
-			string family, FontWeight weight, FontStyle style, FontStretch stretch)
-		{
-			lock(_Lock)
-			{
-				FontHandle handle = _FontDevice.FindFont(family, style, weight, stretch);
-
-				Font font = handle.ResolveFont();
-
-				return new FontMetrics(
-					font.Metrics.Ascent, font.Metrics.Descent, font.Metrics.DesignUnitsPerEm);
 			}
 		}
 
@@ -453,10 +419,7 @@ namespace Frost.DirectX
 				_CompositionDevice.Dispose();
 				_DrawingDevice.Dispose();
 
-				_FontDevice.Dispose();
 				_GeometryCache.Dispose();
-
-				_TextPipeline.Dispose();
 			}
 		}
 

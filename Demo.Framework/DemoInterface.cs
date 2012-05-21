@@ -10,7 +10,6 @@ using System.Diagnostics.Contracts;
 
 using Frost;
 using Frost.Diagnostics;
-using Frost.Formatting;
 using Frost.Painting;
 
 namespace Demo.Framework
@@ -65,7 +64,7 @@ namespace Demo.Framework
 			device2D.Diagnostics.Query("Composition", "FrameDuration", out compositionFrameDuration);
 			device2D.Diagnostics.Query("Painting", "FrameDuration", out paintingFrameDuration);
 
-			Paragraph snapshot = Paragraph.Create()
+			/*Paragraph snapshot = Paragraph.Create()
 				.WithFamily("Lucida Console")
 				.WithTracking(0.2f)
 				.WithAlignment(Alignment.Center)
@@ -117,7 +116,7 @@ namespace Demo.Framework
 			ITextMetrics garbageMetrics = device2D.Formatter.MeasureLayout(totalGarbage);
 
 			ITextMetrics snapshotMetrics = device2D.Formatter.MeasureLayout(snapshot, right);
-			ITextMetrics optionsMetrics = device2D.Formatter.MeasureLayout(options, left);
+			ITextMetrics optionsMetrics = device2D.Formatter.MeasureLayout(options, left);*/
 
 			device2D.Painter.Begin(target);
 
@@ -130,7 +129,7 @@ namespace Demo.Framework
 			device2D.Painter.FillRectangle(left);
 			device2D.Painter.FillRectangle(right);
 
-			Rectangle timePanel = timeRegion.Expand(
+		/*	Rectangle timePanel = timeRegion.Expand(
 				timeRegion.Height, timeRegion.Height, timeRegion.Height, timeRegion.Height / 4.0f);
 
 			device2D.Painter.FillRectangle(timePanel, new Size(timeRegion.Height / 2.0f));
@@ -141,7 +140,7 @@ namespace Demo.Framework
 				subsystemRegion.Height,
 				subsystemRegion.Height);
 
-			device2D.Painter.FillRectangle(subsystemPanel, new Size(subsystemRegion.Height / 2.0f));
+			device2D.Painter.FillRectangle(subsystemPanel, new Size(subsystemRegion.Height / 2.0f));*/
 
 			device2D.Painter.SetBrush(Resources.ActiveButton);
 
@@ -156,18 +155,18 @@ namespace Demo.Framework
 			device2D.Painter.SetBrush(Resources.Foreground);
 
 			device2D.Painter.SaveState();
-			device2D.Painter.Translate(timeRegion.X, timeRegion.Y);
-			Paragraph.Draw(device2D.Painter, timeMetrics);
+			/*device2D.Painter.Translate(timeRegion.X, timeRegion.Y);
+			Paragraph.Draw(device2D.Painter, timeMetrics);*/
 			device2D.Painter.RestoreState();
 
 			device2D.Painter.SaveState();
-			device2D.Painter.Translate(subsystemRegion.X, subsystemRegion.Y);
-			Paragraph.Draw(device2D.Painter, subsystemMetrics);
+			/*device2D.Painter.Translate(subsystemRegion.X, subsystemRegion.Y);
+			Paragraph.Draw(device2D.Painter, subsystemMetrics);*/
 			device2D.Painter.RestoreState();
 
 			device2D.Painter.SaveState();
 
-			device2D.Painter.Translate(0, timeRegion.Height);
+			/*device2D.Painter.Translate(0, timeRegion.Height);
 			Paragraph.Draw(device2D.Painter, snapshotMetrics);
 			device2D.Painter.StrokeLine(
 				snapshotMetrics.TextRegion.Left,
@@ -180,25 +179,25 @@ namespace Demo.Framework
 			Paragraph.Draw(device2D.Painter, memoryMetrics);
 
 			device2D.Painter.Translate(0, (timeRegion.Height * 2) + (timeRegion.Height * 0.25f));
-			Paragraph.Draw(device2D.Painter, garbageMetrics);
+			Paragraph.Draw(device2D.Painter, garbageMetrics);*/
 
 			device2D.Painter.RestoreState();
 
 			device2D.Painter.SaveState();
 
-			device2D.Painter.Translate(0, timeRegion.Height);
+			/*device2D.Painter.Translate(0, timeRegion.Height);
 			Paragraph.Draw(device2D.Painter, optionsMetrics);
 			device2D.Painter.StrokeLine(
 				optionsMetrics.TextRegion.Left,
 				optionsMetrics.TextRegion.Bottom,
 				optionsMetrics.TextRegion.Right,
-				optionsMetrics.TextRegion.Bottom);
+				optionsMetrics.TextRegion.Bottom);*/
 
 			device2D.Painter.RestoreState();
 
-			GenerateMenu(
+			/*GenerateMenu(
 				context, target, device2D, (timeRegion.Height * 3) + (timeRegion.Height * 0.25f), left.Width);
-
+			*/
 			device2D.Painter.End();
 
 			device2D.Compositor.Begin(target, Retention.RetainData);
@@ -213,7 +212,7 @@ namespace Demo.Framework
 			Contract.Requires(target != null);
 			Contract.Requires(device2D != null);
 
-			var items = new List<KeyValuePair<ITextMetrics, bool>>();
+			/*var items = new List<KeyValuePair<ITextMetrics, bool>>();
 
 			Rectangle region = target.Region;
 
@@ -245,7 +244,7 @@ namespace Demo.Framework
 				items.Add(new KeyValuePair<ITextMetrics, bool>(metrics, item.IsActive));
 
 				region = region.Translate(0, itemHeight + itemSpacing);
-			}
+			} 
 
 			foreach(var item in items)
 			{
@@ -262,8 +261,8 @@ namespace Demo.Framework
 
 				device2D.Painter.SetBrush(item.Value ? Resources.InactiveButton : Resources.Foreground);
 
-				Paragraph.Draw(device2D.Painter, item.Key);
-			}
+				//Paragraph.Draw(device2D.Painter, item.Key);
+			}*/
 		}
 	}
 }

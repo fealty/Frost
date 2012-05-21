@@ -18,7 +18,7 @@ using Frost.Surfacing;
 
 namespace Frost
 {
-	public abstract class Device2D : IResourceManager, IShaper, IFormatter
+	public abstract class Device2D : IResourceManager, IShaper
 	{
 		public const float Flattening = 0.25f;
 
@@ -48,11 +48,6 @@ namespace Frost
 			get { return _EffectCollection; }
 		}
 
-		public IFormatter Formatter
-		{
-			get { return this; }
-		}
-
 		public IShaper Shaper
 		{
 			get { return this; }
@@ -62,54 +57,6 @@ namespace Frost
 		public abstract Compositor Compositor { get; }
 
 		protected abstract Size PageSize { set; }
-
-		[ThreadStatic]
-		private static LineBreaker _LineBreaker;
-
-		LineBreaker IFormatter.LineBreaker
-		{
-			get
-			{
-				if(_LineBreaker == null)
-				{
-					_LineBreaker = new LineBreaker();
-				}
-
-				return _LineBreaker;
-			}
-		}
-
-		FontMetrics IFormatter.MeasureFont(
-			string family, FontWeight weight, FontStyle style, FontStretch stretch)
-		{
-			if(String.IsNullOrWhiteSpace(family))
-			{
-				return OnMeasureFont(Paragraph.DefaultFamily, weight, style, stretch);
-			}
-
-			return OnMeasureFont(family, weight, style, stretch);
-		}
-
-		ITextMetrics IFormatter.MeasureLayout(Paragraph paragraph)
-		{
-			return Formatter.MeasureLayout(paragraph, new Rectangle(Point.Empty, Size.MaxValue));
-		}
-
-		ITextMetrics IFormatter.MeasureLayout(Paragraph paragraph, Point location)
-		{
-			return Formatter.MeasureLayout(paragraph, new Rectangle(location, Size.MaxValue));
-		}
-
-		ITextMetrics IFormatter.MeasureLayout(
-			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions)
-		{
-			if(!region.IsEmpty)
-			{
-				return OnMeasureLayout(paragraph, region, obstructions);
-			}
-
-			return null;
-		}
 
 		bool IShaper.Contains(Geometry path, Point point, float tolerance)
 		{
@@ -319,16 +266,10 @@ namespace Frost
 
 		protected abstract float OnMeasureArea(Geometry path, float tolerance);
 
-		protected abstract ITextMetrics OnMeasureLayout(
-			Paragraph paragraph, Rectangle region, params Rectangle[] obstructions);
-
 		protected abstract void OnTessellate(Geometry path, float tolerance, ITessellationSink sink);
 
 		protected abstract Geometry OnCombine(
 			Geometry sourcePath, Geometry destinationPath, float tolerance, CombinationOperation operation);
-
-		protected abstract FontMetrics OnMeasureFont(
-			string family, FontWeight weight, FontStyle style, FontStretch stretch);
 
 		protected abstract Rectangle OnMeasureRegion(Geometry path);
 

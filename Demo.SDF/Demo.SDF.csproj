@@ -130,10 +130,6 @@
       <Project>{2EA01B9A-898F-425F-B65A-D6A2225CFD05}</Project>
       <Name>Frost.DirectX.Composition</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Frost.DirectX.Formatting\Frost.DirectX.Formatting.csproj">
-      <Project>{C168162F-F8DF-4898-AAB1-03F0B2EF4ED0}</Project>
-      <Name>Frost.DirectX.Formatting</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Frost.DirectX.Painting\Frost.DirectX.Painting.csproj">
       <Project>{5F6DDFC5-EFAF-4930-B7DC-75CF46582184}</Project>
       <Name>Frost.DirectX.Painting</Name>

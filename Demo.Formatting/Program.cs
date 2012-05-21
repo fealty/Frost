@@ -19,19 +19,19 @@ namespace Demo.Formatting
 {
 	internal sealed class Application : IDemoContext
 	{
-		private readonly List<ITextMetrics> _Paragraphs;
+		//private readonly List<ITextMetrics> _Paragraphs;
 
 		private bool _AreLinesDisplayed;
 		private bool _AreRegionsDisplayed;
 
 		public Application()
 		{
-			_Paragraphs = new List<ITextMetrics>();
+			//_Paragraphs = new List<ITextMetrics>();
 		}
 
 		public void Reset(Canvas target, Device2D device2D)
 		{
-			_Paragraphs.Clear();
+			/*_Paragraphs.Clear();
 
 			FontMetrics fontMetrics = device2D.Formatter.MeasureFont(
 				"Calibri", FontWeight.Regular, FontStyle.Regular, FontStretch.Regular);
@@ -166,7 +166,7 @@ namespace Demo.Formatting
 				forewordMetrics.Regions[0].Y,
 				inlineIcon.Region.Width,
 				forewordMetrics.Regions[0].Height);
-			device2D.Compositor.End();
+			device2D.Compositor.End();*/
 		}
 
 		public IEnumerable<DemoSetting> Settings
@@ -207,7 +207,7 @@ namespace Demo.Formatting
 			return false;
 		}
 
-		private void OutlineLines(Painter painter)
+		/*private void OutlineLines(Painter painter)
 		{
 			Contract.Requires(painter != null);
 
@@ -248,7 +248,7 @@ namespace Demo.Formatting
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 	internal static class Program

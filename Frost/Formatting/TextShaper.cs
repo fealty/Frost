@@ -12,14 +12,14 @@ namespace Frost.Formatting
 {
 	public abstract class TextShaper
 	{
-		private Paragraph _Paragraph;
+		private string _Paragraph;
 
-		public Paragraph Paragraph
+		public string Paragraph
 		{
 			get { return _Paragraph; }
 		}
 
-		public void Begin(IShapedText outputSink, Paragraph paragraph)
+		public void Begin(IShapedText outputSink, string paragraph)
 		{
 			Contract.Requires(Paragraph == null);
 			Contract.Requires(outputSink != null);
@@ -33,7 +33,7 @@ namespace Frost.Formatting
 		public void SetBreakpoint(IndexedRange textRange, LineBreakpoint breakpoint)
 		{
 			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.IsWithin(Paragraph));
 
 			OnSetBreakpoints(textRange, breakpoint);
 		}
@@ -41,7 +41,7 @@ namespace Frost.Formatting
 		public void SetBidiLevel(IndexedRange textRange, byte resolvedLevel)
 		{
 			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.IsWithin(Paragraph));
 
 			OnSetBidiLevel(textRange, resolvedLevel);
 		}
@@ -49,7 +49,7 @@ namespace Frost.Formatting
 		public void SetCulture(IndexedRange textRange, CultureInfo culture)
 		{
 			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.IsWithin(Paragraph));
 
 			OnSetCulture(textRange, culture);
 		}
@@ -57,7 +57,7 @@ namespace Frost.Formatting
 		public void SetFamily(IndexedRange textRange, string family)
 		{
 			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.IsWithin(Paragraph));
 
 			OnSetFamily(textRange, family);
 		}
@@ -66,7 +66,7 @@ namespace Frost.Formatting
 			IndexedRange textRange, FontFeatureCollection features)
 		{
 			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.IsWithin(Paragraph));
 
 			OnSetFeatures(textRange, features);
 		}
@@ -74,7 +74,7 @@ namespace Frost.Formatting
 		public void SetPointSize(IndexedRange textRange, float pointSize)
 		{
 			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.IsWithin(Paragraph));
 			Contract.Requires(Check.IsPositive(pointSize));
 
 			OnSetPointSize(textRange, pointSize);
@@ -83,7 +83,7 @@ namespace Frost.Formatting
 		public void SetStretch(IndexedRange textRange, FontStretch stretch)
 		{
 			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.IsWithin(Paragraph));
 
 			OnSetStretch(textRange, stretch);
 		}
@@ -91,7 +91,7 @@ namespace Frost.Formatting
 		public void SetStyle(IndexedRange textRange, FontStyle style)
 		{
 			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.IsWithin(Paragraph));
 
 			OnSetStyle(textRange, style);
 		}
@@ -99,7 +99,7 @@ namespace Frost.Formatting
 		public void SetWeight(IndexedRange textRange, FontWeight weight)
 		{
 			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.IsWithin(Paragraph));
 
 			OnSetWeight(textRange, weight);
 		}
@@ -111,7 +111,7 @@ namespace Frost.Formatting
 			Alignment vAlignment)
 		{
 			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.IsWithin(Paragraph));
 			Contract.Requires(textRange.Length == 1);
 			Contract.Requires(Check.IsPositive(inline.Width));
 			Contract.Requires(Check.IsPositive(inline.Height));
