@@ -112,6 +112,7 @@ namespace Frost.Formatting
 		{
 			Contract.Requires(Paragraph != null);
 			Contract.Requires(textRange.IsWithin(Paragraph.Text));
+			Contract.Requires(textRange.Length == 1);
 			Contract.Requires(Check.IsPositive(inline.Width));
 			Contract.Requires(Check.IsPositive(inline.Height));
 
