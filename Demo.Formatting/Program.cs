@@ -59,7 +59,7 @@ namespace Demo.Formatting
 
 			Paragraph foreword = Paragraph.Create()
 				.AddInline(inlineSize, Alignment.Trailing, Alignment.Center)
-				.WithFamily("Calibri")
+				.WithFamily("Georgia")
 				.WithLeading(0.25f)
 				.AddText(
 					"ost chal\u00ADlenges the con\u00ADven\u00ADtion\u00ADal lack of el\u00ADeg\u00ADant and ex\u00ADpress\u00ADive text in video games. Why should play\u00ADers struggle to read small quest text with in\u00ADad\u00ADequate lead\u00ADing and jagged rags? We care for the read\u00ADer's eyes in prin\u00ADted works. Can't we care for the eyes star\u00ADing at a glow\u00ADing mon\u00ADit\u00ADor? We can, and we will.")
@@ -67,7 +67,7 @@ namespace Demo.Formatting
 
 			Paragraph features = Paragraph.Create()
 				.WithIndentation(1.5f)
-				.WithFamily("Calibri")
+				.WithFamily("Georgia")
 				.WithLeading(0.25f)
 				.AddText(
 					"With sup\u00ADport for Uni\u00ADcode, Open\u00ADType, and ad\u00ADvanced lay\u00ADout and format\u00ADting, Frost provides many ty\u00ADpo\u00ADgraph\u00ADic fea\u00ADtures in\u00ADclud\u00ADing lead\u00ADing, track\u00ADing, spa\u00ADcing, in\u00ADdent\u00ADa\u00ADtion, op\u00ADtim\u00ADal line break\u00ADing, in\u00ADline ob\u00ADjects, bi\u00ADd\u00ADirec\u00ADtion\u00ADal text, float\u00ADing in\u00ADlines, hy\u00ADphen\u00ADa\u00ADtion, and flow ob\u00ADstruc\u00ADtions. The sys\u00ADtem also ex\u00ADposes the glyph cluster geo\u00ADmetry as ")
@@ -81,8 +81,9 @@ namespace Demo.Formatting
 
 			Paragraph api = Paragraph.Create()
 				.WithIndentation(1.5f)
-				.WithFamily("Calibri")
+				.WithFamily("Georgia")
 				.WithLeading(0.25f)
+				.WithTracking(0.2f)
 				.AddText(
 					"These fea\u00ADtures in\u00ADteg\u00ADrate in\u00ADto the flu\u00ADent and flex\u00ADible design of Frost. Users may con\u00ADtrol in\u00ADdi\u00ADvidu\u00ADal char\u00ADac\u00ADters through trans\u00ADform\u00ADa\u00ADtions when ras\u00ADter\u00ADiz\u00ADing text through either the ")
 				.SaveState()
