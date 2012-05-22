@@ -6,59 +6,94 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Threading;
 
 using Frost.Collections;
 
 namespace Frost.Formatting
 {
-	public abstract class TextShaper
+	//TODO: implementation must respect forced breaks
+	public abstract class GlyphShaper
 	{
-		private string _Paragraph;
+		private readonly Thread _BoundThread;
+		private readonly Device2D _Device2D;
 
-		public string Paragraph
+		private string _Text;
+
+		protected GlyphShaper(Device2D device2D)
 		{
-			get { return _Paragraph; }
+			Contract.Requires(device2D != null);
+
+			_BoundThread = Thread.CurrentThread;
+			_Device2D = device2D;
+
+			Contract.Assert(Device2D.Equals(device2D));
 		}
 
-		public void Begin(IShapedText outputSink, string paragraph)
+		public Device2D Device2D
 		{
-			Contract.Requires(Paragraph == null);
+			get { return _Device2D; }
+		}
+
+		public Thread BoundThread
+		{
+			get { return _BoundThread; }
+		}
+
+		public string Text
+		{
+			get
+			{
+				Contract.Requires(Thread.CurrentThread == BoundThread);
+
+				return _Text;
+			}
+		}
+
+		public void Begin(IShapedGlyphs outputSink, string paragraph)
+		{
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text == null);
 			Contract.Requires(outputSink != null);
 			Contract.Requires(paragraph != null);
 
-			_Paragraph = paragraph;
+			_Text = paragraph;
 
 			OnBegin(outputSink);
 		}
 
 		public void SetBreakpoint(IndexedRange textRange, LineBreakpoint breakpoint)
 		{
-			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph));
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
+			Contract.Requires(textRange.IsWithin(Text));
 
 			OnSetBreakpoints(textRange, breakpoint);
 		}
 
 		public void SetBidiLevel(IndexedRange textRange, byte resolvedLevel)
 		{
-			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph));
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
+			Contract.Requires(textRange.IsWithin(Text));
 
 			OnSetBidiLevel(textRange, resolvedLevel);
 		}
 
 		public void SetCulture(IndexedRange textRange, CultureInfo culture)
 		{
-			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph));
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
+			Contract.Requires(textRange.IsWithin(Text));
 
 			OnSetCulture(textRange, culture);
 		}
 
 		public void SetFamily(IndexedRange textRange, string family)
 		{
-			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph));
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
+			Contract.Requires(textRange.IsWithin(Text));
 
 			OnSetFamily(textRange, family);
 		}
@@ -66,16 +101,18 @@ namespace Frost.Formatting
 		public void SetFeatures(
 			IndexedRange textRange, FontFeatureCollection features)
 		{
-			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph));
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
+			Contract.Requires(textRange.IsWithin(Text));
 
 			OnSetFeatures(textRange, features);
 		}
 
 		public void SetPointSize(IndexedRange textRange, float pointSize)
 		{
-			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph));
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
+			Contract.Requires(textRange.IsWithin(Text));
 			Contract.Requires(Check.IsPositive(pointSize));
 
 			OnSetPointSize(textRange, pointSize);
@@ -83,32 +120,36 @@ namespace Frost.Formatting
 
 		public void SetStretch(IndexedRange textRange, FontStretch stretch)
 		{
-			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph));
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
+			Contract.Requires(textRange.IsWithin(Text));
 
 			OnSetStretch(textRange, stretch);
 		}
 
 		public void SetStyle(IndexedRange textRange, FontStyle style)
 		{
-			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph));
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
+			Contract.Requires(textRange.IsWithin(Text));
 
 			OnSetStyle(textRange, style);
 		}
 
 		public void SetWeight(IndexedRange textRange, FontWeight weight)
 		{
-			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph));
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
+			Contract.Requires(textRange.IsWithin(Text));
 
 			OnSetWeight(textRange, weight);
 		}
 
 		public void SetInline(IndexedRange textRange, object inlineObject)
 		{
-			Contract.Requires(Paragraph != null);
-			Contract.Requires(textRange.IsWithin(Paragraph));
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
+			Contract.Requires(textRange.IsWithin(Text));
 			Contract.Requires(textRange.Length == 1);
 
 			OnSetInline(textRange, inlineObject);
@@ -116,14 +157,15 @@ namespace Frost.Formatting
 
 		public void End()
 		{
-			Contract.Requires(Paragraph != null);
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+			Contract.Requires(Text != null);
 
 			OnEnd();
 
-			_Paragraph = null;
+			_Text = null;
 		}
 
-		protected abstract void OnBegin(IShapedText outputSink);
+		protected abstract void OnBegin(IShapedGlyphs outputSink);
 
 		protected abstract void OnSetInline(
 			IndexedRange textRange, object inlineObject);
@@ -208,7 +250,7 @@ namespace Frost.Formatting
 
 			public override bool Equals(object obj)
 			{
-				if (ReferenceEquals(null, obj))
+				if(ReferenceEquals(null, obj))
 				{
 					return false;
 				}
@@ -275,7 +317,7 @@ namespace Frost.Formatting
 
 			public override bool Equals(object obj)
 			{
-				if (ReferenceEquals(null, obj))
+				if(ReferenceEquals(null, obj))
 				{
 					return false;
 				}
@@ -313,7 +355,7 @@ namespace Frost.Formatting
 
 		public struct Span : IEquatable<Span>
 		{
-			private readonly FontIdentifier _FontId;
+			private readonly FontHandle _FontId;
 
 			private readonly float _PointSize;
 			private readonly byte _BidiLevel;
@@ -327,10 +369,12 @@ namespace Frost.Formatting
 				IndexedRange text,
 				IndexedRange clusters,
 				float pointSize,
-				FontIdentifier fontId,
+				FontHandle fontId,
 				byte bidiLevel,
 				object inline = null)
 			{
+				Contract.Requires(Check.IsPositive(pointSize));
+
 				_Text = text;
 				_Clusters = clusters;
 				_PointSize = pointSize;
@@ -364,7 +408,7 @@ namespace Frost.Formatting
 				get { return _PointSize; }
 			}
 
-			public FontIdentifier FontId
+			public FontHandle FontId
 			{
 				get { return _FontId; }
 			}
@@ -381,7 +425,7 @@ namespace Frost.Formatting
 
 			public override bool Equals(object obj)
 			{
-				if (ReferenceEquals(null, obj))
+				if(ReferenceEquals(null, obj))
 				{
 					return false;
 				}

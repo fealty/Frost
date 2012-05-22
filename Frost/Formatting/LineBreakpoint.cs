@@ -12,8 +12,8 @@ namespace Frost.Formatting
 	/// </summary>
 	public struct LineBreakpoint : IEquatable<LineBreakpoint>
 	{
-		private readonly BreakCondition _BreakConditionAfter;
-		private readonly BreakCondition _BreakConditionBefore;
+		private readonly LineBreakCondition _BreakConditionAfter;
+		private readonly LineBreakCondition _BreakConditionBefore;
 
 		private readonly BreakType _BreakType;
 
@@ -25,8 +25,8 @@ namespace Frost.Formatting
 		/// <param name="isWhitespace"> indicates whether the breakpoint is on whitespace </param>
 		/// <param name="isSoftHyphen"> indicates whether the breakpoint is on a soft hyphen </param>
 		public LineBreakpoint(
-			BreakCondition before,
-			BreakCondition after,
+			LineBreakCondition before,
+			LineBreakCondition after,
 			bool isWhitespace = false,
 			bool isSoftHyphen = false) : this()
 		{
@@ -50,7 +50,7 @@ namespace Frost.Formatting
 		/// <summary>
 		///   indicates the break condition after the item
 		/// </summary>
-		public BreakCondition BreakConditionAfter
+		public LineBreakCondition BreakConditionAfter
 		{
 			get { return _BreakConditionAfter; }
 		}
@@ -58,7 +58,7 @@ namespace Frost.Formatting
 		/// <summary>
 		///   indicates the break condition prior to the item
 		/// </summary>
-		public BreakCondition BreakConditionBefore
+		public LineBreakCondition BreakConditionBefore
 		{
 			get { return _BreakConditionBefore; }
 		}

@@ -8,7 +8,7 @@ namespace Frost.Formatting
 	/// <summary>
 	///   indicates how text at a given character can be split
 	/// </summary>
-	public enum BreakCondition
+	public enum LineBreakCondition
 	{
 		/// <summary>
 		///   indicates that the text can be split

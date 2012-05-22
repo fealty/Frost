@@ -8,10 +8,10 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Formatting
 {
-	public static class Helpers
+	public static class ListHelpers
 	{
 		public static bool IsBrokenAfter(
-			this List<TextShaper.Cluster> clusters,
+			this List<GlyphShaper.Cluster> clusters,
 			int index,
 			ref bool isForced,
 			bool isStandaloneCall = true)
@@ -19,20 +19,20 @@ namespace Frost.Formatting
 			Contract.Requires(index >= 0);
 			Contract.Requires(clusters != null);
 
-			TextShaper.Cluster cluster;
+			GlyphShaper.Cluster cluster;
 
 			if(clusters.TryCurrentOrDefault(index, out cluster))
 			{
 				switch(cluster.Breakpoint.BreakConditionAfter)
 				{
-					case BreakCondition.MustBreak:
+					case LineBreakCondition.MustBreak:
 						isForced = true;
 						return true;
-					case BreakCondition.CanBreak:
+					case LineBreakCondition.CanBreak:
 						// check the neighboring break condition
 						return !isStandaloneCall ||
 							clusters.IsBrokenBefore(index + 1, ref isForced, false);
-					case BreakCondition.Neutral:
+					case LineBreakCondition.Neutral:
 						// check the neighboring break condition
 						return !isStandaloneCall ||
 							clusters.IsBrokenBefore(index + 1, ref isForced, false);
@@ -43,7 +43,7 @@ namespace Frost.Formatting
 		}
 
 		public static bool IsBrokenBefore(
-			this List<TextShaper.Cluster> clusters,
+			this List<GlyphShaper.Cluster> clusters,
 			int index,
 			ref bool isForced,
 			bool isStandaloneCall = true)
@@ -51,20 +51,20 @@ namespace Frost.Formatting
 			Contract.Requires(index >= 0);
 			Contract.Requires(clusters != null);
 
-			TextShaper.Cluster cluster;
+			GlyphShaper.Cluster cluster;
 
 			if(clusters.TryCurrentOrDefault(index, out cluster))
 			{
 				switch(cluster.Breakpoint.BreakConditionBefore)
 				{
-					case BreakCondition.MustBreak:
+					case LineBreakCondition.MustBreak:
 						isForced = true;
 						return true;
-					case BreakCondition.CanBreak:
+					case LineBreakCondition.CanBreak:
 						// check the neighboring break condition
 						return !isStandaloneCall ||
 							clusters.IsBrokenAfter(index - 1, ref isForced, false);
-					case BreakCondition.Neutral:
+					case LineBreakCondition.Neutral:
 						// check the neighboring break condition
 						return !isStandaloneCall ||
 							clusters.IsBrokenAfter(index + 1, ref isForced, false);
