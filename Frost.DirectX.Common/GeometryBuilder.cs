@@ -6,12 +6,11 @@
 using System;
 using System.Diagnostics.Contracts;
 
-using Frost.Shaping;
+using Frost.Construction;
 
 using SharpDX.Direct2D1;
 
 using DxGeometry = SharpDX.Direct2D1.Geometry;
-using Geometry = Frost.Shaping.Geometry;
 
 namespace Frost.DirectX.Common
 {
@@ -137,14 +136,14 @@ namespace Frost.DirectX.Common
 			_PathSink.AddArc(segment);
 		}
 
-		public void Build(Geometry geometry, out DxGeometry result)
+		public void Build(Figure figure, out DxGeometry result)
 		{
-			Contract.Requires(geometry != null);
+			Contract.Requires(figure != null);
 			Contract.Ensures(Contract.ValueAtReturn(out result) != null);
 
 			try
 			{
-				geometry.Extract(this);
+				figure.Extract(this);
 			}
 			finally
 			{

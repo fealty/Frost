@@ -1,25 +1,41 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
 
 namespace Frost.Shaping
 {
-	public enum CombinationOperation
+	public enum FontWeight
 	{
-		Combine,
-		Intersect,
-		Xor,
-		Exclude
+		Regular,
+		Bold,
+		Thin,
+		ExtraLight,
+		Light,
+		Medium,
+		SemiBold,
+		ExtraBold,
+		Heavy
 	}
 
-	internal enum GeometryCommand : byte
+	public enum FontStyle
 	{
-		ArcTo,
-		BezierCurveTo,
-		Close,
-		LineTo,
-		MoveTo,
-		QuadraticCurveTo
+		Regular,
+		Italic,
+		Oblique
+	}
+
+	public enum FontStretch
+	{
+		Regular,
+		Medium,
+		UltraCondensed,
+		ExtraCondensed,
+		Condensed,
+		SemiCondensed,
+		SemiExpanded,
+		Expanded,
+		ExtraExpanded,
+		UltraExpanded
 	}
 }

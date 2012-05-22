@@ -46,7 +46,7 @@ namespace Frost.DirectX.Common
 			Contract.Requires(canvas != null);
 			Contract.Requires(device2D != null);
 
-			Canvas.ResolvedContext context = device2D.Resources.Resolve(canvas);
+			Canvas.ResolvedContext context = device2D.Resources.ResolveCanvas(canvas);
 
 			if(context != null)
 			{

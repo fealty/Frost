@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -27,7 +27,8 @@ namespace Frost.Collections
 			_Empty = new IndexedRange(0, 0);
 		}
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			Contract.Invariant(_Length >= 0);
 			Contract.Invariant(_StartIndex >= 0);
@@ -213,7 +214,8 @@ namespace Frost.Collections
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			Assert.Equal(1, new IndexedRange(1, 5).StartIndex);
 			Assert.Equal(5, new IndexedRange(1, 5).LastIndex);

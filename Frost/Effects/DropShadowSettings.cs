@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -8,14 +8,16 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Effects
 {
-	public struct DropShadowSettings : IEffectSettings, IEquatable<DropShadowSettings>
+	public struct DropShadowSettings
+		: IEffectSettings, IEquatable<DropShadowSettings>
 	{
 		private readonly float _Amount;
 		private readonly Color _Color;
 		private readonly Size _Offset;
 		private readonly Size _Scale;
 
-		public DropShadowSettings(Color color, Size offset, float amount, Size scale)
+		public DropShadowSettings(
+			Color color, Size offset, float amount, Size scale)
 		{
 			Contract.Requires(Check.IsPositive(scale.Width));
 			Contract.Requires(Check.IsPositive(scale.Height));
@@ -74,7 +76,7 @@ namespace Frost.Effects
 		public bool Equals(DropShadowSettings other)
 		{
 			return other._Amount.Equals(_Amount) && other._Color.Equals(_Color) &&
-			       other._Offset.Equals(_Offset) && other._Scale.Equals(_Scale);
+				other._Offset.Equals(_Offset) && other._Scale.Equals(_Scale);
 		}
 
 		public override bool Equals(object obj)
@@ -99,12 +101,14 @@ namespace Frost.Effects
 			}
 		}
 
-		public static bool operator ==(DropShadowSettings left, DropShadowSettings right)
+		public static bool operator ==(
+			DropShadowSettings left, DropShadowSettings right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(DropShadowSettings left, DropShadowSettings right)
+		public static bool operator !=(
+			DropShadowSettings left, DropShadowSettings right)
 		{
 			return !left.Equals(right);
 		}

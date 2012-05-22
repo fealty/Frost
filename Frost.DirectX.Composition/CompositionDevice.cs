@@ -49,10 +49,10 @@ namespace Frost.DirectX.Composition
 
 			_Compositor = new Compositor(_Device3D, device2D);
 
-			device2D.Effects.Register<ColorOutputEffect>();
-			device2D.Effects.Register<GaussianBlurEffect>();
-			device2D.Effects.Register<DropShadowEffect>();
-			device2D.Effects.Register<BoxBlurEffect>();
+			device2D.Resources.RegisterEffect<ColorOutputEffect>();
+			device2D.Resources.RegisterEffect<GaussianBlurEffect>();
+			device2D.Resources.RegisterEffect<DropShadowEffect>();
+			device2D.Resources.RegisterEffect<BoxBlurEffect>();
 		}
 
 		public Device Device3D

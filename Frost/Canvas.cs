@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -18,8 +18,11 @@ namespace Frost
 
 		private ResolvedContext _BackingContext;
 
-		public Canvas(Size dimensions, SurfaceUsage usage = SurfaceUsage.Dynamic, object tag = null):
-			this(dimensions.Width, dimensions.Height, usage, tag)
+		public Canvas(
+			Size dimensions,
+			SurfaceUsage usage = SurfaceUsage.Dynamic,
+			object tag = null) :
+				this(dimensions.Width, dimensions.Height, usage, tag)
 		{
 			Contract.Requires(Check.IsPositive(dimensions.Width));
 			Contract.Requires(Check.IsPositive(dimensions.Height));
@@ -71,7 +74,7 @@ namespace Frost
 
 				if(device2D != null)
 				{
-					device2D.Resources.Forget(this);
+					device2D.Resources.ForgetCanvas(this);
 				}
 			}
 		}
@@ -95,8 +98,12 @@ namespace Frost
 				set { Target.BackingContext = value; }
 			}
 		}
-		
-		public Canvas(float width, float height, SurfaceUsage usage = SurfaceUsage.Dynamic, object yourTag = null)
+
+		public Canvas(
+			float width,
+			float height,
+			SurfaceUsage usage = SurfaceUsage.Dynamic,
+			object yourTag = null)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
@@ -109,9 +116,11 @@ namespace Frost
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
-			Assert.TestObject(new Canvas(Size.Empty, SurfaceUsage.Normal), new Canvas(Size.Empty));
+			Assert.TestObject(
+				new Canvas(Size.Empty, SurfaceUsage.Normal), new Canvas(Size.Empty));
 		}
 #endif
 	}

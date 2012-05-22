@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -12,7 +12,8 @@ namespace Frost.Painting
 {
 	public sealed class Gradient : IEquatable<Gradient>
 	{
-		[ThreadStatic] private static Builder _Builder;
+		[ThreadStatic]
+		private static Builder _Builder;
 
 		private readonly GradientStop[] _Stops;
 
@@ -48,7 +49,8 @@ namespace Frost.Painting
 			return _Builder;
 		}
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			Contract.Invariant(_Stops != null);
 		}
@@ -82,7 +84,8 @@ namespace Frost.Painting
 				if(_Stops.Count >= 2)
 				{
 					_Stops[0] = new GradientStop(0.0f, _Stops[0].Color);
-					_Stops[_Stops.Count - 1] = new GradientStop(1.0f, _Stops[_Stops.Count - 1].Color);
+					_Stops[_Stops.Count - 1] = new GradientStop(
+						1.0f, _Stops[_Stops.Count - 1].Color);
 
 					return new Gradient(_Stops.ToArray());
 				}
@@ -152,10 +155,12 @@ namespace Frost.Painting
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			Gradient gradient =
-				Create().WithStop(0.0f, new Color(0.0f, 0.0f, 0.0f)).WithStop(0.5f, new Color(0.5f, 0.5f, 0.5f))
+				Create().WithStop(0.0f, new Color(0.0f, 0.0f, 0.0f)).WithStop(
+					0.5f, new Color(0.5f, 0.5f, 0.5f))
 					.WithStop(1.0f, new Color(1.0f, 1.0f, 1.0f)).Build();
 
 			Assert.Equal(0.0f, gradient.Stops[0].Position);
@@ -166,7 +171,8 @@ namespace Frost.Painting
 			Assert.Equal(new Color(1.0f, 1.0f, 1.0f), gradient.Stops[2].Color);
 
 			Gradient gradient2 =
-				Create().WithStop(0.0f, Color.AliceBlue).WithStop(1.0f, Color.AntiqueWhite).Build();
+				Create().WithStop(0.0f, Color.AliceBlue).WithStop(
+					1.0f, Color.AntiqueWhite).Build();
 
 			Assert.TestObject(gradient, gradient2);
 		}

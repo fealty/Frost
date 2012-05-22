@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -8,7 +8,8 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Effects
 {
-	public struct ColorOutputSettings : IEffectSettings, IEquatable<ColorOutputSettings>
+	public struct ColorOutputSettings
+		: IEffectSettings, IEquatable<ColorOutputSettings>
 	{
 		private readonly Color _Color;
 		private readonly ColorOperation _Operation;
@@ -65,12 +66,14 @@ namespace Frost.Effects
 			}
 		}
 
-		public static bool operator ==(ColorOutputSettings left, ColorOutputSettings right)
+		public static bool operator ==(
+			ColorOutputSettings left, ColorOutputSettings right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(ColorOutputSettings left, ColorOutputSettings right)
+		public static bool operator !=(
+			ColorOutputSettings left, ColorOutputSettings right)
 		{
 			return !left.Equals(right);
 		}

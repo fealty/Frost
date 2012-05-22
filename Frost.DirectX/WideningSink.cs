@@ -5,7 +5,7 @@
 
 using System.Diagnostics.Contracts;
 
-using Frost.Shaping;
+using Frost.Construction;
 
 using DxGeometry = SharpDX.Direct2D1.Geometry;
 
@@ -13,18 +13,18 @@ namespace Frost.DirectX
 {
 	internal sealed class WideningSink : GeometrySinkBase
 	{
-		public Geometry CreateWidened(DxGeometry resolvedSource, float width, float tolerance)
+		public Figure CreateWidened(DxGeometry resolvedSource, float width, float tolerance)
 		{
 			Contract.Requires(resolvedSource != null);
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(tolerance));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
-			_Builder = Geometry.Create();
+			_Builder = Figure.Create();
 
 			resolvedSource.Widen(width, null, null, tolerance, this);
 
-			Geometry result = _Builder.Build();
+			Figure result = _Builder.Build();
 
 			_Builder = null;
 

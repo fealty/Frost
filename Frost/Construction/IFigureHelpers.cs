@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -6,26 +6,30 @@
 using System;
 using System.Diagnostics.Contracts;
 
-using Frost.Shaping.Contracts;
+using Frost.Construction.Contracts;
 
-namespace Frost.Shaping
+namespace Frost.Construction
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(IShaper))] internal abstract class IShaperContract : IShaper
+		[ContractClassFor(typeof(IFigureHelpers))]
+		internal abstract class IFigureHelpersContract : IFigureHelpers
 		{
-			public Geometry Combine(
-				Geometry sourcePath, Geometry destinationPath, CombinationOperation operation, float tolerance)
+			public Figure Combine(
+				Figure sourcePath,
+				Figure destinationPath,
+				CombinationOperation operation,
+				float tolerance)
 			{
 				Contract.Requires(sourcePath != null);
 				Contract.Requires(destinationPath != null);
 				Contract.Requires(Check.IsPositive(tolerance));
-				Contract.Ensures(Contract.Result<Geometry>() != null);
+				Contract.Ensures(Contract.Result<Figure>() != null);
 
 				throw new NotSupportedException();
 			}
 
-			public bool Contains(Geometry path, Point point, float tolerance)
+			public bool Contains(Figure path, Point point, float tolerance)
 			{
 				Contract.Requires(path != null);
 				Contract.Requires(Check.IsPositive(tolerance));
@@ -33,26 +37,26 @@ namespace Frost.Shaping
 				throw new NotSupportedException();
 			}
 
-			public Geometry Simplify(Geometry path, float tolerance)
+			public Figure Simplify(Figure path, float tolerance)
 			{
 				Contract.Requires(path != null);
 				Contract.Requires(Check.IsPositive(tolerance));
-				Contract.Ensures(Contract.Result<Geometry>() != null);
+				Contract.Ensures(Contract.Result<Figure>() != null);
 
 				throw new NotSupportedException();
 			}
 
-			public Geometry Widen(Geometry path, float width, float tolerance)
+			public Figure Widen(Figure path, float width, float tolerance)
 			{
 				Contract.Requires(path != null);
 				Contract.Requires(Check.IsFinite(width));
 				Contract.Requires(Check.IsPositive(tolerance));
-				Contract.Ensures(Contract.Result<Geometry>() != null);
+				Contract.Ensures(Contract.Result<Figure>() != null);
 
 				throw new NotSupportedException();
 			}
 
-			public Rectangle MeasureRegion(Geometry path)
+			public Rectangle MeasureRegion(Figure path)
 			{
 				Contract.Requires(path != null);
 
@@ -60,14 +64,14 @@ namespace Frost.Shaping
 			}
 
 			public void Tessellate(
-				Geometry path, ITessellationSink sink, float tolerance)
+				Figure path, ITessellationSink sink, float tolerance)
 			{
 				Contract.Requires(path != null);
 				Contract.Requires(Check.IsPositive(tolerance));
 				Contract.Requires(sink != null);
 			}
 
-			public float MeasureArea(Geometry path, float tolerance)
+			public float MeasureArea(Figure path, float tolerance)
 			{
 				Contract.Requires(path != null);
 				Contract.Requires(Check.IsPositive(tolerance));
@@ -76,7 +80,7 @@ namespace Frost.Shaping
 				throw new NotSupportedException();
 			}
 
-			public float MeasureLength(Geometry path, float tolerance)
+			public float MeasureLength(Figure path, float tolerance)
 			{
 				Contract.Requires(path != null);
 				Contract.Requires(Check.IsPositive(tolerance));
@@ -85,7 +89,7 @@ namespace Frost.Shaping
 				throw new NotSupportedException();
 			}
 
-			public Point DeterminePoint(Geometry path, float length, float tolerance)
+			public Point DeterminePoint(Figure path, float length, float tolerance)
 			{
 				Contract.Requires(path != null);
 				Contract.Requires(Check.IsPositive(length));
@@ -95,7 +99,7 @@ namespace Frost.Shaping
 			}
 
 			public Point DeterminePoint(
-				Geometry path, float length, out Point tangentVector, float tolerance)
+				Figure path, float length, out Point tangentVector, float tolerance)
 			{
 				Contract.Requires(path != null);
 				Contract.Requires(Check.IsPositive(length));
@@ -104,7 +108,8 @@ namespace Frost.Shaping
 				throw new NotSupportedException();
 			}
 
-			public Canvas CreateDistanceField(Geometry path, Size resolution, float tolerance)
+			public Canvas CreateDistanceField(
+				Figure path, Size resolution, float tolerance)
 			{
 				Contract.Requires(path != null);
 				Contract.Requires(Check.IsPositive(resolution.Width));
@@ -116,33 +121,44 @@ namespace Frost.Shaping
 		}
 	}
 
-	[ContractClass(typeof(IShaperContract))] public interface IShaper
+	[ContractClass(typeof(IFigureHelpersContract))]
+	public interface IFigureHelpers
 	{
-		Geometry Combine(
-			Geometry sourcePath,
-			Geometry destinationPath,
+		Figure Combine(
+			Figure sourcePath,
+			Figure destinationPath,
 			CombinationOperation operation,
 			float tolerance = Device2D.Flattening);
 
-		bool Contains(Geometry path, Point point, float tolerance = Device2D.Flattening);
+		bool Contains(
+			Figure path, Point point, float tolerance = Device2D.Flattening);
 
-		Geometry Simplify(Geometry path, float tolerance = Device2D.Flattening);
+		Figure Simplify(Figure path, float tolerance = Device2D.Flattening);
 
-		Geometry Widen(Geometry path, float width, float tolerance = Device2D.Flattening);
+		Figure Widen(
+			Figure path, float width, float tolerance = Device2D.Flattening);
 
-		Rectangle MeasureRegion(Geometry path);
+		Rectangle MeasureRegion(Figure path);
 
-		void Tessellate(Geometry path, ITessellationSink sink, float tolerance = Device2D.Flattening);
+		void Tessellate(
+			Figure path,
+			ITessellationSink sink,
+			float tolerance = Device2D.Flattening);
 
-		float MeasureArea(Geometry path, float tolerance = Device2D.Flattening);
+		float MeasureArea(Figure path, float tolerance = Device2D.Flattening);
 
-		float MeasureLength(Geometry path, float tolerance = Device2D.Flattening);
-
-		Point DeterminePoint(Geometry path, float length, float tolerance = Device2D.Flattening);
+		float MeasureLength(Figure path, float tolerance = Device2D.Flattening);
 
 		Point DeterminePoint(
-			Geometry path, float length, out Point tangentVector, float tolerance = Device2D.Flattening);
+			Figure path, float length, float tolerance = Device2D.Flattening);
 
-		Canvas CreateDistanceField(Geometry path, Size resolution, float tolerance = Device2D.Flattening);
+		Point DeterminePoint(
+			Figure path,
+			float length,
+			out Point tangentVector,
+			float tolerance = Device2D.Flattening);
+
+		Canvas CreateDistanceField(
+			Figure path, Size resolution, float tolerance = Device2D.Flattening);
 	}
 }

@@ -1,13 +1,7 @@
-﻿#region Licensing
-
-// # Licensing Information
-// 
-// Copyright (c) 2012, Joshua Burke  
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
-
-#endregion
 
 using System;
 using System.Diagnostics.Contracts;

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -9,7 +9,7 @@ using System.Diagnostics.Contracts;
 namespace Frost
 {
 	/// <summary>
-	/// represents a color defined by its hue, saturation, value, and alpha components
+	///   represents a color defined by its hue, saturation, value, and alpha components
 	/// </summary>
 	public struct HSVColor : IEquatable<HSVColor>
 	{
@@ -18,7 +18,8 @@ namespace Frost
 		private readonly float _S;
 		private readonly float _V;
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			Contract.Invariant(Check.IsDegrees(_H));
 			Contract.Invariant(Check.IsPercentage(_S));
@@ -27,13 +28,14 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a <see cref="HSVColor"/> from hue, saturation, value, and optionally alpha values
+		///   constructs a <see cref="HSVColor" /> from hue, saturation, value, and optionally alpha values
 		/// </summary>
-		/// <param name="hue">the hue in degrees ranging from zero to three hundred and sixty</param>
-		/// <param name="saturation">the saturation in percentage ranging from zero to one hundred</param>
-		/// <param name="value">the value in percentage ranging from zero to one hundred</param>
-		/// <param name="alpha">the alpha in percentage ranging from zero to one hundred</param>
-		public HSVColor(float hue, float saturation, float value, float alpha = 100.0f)
+		/// <param name="hue"> the hue in degrees ranging from zero to three hundred and sixty </param>
+		/// <param name="saturation"> the saturation in percentage ranging from zero to one hundred </param>
+		/// <param name="value"> the value in percentage ranging from zero to one hundred </param>
+		/// <param name="alpha"> the alpha in percentage ranging from zero to one hundred </param>
+		public HSVColor(
+			float hue, float saturation, float value, float alpha = 100.0f)
 		{
 			Contract.Requires(Check.IsDegrees(hue));
 			Contract.Requires(Check.IsPercentage(saturation));
@@ -57,7 +59,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the value in percentage ranging from zero to one hundred
+		///   gets the value in percentage ranging from zero to one hundred
 		/// </summary>
 		public float V
 		{
@@ -71,7 +73,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the saturation value in percentage ranging from zero to one hundred
+		///   gets the saturation value in percentage ranging from zero to one hundred
 		/// </summary>
 		public float S
 		{
@@ -85,7 +87,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the hue value in degrees ranging from zero to three hundred and sixty
+		///   gets the hue value in degrees ranging from zero to three hundred and sixty
 		/// </summary>
 		public float H
 		{
@@ -99,7 +101,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the alpha value ranging from zero to one hundred
+		///   gets the alpha value ranging from zero to one hundred
 		/// </summary>
 		public float A
 		{
@@ -114,7 +116,8 @@ namespace Frost
 
 		public bool Equals(HSVColor other)
 		{
-			return other._A.Equals(_A) && other._H.Equals(_H) && other._S.Equals(_S) && other._V.Equals(_V);
+			return other._A.Equals(_A) && other._H.Equals(_H) && other._S.Equals(_S) &&
+				other._V.Equals(_V);
 		}
 
 		public override string ToString()
@@ -299,7 +302,8 @@ namespace Frost
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			Assert.Equal(1, new HSVColor(1, 2, 3, 4).H);
 			Assert.Equal(2, new HSVColor(1, 2, 3, 4).S);

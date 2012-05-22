@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -9,7 +9,7 @@ using System.Diagnostics.Contracts;
 namespace Frost
 {
 	/// <summary>
-	/// represents a finite point in 2D space
+	///   represents a finite point in 2D space
 	/// </summary>
 	public struct Point : IEquatable<Point>
 	{
@@ -29,17 +29,18 @@ namespace Frost
 			_Empty = new Point(0.0f);
 		}
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			Contract.Invariant(Check.IsFinite(_X));
 			Contract.Invariant(Check.IsFinite(_Y));
 		}
 
 		/// <summary>
-		/// constructs a new <see cref="Point"/> from the given coordinates
+		///   constructs a new <see cref="Point" /> from the given coordinates
 		/// </summary>
-		/// <param name="x">the finite X coordinate</param>
-		/// <param name="y">the finite Y coordinate</param>
+		/// <param name="x"> the finite X coordinate </param>
+		/// <param name="y"> the finite Y coordinate </param>
 		public Point(float x, float y)
 		{
 			Contract.Requires(Check.IsFinite(x));
@@ -53,26 +54,26 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a new <see cref="Point"/> from the given coordinates
+		///   constructs a new <see cref="Point" /> from the given coordinates
 		/// </summary>
-		/// <param name="xy">the finite X and Y coordinates</param>
+		/// <param name="xy"> the finite X and Y coordinates </param>
 		public Point(float xy) : this(xy, xy)
 		{
 			Contract.Requires(Check.IsFinite(xy));
 		}
 
 		/// <summary>
-		/// implicitly converts a <see cref="Size"/> to a <see cref="Point"/>
+		///   implicitly converts a <see cref="Size" /> to a <see cref="Point" />
 		/// </summary>
-		/// <param name="size">the <see cref="Size"/> to convert</param>
-		/// <returns>the <see cref="Point"/> as represented by a <see cref="Size"/></returns>
+		/// <param name="size"> the <see cref="Size" /> to convert </param>
+		/// <returns> the <see cref="Point" /> as represented by a <see cref="Size" /> </returns>
 		public static implicit operator Point(Size size)
 		{
 			return new Point(size.Width, size.Height);
 		}
 
 		/// <summary>
-		/// gets the Y coordinate of the <see cref="Point"/>
+		///   gets the Y coordinate of the <see cref="Point" />
 		/// </summary>
 		public float Y
 		{
@@ -86,7 +87,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the X coordinate of the <see cref="Point"/>
+		///   gets the X coordinate of the <see cref="Point" />
 		/// </summary>
 		public float X
 		{
@@ -100,7 +101,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the default value for <see cref="Point"/>
+		///   gets the default value for <see cref="Point" />
 		/// </summary>
 		public static Point Empty
 		{
@@ -113,7 +114,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the minimum value a <see cref="Point"/> can represent
+		///   gets the minimum value a <see cref="Point" /> can represent
 		/// </summary>
 		public static Point MinValue
 		{
@@ -126,7 +127,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the maximum value a <see cref="Point"/> can represent
+		///   gets the maximum value a <see cref="Point" /> can represent
 		/// </summary>
 		public static Point MaxValue
 		{
@@ -144,10 +145,10 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// computes the distance from the <see cref="Point"/> to a point
+		///   computes the distance from the <see cref="Point" /> to a point
 		/// </summary>
-		/// <param name="point">the point to measure the distance to</param>
-		/// <returns>the distance from the <see cref="Point"/> to <paramref name="point"/></returns>
+		/// <param name="point"> the point to measure the distance to </param>
+		/// <returns> the distance from the <see cref="Point" /> to <paramref name="point" /> </returns>
 		public float DistanceTo(Point point)
 		{
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
@@ -159,11 +160,12 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// computes the distanced from the <see cref="Point"/> to a line
+		///   computes the distanced from the <see cref="Point" /> to a line
 		/// </summary>
-		/// <param name="lineStart">the start location of the line</param>
-		/// <param name="lineEnd">the end location of the line</param>
-		/// <returns>the distance from the <see cref="Point"/> to the line formed by <paramref name="lineStart"/> and <see cref="lineEnd"/></returns>
+		/// <param name="lineStart"> the start location of the line </param>
+		/// <param name="lineEnd"> the end location of the line </param>
+		/// <returns> the distance from the <see cref="Point" /> to the line formed by <paramref name="lineStart" /> and <see
+		///    cref="lineEnd" /> </returns>
 		public float DistanceTo(Point lineStart, Point lineEnd)
 		{
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
@@ -174,13 +176,15 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// computes the distanced from the <see cref="Point"/> to a line
+		///   computes the distanced from the <see cref="Point" /> to a line
 		/// </summary>
-		/// <param name="lineStart">the start location of the line</param>
-		/// <param name="lineEnd">the end location of the line</param>
-		/// <param name="intersection">the output location of intersection along the line</param>
-		/// <returns>the distance from the <see cref="Point"/> to the line formed by <paramref name="lineStart"/> and <see cref="lineEnd"/></returns>
-		public float DistanceTo(Point lineStart, Point lineEnd, out Point intersection)
+		/// <param name="lineStart"> the start location of the line </param>
+		/// <param name="lineEnd"> the end location of the line </param>
+		/// <param name="intersection"> the output location of intersection along the line </param>
+		/// <returns> the distance from the <see cref="Point" /> to the line formed by <paramref name="lineStart" /> and <see
+		///    cref="lineEnd" /> </returns>
+		public float DistanceTo(
+			Point lineStart, Point lineEnd, out Point intersection)
 		{
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
@@ -190,10 +194,10 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// computes the squared distance from the <see cref="Point"/> to a point
+		///   computes the squared distance from the <see cref="Point" /> to a point
 		/// </summary>
-		/// <param name="point">the point to measure the squared distance to</param>
-		/// <returns>the squared distance from the <see cref="Point"/> to <paramref name="point"/></returns>
+		/// <param name="point"> the point to measure the squared distance to </param>
+		/// <returns> the squared distance from the <see cref="Point" /> to <paramref name="point" /> </returns>
 		public float SquaredDistanceTo(Point point)
 		{
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
@@ -205,11 +209,12 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// computes the squared distanced from the <see cref="Point"/> to a line
+		///   computes the squared distanced from the <see cref="Point" /> to a line
 		/// </summary>
-		/// <param name="lineStart">the start location of the line</param>
-		/// <param name="lineEnd">the end location of the line</param>
-		/// <returns>the squared distance from the <see cref="Point"/> to the line formed by <paramref name="lineStart"/> and <see cref="lineEnd"/></returns>
+		/// <param name="lineStart"> the start location of the line </param>
+		/// <param name="lineEnd"> the end location of the line </param>
+		/// <returns> the squared distance from the <see cref="Point" /> to the line formed by <paramref name="lineStart" /> and <see
+		///    cref="lineEnd" /> </returns>
 		public float SquaredDistanceTo(Point lineStart, Point lineEnd)
 		{
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
@@ -220,13 +225,15 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// computes the squared distanced from the <see cref="Point"/> to a line
+		///   computes the squared distanced from the <see cref="Point" /> to a line
 		/// </summary>
-		/// <param name="lineStart">the start location of the line</param>
-		/// <param name="lineEnd">the end location of the line</param>
-		/// <param name="intersection">the output location of intersection along the line</param>
-		/// <returns>the squared distance from the <see cref="Point"/> to the line formed by <paramref name="lineStart"/> and <see cref="lineEnd"/></returns>
-		public float SquaredDistanceTo(Point lineStart, Point lineEnd, out Point intersection)
+		/// <param name="lineStart"> the start location of the line </param>
+		/// <param name="lineEnd"> the end location of the line </param>
+		/// <param name="intersection"> the output location of intersection along the line </param>
+		/// <returns> the squared distance from the <see cref="Point" /> to the line formed by <paramref name="lineStart" /> and <see
+		///    cref="lineEnd" /> </returns>
+		public float SquaredDistanceTo(
+			Point lineStart, Point lineEnd, out Point intersection)
 		{
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
@@ -236,11 +243,12 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// finds the nearest point of intersection with a line
+		///   finds the nearest point of intersection with a line
 		/// </summary>
-		/// <param name="lineStart">the start location of the line</param>
-		/// <param name="lineEnd">the end location of the line</param>
-		/// <returns>the location of the intersection along the line formed by <paramref name="lineStart"/> and <paramref name="lineEnd"/></returns>
+		/// <param name="lineStart"> the start location of the line </param>
+		/// <param name="lineEnd"> the end location of the line </param>
+		/// <returns> the location of the intersection along the line formed by <paramref name="lineStart" /> and <paramref
+		///    name="lineEnd" /> </returns>
 		public Point FindIntersectionWith(Point lineStart, Point lineEnd)
 		{
 			Point v = new Point(lineEnd.X - lineStart.X, lineEnd.Y - lineStart.Y);
@@ -266,10 +274,10 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// transforms the <see cref="Point"/> by the given transformation matrix
+		///   transforms the <see cref="Point" /> by the given transformation matrix
 		/// </summary>
-		/// <param name="transformation">the transformation matrix</param>
-		/// <returns>the <see cref="Point"/> transformed by <paramref name="transformation"/></returns>
+		/// <param name="transformation"> the transformation matrix </param>
+		/// <returns> the <see cref="Point" /> transformed by <paramref name="transformation" /> </returns>
 		public Point Transform(ref Matrix3X2 transformation)
 		{
 			return new Point(
@@ -278,21 +286,21 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// translates the <see cref="Point"/> by the given amount
+		///   translates the <see cref="Point" /> by the given amount
 		/// </summary>
-		/// <param name="amount">the amount to translate on both horizontal and vertical axes</param>
-		/// <returns>the <see cref="Point"/> translated by <paramref name="amount"/></returns>
+		/// <param name="amount"> the amount to translate on both horizontal and vertical axes </param>
+		/// <returns> the <see cref="Point" /> translated by <paramref name="amount" /> </returns>
 		public Point Translate(Size amount)
 		{
 			return new Point(_X + amount.Width, _Y + amount.Height);
 		}
 
 		/// <summary>
-		/// translates the <see cref="Point"/> by the given amounts
+		///   translates the <see cref="Point" /> by the given amounts
 		/// </summary>
-		/// <param name="width">the amount to translate on the horizontal axis</param>
-		/// <param name="height">the amount to translate on the vertical axis</param>
-		/// <returns>the <see cref="Point"/> translated by <paramref name="width"/> and <paramref name="height"/></returns>
+		/// <param name="width"> the amount to translate on the horizontal axis </param>
+		/// <param name="height"> the amount to translate on the vertical axis </param>
+		/// <returns> the <see cref="Point" /> translated by <paramref name="width" /> and <paramref name="height" /> </returns>
 		public Point Translate(float width, float height)
 		{
 			Contract.Requires(Check.IsFinite(width));
@@ -347,7 +355,8 @@ namespace Frost
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			Assert.Equal(0, new Point(0, 1).X);
 			Assert.Equal(1, new Point(0, 1).Y);
@@ -361,22 +370,37 @@ namespace Frost
 			Assert.Equal(2, Empty.SquaredDistanceTo(new Point(1, 1)));
 			Assert.Equal(0, Empty.SquaredDistanceTo(new Point(0, 0)));
 
-			Assert.Equal(new Point(0, 0), Empty.FindIntersectionWith(new Point(-5, 5), new Point(0, +0)));
-			Assert.Equal(new Point(0, 0), Empty.FindIntersectionWith(new Point(+0, 0), new Point(5, -5)));
-			Assert.Equal(new Point(0, 0), Empty.FindIntersectionWith(new Point(+0, 0), new Point(0, +0)));
-			Assert.Equal(new Point(1, 0), Empty.FindIntersectionWith(new Point(+1, 5), new Point(1, -5)));
-			Assert.Equal(new Point(5, 0), Empty.FindIntersectionWith(new Point(+5, 5), new Point(5, -5)));
+			Assert.Equal(
+				new Point(0, 0),
+				Empty.FindIntersectionWith(new Point(-5, 5), new Point(0, +0)));
+			Assert.Equal(
+				new Point(0, 0),
+				Empty.FindIntersectionWith(new Point(+0, 0), new Point(5, -5)));
+			Assert.Equal(
+				new Point(0, 0),
+				Empty.FindIntersectionWith(new Point(+0, 0), new Point(0, +0)));
+			Assert.Equal(
+				new Point(1, 0),
+				Empty.FindIntersectionWith(new Point(+1, 5), new Point(1, -5)));
+			Assert.Equal(
+				new Point(5, 0),
+				Empty.FindIntersectionWith(new Point(+5, 5), new Point(5, -5)));
 
 			Assert.Equal(
-				Empty.DistanceTo(new Point(0, 0)), Empty.DistanceTo(new Point(-5, 5), new Point(0, +0)));
+				Empty.DistanceTo(new Point(0, 0)),
+				Empty.DistanceTo(new Point(-5, 5), new Point(0, +0)));
 			Assert.Equal(
-				Empty.DistanceTo(new Point(0, 0)), Empty.DistanceTo(new Point(+0, 0), new Point(5, -5)));
+				Empty.DistanceTo(new Point(0, 0)),
+				Empty.DistanceTo(new Point(+0, 0), new Point(5, -5)));
 			Assert.Equal(
-				Empty.DistanceTo(new Point(0, 0)), Empty.DistanceTo(new Point(+0, 0), new Point(0, +0)));
+				Empty.DistanceTo(new Point(0, 0)),
+				Empty.DistanceTo(new Point(+0, 0), new Point(0, +0)));
 			Assert.Equal(
-				Empty.DistanceTo(new Point(1, 0)), Empty.DistanceTo(new Point(+1, 5), new Point(1, -5)));
+				Empty.DistanceTo(new Point(1, 0)),
+				Empty.DistanceTo(new Point(+1, 5), new Point(1, -5)));
 			Assert.Equal(
-				Empty.DistanceTo(new Point(5, 0)), Empty.DistanceTo(new Point(+5, 5), new Point(5, -5)));
+				Empty.DistanceTo(new Point(5, 0)),
+				Empty.DistanceTo(new Point(+5, 5), new Point(5, -5)));
 
 			Point intersection;
 
@@ -414,19 +438,24 @@ namespace Frost
 
 			Assert.Equal(
 				Empty.SquaredDistanceTo(new Point(0, 0)),
-				Empty.SquaredDistanceTo(new Point(-5, 5), new Point(0, +0), out intersection));
+				Empty.SquaredDistanceTo(
+					new Point(-5, 5), new Point(0, +0), out intersection));
 			Assert.Equal(
 				Empty.SquaredDistanceTo(new Point(0, 0)),
-				Empty.SquaredDistanceTo(new Point(+0, 0), new Point(5, -5), out intersection));
+				Empty.SquaredDistanceTo(
+					new Point(+0, 0), new Point(5, -5), out intersection));
 			Assert.Equal(
 				Empty.SquaredDistanceTo(new Point(0, 0)),
-				Empty.SquaredDistanceTo(new Point(+0, 0), new Point(0, +0), out intersection));
+				Empty.SquaredDistanceTo(
+					new Point(+0, 0), new Point(0, +0), out intersection));
 			Assert.Equal(
 				Empty.SquaredDistanceTo(new Point(1, 0)),
-				Empty.SquaredDistanceTo(new Point(+1, 5), new Point(1, -5), out intersection));
+				Empty.SquaredDistanceTo(
+					new Point(+1, 5), new Point(1, -5), out intersection));
 			Assert.Equal(
 				Empty.SquaredDistanceTo(new Point(5, 0)),
-				Empty.SquaredDistanceTo(new Point(+5, 5), new Point(5, -5), out intersection));
+				Empty.SquaredDistanceTo(
+					new Point(+5, 5), new Point(5, -5), out intersection));
 
 			Assert.Equal(new Point(5, 5), Empty.Translate(new Size(5)));
 

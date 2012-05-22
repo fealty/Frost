@@ -1,17 +1,18 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
 
 using System.Diagnostics.Contracts;
 
-using Frost.Shaping.Contracts;
+using Frost.Construction.Contracts;
 
-namespace Frost.Shaping
+namespace Frost.Construction
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(IGeometrySink))] internal abstract class IGeometrySinkContract
+		[ContractClassFor(typeof(IGeometrySink))]
+		internal abstract class IGeometrySinkContract
 			: IGeometrySink
 		{
 			public abstract void Begin();
@@ -22,7 +23,8 @@ namespace Frost.Shaping
 
 			public abstract void QuadraticCurveTo(Point controlPoint, Point endPoint);
 
-			public abstract void BezierCurveTo(Point controlPoint1, Point controlPoint2, Point controlPoint3);
+			public abstract void BezierCurveTo(
+				Point controlPoint1, Point controlPoint2, Point controlPoint3);
 
 			public void ArcTo(Point tangentStart, Point tangentEnd, Size radius)
 			{
@@ -32,7 +34,8 @@ namespace Frost.Shaping
 		}
 	}
 
-	[ContractClass(typeof(IGeometrySinkContract))] public interface IGeometrySink
+	[ContractClass(typeof(IGeometrySinkContract))]
+	public interface IGeometrySink
 	{
 		void Begin();
 		void End();
@@ -43,7 +46,8 @@ namespace Frost.Shaping
 
 		void QuadraticCurveTo(Point controlPoint, Point endPoint);
 
-		void BezierCurveTo(Point controlPoint1, Point controlPoint2, Point controlPoint3);
+		void BezierCurveTo(
+			Point controlPoint1, Point controlPoint2, Point controlPoint3);
 
 		void ArcTo(Point tangentStart, Point tangentEnd, Size radius);
 	}

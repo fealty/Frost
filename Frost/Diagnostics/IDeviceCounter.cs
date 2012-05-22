@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -12,7 +12,8 @@ namespace Frost.Diagnostics
 {
 	namespace Contracts
 	{
-		[ContractClassFor(typeof(IDeviceCounter))] internal abstract class IDeviceCounterContract
+		[ContractClassFor(typeof(IDeviceCounter))]
+		internal abstract class IDeviceCounterContract
 			: IDeviceCounter
 		{
 			public string Name
@@ -77,7 +78,8 @@ namespace Frost.Diagnostics
 		}
 	}
 
-	[ContractClass(typeof(IDeviceCounterContract))] public interface IDeviceCounter
+	[ContractClass(typeof(IDeviceCounterContract))]
+	public interface IDeviceCounter
 	{
 		string Name { get; }
 		string Category { get; }

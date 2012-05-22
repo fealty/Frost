@@ -354,7 +354,7 @@ namespace Frost.DirectX.Composition
 
 			Canvas newCanvas = new Canvas(dimensions, SurfaceUsage.Private);
 
-			var context = _Device2D.Resources.Resolve(newCanvas);
+			var context = _Device2D.Resources.ResolveCanvas(newCanvas);
 
 			Contract.Assert(context != null);
 

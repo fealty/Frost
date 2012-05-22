@@ -5,17 +5,18 @@
 
 using System;
 
+using Frost.Construction;
+
 using SharpDX;
 using SharpDX.Direct2D1;
 
 using DxGeometry = SharpDX.Direct2D1.Geometry;
-using Geometry = Frost.Shaping.Geometry;
 
 namespace Frost.DirectX
 {
 	internal abstract class GeometrySinkBase : CallbackBase, GeometrySink
 	{
-		protected Geometry.Builder _Builder;
+		protected Figure.Builder _Builder;
 
 		void SimplifiedGeometrySink.SetFillMode(FillMode fillMode)
 		{

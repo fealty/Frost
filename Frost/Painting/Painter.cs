@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -6,7 +6,7 @@
 using System.Diagnostics.Contracts;
 using System.Threading;
 
-using Frost.Shaping;
+using Frost.Construction;
 
 namespace Frost.Painting
 {
@@ -386,7 +386,8 @@ namespace Frost.Painting
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Requires(ActiveTarget != null);
-				Contract.Ensures(Contract.Result<Antialiasing>().Equals(_ActiveAntialiasing));
+				Contract.Ensures(
+					Contract.Result<Antialiasing>().Equals(_ActiveAntialiasing));
 
 				return _ActiveAntialiasing;
 			}
@@ -458,7 +459,8 @@ namespace Frost.Painting
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Requires(ActiveTarget != null);
-				Contract.Ensures(Contract.Result<Matrix3X2>().Equals(_ActiveTransformation));
+				Contract.Ensures(
+					Contract.Result<Matrix3X2>().Equals(_ActiveTransformation));
 
 				return _ActiveTransformation;
 			}
@@ -499,7 +501,7 @@ namespace Frost.Painting
 
 			if(!isTargetEmpty)
 			{
-				var targetContext = _Device2D.Resources.Resolve(target);
+				var targetContext = _Device2D.Resources.ResolveCanvas(target);
 
 				_TargetDelta = targetContext.Region.Location;
 
@@ -671,31 +673,32 @@ namespace Frost.Painting
 			}
 		}
 
-		public void Stroke(Geometry geometry)
+		public void Stroke(Figure figure)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
-			Contract.Requires(geometry != null);
+			Contract.Requires(figure != null);
 
 			if(!_IsTargetEmpty)
 			{
-				OnStroke(geometry);
+				OnStroke(figure);
 			}
 		}
 
-		public void Fill(Geometry geometry)
+		public void Fill(Figure figure)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
-			Contract.Requires(geometry != null);
+			Contract.Requires(figure != null);
 
 			if(!_IsTargetEmpty)
 			{
-				OnFill(geometry);
+				OnFill(figure);
 			}
 		}
 
-		public void SetBrush(Point linearGradientStart, Point linearGradientEnd, Gradient gradient)
+		public void SetBrush(
+			Point linearGradientStart, Point linearGradientEnd, Gradient gradient)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -729,7 +732,10 @@ namespace Frost.Painting
 				radialGradientCenter = radialGradientCenter.Translate(_TargetDelta);
 
 				OnSetBrush(
-					ref radialGradientCenter, ref radialGradientOffset, ref radialGradientRadius, gradient);
+					ref radialGradientCenter,
+					ref radialGradientOffset,
+					ref radialGradientRadius,
+					gradient);
 			}
 		}
 
@@ -741,7 +747,7 @@ namespace Frost.Painting
 
 			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				OnSetBrush(_Device2D.Resources.Resolve(source), extension);
+				OnSetBrush(_Device2D.Resources.ResolveCanvas(source), extension);
 			}
 		}
 
@@ -765,7 +771,8 @@ namespace Frost.Painting
 			}
 		}
 
-		public void StrokeLine(float lineStartX, float lineStartY, float lineEndX, float lineEndY)
+		public void StrokeLine(
+			float lineStartX, float lineStartY, float lineEndX, float lineEndY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -806,7 +813,8 @@ namespace Frost.Painting
 
 			if(!_IsTargetEmpty)
 			{
-				Rectangle region = new Rectangle(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+				Rectangle region = new Rectangle(
+					rectangleX, rectangleY, rectangleWidth, rectangleHeight);
 
 				// translate to 2D surface coordinate space
 				region = region.Translate(_TargetDelta);
@@ -843,7 +851,8 @@ namespace Frost.Painting
 
 			if(!_IsTargetEmpty)
 			{
-				Rectangle region = new Rectangle(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+				Rectangle region = new Rectangle(
+					rectangleX, rectangleY, rectangleWidth, rectangleHeight);
 
 				// translate to 2D surface coordinate space
 				region = region.Translate(_TargetDelta);
@@ -878,8 +887,10 @@ namespace Frost.Painting
 
 			if(!_IsTargetEmpty)
 			{
-				Point linearGradientStart = new Point(linearGradientStartX, linearGradientStartY);
-				Point linearGradientEnd = new Point(linearGradientEndX, linearGradientEndY);
+				Point linearGradientStart = new Point(
+					linearGradientStartX, linearGradientStartY);
+				Point linearGradientEnd = new Point(
+					linearGradientEndX, linearGradientEndY);
 
 				linearGradientStart = linearGradientStart.Translate(_TargetDelta);
 				linearGradientEnd = linearGradientEnd.Translate(_TargetDelta);
@@ -909,16 +920,22 @@ namespace Frost.Painting
 
 			if(!_IsTargetEmpty)
 			{
-				Point radialGradientCenter = new Point(radialGradientCenterX, radialGradientCenterY);
+				Point radialGradientCenter = new Point(
+					radialGradientCenterX, radialGradientCenterY);
 
 				// translate to 2D surface coordinate space
 				radialGradientCenter = radialGradientCenter.Translate(_TargetDelta);
 
-				Size radialGradientOffset = new Size(radialGradientOffsetWidth, radialGradientOffsetHeight);
-				Size radialGradientRadius = new Size(radialGradientRadiusWidth, radialGradientRadiusHeight);
+				Size radialGradientOffset = new Size(
+					radialGradientOffsetWidth, radialGradientOffsetHeight);
+				Size radialGradientRadius = new Size(
+					radialGradientRadiusWidth, radialGradientRadiusHeight);
 
 				OnSetBrush(
-					ref radialGradientCenter, ref radialGradientOffset, ref radialGradientRadius, gradient);
+					ref radialGradientCenter,
+					ref radialGradientOffset,
+					ref radialGradientRadius,
+					gradient);
 			}
 		}
 
@@ -1082,7 +1099,9 @@ namespace Frost.Painting
 			}
 		}
 
-		protected abstract void OnBegin(Canvas.ResolvedContext target, Retention retention);
+		protected abstract void OnBegin(
+			Canvas.ResolvedContext target, Retention retention);
+
 		protected abstract void OnEnd();
 
 		protected abstract void OnClear();
@@ -1092,14 +1111,16 @@ namespace Frost.Painting
 
 		protected abstract void OnStrokeLine(ref Point lineStart, ref Point lineEnd);
 
-		protected abstract void OnStrokeRectangle(ref Rectangle rectangleRegion, ref Size roundedRadius);
+		protected abstract void OnStrokeRectangle(
+			ref Rectangle rectangleRegion, ref Size roundedRadius);
 
 		protected abstract void OnFillRectangle(ref Rectangle rectangleRegion);
 
-		protected abstract void OnFillRectangle(ref Rectangle rectangleRegion, ref Size roundedRadius);
+		protected abstract void OnFillRectangle(
+			ref Rectangle rectangleRegion, ref Size roundedRadius);
 
-		protected abstract void OnStroke(Geometry geometry);
-		protected abstract void OnFill(Geometry geometry);
+		protected abstract void OnStroke(Figure figure);
+		protected abstract void OnFill(Figure figure);
 
 		protected abstract void OnSaveState();
 		protected abstract void OnRestoreState();
@@ -1107,10 +1128,13 @@ namespace Frost.Painting
 
 		protected abstract void OnSetBrush(Color color);
 
-		protected abstract void OnSetBrush(Canvas.ResolvedContext source, Repetition extension);
+		protected abstract void OnSetBrush(
+			Canvas.ResolvedContext source, Repetition extension);
 
 		protected abstract void OnSetBrush(
-			ref Point linearGradientStart, ref Point linearGradientEnd, Gradient gradient);
+			ref Point linearGradientStart,
+			ref Point linearGradientEnd,
+			Gradient gradient);
 
 		protected abstract void OnSetBrush(
 			ref Point radialGradientCenter,

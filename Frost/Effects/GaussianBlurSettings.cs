@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -8,7 +8,8 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Effects
 {
-	public struct GaussianBlurSettings : IEffectSettings, IEquatable<GaussianBlurSettings>
+	public struct GaussianBlurSettings
+		: IEffectSettings, IEquatable<GaussianBlurSettings>
 	{
 		private readonly Size _Amount;
 
@@ -52,12 +53,14 @@ namespace Frost.Effects
 			return _Amount.GetHashCode();
 		}
 
-		public static bool operator ==(GaussianBlurSettings left, GaussianBlurSettings right)
+		public static bool operator ==(
+			GaussianBlurSettings left, GaussianBlurSettings right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(GaussianBlurSettings left, GaussianBlurSettings right)
+		public static bool operator !=(
+			GaussianBlurSettings left, GaussianBlurSettings right)
 		{
 			return !left.Equals(right);
 		}

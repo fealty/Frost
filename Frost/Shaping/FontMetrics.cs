@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -6,7 +6,7 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace Frost.Formatting
+namespace Frost.Shaping
 {
 	public struct FontMetrics : IEquatable<FontMetrics>
 	{
@@ -14,7 +14,8 @@ namespace Frost.Formatting
 		private readonly float _Descent;
 		private readonly float _UnitsPerEm;
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			Contract.Invariant(Check.IsPositive(_Ascent));
 			Contract.Invariant(Check.IsPositive(_Descent));
@@ -72,7 +73,7 @@ namespace Frost.Formatting
 		public bool Equals(FontMetrics other)
 		{
 			return other._Ascent.Equals(_Ascent) && other._Descent.Equals(_Descent) &&
-			       other._UnitsPerEm.Equals(_UnitsPerEm);
+				other._UnitsPerEm.Equals(_UnitsPerEm);
 		}
 
 		public float MeasureAscent(float pointSize)
@@ -132,7 +133,10 @@ namespace Frost.Formatting
 		public override string ToString()
 		{
 			return string.Format(
-				"Ascent: {0}, Descent: {1}, UnitsPerEm: {2}", _Ascent, _Descent, _UnitsPerEm);
+				"Ascent: {0}, Descent: {1}, UnitsPerEm: {2}",
+				_Ascent,
+				_Descent,
+				_UnitsPerEm);
 		}
 
 		private float ToPixels(float value, float pointSize)
@@ -155,7 +159,8 @@ namespace Frost.Formatting
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			Assert.Equal(0, new FontMetrics(0, 1, 2).Ascent);
 			Assert.Equal(1, new FontMetrics(0, 1, 2).Descent);

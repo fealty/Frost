@@ -7,13 +7,13 @@ using System;
 using System.Diagnostics.Contracts;
 
 using Frost.DirectX.Common;
+using Frost.Construction;
 
 using SharpDX;
 using SharpDX.Direct2D1;
 
 using Brush = SharpDX.Direct2D1.Brush;
 using DxGeometry = SharpDX.Direct2D1.Geometry;
-using Geometry = Frost.Shaping.Geometry;
 using RectangleF = SharpDX.RectangleF;
 
 namespace Frost.DirectX.Painting
@@ -233,28 +233,28 @@ namespace Frost.DirectX.Painting
 			_Target.FillRoundedRectangle(roundedRect, brush);
 		}
 
-		public void Stroke(Geometry geometry, Brush brush, StrokeStyle style, float strokeWidth)
+		public void Stroke(Figure figure, Brush brush, StrokeStyle style, float strokeWidth)
 		{
-			Contract.Requires(geometry != null);
+			Contract.Requires(figure != null);
 			Contract.Requires(brush != null);
 			Contract.Requires(style != null);
 			Contract.Requires(Check.IsPositive(strokeWidth));
 			Contract.Assert(_Target != null);
 
-			DxGeometry resolved = _GeometryCache.ResolveGeometry(geometry);
+			DxGeometry resolved = _GeometryCache.ResolveGeometry(figure);
 
 			Contract.Assert(resolved != null);
 
 			_Target.DrawGeometry(resolved, brush, strokeWidth, style);
 		}
 
-		public void Fill(Geometry geometry, Brush brush)
+		public void Fill(Figure figure, Brush brush)
 		{
-			Contract.Requires(geometry != null);
+			Contract.Requires(figure != null);
 			Contract.Requires(brush != null);
 			Contract.Assert(_Target != null);
 
-			DxGeometry resolved = _GeometryCache.ResolveGeometry(geometry);
+			DxGeometry resolved = _GeometryCache.ResolveGeometry(figure);
 
 			Contract.Assert(resolved != null);
 

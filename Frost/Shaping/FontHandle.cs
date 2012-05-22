@@ -6,7 +6,7 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace Frost.Formatting
+namespace Frost.Shaping
 {
 	public struct FontHandle : IEquatable<FontHandle>
 	{

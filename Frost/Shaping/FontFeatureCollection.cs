@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -9,7 +9,7 @@ using System.Globalization;
 
 using Frost.Collections;
 
-namespace Frost.Formatting
+namespace Frost.Shaping
 {
 	public sealed class FontFeatureCollection : ImmutableBase<FontFeature>
 	{
@@ -29,7 +29,8 @@ namespace Frost.Formatting
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			List<FontFeature> list = new List<FontFeature>();
 

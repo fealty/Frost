@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -11,7 +11,7 @@ using Contracts = System.Diagnostics.Contracts.Contract;
 namespace Frost
 {
 	/// <summary>
-	/// represents a two-dimensional region having a finite non-negative area
+	///   represents a two-dimensional region having a finite non-negative area
 	/// </summary>
 	public struct Rectangle : IEquatable<Rectangle>
 	{
@@ -34,7 +34,8 @@ namespace Frost
 			_Empty = new Rectangle(Point.Empty, Size.Empty);
 		}
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			Contracts.Invariant(Check.IsFinite(_X));
 			Contracts.Invariant(Check.IsFinite(_Y));
@@ -43,14 +44,16 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// creates a new <see cref="Rectangle"/> from the given left, top, right, and bottom sides
+		///   creates a new <see cref="Rectangle" /> from the given left, top, right, and bottom sides
 		/// </summary>
-		/// <param name="left">the left side of the new <see cref="Rectangle"/></param>
-		/// <param name="top">the top side of the new <see cref="Rectangle"/></param>
-		/// <param name="right">the right side of the new <see cref="Rectangle"/></param>
-		/// <param name="bottom">the bottom side of the new <see cref="Rectangle"/></param>
-		/// <returns>the <see cref="Rectangle"/> formed by the <paramref name="left"/>, <paramref name="top"/>, <paramref name="right"/>, and <paramref name="bottom"/> sides</returns>
-		public static Rectangle FromEdges(float left, float top, float right, float bottom)
+		/// <param name="left"> the left side of the new <see cref="Rectangle" /> </param>
+		/// <param name="top"> the top side of the new <see cref="Rectangle" /> </param>
+		/// <param name="right"> the right side of the new <see cref="Rectangle" /> </param>
+		/// <param name="bottom"> the bottom side of the new <see cref="Rectangle" /> </param>
+		/// <returns> the <see cref="Rectangle" /> formed by the <paramref name="left" /> , <paramref name="top" /> , <paramref
+		///    name="right" /> , and <paramref name="bottom" /> sides </returns>
+		public static Rectangle FromEdges(
+			float left, float top, float right, float bottom)
 		{
 			Contracts.Requires(Check.IsFinite(left));
 			Contracts.Requires(Check.IsFinite(top));
@@ -63,12 +66,12 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a new <see cref="Rectangle"/> from the given X and Y coordinates and width and height
+		///   constructs a new <see cref="Rectangle" /> from the given X and Y coordinates and width and height
 		/// </summary>
-		/// <param name="x">the X coordinate of the new <see cref="Rectangle"/></param>
-		/// <param name="y">the Y coordinate of the new <see cref="Rectangle"/></param>
-		/// <param name="width">the width of the new <see cref="Rectangle"/></param>
-		/// <param name="height">the height of the new <see cref="Rectangle"/></param>
+		/// <param name="x"> the X coordinate of the new <see cref="Rectangle" /> </param>
+		/// <param name="y"> the Y coordinate of the new <see cref="Rectangle" /> </param>
+		/// <param name="width"> the width of the new <see cref="Rectangle" /> </param>
+		/// <param name="height"> the height of the new <see cref="Rectangle" /> </param>
 		public Rectangle(float x, float y, float width, float height)
 		{
 			Contracts.Requires(Check.IsFinite(x));
@@ -88,12 +91,13 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a new <see cref="Rectangle"/> from the given X and Y coordinates and size
+		///   constructs a new <see cref="Rectangle" /> from the given X and Y coordinates and size
 		/// </summary>
-		/// <param name="x">the X coordinate of the new <see cref="Rectangle"/></param>
-		/// <param name="y">the Y coordinate of the new <see cref="Rectangle"/></param>
-		/// <param name="size">the size of the new <see cref="Rectangle"/></param>
-		public Rectangle(float x, float y, Size size) : this(x, y, size.Width, size.Height)
+		/// <param name="x"> the X coordinate of the new <see cref="Rectangle" /> </param>
+		/// <param name="y"> the Y coordinate of the new <see cref="Rectangle" /> </param>
+		/// <param name="size"> the size of the new <see cref="Rectangle" /> </param>
+		public Rectangle(float x, float y, Size size)
+			: this(x, y, size.Width, size.Height)
 		{
 			Contracts.Requires(Check.IsFinite(x));
 			Contracts.Requires(Check.IsFinite(y));
@@ -102,11 +106,11 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a new <see cref="Rectangle"/> from the given location and width and height
+		///   constructs a new <see cref="Rectangle" /> from the given location and width and height
 		/// </summary>
-		/// <param name="location">the location of the new <see cref="Rectangle"/></param>
-		/// <param name="width">the width of the new <see cref="Rectangle"/></param>
-		/// <param name="height">the height of the new <see cref="Rectangle"/></param>
+		/// <param name="location"> the location of the new <see cref="Rectangle" /> </param>
+		/// <param name="width"> the width of the new <see cref="Rectangle" /> </param>
+		/// <param name="height"> the height of the new <see cref="Rectangle" /> </param>
 		public Rectangle(Point location, float width, float height)
 			: this(location.X, location.Y, width, height)
 		{
@@ -115,10 +119,10 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a new <see cref="Rectangle"/> from the given location and size
+		///   constructs a new <see cref="Rectangle" /> from the given location and size
 		/// </summary>
-		/// <param name="location">the location of the new <see cref="Rectangle"/></param>
-		/// <param name="size">the size of the new <see cref="Rectangle"/></param>
+		/// <param name="location"> the location of the new <see cref="Rectangle" /> </param>
+		/// <param name="size"> the size of the new <see cref="Rectangle" /> </param>
 		public Rectangle(Point location, Size size)
 			: this(location.X, location.Y, size.Width, size.Height)
 		{
@@ -127,7 +131,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the height of the <see cref="Rectangle"/>
+		///   gets the height of the <see cref="Rectangle" />
 		/// </summary>
 		public float Height
 		{
@@ -141,7 +145,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the width of the <see cref="Rectangle"/>
+		///   gets the width of the <see cref="Rectangle" />
 		/// </summary>
 		public float Width
 		{
@@ -155,7 +159,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the Y coordinate of the <see cref="Rectangle"/>
+		///   gets the Y coordinate of the <see cref="Rectangle" />
 		/// </summary>
 		public float Y
 		{
@@ -169,7 +173,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the X coordinate of the <see cref="Rectangle"/>
+		///   gets the X coordinate of the <see cref="Rectangle" />
 		/// </summary>
 		public float X
 		{
@@ -196,7 +200,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the maximum value a <see cref="Rectangle"/> can represent
+		///   gets the maximum value a <see cref="Rectangle" /> can represent
 		/// </summary>
 		public static Rectangle MaxValue
 		{
@@ -222,7 +226,8 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the <see cref="Rectangle.X"/> and <see cref="Rectangle.Y"/> of the <see cref="Rectangle"/> as a <see cref="Point"/>
+		///   gets the <see cref="Rectangle.X" /> and <see cref="Rectangle.Y" /> of the <see cref="Rectangle" /> as a <see
+		///    cref="Point" />
 		/// </summary>
 		public Point Location
 		{
@@ -235,20 +240,22 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the <see cref="Rectangle.Width"/> and <see cref="Rectangle.Height"/> of the <see cref="Rectangle"/> as a <see cref="Size"/>
+		///   gets the <see cref="Rectangle.Width" /> and <see cref="Rectangle.Height" /> of the <see cref="Rectangle" /> as a <see
+		///    cref="Size" />
 		/// </summary>
 		public Size Size
 		{
 			get
 			{
-				Contracts.Ensures(Contracts.Result<Size>().Equals(new Size(_Width, _Height)));
+				Contracts.Ensures(
+					Contracts.Result<Size>().Equals(new Size(_Width, _Height)));
 
 				return new Size(_Width, _Height);
 			}
 		}
 
 		/// <summary>
-		/// gets the left side coordinate of the <see cref="Rectangle"/>
+		///   gets the left side coordinate of the <see cref="Rectangle" />
 		/// </summary>
 		public float Left
 		{
@@ -262,7 +269,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the top side coordinate of the <see cref="Rectangle"/>
+		///   gets the top side coordinate of the <see cref="Rectangle" />
 		/// </summary>
 		public float Top
 		{
@@ -276,7 +283,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the right side coordinate of the <see cref="Rectangle"/>
+		///   gets the right side coordinate of the <see cref="Rectangle" />
 		/// </summary>
 		public float Right
 		{
@@ -289,7 +296,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the bottom side coordinate of the <see cref="Rectangle"/>
+		///   gets the bottom side coordinate of the <see cref="Rectangle" />
 		/// </summary>
 		public float Bottom
 		{
@@ -302,7 +309,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the area of the <see cref="Rectangle"/>
+		///   gets the area of the <see cref="Rectangle" />
 		/// </summary>
 		public float Area
 		{
@@ -315,7 +322,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets a value indicating whether the <see cref="Rectangle"/> has an area of zero or less
+		///   gets a value indicating whether the <see cref="Rectangle" /> has an area of zero or less
 		/// </summary>
 		public bool IsEmpty
 		{
@@ -323,7 +330,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the <see cref="Point"/> located in the center of the <see cref="Rectangle"/>
+		///   gets the <see cref="Point" /> located in the center of the <see cref="Rectangle" />
 		/// </summary>
 		public Point Center
 		{
@@ -331,24 +338,25 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> scaled by the given amount
+		///   produces the <see cref="Rectangle" /> scaled by the given amount
 		/// </summary>
-		/// <param name="amount">the amount to scale by</param>
-		/// <returns>the <see cref="Rectangle"/> scaled by <paramref name="amount"/></returns>
+		/// <param name="amount"> the amount to scale by </param>
+		/// <returns> the <see cref="Rectangle" /> scaled by <paramref name="amount" /> </returns>
 		public Rectangle Scale(Size amount)
 		{
 			Contracts.Requires(Check.IsPositive(amount.Width));
 			Contracts.Requires(Check.IsPositive(amount.Height));
 
-			return new Rectangle(Location, _Width * amount.Width, _Height * amount.Height);
+			return new Rectangle(
+				Location, _Width * amount.Width, _Height * amount.Height);
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> scaled by the given amounts
+		///   produces the <see cref="Rectangle" /> scaled by the given amounts
 		/// </summary>
-		/// <param name="width">the positive amount to scale along the horizontal axis</param>
-		/// <param name="height">the positive amount to scale along the vertical axis</param>
-		/// <returns>the <see cref="Rectangle"/> scaled by <paramref name="width"/> and <paramref name="height"/></returns>
+		/// <param name="width"> the positive amount to scale along the horizontal axis </param>
+		/// <param name="height"> the positive amount to scale along the vertical axis </param>
+		/// <returns> the <see cref="Rectangle" /> scaled by <paramref name="width" /> and <paramref name="height" /> </returns>
 		public Rectangle Scale(float width, float height)
 		{
 			Contracts.Requires(Check.IsPositive(width));
@@ -358,10 +366,10 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> resized to the given size
+		///   produces the <see cref="Rectangle" /> resized to the given size
 		/// </summary>
-		/// <param name="newSize">the size to resize to</param>
-		/// <returns>the <see cref="Rectangle"/> resized to <paramref name="newSize"/></returns>
+		/// <param name="newSize"> the size to resize to </param>
+		/// <returns> the <see cref="Rectangle" /> resized to <paramref name="newSize" /> </returns>
 		public Rectangle Resize(Size newSize)
 		{
 			Contracts.Requires(Check.IsPositive(newSize.Width));
@@ -371,11 +379,11 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> resized to the given width and height
+		///   produces the <see cref="Rectangle" /> resized to the given width and height
 		/// </summary>
-		/// <param name="width">the positive width to resize to</param>
-		/// <param name="height">the positive height to resize to</param>
-		/// <returns>the <see cref="Rectangle"/> resized to <paramref name="width"/> and <paramref name="height"/></returns>
+		/// <param name="width"> the positive width to resize to </param>
+		/// <param name="height"> the positive height to resize to </param>
+		/// <returns> the <see cref="Rectangle" /> resized to <paramref name="width" /> and <paramref name="height" /> </returns>
 		public Rectangle Resize(float width, float height)
 		{
 			Contracts.Requires(Check.IsPositive(width));
@@ -385,21 +393,21 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> with its <see cref="Rectangle.X"/> and <see cref="Rectangle.Y"/> components set to the given location
+		///   produces the <see cref="Rectangle" /> with its <see cref="Rectangle.X" /> and <see cref="Rectangle.Y" /> components set to the given location
 		/// </summary>
-		/// <param name="newLocation">the location</param>
-		/// <returns>the <see cref="Rectangle"/> relocated to <paramref name="newLocation"/></returns>
+		/// <param name="newLocation"> the location </param>
+		/// <returns> the <see cref="Rectangle" /> relocated to <paramref name="newLocation" /> </returns>
 		public Rectangle Relocate(Point newLocation)
 		{
 			return new Rectangle(newLocation, Size);
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> with its <see cref="Rectangle.X"/> and <see cref="Rectangle.Y"/> components set to the given coordinates
+		///   produces the <see cref="Rectangle" /> with its <see cref="Rectangle.X" /> and <see cref="Rectangle.Y" /> components set to the given coordinates
 		/// </summary>
-		/// <param name="x">the finite coordinate along the horizontal axis</param>
-		/// <param name="y">the finite coordinate along the vertical axis</param>
-		/// <returns>the <see cref="Rectangle"/> relocated to (<paramref name="x"/>, <paramref name="y"/>)</returns>
+		/// <param name="x"> the finite coordinate along the horizontal axis </param>
+		/// <param name="y"> the finite coordinate along the vertical axis </param>
+		/// <returns> the <see cref="Rectangle" /> relocated to ( <paramref name="x" /> , <paramref name="y" /> ) </returns>
 		public Rectangle Relocate(float x, float y)
 		{
 			Contracts.Requires(Check.IsFinite(x));
@@ -409,21 +417,21 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> translated by the given amount
+		///   produces the <see cref="Rectangle" /> translated by the given amount
 		/// </summary>
-		/// <param name="amount">the amount to translate along both the horizontal and vertical axes</param>
-		/// <returns>the <see cref="Rectangle"/> translated by <paramref name="amount"/></returns>
+		/// <param name="amount"> the amount to translate along both the horizontal and vertical axes </param>
+		/// <returns> the <see cref="Rectangle" /> translated by <paramref name="amount" /> </returns>
 		public Rectangle Translate(Size amount)
 		{
 			return new Rectangle(_X + amount.Width, _Y + amount.Height, Size);
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> translated by the given amounts
+		///   produces the <see cref="Rectangle" /> translated by the given amounts
 		/// </summary>
-		/// <param name="width">the finite amount to translate along the horizontal axis</param>
-		/// <param name="height">the finite amount to translate along the vertical axis</param>
-		/// <returns>the <see cref="Rectangle"/> translated by <paramref name="width"/> and <paramref name="height"/></returns>
+		/// <param name="width"> the finite amount to translate along the horizontal axis </param>
+		/// <param name="height"> the finite amount to translate along the vertical axis </param>
+		/// <returns> the <see cref="Rectangle" /> translated by <paramref name="width" /> and <paramref name="height" /> </returns>
 		public Rectangle Translate(float width, float height)
 		{
 			Contracts.Requires(Check.IsFinite(width));
@@ -433,24 +441,28 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> contracted by the given amount
+		///   produces the <see cref="Rectangle" /> contracted by the given amount
 		/// </summary>
-		/// <param name="amount">the amount to contract the left, top, right, and bottom sides</param>
-		/// <returns>the <see cref="Rectangle"/> contracted by <paramref name="amount"/></returns>
+		/// <param name="amount"> the amount to contract the left, top, right, and bottom sides </param>
+		/// <returns> the <see cref="Rectangle" /> contracted by <paramref name="amount" /> </returns>
 		public Rectangle Contract(Thickness amount)
 		{
 			return FromEdges(
-				Left + amount.Left, Top + amount.Top, Right - amount.Right, Bottom - amount.Bottom);
+				Left + amount.Left,
+				Top + amount.Top,
+				Right - amount.Right,
+				Bottom - amount.Bottom);
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> contracted by the given amounts
+		///   produces the <see cref="Rectangle" /> contracted by the given amounts
 		/// </summary>
-		/// <param name="left">the positive amount to contract the left side</param>
-		/// <param name="top">the positive amount to contract the top side</param>
-		/// <param name="right">the positive amount to contract the right side</param>
-		/// <param name="bottom">the positive amount to contract the bottom side</param>
-		/// <returns>the <see cref="Rectangle"/> contracted by <paramref name="left"/>, <paramref name="top"/>, <paramref name="right"/>, and <paramref name="bottom"/></returns>
+		/// <param name="left"> the positive amount to contract the left side </param>
+		/// <param name="top"> the positive amount to contract the top side </param>
+		/// <param name="right"> the positive amount to contract the right side </param>
+		/// <param name="bottom"> the positive amount to contract the bottom side </param>
+		/// <returns> the <see cref="Rectangle" /> contracted by <paramref name="left" /> , <paramref name="top" /> , <paramref
+		///    name="right" /> , and <paramref name="bottom" /> </returns>
 		public Rectangle Contract(float left, float top, float right, float bottom)
 		{
 			Contracts.Requires(Check.IsPositive(left));
@@ -462,11 +474,11 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> contracted by the given amounts
+		///   produces the <see cref="Rectangle" /> contracted by the given amounts
 		/// </summary>
-		/// <param name="leftRight">the positive amount to contract the left and right sides</param>
-		/// <param name="topBottom">the positive amount to contract the top and bottom sides</param>
-		/// <returns>the <see cref="Rectangle"/> contracted by <paramref name="leftRight"/> and <paramref name="topBottom"/></returns>
+		/// <param name="leftRight"> the positive amount to contract the left and right sides </param>
+		/// <param name="topBottom"> the positive amount to contract the top and bottom sides </param>
+		/// <returns> the <see cref="Rectangle" /> contracted by <paramref name="leftRight" /> and <paramref name="topBottom" /> </returns>
 		public Rectangle Contract(float leftRight, float topBottom)
 		{
 			Contracts.Requires(Check.IsPositive(leftRight));
@@ -476,10 +488,10 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> contracted by the given amount
+		///   produces the <see cref="Rectangle" /> contracted by the given amount
 		/// </summary>
-		/// <param name="leftRightTopBottom">the positive amount to contract the left, top, right, and bottom sides</param>
-		/// <returns>the <see cref="Rectangle"/> contracted by <paramref name="leftRightTopBottom"/></returns>
+		/// <param name="leftRightTopBottom"> the positive amount to contract the left, top, right, and bottom sides </param>
+		/// <returns> the <see cref="Rectangle" /> contracted by <paramref name="leftRightTopBottom" /> </returns>
 		public Rectangle Contract(float leftRightTopBottom)
 		{
 			Contracts.Requires(Check.IsPositive(leftRightTopBottom));
@@ -488,13 +500,14 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> expanded by the given amounts
+		///   produces the <see cref="Rectangle" /> expanded by the given amounts
 		/// </summary>
-		/// <param name="left">the positive amount to expand the left side</param>
-		/// <param name="top">the positive amount to expand the top side</param>
-		/// <param name="right">the positive amount to expand the right side</param>
-		/// <param name="bottom">the positive amount to expand the bottom side</param>
-		/// <returns>the <see cref="Rectangle"/> expanded by <paramref name="left"/>, <paramref name="top"/>, <paramref name="right"/>, and <paramref name="bottom"/></returns>
+		/// <param name="left"> the positive amount to expand the left side </param>
+		/// <param name="top"> the positive amount to expand the top side </param>
+		/// <param name="right"> the positive amount to expand the right side </param>
+		/// <param name="bottom"> the positive amount to expand the bottom side </param>
+		/// <returns> the <see cref="Rectangle" /> expanded by <paramref name="left" /> , <paramref name="top" /> , <paramref
+		///    name="right" /> , and <paramref name="bottom" /> </returns>
 		public Rectangle Expand(float left, float top, float right, float bottom)
 		{
 			Contracts.Requires(Check.IsPositive(left));
@@ -506,11 +519,11 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> expanded by the given amounts
+		///   produces the <see cref="Rectangle" /> expanded by the given amounts
 		/// </summary>
-		/// <param name="leftRight">the positive amount to expand the left and right sides</param>
-		/// <param name="topBottom">the positive amount to expand the top and bottom sides</param>
-		/// <returns>the <see cref="Rectangle"/> expanded by <paramref name="leftRight"/> and <paramref name="topBottom"/></returns>
+		/// <param name="leftRight"> the positive amount to expand the left and right sides </param>
+		/// <param name="topBottom"> the positive amount to expand the top and bottom sides </param>
+		/// <returns> the <see cref="Rectangle" /> expanded by <paramref name="leftRight" /> and <paramref name="topBottom" /> </returns>
 		public Rectangle Expand(float leftRight, float topBottom)
 		{
 			Contracts.Requires(Check.IsPositive(leftRight));
@@ -520,10 +533,10 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> expanded by the given amount
+		///   produces the <see cref="Rectangle" /> expanded by the given amount
 		/// </summary>
-		/// <param name="leftRightTopBottom">the positive amount to expand the left, top, right, and bottom sides</param>
-		/// <returns>the <see cref="Rectangle"/> expanded by <paramref name="leftRightTopBottom"/></returns>
+		/// <param name="leftRightTopBottom"> the positive amount to expand the left, top, right, and bottom sides </param>
+		/// <returns> the <see cref="Rectangle" /> expanded by <paramref name="leftRightTopBottom" /> </returns>
 		public Rectangle Expand(float leftRightTopBottom)
 		{
 			Contracts.Requires(Check.IsPositive(leftRightTopBottom));
@@ -532,25 +545,28 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces the <see cref="Rectangle"/> expanded by the given amount
+		///   produces the <see cref="Rectangle" /> expanded by the given amount
 		/// </summary>
-		/// <param name="amount">the amount to expand the left, top, right, and bottom sides</param>
-		/// <returns>the <see cref="Rectangle"/> expanded by <paramref name="amount"/></returns>
+		/// <param name="amount"> the amount to expand the left, top, right, and bottom sides </param>
+		/// <returns> the <see cref="Rectangle" /> expanded by <paramref name="amount" /> </returns>
 		public Rectangle Expand(Thickness amount)
 		{
 			return FromEdges(
-				Left - amount.Left, Top - amount.Top, Right + amount.Right, Bottom + amount.Bottom);
+				Left - amount.Left,
+				Top - amount.Top,
+				Right + amount.Right,
+				Bottom + amount.Bottom);
 		}
 
 		/// <summary>
-		/// aligns the <see cref="Rectangle"/> relative to another <see cref="Rectangle"/>
+		///   aligns the <see cref="Rectangle" /> relative to another <see cref="Rectangle" />
 		/// </summary>
-		/// <param name="container">the <see cref="Rectangle"/> to align relative to</param>
-		/// <param name="alignment">the alignment operation</param>
-		/// <param name="alignmentAxis">the axis to align on</param>
-		/// <param name="direction">the reading direction for the alignment</param>
-		/// <returns>the <see cref="Rectangle"/> aligned relative to <paramref name="container"/> using the given alignment options</returns>
-		public Rectangle AlignRelativeTo( 
+		/// <param name="container"> the <see cref="Rectangle" /> to align relative to </param>
+		/// <param name="alignment"> the alignment operation </param>
+		/// <param name="alignmentAxis"> the axis to align on </param>
+		/// <param name="direction"> the reading direction for the alignment </param>
+		/// <returns> the <see cref="Rectangle" /> aligned relative to <paramref name="container" /> using the given alignment options </returns>
+		public Rectangle AlignRelativeTo(
 			Rectangle container,
 			Alignment alignment,
 			Axis alignmentAxis,
@@ -627,11 +643,12 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// determines whether the <see cref="Rectangle"/> contains the given <see cref="Point"/>
+		///   determines whether the <see cref="Rectangle" /> contains the given <see cref="Point" />
 		/// </summary>
-		/// <param name="point">the location to test</param>
-		/// <returns><c>true</c> if the instance contains <paramref name="point"/>; otherwise, <c>false</c></returns>
-		[Pure] public bool Contains(Point point)
+		/// <param name="point"> the location to test </param>
+		/// <returns> <c>true</c> if the instance contains <paramref name="point" /> ; otherwise, <c>false</c> </returns>
+		[Pure]
+		public bool Contains(Point point)
 		{
 			if((point.X >= Left) && (point.X <= Right))
 			{
@@ -645,11 +662,12 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// determines whether the <see cref="Rectangle"/> contains the given <see cref="Rectangle"/>
+		///   determines whether the <see cref="Rectangle" /> contains the given <see cref="Rectangle" />
 		/// </summary>
-		/// <param name="region">the <see cref="Rectangle"/> to test</param>
-		/// <returns><c>true</c> if the instance contains <paramref name="region"/>; otherwise, <c>false</c></returns>
-		[Pure] public bool Contains(Rectangle region)
+		/// <param name="region"> the <see cref="Rectangle" /> to test </param>
+		/// <returns> <c>true</c> if the instance contains <paramref name="region" /> ; otherwise, <c>false</c> </returns>
+		[Pure]
+		public bool Contains(Rectangle region)
 		{
 			if((region.Left >= Left) && (region.Right <= Right))
 			{
@@ -664,8 +682,9 @@ namespace Frost
 
 		public bool Equals(Rectangle other)
 		{
-			return other._Height.Equals(_Height) && other._Width.Equals(_Width) && other._X.Equals(_X) &&
-			       other._Y.Equals(_Y);
+			return other._Height.Equals(_Height) && other._Width.Equals(_Width) &&
+				other._X.Equals(_X) &&
+					other._Y.Equals(_Y);
 		}
 
 		public override bool Equals(object obj)
@@ -714,11 +733,13 @@ namespace Frost
 
 		public override string ToString()
 		{
-			return string.Format("X: {0}, Y: {1}, Width: {2}, Height: {3}", _X, _Y, _Width, _Height);
+			return string.Format(
+				"X: {0}, Y: {1}, Width: {2}, Height: {3}", _X, _Y, _Width, _Height);
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			Assert.Equal(0, FromEdges(0, 1, 2, 3).X);
 			Assert.Equal(1, FromEdges(0, 1, 2, 3).Y);
@@ -731,8 +752,10 @@ namespace Frost
 			Assert.Equal(new Point(0, 1), FromEdges(0, 1, 2, 3).Location);
 			Assert.Equal(new Size(2, 2), FromEdges(0, 1, 2, 3).Size);
 
-			Assert.Equal(FromEdges(1, 1, 1, 1), FromEdges(0, 0, 2, 2).Contract(new Thickness(1)));
-			Assert.Equal(FromEdges(-1, -1, 3, 3), FromEdges(0, 0, 2, 2).Expand(new Thickness(1)));
+			Assert.Equal(
+				FromEdges(1, 1, 1, 1), FromEdges(0, 0, 2, 2).Contract(new Thickness(1)));
+			Assert.Equal(
+				FromEdges(-1, -1, 3, 3), FromEdges(0, 0, 2, 2).Expand(new Thickness(1)));
 
 			Assert.Equal(4, FromEdges(0, 0, 2, 2).Area);
 
@@ -750,13 +773,17 @@ namespace Frost
 			Assert.True(FromEdges(0, 0, 1, 1).Contains(FromEdges(0.5f, 0, 0.5f, 1)));
 			Assert.False(FromEdges(0, 0, 1, 1).Contains(FromEdges(-1, -1, 1, 1)));
 
-			Assert.Equal(new Rectangle(2, 2, 05, 05), new Rectangle(0, 0, 5, 5).Translate(new Size(2)));
-			Assert.Equal(new Rectangle(0, 0, 10, 10), new Rectangle(0, 0, 5, 5).Scale(new Size(2)));
+			Assert.Equal(
+				new Rectangle(2, 2, 05, 05),
+				new Rectangle(0, 0, 5, 5).Translate(new Size(2)));
+			Assert.Equal(
+				new Rectangle(0, 0, 10, 10), new Rectangle(0, 0, 5, 5).Scale(new Size(2)));
 
 			Assert.TestObject(MinValue, MaxValue);
 		}
 
-		[Fact] internal static void Test1()
+		[Fact]
+		internal static void Test1()
 		{
 			Assert.Equal(
 				FromEdges(50, 0, 100, 50),
@@ -765,7 +792,10 @@ namespace Frost
 			Assert.Equal(
 				FromEdges(0, 0, 50, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Horizontal, LayoutDirection.RightToLeft));
+					FromEdges(0, 0, 100, 100),
+					Alignment.Leading,
+					Axis.Horizontal,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 50, 50, 100),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
@@ -773,14 +803,21 @@ namespace Frost
 			Assert.Equal(
 				FromEdges(0, 50, 50, 100),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Vertical, LayoutDirection.RightToLeft));
+					FromEdges(0, 0, 100, 100),
+					Alignment.Leading,
+					Axis.Vertical,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(50, 50, 100, 100),
-				FromEdges(0, 0, 50, 50).AlignRelativeTo(FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Both));
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
+					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Both));
 			Assert.Equal(
 				FromEdges(0, 50, 50, 100),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Leading, Axis.Both, LayoutDirection.RightToLeft));
+					FromEdges(0, 0, 100, 100),
+					Alignment.Leading,
+					Axis.Both,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
@@ -788,7 +825,10 @@ namespace Frost
 			Assert.Equal(
 				FromEdges(50, 0, 100, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Horizontal, LayoutDirection.RightToLeft));
+					FromEdges(0, 0, 100, 100),
+					Alignment.Trailing,
+					Axis.Horizontal,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
@@ -796,7 +836,10 @@ namespace Frost
 			Assert.Equal(
 				FromEdges(0, 0, 50, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Vertical, LayoutDirection.RightToLeft));
+					FromEdges(0, 0, 100, 100),
+					Alignment.Trailing,
+					Axis.Vertical,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
@@ -804,7 +847,10 @@ namespace Frost
 			Assert.Equal(
 				FromEdges(50, 0, 100, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Trailing, Axis.Both, LayoutDirection.RightToLeft));
+					FromEdges(0, 0, 100, 100),
+					Alignment.Trailing,
+					Axis.Both,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(25, 0, 75, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
@@ -812,7 +858,10 @@ namespace Frost
 			Assert.Equal(
 				FromEdges(25, 0, 75, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Horizontal, LayoutDirection.RightToLeft));
+					FromEdges(0, 0, 100, 100),
+					Alignment.Center,
+					Axis.Horizontal,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 25, 50, 75),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
@@ -820,14 +869,21 @@ namespace Frost
 			Assert.Equal(
 				FromEdges(0, 25, 50, 75),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Vertical, LayoutDirection.RightToLeft));
-			Assert.Equal(
-				FromEdges(25, 25, 75, 75),
-				FromEdges(0, 0, 50, 50).AlignRelativeTo(FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Both));
+					FromEdges(0, 0, 100, 100),
+					Alignment.Center,
+					Axis.Vertical,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(25, 25, 75, 75),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Both, LayoutDirection.RightToLeft));
+					FromEdges(0, 0, 100, 100), Alignment.Center, Axis.Both));
+			Assert.Equal(
+				FromEdges(25, 25, 75, 75),
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
+					FromEdges(0, 0, 100, 100),
+					Alignment.Center,
+					Axis.Both,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 100, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
@@ -835,7 +891,10 @@ namespace Frost
 			Assert.Equal(
 				FromEdges(0, 0, 100, 50),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Horizontal, LayoutDirection.RightToLeft));
+					FromEdges(0, 0, 100, 100),
+					Alignment.Stretch,
+					Axis.Horizontal,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 50, 100),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
@@ -843,14 +902,21 @@ namespace Frost
 			Assert.Equal(
 				FromEdges(0, 0, 50, 100),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Vertical, LayoutDirection.RightToLeft));
-			Assert.Equal(
-				FromEdges(0, 0, 100, 100),
-				FromEdges(0, 0, 50, 50).AlignRelativeTo(FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Both));
+					FromEdges(0, 0, 100, 100),
+					Alignment.Stretch,
+					Axis.Vertical,
+					LayoutDirection.RightToLeft));
 			Assert.Equal(
 				FromEdges(0, 0, 100, 100),
 				FromEdges(0, 0, 50, 50).AlignRelativeTo(
-					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Both, LayoutDirection.RightToLeft));
+					FromEdges(0, 0, 100, 100), Alignment.Stretch, Axis.Both));
+			Assert.Equal(
+				FromEdges(0, 0, 100, 100),
+				FromEdges(0, 0, 50, 50).AlignRelativeTo(
+					FromEdges(0, 0, 100, 100),
+					Alignment.Stretch,
+					Axis.Both,
+					LayoutDirection.RightToLeft));
 		}
 #endif
 	}

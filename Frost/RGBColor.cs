@@ -1,13 +1,7 @@
-﻿#region Licensing
-
-// # Licensing Information
-// 
-// Copyright (c) 2012, Joshua Burke  
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
-
-#endregion
 
 using System;
 using System.Diagnostics.Contracts;
@@ -15,7 +9,7 @@ using System.Diagnostics.Contracts;
 namespace Frost
 {
 	/// <summary>
-	/// represents a color having red, green, blue, and alpha components
+	///   represents a color having red, green, blue, and alpha components
 	/// </summary>
 	public struct RGBColor : IEquatable<RGBColor>
 	{
@@ -34,12 +28,12 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a <see cref="	RGBColor"/> from red, green, blue, and optionally alpha components
+		///   constructs a <see cref="	RGBColor" /> from red, green, blue, and optionally alpha components
 		/// </summary>
-		/// <param name="red">the red value ranging from zero to two hundred fifty-five</param>
-		/// <param name="green">the green value ranging from zero to two hundred fifty-five</param>
-		/// <param name="blue">the blue value ranging from zero to two hundred fifty-five</param>
-		/// <param name="alpha">the alpha value ranging from zero to one hundred</param>
+		/// <param name="red"> the red value ranging from zero to two hundred fifty-five </param>
+		/// <param name="green"> the green value ranging from zero to two hundred fifty-five </param>
+		/// <param name="blue"> the blue value ranging from zero to two hundred fifty-five </param>
+		/// <param name="alpha"> the alpha value ranging from zero to one hundred </param>
 		public RGBColor(float red, float green, float blue, float alpha = 100.0f)
 		{
 			Contract.Requires(Check.IsByte(red));
@@ -64,7 +58,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the red value ranging from zero to two hundred fifty-five
+		///   gets the red value ranging from zero to two hundred fifty-five
 		/// </summary>
 		public float R
 		{
@@ -78,7 +72,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the green value ranging from zero to two hundred fifty-five
+		///   gets the green value ranging from zero to two hundred fifty-five
 		/// </summary>
 		public float G
 		{
@@ -92,7 +86,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the blue value ranging from zero to two hundred fifty-five
+		///   gets the blue value ranging from zero to two hundred fifty-five
 		/// </summary>
 		public float B
 		{
@@ -106,7 +100,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the alpha value ranging from zero to one hundred
+		///   gets the alpha value ranging from zero to one hundred
 		/// </summary>
 		public float A
 		{

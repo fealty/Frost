@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -9,7 +9,7 @@ using System.Diagnostics.Contracts;
 namespace Frost
 {
 	/// <summary>
-	/// represents a transformation matrix for use in 2D space
+	///   represents a transformation matrix for use in 2D space
 	/// </summary>
 	public struct Matrix3X2 : IEquatable<Matrix3X2>
 	{
@@ -27,7 +27,8 @@ namespace Frost
 			_Identity = new Matrix3X2(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 		}
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			Contract.Invariant(Check.IsFinite(_11));
 			Contract.Invariant(Check.IsFinite(_12));
@@ -38,15 +39,16 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a new <see cref="Matrix3X2"/> from its components
+		///   constructs a new <see cref="Matrix3X2" /> from its components
 		/// </summary>
-		/// <param name="m11">the finite M11 component</param>
-		/// <param name="m12">the finite M12 component</param>
-		/// <param name="m21">the finite M21 component</param>
-		/// <param name="m22">the finite M22 component</param>
-		/// <param name="m31">the finite M31 component</param>
-		/// <param name="m32">the finite M32 component</param>
-		public Matrix3X2(float m11, float m12, float m21, float m22, float m31, float m32)
+		/// <param name="m11"> the finite M11 component </param>
+		/// <param name="m12"> the finite M12 component </param>
+		/// <param name="m21"> the finite M21 component </param>
+		/// <param name="m22"> the finite M22 component </param>
+		/// <param name="m31"> the finite M31 component </param>
+		/// <param name="m32"> the finite M32 component </param>
+		public Matrix3X2(
+			float m11, float m12, float m21, float m22, float m31, float m32)
 		{
 			Contract.Requires(Check.IsFinite(m11));
 			Contract.Requires(Check.IsFinite(m12));
@@ -71,7 +73,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the identity matrix
+		///   gets the identity matrix
 		/// </summary>
 		public static Matrix3X2 Identity
 		{
@@ -84,7 +86,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the M32 component of the <see cref="Matrix3X2"/>
+		///   gets the M32 component of the <see cref="Matrix3X2" />
 		/// </summary>
 		public float M32
 		{
@@ -98,7 +100,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the M31 component of the <see cref="Matrix3X2"/>
+		///   gets the M31 component of the <see cref="Matrix3X2" />
 		/// </summary>
 		public float M31
 		{
@@ -112,7 +114,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the M22 component of the <see cref="Matrix3X2"/>
+		///   gets the M22 component of the <see cref="Matrix3X2" />
 		/// </summary>
 		public float M22
 		{
@@ -126,7 +128,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the M21 component of the <see cref="Matrix3X2"/>
+		///   gets the M21 component of the <see cref="Matrix3X2" />
 		/// </summary>
 		public float M21
 		{
@@ -140,7 +142,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the M12 component of the <see cref="Matrix3X2"/>
+		///   gets the M12 component of the <see cref="Matrix3X2" />
 		/// </summary>
 		public float M12
 		{
@@ -154,7 +156,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the M11 component of the <see cref="Matrix3X2"/>
+		///   gets the M11 component of the <see cref="Matrix3X2" />
 		/// </summary>
 		public float M11
 		{
@@ -168,55 +170,58 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets a value indicating whether the <see cref="Matrix3X2"/> is equal to <see cref="Matrix3X2.Identity"/>
+		///   gets a value indicating whether the <see cref="Matrix3X2" /> is equal to <see cref="Matrix3X2.Identity" />
 		/// </summary>
 		public bool IsIdentity
 		{
 			get
 			{
-				return _11.Equals(1.0f) && _12.Equals(0.0f) && _21.Equals(0.0f) && _22.Equals(1.0f) &&
-				       _31.Equals(0.0f) && _32.Equals(0.0f);
+				return _11.Equals(1.0f) && _12.Equals(0.0f) && _21.Equals(0.0f) &&
+					_22.Equals(1.0f) &&
+						_31.Equals(0.0f) && _32.Equals(0.0f);
 			}
 		}
 
 		public bool Equals(Matrix3X2 other)
 		{
-			return other._11.Equals(_11) && other._12.Equals(_12) && other._21.Equals(_21) &&
-			       other._22.Equals(_22) && other._31.Equals(_31) && other._32.Equals(_32);
+			return other._11.Equals(_11) && other._12.Equals(_12) &&
+				other._21.Equals(_21) &&
+					other._22.Equals(_22) && other._31.Equals(_31) && other._32.Equals(_32);
 		}
 
 		/// <summary>
-		/// translates the <see cref="Matrix3X2"/> by the given amount
+		///   translates the <see cref="Matrix3X2" /> by the given amount
 		/// </summary>
-		/// <param name="amount">the amount to translate</param>
-		/// <param name="result">stores the result of the translation</param>
+		/// <param name="amount"> the amount to translate </param>
+		/// <param name="result"> stores the result of the translation </param>
 		public void Translate(Size amount, out Matrix3X2 result)
 		{
 			Translate(amount.Width, amount.Height, out result);
 		}
 
 		/// <summary>
-		/// translates the <see cref="Matrix3X2"/> by the given amounts
+		///   translates the <see cref="Matrix3X2" /> by the given amounts
 		/// </summary>
-		/// <param name="width">the amount to translate along the horizontal axis</param>
-		/// <param name="height">the amount to translate along the vertical axis</param>
-		/// <param name="result">stores the result of the translation</param>
+		/// <param name="width"> the amount to translate along the horizontal axis </param>
+		/// <param name="height"> the amount to translate along the vertical axis </param>
+		/// <param name="result"> stores the result of the translation </param>
 		public void Translate(float width, float height, out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsFinite(width));
 			Contract.Requires(Check.IsFinite(height));
 
-			Matrix3X2 translation = new Matrix3X2(1.0f, 0.0f, 0.0f, 1.0f, width, height);
+			Matrix3X2 translation = new Matrix3X2(
+				1.0f, 0.0f, 0.0f, 1.0f, width, height);
 
 			translation.Multiply(ref this, out result);
 		}
 
 		/// <summary>
-		/// skews the <see cref="Matrix3X2"/> by the given angles
+		///   skews the <see cref="Matrix3X2" /> by the given angles
 		/// </summary>
-		/// <param name="angleX">the angle in degrees to skew horizontally</param>
-		/// <param name="angleY">the angle in degrees to skew vertically</param>
-		/// <param name="result">stores the result of the skew operation</param>
+		/// <param name="angleX"> the angle in degrees to skew horizontally </param>
+		/// <param name="angleY"> the angle in degrees to skew vertically </param>
+		/// <param name="result"> stores the result of the skew operation </param>
 		public void Skew(float angleX, float angleY, out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsDegrees(angleX));
@@ -237,21 +242,21 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// scales the <see cref="Matrix3X2"/> by the given amount
+		///   scales the <see cref="Matrix3X2" /> by the given amount
 		/// </summary>
-		/// <param name="amount">the amount to scale by</param>
-		/// <param name="result">stores the result of the scaling operation</param>
+		/// <param name="amount"> the amount to scale by </param>
+		/// <param name="result"> stores the result of the scaling operation </param>
 		public void Scale(Size amount, out Matrix3X2 result)
 		{
 			Scale(amount.Width, amount.Height, out result);
 		}
 
 		/// <summary>
-		/// scales the <see cref="Matrix3X2"/> by the given amounts
+		///   scales the <see cref="Matrix3X2" /> by the given amounts
 		/// </summary>
-		/// <param name="width">the amount to scale along the horizontal axis</param>
-		/// <param name="height">the amount to scale along the vertical axis</param>
-		/// <param name="result">stores the result of the scaling operation</param>
+		/// <param name="width"> the amount to scale along the horizontal axis </param>
+		/// <param name="height"> the amount to scale along the vertical axis </param>
+		/// <param name="result"> stores the result of the scaling operation </param>
 		public void Scale(float width, float height, out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsPositive(width));
@@ -263,25 +268,30 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// scales the <see cref="Matrix3X2"/> by the given amount
+		///   scales the <see cref="Matrix3X2" /> by the given amount
 		/// </summary>
-		/// <param name="amount">the amount to scale by</param>
-		/// <param name="origin">the origin of the scaling</param>
-		/// <param name="result">stores the result of the scaling operation</param>
+		/// <param name="amount"> the amount to scale by </param>
+		/// <param name="origin"> the origin of the scaling </param>
+		/// <param name="result"> stores the result of the scaling operation </param>
 		public void Scale(Size amount, Point origin, out Matrix3X2 result)
 		{
 			Scale(amount.Width, amount.Height, origin.X, origin.Y, out result);
 		}
 
 		/// <summary>
-		/// scales the <see cref="Matrix3X2"/> by the given amounts
+		///   scales the <see cref="Matrix3X2" /> by the given amounts
 		/// </summary>
-		/// <param name="width">the positive amount to scale on the horizontal axis</param>
-		/// <param name="height">the positive amount to scale on the vertical axis</param>
-		/// <param name="originX">the origin of the scaling operation on the horizontal axis</param>
-		/// <param name="originY">the origin of the scaling operation on the vertical axis</param>
-		/// <param name="result">stores the result of the scaling operation</param>
-		public void Scale(float width, float height, float originX, float originY, out Matrix3X2 result)
+		/// <param name="width"> the positive amount to scale on the horizontal axis </param>
+		/// <param name="height"> the positive amount to scale on the vertical axis </param>
+		/// <param name="originX"> the origin of the scaling operation on the horizontal axis </param>
+		/// <param name="originY"> the origin of the scaling operation on the vertical axis </param>
+		/// <param name="result"> stores the result of the scaling operation </param>
+		public void Scale(
+			float width,
+			float height,
+			float originX,
+			float originY,
+			out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
@@ -291,16 +301,17 @@ namespace Frost
 			float translationX = originX - (width * originX);
 			float translationY = originY - (height * originY);
 
-			Matrix3X2 scaling = new Matrix3X2(width, 0.0f, 0.0f, height, translationX, translationY);
+			Matrix3X2 scaling = new Matrix3X2(
+				width, 0.0f, 0.0f, height, translationX, translationY);
 
 			scaling.Multiply(ref this, out result);
 		}
 
 		/// <summary>
-		/// rotates the <see cref="Matrix3X2"/> by the given angle
+		///   rotates the <see cref="Matrix3X2" /> by the given angle
 		/// </summary>
-		/// <param name="angle">the angle to rotate in degrees</param>
-		/// <param name="result">stores the result of the rotation</param>
+		/// <param name="angle"> the angle to rotate in degrees </param>
+		/// <param name="result"> stores the result of the rotation </param>
 		public void Rotate(float angle, out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsDegrees(angle));
@@ -316,24 +327,25 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// rotates the <see cref="Matrix3X2"/> by the given angle
+		///   rotates the <see cref="Matrix3X2" /> by the given angle
 		/// </summary>
-		/// <param name="angle">the angle to rotate in degrees</param>
-		/// <param name="origin">the origin of the rotation</param>
-		/// <param name="result">stores the result of the rotation</param>
+		/// <param name="angle"> the angle to rotate in degrees </param>
+		/// <param name="origin"> the origin of the rotation </param>
+		/// <param name="result"> stores the result of the rotation </param>
 		public void Rotate(float angle, Point origin, out Matrix3X2 result)
 		{
 			Rotate(angle, origin.X, origin.Y, out result);
 		}
 
 		/// <summary>
-		/// rotates the <see cref="Matrix3X2"/> by the given angle
+		///   rotates the <see cref="Matrix3X2" /> by the given angle
 		/// </summary>
-		/// <param name="angle">the angle to rotate in degrees</param>
-		/// <param name="originX">the origin of the rotation on the horizontal axis</param>
-		/// <param name="originY">the origin on the rotation on the vertical axis</param>
-		/// <param name="result">stores the result of the rotation</param>
-		public void Rotate(float angle, float originX, float originY, out Matrix3X2 result)
+		/// <param name="angle"> the angle to rotate in degrees </param>
+		/// <param name="originX"> the origin of the rotation on the horizontal axis </param>
+		/// <param name="originY"> the origin on the rotation on the vertical axis </param>
+		/// <param name="result"> stores the result of the rotation </param>
+		public void Rotate(
+			float angle, float originX, float originY, out Matrix3X2 result)
 		{
 			Contract.Requires(Check.IsDegrees(angle));
 			Contract.Requires(Check.IsFinite(originX));
@@ -357,10 +369,10 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// multiples the <see cref="Matrix3X2"/> by the given transformation
+		///   multiples the <see cref="Matrix3X2" /> by the given transformation
 		/// </summary>
-		/// <param name="right">the transformation matrix</param>
-		/// <param name="result">stores the result of the multiplication</param>
+		/// <param name="right"> the transformation matrix </param>
+		/// <param name="result"> stores the result of the multiplication </param>
 		public void Multiply(ref Matrix3X2 right, out Matrix3X2 result)
 		{
 			float m11 = (_11 * right.M11) + (_12 * right.M21);
@@ -376,7 +388,13 @@ namespace Frost
 		public override string ToString()
 		{
 			return string.Format(
-				"M11: {0}, M12: {1}, M21: {2}, M22: {3}, M31: {4}, M32: {5}", _11, _12, _21, _22, _31, _32);
+				"M11: {0}, M12: {1}, M21: {2}, M22: {3}, M31: {4}, M32: {5}",
+				_11,
+				_12,
+				_21,
+				_22,
+				_31,
+				_32);
 		}
 
 		public override bool Equals(object obj)
@@ -426,7 +444,8 @@ namespace Frost
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			Assert.Equal(0, new Matrix3X2(0, 1, 2, 3, 4, 5).M11);
 			Assert.Equal(1, new Matrix3X2(0, 1, 2, 3, 4, 5).M12);

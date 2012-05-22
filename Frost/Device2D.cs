@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -7,18 +7,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
+using Frost.Collections;
 using Frost.Composition;
 using Frost.Diagnostics;
 using Frost.Effects;
-using Frost.Formatting;
-using Frost.Painting;
-using Frost.Resources;
 using Frost.Shaping;
+using Frost.Painting;
+using Frost.Management;
+using Frost.Construction;
 using Frost.Surfacing;
 
 namespace Frost
 {
-	public abstract class Device2D : IResourceManager, IShaper
+	public abstract class Device2D : IResourceHelpers, IFigureHelpers
 	{
 		public const float Flattening = 0.25f;
 
@@ -33,7 +34,7 @@ namespace Frost
 			_EffectCollection = new EffectCollection();
 		}
 
-		public IResourceManager Resources
+		public IResourceHelpers Resources
 		{
 			get { return this; }
 		}
@@ -43,84 +44,84 @@ namespace Frost
 			get { return _CounterCollection; }
 		}
 
-		public EffectCollection Effects
-		{
-			get { return _EffectCollection; }
-		}
-
-		public IShaper Shaper
+		public IFigureHelpers Geometry
 		{
 			get { return this; }
 		}
 
+		public abstract Shaper Shaper { get; }
 		public abstract Painter Painter { get; }
 		public abstract Compositor Compositor { get; }
 
 		protected abstract Size PageSize { set; }
 
-		bool IShaper.Contains(Geometry path, Point point, float tolerance)
+		bool IFigureHelpers.Contains(Figure path, Point point, float tolerance)
 		{
 			return OnContains(path, point, tolerance);
 		}
 
-		Geometry IShaper.Simplify(Geometry path, float tolerance)
+		Figure IFigureHelpers.Simplify(Figure path, float tolerance)
 		{
 			return OnSimplify(path, tolerance);
 		}
 
-		Geometry IShaper.Widen(Geometry path, float width, float tolerance)
+		Figure IFigureHelpers.Widen(Figure path, float width, float tolerance)
 		{
 			return OnWiden(path, width, tolerance);
 		}
 
-		Rectangle IShaper.MeasureRegion(Geometry path)
+		Rectangle IFigureHelpers.MeasureRegion(Figure path)
 		{
 			return OnMeasureRegion(path);
 		}
 
-		Geometry IShaper.Combine(
-			Geometry sourcePath,
-			Geometry destinationPath,
+		Figure IFigureHelpers.Combine(
+			Figure sourcePath,
+			Figure destinationPath,
 			CombinationOperation operation,
 			float tolerance)
 		{
 			return OnCombine(sourcePath, destinationPath, tolerance, operation);
 		}
 
-		void IShaper.Tessellate(Geometry path, ITessellationSink sink, float tolerance)
+		void IFigureHelpers.Tessellate(
+			Figure path, ITessellationSink sink, float tolerance)
 		{
 			OnTessellate(path, tolerance, sink);
 		}
 
-		float IShaper.MeasureArea(Geometry path, float tolerance)
+		float IFigureHelpers.MeasureArea(Figure path, float tolerance)
 		{
 			return OnMeasureArea(path, tolerance);
 		}
 
-		float IShaper.MeasureLength(Geometry path, float tolerance)
+		float IFigureHelpers.MeasureLength(Figure path, float tolerance)
 		{
 			return OnMeasureLength(path, tolerance);
 		}
 
-		Point IShaper.DeterminePoint(Geometry path, float length, float tolerance)
+		Point IFigureHelpers.DeterminePoint(
+			Figure path, float length, float tolerance)
 		{
 			Point stub;
 
 			return OnDeterminePoint(path, length, tolerance, out stub);
 		}
 
-		Point IShaper.DeterminePoint(
-			Geometry path, float length, out Point tangentVector, float tolerance)
+		Point IFigureHelpers.DeterminePoint(
+			Figure path, float length, out Point tangentVector, float tolerance)
 		{
 			return OnDeterminePoint(path, length, tolerance, out tangentVector);
 		}
 
-		Canvas IShaper.CreateDistanceField(Geometry path, Size resolution, float tolerance)
+		Canvas IFigureHelpers.CreateDistanceField(
+			Figure path, Size resolution, float tolerance)
 		{
 			throw new NotImplementedException();
 		}
 
-		void IResourceManager.Copy(Rectangle fromRegion, Canvas fromTarget, Canvas toTarget)
+		void IResourceHelpers.Copy(
+			Rectangle fromRegion, Canvas fromTarget, Canvas toTarget)
 		{
 			if(!fromTarget.IsEmpty && !fromRegion.IsEmpty)
 			{
@@ -130,8 +131,8 @@ namespace Frost
 
 					if(toTarget.Region.Contains(srcRegion))
 					{
-						var fromContext = Resources.Resolve(fromTarget);
-						var toContext = Resources.Resolve(toTarget);
+						var fromContext = Resources.ResolveCanvas(fromTarget);
+						var toContext = Resources.ResolveCanvas(toTarget);
 
 						// translate to 2D surface coordinate space
 						fromRegion = fromRegion.Translate(fromContext.Region.Location);
@@ -144,17 +145,18 @@ namespace Frost
 					throw new InvalidOperationException("Destination cannot contain source!");
 				}
 
-				throw new InvalidOperationException("Source does not contain the source region!");
+				throw new InvalidOperationException(
+					"Source does not contain the source region!");
 			}
 		}
 
-		void IResourceManager.Copy(byte[] fromRgbaData, Canvas toTarget)
+		void IResourceHelpers.Copy(byte[] fromRgbaData, Canvas toTarget)
 		{
 			if(fromRgbaData.Length > 0)
 			{
 				if(fromRgbaData.Length >= Convert.ToInt32(toTarget.Region.Area * 4))
 				{
-					var toContext = Resources.Resolve(toTarget);
+					var toContext = Resources.ResolveCanvas(toTarget);
 
 					OnCopy(fromRgbaData, toContext);
 
@@ -165,7 +167,7 @@ namespace Frost
 			}
 		}
 
-		void IResourceManager.Copy(Canvas fromTarget, Canvas toTarget)
+		void IResourceHelpers.Copy(Canvas fromTarget, Canvas toTarget)
 		{
 			if(!fromTarget.IsEmpty)
 			{
@@ -173,12 +175,12 @@ namespace Frost
 			}
 		}
 
-		IEnumerable<ISurface2D> IResourceManager.GetSurfaces(SurfaceUsage usage)
+		IEnumerable<ISurface2D> IResourceHelpers.GetPages(SurfaceUsage usage)
 		{
 			return OnGetSurfaces(usage);
 		}
 
-		event Action<IEnumerable<Canvas>> IResourceManager.Invalidated
+		event Action<IEnumerable<Canvas>> IResourceHelpers.CanvasInvalidated
 		{
 			add
 			{
@@ -199,7 +201,7 @@ namespace Frost
 			}
 		}
 
-		Size IResourceManager.PageSize
+		Size IResourceHelpers.PageSize
 		{
 			set
 			{
@@ -214,7 +216,7 @@ namespace Frost
 			}
 		}
 
-		Canvas.ResolvedContext IResourceManager.Resolve(Canvas target)
+		Canvas.ResolvedContext IResourceHelpers.ResolveCanvas(Canvas target)
 		{
 			if(!target.IsEmpty)
 			{
@@ -235,12 +237,12 @@ namespace Frost
 				return context;
 			}
 
-			Resources.Forget(target);
+			Resources.ForgetCanvas(target);
 
 			return null;
 		}
 
-		void IResourceManager.Forget(Canvas target)
+		void IResourceHelpers.ForgetCanvas(Canvas target)
 		{
 			Canvas.ResolvedContext context = target.BackingContext;
 
@@ -252,32 +254,41 @@ namespace Frost
 			}
 		}
 
-		public abstract void ProcessTick();
+		public abstract void ProcessFrame();
 
 		protected abstract void OnCopy(
-			Rectangle fromRegion, Canvas.ResolvedContext fromTarget, Canvas.ResolvedContext toTarget);
+			Rectangle fromRegion,
+			Canvas.ResolvedContext fromTarget,
+			Canvas.ResolvedContext toTarget);
 
-		protected abstract void OnCopy(byte[] rgbaData, Canvas.ResolvedContext toTarget);
+		protected abstract void OnCopy(
+			byte[] rgbaData, Canvas.ResolvedContext toTarget);
 
 		protected abstract Point OnDeterminePoint(
-			Geometry path, float length, float tolerance, out Point tangentVector);
+			Figure path, float length, float tolerance, out Point tangentVector);
 
-		protected abstract float OnMeasureLength(Geometry path, float tolerance);
+		protected abstract float OnMeasureLength(Figure path, float tolerance);
 
-		protected abstract float OnMeasureArea(Geometry path, float tolerance);
+		protected abstract float OnMeasureArea(Figure path, float tolerance);
 
-		protected abstract void OnTessellate(Geometry path, float tolerance, ITessellationSink sink);
+		protected abstract void OnTessellate(
+			Figure path, float tolerance, ITessellationSink sink);
 
-		protected abstract Geometry OnCombine(
-			Geometry sourcePath, Geometry destinationPath, float tolerance, CombinationOperation operation);
+		protected abstract Figure OnCombine(
+			Figure sourcePath,
+			Figure destinationPath,
+			float tolerance,
+			CombinationOperation operation);
 
-		protected abstract Rectangle OnMeasureRegion(Geometry path);
+		protected abstract Rectangle OnMeasureRegion(Figure path);
 
-		protected abstract Geometry OnWiden(Geometry path, float width, float tolerance);
+		protected abstract Figure OnWiden(
+			Figure path, float width, float tolerance);
 
-		protected abstract Geometry OnSimplify(Geometry path, float tolerance);
+		protected abstract Figure OnSimplify(Figure path, float tolerance);
 
-		protected abstract bool OnContains(Geometry path, Point point, float tolerance);
+		protected abstract bool OnContains(
+			Figure path, Point point, float tolerance);
 
 		protected abstract IEnumerable<ISurface2D> OnGetSurfaces(SurfaceUsage usage);
 
@@ -300,6 +311,36 @@ namespace Frost
 			{
 				evt(resources);
 			}
+		}
+
+		Outline IResourceHelpers.GetGlyphOutline(
+			IndexedRange glyphRange,
+			bool isVertical,
+			bool isRightToLeft,
+			FontHandle fontHandle,
+			params Shaper.Glyph[] glyphs)
+		{
+			throw new NotImplementedException();
+		}
+
+		FontMetrics IResourceHelpers.GetFontMetrics(FontHandle fontHandle)
+		{
+			throw new NotImplementedException();
+		}
+
+		void IResourceHelpers.RegisterEffect<T>()
+		{
+			_EffectCollection.Register<T>();
+		}
+
+		Effect<T> IResourceHelpers.FindEffect<T>()
+		{
+			return _EffectCollection.Find<T>();
+		}
+
+		void IResourceHelpers.UnregisterEffect<T>()
+		{
+			_EffectCollection.Unregister<T>();
 		}
 	}
 }

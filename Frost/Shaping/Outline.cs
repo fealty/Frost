@@ -6,31 +6,31 @@
 using System;
 using System.Diagnostics.Contracts;
 
-using Frost.Shaping;
+using Frost.Construction;
 
-namespace Frost.Formatting
+namespace Frost.Shaping
 {
-	public struct GlyphOutline : IEquatable<GlyphOutline>
+	public struct Outline : IEquatable<Outline>
 	{
 		private readonly float _Baseline;
-		private readonly Geometry _Outline;
+		private readonly Figure _Outline;
 
-		public GlyphOutline(Geometry outline, float baseline)
+		public Outline(Figure outline, float baseline)
 		{
 			Contract.Requires(Check.IsFinite(baseline));
 
 			_Outline = outline;
 			_Baseline = baseline;
 
-			Contract.Assert(ReferenceEquals(Outline, outline));
+			Contract.Assert(ReferenceEquals(Figure, outline));
 			Contract.Assert(Baseline.Equals(baseline));
 		}
 
-		public Geometry Outline
+		public Figure Figure
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Geometry>() == _Outline);
+				Contract.Ensures(Contract.Result<Figure>() == _Outline);
 
 				return _Outline;
 			}
@@ -47,7 +47,7 @@ namespace Frost.Formatting
 			}
 		}
 
-		public bool Equals(GlyphOutline other)
+		public bool Equals(Outline other)
 		{
 			return
 				other._Baseline.Equals(_Baseline) &&
@@ -61,7 +61,7 @@ namespace Frost.Formatting
 				return false;
 			}
 
-			return obj is GlyphOutline && Equals((GlyphOutline)obj);
+			return obj is Outline && Equals((Outline)obj);
 		}
 
 		public override int GetHashCode()
@@ -88,12 +88,12 @@ namespace Frost.Formatting
 			Contract.Invariant(Check.IsFinite(_Baseline));
 		}
 
-		public static bool operator ==(GlyphOutline left, GlyphOutline right)
+		public static bool operator ==(Outline left, Outline right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(GlyphOutline left, GlyphOutline right)
+		public static bool operator !=(Outline left, Outline right)
 		{
 			return !left.Equals(right);
 		}

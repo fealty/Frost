@@ -5,18 +5,17 @@
 
 using System.Diagnostics.Contracts;
 
-using Frost.Shaping;
+using Frost.Construction;
 
 using SharpDX.Direct2D1;
 
 using DxGeometry = SharpDX.Direct2D1.Geometry;
-using Geometry = Frost.Shaping.Geometry;
 
 namespace Frost.DirectX
 {
 	internal sealed class CombinationSink : GeometrySinkBase
 	{
-		public Geometry CreateCombination(
+		public Figure CreateCombination(
 			DxGeometry resolvedDestination,
 			DxGeometry resolvedSource,
 			CombinationOperation combination,
@@ -25,9 +24,9 @@ namespace Frost.DirectX
 			Contract.Requires(resolvedDestination != null);
 			Contract.Requires(resolvedSource != null);
 			Contract.Requires(Check.IsPositive(tolerance));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
-			_Builder = Geometry.Create();
+			_Builder = Figure.Create();
 
 			CombineMode mode = CombineMode.Union;
 
@@ -49,7 +48,7 @@ namespace Frost.DirectX
 
 			resolvedDestination.Combine(resolvedSource, mode, tolerance, this);
 
-			Geometry result = _Builder.Build();
+			Figure result = _Builder.Build();
 
 			_Builder = null;
 

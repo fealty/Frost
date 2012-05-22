@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -6,7 +6,7 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace Frost.Formatting
+namespace Frost.Shaping
 {
 	//TODO: add the OpenType features 
 	public struct FontFeature : IEquatable<FontFeature>
@@ -25,7 +25,8 @@ namespace Frost.Formatting
 			Contract.Assert(Parameter.Equals(parameter));
 		}
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			Contract.Invariant(_Tag != null);
 		}
@@ -85,7 +86,8 @@ namespace Frost.Formatting
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			Assert.Equal(string.Empty, new FontFeature(string.Empty).Tag);
 			Assert.Equal(2, new FontFeature(string.Empty, 2).Parameter);

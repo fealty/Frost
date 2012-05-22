@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -88,7 +88,8 @@ namespace Frost.Collections
 			private readonly int _Length;
 			private readonly int _StartIndex;
 
-			internal CollectionSlice(int startIndex, int length, ImmutableBase<T> collection)
+			internal CollectionSlice(
+				int startIndex, int length, ImmutableBase<T> collection)
 			{
 				Contract.Requires(startIndex >= 0);
 				Contract.Requires(length >= 0);
@@ -253,13 +254,15 @@ namespace Frost.Collections
 
 			T[] expected = new[]
 			{
-				@this._Items[1], @this._Items[2], @this._Items[3], @this._Items[4], @this._Items[5],
+				@this._Items[1], @this._Items[2], @this._Items[3], @this._Items[4],
+				@this._Items[5],
 				@this._Items[6], @this._Items[7], @this._Items[8]
 			};
 
 			Assert.Equal(expected, slice);
 
-			expected = new[] {slice[1], slice[2], slice[3], slice[4], slice[5], slice[6]};
+			expected = new[]
+			{slice[1], slice[2], slice[3], slice[4], slice[5], slice[6]};
 
 			slice = slice.TakeSlice(1, 6);
 

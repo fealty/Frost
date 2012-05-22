@@ -1,9 +1,9 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
 
-namespace Frost.Formatting
+namespace Frost.Shaping
 {
 	/// <summary>
 	///   indicates how text at a given character can be split
@@ -21,12 +21,12 @@ namespace Frost.Formatting
 		MayNotBreak,
 
 		/// <summary>
-		///  indicates that the text must be split
+		///   indicates that the text must be split
 		/// </summary>
 		MustBreak,
 
 		/// <summary>
-		///  indicates that the value depends on neighboring break conditions
+		///   indicates that the value depends on neighboring break conditions
 		/// </summary>
 		Neutral
 	}

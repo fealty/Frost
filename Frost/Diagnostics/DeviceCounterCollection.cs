@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -33,7 +33,9 @@ namespace Frost.Diagnostics
 			}
 		}
 
-		public bool Query<T>(string category, string name, out IDeviceCounter<T> result) where T : struct
+		public bool Query<T>(
+			string category, string name, out IDeviceCounter<T> result)
+			where T : struct
 		{
 			Contract.Requires(!String.IsNullOrWhiteSpace(category));
 			Contract.Requires(!String.IsNullOrWhiteSpace(name));

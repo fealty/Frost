@@ -10,17 +10,17 @@ using System.Threading;
 
 using Frost.Collections;
 
-namespace Frost.Formatting
+namespace Frost.Shaping
 {
 	//TODO: implementation must respect forced breaks
-	public abstract class GlyphShaper
+	public abstract class Shaper
 	{
 		private readonly Thread _BoundThread;
 		private readonly Device2D _Device2D;
 
 		private string _Text;
 
-		protected GlyphShaper(Device2D device2D)
+		protected Shaper(Device2D device2D)
 		{
 			Contract.Requires(device2D != null);
 

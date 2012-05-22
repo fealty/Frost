@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -8,32 +8,35 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-namespace Frost.Shaping
+namespace Frost.Construction
 {
-	public sealed class Geometry : IEquatable<Geometry>
+	public sealed class Figure : IEquatable<Figure>
 	{
-		[ThreadStatic] private static Builder _Builder;
+		[ThreadStatic]
+		private static Builder _Builder;
 
-		private static readonly Geometry _Square;
-		private static readonly Geometry _Circle;
+		private static readonly Figure _Square;
+		private static readonly Figure _Circle;
 
 		private readonly GeometryCommand[] _Commands;
 		private readonly Point[] _Points;
 
 		private Matrix3X2 _Transform;
 
-		static Geometry()
+		static Figure()
 		{
 			_Square =
-				Create().MoveTo(0.0f, 0.0f).LineTo(1.0f, 0.0f).LineTo(1.0f, 1.0f).LineTo(0.0f, 1.0f).LineTo(
-					0.0f, 0.0f).Build();
+				Create().MoveTo(0.0f, 0.0f).LineTo(1.0f, 0.0f).LineTo(1.0f, 1.0f).LineTo(
+					0.0f, 1.0f).LineTo(
+						0.0f, 0.0f).Build();
 
 			_Circle =
-				Create().MoveTo(0.5f, 0.0f).ArcTo(0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 0.5f).ArcTo(
-					0.5f, 1.0f, 0.5f, 0.0f, 0.5f, 0.5f).Build();
+				Create().MoveTo(0.5f, 0.0f).ArcTo(0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 0.5f).
+					ArcTo(
+						0.5f, 1.0f, 0.5f, 0.0f, 0.5f, 0.5f).Build();
 		}
 
-		private Geometry(Point[] points, GeometryCommand[] commands)
+		private Figure(Point[] points, GeometryCommand[] commands)
 		{
 			Contract.Requires(points != null);
 			Contract.Requires(commands != null);
@@ -43,7 +46,8 @@ namespace Frost.Shaping
 			_Transform = Matrix3X2.Identity;
 		}
 
-		private Geometry(Point[] points, GeometryCommand[] commands, ref Matrix3X2 transformation)
+		private Figure(
+			Point[] points, GeometryCommand[] commands, ref Matrix3X2 transformation)
 		{
 			Contract.Requires(points != null);
 			Contract.Requires(commands != null);
@@ -53,12 +57,12 @@ namespace Frost.Shaping
 			_Transform = transformation;
 		}
 
-		public static Geometry Circle
+		public static Figure Circle
 		{
 			get { return _Circle; }
 		}
 
-		public static Geometry Square
+		public static Figure Square
 		{
 			get { return _Square; }
 		}
@@ -79,125 +83,126 @@ namespace Frost.Shaping
 			return _Builder;
 		}
 
-		public Geometry Scale(float width, float height)
+		public Figure Scale(float width, float height)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Scale(width, height, out result);
 
-			return new Geometry(_Points, _Commands, ref result);
+			return new Figure(_Points, _Commands, ref result);
 		}
 
-		public Geometry Scale(Size size)
+		public Figure Scale(Size size)
 		{
 			Contract.Requires(Check.IsPositive(size.Width));
 			Contract.Requires(Check.IsPositive(size.Height));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
 			return Scale(size.Width, size.Height);
 		}
 
-		public Geometry Scale(float width, float height, float originX, float originY)
+		public Figure Scale(float width, float height, float originX, float originY)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Scale(width, height, originX, originY, out result);
 
-			return new Geometry(_Points, _Commands, ref result);
+			return new Figure(_Points, _Commands, ref result);
 		}
 
-		public Geometry Skew(float angleX, float angleY)
+		public Figure Skew(float angleX, float angleY)
 		{
 			Contract.Requires(Check.IsDegrees(angleX));
 			Contract.Requires(Check.IsDegrees(angleY));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Skew(angleX, angleY, out result);
 
-			return new Geometry(_Points, _Commands, ref result);
+			return new Figure(_Points, _Commands, ref result);
 		}
 
-		public Geometry Rotate(float angle)
+		public Figure Rotate(float angle)
 		{
 			Contract.Requires(Check.IsDegrees(angle));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Rotate(angle, out result);
 
-			return new Geometry(_Points, _Commands, ref result);
+			return new Figure(_Points, _Commands, ref result);
 		}
 
-		public Geometry Rotate(float angle, float originX, float originY)
+		public Figure Rotate(float angle, float originX, float originY)
 		{
 			Contract.Requires(Check.IsDegrees(angle));
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Rotate(angle, originX, originY, out result);
 
-			return new Geometry(_Points, _Commands, ref result);
+			return new Figure(_Points, _Commands, ref result);
 		}
 
-		public Geometry Rotate(float angle, Point origin)
+		public Figure Rotate(float angle, Point origin)
 		{
 			Contract.Requires(Check.IsDegrees(angle));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
 			return Rotate(angle, origin.X, origin.Y);
 		}
 
-		public Geometry Translate(float width, float height)
+		public Figure Translate(float width, float height)
 		{
 			Contract.Requires(Check.IsFinite(width));
 			Contract.Requires(Check.IsFinite(height));
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Translate(width, height, out result);
 
-			return new Geometry(_Points, _Commands, ref result);
+			return new Figure(_Points, _Commands, ref result);
 		}
 
-		public Geometry Translate(Size value)
+		public Figure Translate(Size value)
 		{
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
 			return Translate(value.Width, value.Height);
 		}
 
-		public Geometry Transform(
-			ref Matrix3X2 transformation, TransformMode operation = TransformMode.Multiply)
+		public Figure Transform(
+			ref Matrix3X2 transformation,
+			TransformMode operation = TransformMode.Multiply)
 		{
-			Contract.Ensures(Contract.Result<Geometry>() != null);
+			Contract.Ensures(Contract.Result<Figure>() != null);
 
 			if(operation == TransformMode.Replace)
 			{
-				return new Geometry(_Points, _Commands, ref transformation);
+				return new Figure(_Points, _Commands, ref transformation);
 			}
 
 			Matrix3X2 result;
 
 			transformation.Multiply(ref _Transform, out result);
 
-			return new Geometry(_Points, _Commands, ref result);
+			return new Figure(_Points, _Commands, ref result);
 		}
 
 		public void Extract(IGeometrySink sink)
@@ -237,7 +242,8 @@ namespace Frost.Shaping
 						pointIndex += 3;
 						continue;
 					case GeometryCommand.ArcTo:
-						Size radius = new Size(_Points[pointIndex + 2].X, _Points[pointIndex + 2].Y);
+						Size radius = new Size(
+							_Points[pointIndex + 2].X, _Points[pointIndex + 2].Y);
 						sink.ArcTo(
 							_Points[pointIndex + 0].Transform(ref _Transform),
 							_Points[pointIndex + 1].Transform(ref _Transform),
@@ -252,7 +258,8 @@ namespace Frost.Shaping
 			sink.End();
 		}
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			Contract.Invariant(_Points != null);
 			Contract.Invariant(_Commands != null);
@@ -275,11 +282,11 @@ namespace Frost.Shaping
 				_Transform = Matrix3X2.Identity;
 			}
 
-			public Geometry Build()
+			public Figure Build()
 			{
 				if(_Points.Count > 0 && _Commands.Count > 0)
 				{
-					return new Geometry(_Points.ToArray(), _Commands.ToArray());
+					return new Figure(_Points.ToArray(), _Commands.ToArray());
 				}
 
 				return null;
@@ -453,7 +460,8 @@ namespace Frost.Shaping
 					new Point(endPointX, endPointY));
 			}
 
-			public Builder BezierCurveTo(Point controlPoint1, Point controlPoint2, Point endPoint)
+			public Builder BezierCurveTo(
+				Point controlPoint1, Point controlPoint2, Point endPoint)
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
@@ -597,7 +605,8 @@ namespace Frost.Shaping
 				return Scale(size.Width, size.Height);
 			}
 
-			public Builder Scale(float width, float height, float originX, float originY)
+			public Builder Scale(
+				float width, float height, float originX, float originY)
 			{
 				Contract.Requires(Check.IsPositive(width));
 				Contract.Requires(Check.IsPositive(height));
@@ -670,7 +679,8 @@ namespace Frost.Shaping
 			}
 
 			public Builder Transform(
-				ref Matrix3X2 transformation, TransformMode operation = TransformMode.Multiply)
+				ref Matrix3X2 transformation,
+				TransformMode operation = TransformMode.Multiply)
 			{
 				Contract.Ensures(Contract.Result<Builder>() != null);
 
@@ -696,7 +706,7 @@ namespace Frost.Shaping
 			}
 		}
 
-		public bool Equals(Geometry other)
+		public bool Equals(Figure other)
 		{
 			if(ReferenceEquals(null, other))
 			{
@@ -709,7 +719,7 @@ namespace Frost.Shaping
 			}
 
 			return Equals(other._Commands, _Commands) && Equals(other._Points, _Points) &&
-			       other._Transform.Equals(_Transform);
+				other._Transform.Equals(_Transform);
 		}
 
 		public override bool Equals(object obj)
@@ -724,7 +734,7 @@ namespace Frost.Shaping
 				return true;
 			}
 
-			return obj is Geometry && Equals((Geometry)obj);
+			return obj is Figure && Equals((Figure)obj);
 		}
 
 		public override int GetHashCode()
@@ -738,12 +748,12 @@ namespace Frost.Shaping
 			}
 		}
 
-		public static bool operator ==(Geometry left, Geometry right)
+		public static bool operator ==(Figure left, Figure right)
 		{
 			return Equals(left, right);
 		}
 
-		public static bool operator !=(Geometry left, Geometry right)
+		public static bool operator !=(Figure left, Figure right)
 		{
 			return !Equals(left, right);
 		}
@@ -751,7 +761,7 @@ namespace Frost.Shaping
 #if(UNIT_TESTING)
 		private sealed class GeometrySink : IGeometrySink
 		{
-			public Geometry Geometry;
+			public Figure Figure;
 			private Builder _Builder;
 
 			public void Begin()
@@ -761,7 +771,7 @@ namespace Frost.Shaping
 
 			public void End()
 			{
-				Geometry = _Builder.Build();
+				Figure = _Builder.Build();
 			}
 
 			public void Close()
@@ -784,7 +794,8 @@ namespace Frost.Shaping
 				_Builder.QuadraticCurveTo(controlPoint, endPoint);
 			}
 
-			public void BezierCurveTo(Point controlPoint1, Point controlPoint2, Point controlPoint3)
+			public void BezierCurveTo(
+				Point controlPoint1, Point controlPoint2, Point controlPoint3)
 			{
 				_Builder.BezierCurveTo(controlPoint1, controlPoint2, controlPoint3);
 			}
@@ -795,25 +806,26 @@ namespace Frost.Shaping
 			}
 		}
 
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			GeometrySink sink = new GeometrySink();
 
 			Square.Scale(2.0f, 2.0f).Extract(sink);
 
-			Assert.Equal(sink.Geometry._Points[0], new Point(0.0f, 0.0f));
-			Assert.Equal(sink.Geometry._Points[1], new Point(2.0f, 0.0f));
-			Assert.Equal(sink.Geometry._Points[2], new Point(2.0f, 2.0f));
-			Assert.Equal(sink.Geometry._Points[3], new Point(0.0f, 2.0f));
-			Assert.Equal(sink.Geometry._Points[4], new Point(0.0f, 0.0f));
+			Assert.Equal(sink.Figure._Points[0], new Point(0.0f, 0.0f));
+			Assert.Equal(sink.Figure._Points[1], new Point(2.0f, 0.0f));
+			Assert.Equal(sink.Figure._Points[2], new Point(2.0f, 2.0f));
+			Assert.Equal(sink.Figure._Points[3], new Point(0.0f, 2.0f));
+			Assert.Equal(sink.Figure._Points[4], new Point(0.0f, 0.0f));
 
 			Square.Translate(2.0f, 2.0f).Extract(sink);
 
-			Assert.Equal(sink.Geometry._Points[0], new Point(2.0f, 2.0f));
-			Assert.Equal(sink.Geometry._Points[1], new Point(3.0f, 2.0f));
-			Assert.Equal(sink.Geometry._Points[2], new Point(3.0f, 3.0f));
-			Assert.Equal(sink.Geometry._Points[3], new Point(2.0f, 3.0f));
-			Assert.Equal(sink.Geometry._Points[4], new Point(2.0f, 2.0f));
+			Assert.Equal(sink.Figure._Points[0], new Point(2.0f, 2.0f));
+			Assert.Equal(sink.Figure._Points[1], new Point(3.0f, 2.0f));
+			Assert.Equal(sink.Figure._Points[2], new Point(3.0f, 3.0f));
+			Assert.Equal(sink.Figure._Points[3], new Point(2.0f, 3.0f));
+			Assert.Equal(sink.Figure._Points[4], new Point(2.0f, 2.0f));
 
 			Assert.TestObject(Square, Circle);
 		}

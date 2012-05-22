@@ -1,6 +1,4 @@
-﻿//  Licensing Information
-// =======================
-// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -22,7 +20,8 @@ namespace Frost
 		private readonly float _Right;
 		private readonly float _Top;
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			CContract.Invariant(Check.IsPositive(_Left));
 			CContract.Invariant(Check.IsPositive(_Top));
@@ -35,7 +34,7 @@ namespace Frost
 		private static readonly Thickness _Empty;
 
 		/// <summary>
-		/// gets the minimum value a <see cref="Thickness"/> can represent
+		///   gets the minimum value a <see cref="Thickness" /> can represent
 		/// </summary>
 		public static Thickness MinValue
 		{
@@ -48,7 +47,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the maximum value a <see cref="Thickness"/> can represent
+		///   gets the maximum value a <see cref="Thickness" /> can represent
 		/// </summary>
 		public static Thickness MaxValue
 		{
@@ -61,7 +60,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the default value of a <see cref="Thickness"/>
+		///   gets the default value of a <see cref="Thickness" />
 		/// </summary>
 		public static Thickness Empty
 		{
@@ -74,12 +73,12 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a <see cref="Thickness"/> from the thicknesses of four sides
+		///   constructs a <see cref="Thickness" /> from the thicknesses of four sides
 		/// </summary>
-		/// <param name="left">the thickness of the left side</param>
-		/// <param name="top">the thickness of the top side</param>
-		/// <param name="right">the thickness of the right side</param>
-		/// <param name="bottom">the thickness of the bottom side</param>
+		/// <param name="left"> the thickness of the left side </param>
+		/// <param name="top"> the thickness of the top side </param>
+		/// <param name="right"> the thickness of the right side </param>
+		/// <param name="bottom"> the thickness of the bottom side </param>
 		public Thickness(float left, float top, float right, float bottom)
 		{
 			CContract.Requires(Check.IsPositive(left));
@@ -99,10 +98,10 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a <see cref="Thickness"/> from two dual sides
+		///   constructs a <see cref="Thickness" /> from two dual sides
 		/// </summary>
-		/// <param name="leftRight">the thickness of the left and right sides</param>
-		/// <param name="topBottom">the thickness of the top and bottom sides</param>
+		/// <param name="leftRight"> the thickness of the left and right sides </param>
+		/// <param name="topBottom"> the thickness of the top and bottom sides </param>
 		public Thickness(float leftRight, float topBottom)
 			: this(leftRight, topBottom, leftRight, topBottom)
 		{
@@ -111,17 +110,21 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// constructs a <see cref="Thickness"/> from a thickness value
+		///   constructs a <see cref="Thickness" /> from a thickness value
 		/// </summary>
-		/// <param name="leftRightTopBottom">the thickness of the left, top, right, and bottom sides</param>
+		/// <param name="leftRightTopBottom"> the thickness of the left, top, right, and bottom sides </param>
 		public Thickness(float leftRightTopBottom)
-			: this(leftRightTopBottom, leftRightTopBottom, leftRightTopBottom, leftRightTopBottom)
+			: this(
+				leftRightTopBottom,
+				leftRightTopBottom,
+				leftRightTopBottom,
+				leftRightTopBottom)
 		{
 			CContract.Requires(Check.IsPositive(leftRightTopBottom));
 		}
 
 		/// <summary>
-		/// gets the thickness of the left side
+		///   gets the thickness of the left side
 		/// </summary>
 		public float Left
 		{
@@ -135,7 +138,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the thickness of the top side
+		///   gets the thickness of the top side
 		/// </summary>
 		public float Top
 		{
@@ -149,7 +152,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the thickness of the right side
+		///   gets the thickness of the right side
 		/// </summary>
 		public float Right
 		{
@@ -161,9 +164,9 @@ namespace Frost
 				return _Right;
 			}
 		}
-	
+
 		/// <summary>
-		/// gets the thickness of the bottom side
+		///   gets the thickness of the bottom side
 		/// </summary>
 		public float Bottom
 		{
@@ -177,7 +180,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the width (<see cref="Left"/> + <see cref="Right"/>) of the <see cref="Thickness"/>
+		///   gets the width ( <see cref="Left" /> + <see cref="Right" /> ) of the <see cref="Thickness" />
 		/// </summary>
 		public float Width
 		{
@@ -190,7 +193,7 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// gets the height (<see cref="Top"/> + <see cref="Bottom"/>) of the <see cref="Thickness"/>
+		///   gets the height ( <see cref="Top" /> + <see cref="Bottom" /> ) of the <see cref="Thickness" />
 		/// </summary>
 		public float Height
 		{
@@ -203,13 +206,13 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces a <see cref="Thickness"/> by contracting an existing <see cref="Thickness"/> on all sides
+		///   produces a <see cref="Thickness" /> by contracting an existing <see cref="Thickness" /> on all sides
 		/// </summary>
-		/// <param name="left">the amount to contract the left side</param>
-		/// <param name="top">the amount to contract the top side</param>
-		/// <param name="right">the amount to contract the right side</param>
-		/// <param name="bottom">the amount to contract the bottom side</param>
-		/// <returns>the <see cref="Thickness"/> contracted by the specified amounts</returns>
+		/// <param name="left"> the amount to contract the left side </param>
+		/// <param name="top"> the amount to contract the top side </param>
+		/// <param name="right"> the amount to contract the right side </param>
+		/// <param name="bottom"> the amount to contract the bottom side </param>
+		/// <returns> the <see cref="Thickness" /> contracted by the specified amounts </returns>
 		public Thickness Contract(float left, float top, float right, float bottom)
 		{
 			CContract.Requires(Check.IsFinite(left));
@@ -217,15 +220,16 @@ namespace Frost
 			CContract.Requires(Check.IsFinite(right));
 			CContract.Requires(Check.IsFinite(bottom));
 
-			return new Thickness(_Left - left, _Top - top, _Right - right, _Bottom - bottom);
+			return new Thickness(
+				_Left - left, _Top - top, _Right - right, _Bottom - bottom);
 		}
 
 		/// <summary>
-		/// produces a <see cref="Thickness"/> by contracting an existing <see cref="Thickness"/> on two dual sides
+		///   produces a <see cref="Thickness" /> by contracting an existing <see cref="Thickness" /> on two dual sides
 		/// </summary>
-		/// <param name="leftRight">the amount to contract the left and right sides</param>
-		/// <param name="topBottom">the amount to contract the top and bottom sides</param>
-		/// <returns>the <see cref="Thickness"/> contracted by the specified amounts</returns>
+		/// <param name="leftRight"> the amount to contract the left and right sides </param>
+		/// <param name="topBottom"> the amount to contract the top and bottom sides </param>
+		/// <returns> the <see cref="Thickness" /> contracted by the specified amounts </returns>
 		public Thickness Contract(float leftRight, float topBottom)
 		{
 			CContract.Requires(Check.IsFinite(leftRight));
@@ -235,36 +239,40 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces a <see cref="Thickness"/> by contracting an existing <see cref="Thickness"/> on all sides
+		///   produces a <see cref="Thickness" /> by contracting an existing <see cref="Thickness" /> on all sides
 		/// </summary>
-		/// <param name="leftRightTopBottom">the amount to contract the left, top, right, and bottom sides</param>
-		/// <returns>the <see cref="Thickness"/> contracted by the specified amount</returns>
+		/// <param name="leftRightTopBottom"> the amount to contract the left, top, right, and bottom sides </param>
+		/// <returns> the <see cref="Thickness" /> contracted by the specified amount </returns>
 		public Thickness Contract(float leftRightTopBottom)
 		{
 			CContract.Requires(Check.IsFinite(leftRightTopBottom));
 
-			return Contract(leftRightTopBottom, leftRightTopBottom, leftRightTopBottom, leftRightTopBottom);
+			return Contract(
+				leftRightTopBottom,
+				leftRightTopBottom,
+				leftRightTopBottom,
+				leftRightTopBottom);
 		}
 
 		/// <summary>
-		/// produces a <see cref="Thickness"/> by contracting an existing <see cref="Thickness"/> by a <see cref="Thickness"/>
+		///   produces a <see cref="Thickness" /> by contracting an existing <see cref="Thickness" /> by a <see cref="Thickness" />
 		/// </summary>
-		/// <param name="left">the <see cref="Thickness"/> to contract</param>
-		/// <param name="right">the <see cref="Thickness"/> to contract by</param>
-		/// <returns>the result of <paramref name="left"/> contracted by <see cref="right"/></returns>
+		/// <param name="left"> the <see cref="Thickness" /> to contract </param>
+		/// <param name="right"> the <see cref="Thickness" /> to contract by </param>
+		/// <returns> the result of <paramref name="left" /> contracted by <see cref="right" /> </returns>
 		public static Thickness operator -(Thickness left, Thickness right)
 		{
 			return left.Contract(right.Left, right.Top, right.Right, right.Bottom);
 		}
 
 		/// <summary>
-		/// produces a <see cref="Thickness"/> by expanding an existing <see cref="Thickness"/> on all sides
+		///   produces a <see cref="Thickness" /> by expanding an existing <see cref="Thickness" /> on all sides
 		/// </summary>
-		/// <param name="left">the amount to expand the left side</param>
-		/// <param name="top">the amount to expand the top side</param>
-		/// <param name="right">the amount to expand the right side</param>
-		/// <param name="bottom">the amount to expand the bottom side</param>
-		/// <returns>the <see cref="Thickness"/> expanded by the specified amounts</returns>
+		/// <param name="left"> the amount to expand the left side </param>
+		/// <param name="top"> the amount to expand the top side </param>
+		/// <param name="right"> the amount to expand the right side </param>
+		/// <param name="bottom"> the amount to expand the bottom side </param>
+		/// <returns> the <see cref="Thickness" /> expanded by the specified amounts </returns>
 		public Thickness Expand(float left, float top, float right, float bottom)
 		{
 			CContract.Requires(Check.IsFinite(left));
@@ -272,15 +280,16 @@ namespace Frost
 			CContract.Requires(Check.IsFinite(right));
 			CContract.Requires(Check.IsFinite(bottom));
 
-			return new Thickness(_Left + left, _Top + top, _Right + right, _Bottom + bottom);
+			return new Thickness(
+				_Left + left, _Top + top, _Right + right, _Bottom + bottom);
 		}
 
 		/// <summary>
-		/// produces a <see cref="Thickness"/> by expanding an existing <see cref="Thickness"/> on two dual sides
+		///   produces a <see cref="Thickness" /> by expanding an existing <see cref="Thickness" /> on two dual sides
 		/// </summary>
-		/// <param name="leftRight">the amount to expand the left and right sides</param>
-		/// <param name="topBottom">the amount to expand the top and bottom sides</param>
-		/// <returns>the <see cref="Thickness"/> expanded by the specified amounts</returns>
+		/// <param name="leftRight"> the amount to expand the left and right sides </param>
+		/// <param name="topBottom"> the amount to expand the top and bottom sides </param>
+		/// <returns> the <see cref="Thickness" /> expanded by the specified amounts </returns>
 		public Thickness Expand(float leftRight, float topBottom)
 		{
 			CContract.Requires(Check.IsFinite(leftRight));
@@ -290,56 +299,60 @@ namespace Frost
 		}
 
 		/// <summary>
-		/// produces a <see cref="Thickness"/> by expanding an existing <see cref="Thickness"/> on all sides
+		///   produces a <see cref="Thickness" /> by expanding an existing <see cref="Thickness" /> on all sides
 		/// </summary>
-		/// <param name="leftRightTopBottom">the amount to expand the left, top, right, and bottom sides</param>
-		/// <returns>the <see cref="Thickness"/> expanded by the specified amount</returns>
+		/// <param name="leftRightTopBottom"> the amount to expand the left, top, right, and bottom sides </param>
+		/// <returns> the <see cref="Thickness" /> expanded by the specified amount </returns>
 		public Thickness Expand(float leftRightTopBottom)
 		{
 			CContract.Requires(Check.IsFinite(leftRightTopBottom));
 
-			return Expand(leftRightTopBottom, leftRightTopBottom, leftRightTopBottom, leftRightTopBottom);
+			return Expand(
+				leftRightTopBottom,
+				leftRightTopBottom,
+				leftRightTopBottom,
+				leftRightTopBottom);
 		}
 
 		/// <summary>
-		/// produces a <see cref="Thickness"/> by expanding an existing <see cref="Thickness"/> by a <see cref="Thickness"/>
+		///   produces a <see cref="Thickness" /> by expanding an existing <see cref="Thickness" /> by a <see cref="Thickness" />
 		/// </summary>
-		/// <param name="left">the <see cref="Thickness"/> to expand</param>
-		/// <param name="right">the <see cref="Thickness"/> to expand by</param>
-		/// <returns>the result of <paramref name="left"/> expanded by <see cref="right"/></returns>
+		/// <param name="left"> the <see cref="Thickness" /> to expand </param>
+		/// <param name="right"> the <see cref="Thickness" /> to expand by </param>
+		/// <returns> the result of <paramref name="left" /> expanded by <see cref="right" /> </returns>
 		public static Thickness operator +(Thickness left, Thickness right)
 		{
 			return left.Expand(right.Left, right.Top, right.Right, right.Bottom);
 		}
 
 		/// <summary>
-		/// determines whether two instances of <see cref="Thickness"/> are equal
+		///   determines whether two instances of <see cref="Thickness" /> are equal
 		/// </summary>
-		/// <param name="left">the left operand</param>
-		/// <param name="right">the right operand</param>
-		/// <returns><c>true</c> if <paramref name="left"/> equals <paramref name="right"/>; otherwise, <c>false</c></returns>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> <c>true</c> if <paramref name="left" /> equals <paramref name="right" /> ; otherwise, <c>false</c> </returns>
 		public static bool operator ==(Thickness left, Thickness right)
 		{
 			return left.Equals(right);
 		}
 
 		/// <summary>
-		/// determines whether two instances of <see cref="Thickness"/> are not equal
+		///   determines whether two instances of <see cref="Thickness" /> are not equal
 		/// </summary>
-		/// <param name="left">the left operand</param>
-		/// <param name="right">the right operand</param>
-		/// <returns><c>true</c> if <paramref name="left"/> does not equal <paramref name="right"/>; otherwise, <c>false</c></returns>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> <c>true</c> if <paramref name="left" /> does not equal <paramref name="right" /> ; otherwise, <c>false</c> </returns>
 		public static bool operator !=(Thickness left, Thickness right)
 		{
 			return !left.Equals(right);
 		}
-	
+
 		public bool Equals(Thickness other)
 		{
 			return other._Bottom.Equals(_Bottom) &&
-			       other._Left.Equals(_Left) &&
-			       other._Right.Equals(_Right) &&
-			       other._Top.Equals(_Top);
+				other._Left.Equals(_Left) &&
+					other._Right.Equals(_Right) &&
+						other._Top.Equals(_Top);
 		}
 
 		public override bool Equals(object obj)
@@ -385,7 +398,8 @@ namespace Frost
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
 			Assert.Equal(0, new Thickness(0, 1, 2, 3).Left);
 			Assert.Equal(1, new Thickness(0, 1, 2, 3).Top);

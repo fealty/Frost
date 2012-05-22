@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -48,13 +48,13 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				return _IsTransformationInvalid;
 			}
 			set
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				_IsTransformationInvalid = value;
 			}
 		}
@@ -64,13 +64,13 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				return _IsOpacityInvalid;
 			}
 			set
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				_IsOpacityInvalid = value;
 			}
 		}
@@ -80,13 +80,13 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				return _IsEffectContextInvalid;
 			}
 			set
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				_IsEffectContextInvalid = value;
 			}
 		}
@@ -96,13 +96,13 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				return _IsBlendOperationInvalid;
 			}
 			set
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				_IsBlendOperationInvalid = value;
 			}
 		}
@@ -112,7 +112,7 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				return _ActiveTransformation;
 			}
 		}
@@ -122,7 +122,7 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				return _ActiveOpacity;
 			}
 		}
@@ -132,7 +132,7 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				return _ActiveEffectContext;
 			}
 		}
@@ -142,7 +142,7 @@ namespace Frost.Composition
 			get
 			{
 				Contract.Requires(ActiveTarget != null);
-				
+
 				return _ActiveBlendOperation;
 			}
 		}
@@ -225,7 +225,8 @@ namespace Frost.Composition
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Requires(ActiveTarget != null);
-				Contract.Ensures(Contract.Result<BlendOperation>() == _ActiveBlendOperation);
+				Contract.Ensures(
+					Contract.Result<BlendOperation>() == _ActiveBlendOperation);
 
 				return _ActiveBlendOperation;
 			}
@@ -249,7 +250,8 @@ namespace Frost.Composition
 			{
 				Contract.Requires(Thread.CurrentThread == BoundThread);
 				Contract.Requires(ActiveTarget != null);
-				Contract.Ensures(Contract.Result<Matrix3X2>().Equals(_ActiveTransformation));
+				Contract.Ensures(
+					Contract.Result<Matrix3X2>().Equals(_ActiveTransformation));
 
 				return _ActiveTransformation;
 			}
@@ -364,7 +366,7 @@ namespace Frost.Composition
 
 				if(dstRegion.Contains(srcRegion))
 				{
-					OnCopyResult(_Device2D.Resources.Resolve(destination));
+					OnCopyResult(_Device2D.Resources.ResolveCanvas(destination));
 
 					return;
 				}
@@ -393,7 +395,7 @@ namespace Frost.Composition
 						// translate to 2D surface coordinate space
 						sourceRegion = sourceRegion.Translate(_TargetDelta);
 
-						OnCopyResult(ref sourceRegion, _Device2D.Resources.Resolve(destination));
+						OnCopyResult(ref sourceRegion, _Device2D.Resources.ResolveCanvas(destination));
 
 						return;
 					}
@@ -401,7 +403,8 @@ namespace Frost.Composition
 					throw new InvalidOperationException("Destination cannot contain source!");
 				}
 
-				throw new InvalidOperationException("Source does not contain the source region!");
+				throw new InvalidOperationException(
+					"Source does not contain the source region!");
 			}
 		}
 
@@ -493,7 +496,7 @@ namespace Frost.Composition
 
 			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				OnComposite(_Device2D.Resources.Resolve(source));
+				OnComposite(_Device2D.Resources.ResolveCanvas(source));
 			}
 		}
 
@@ -508,7 +511,7 @@ namespace Frost.Composition
 				// translate to 2D surface coordinate space
 				location = location.Translate(_TargetDelta);
 
-				OnComposite(_Device2D.Resources.Resolve(source), ref location);
+				OnComposite(_Device2D.Resources.ResolveCanvas(source), ref location);
 			}
 		}
 
@@ -523,7 +526,7 @@ namespace Frost.Composition
 				// translate to 2D surface coordinate space
 				region = region.Translate(_TargetDelta);
 
-				OnComposite(_Device2D.Resources.Resolve(source), ref region);
+				OnComposite(_Device2D.Resources.ResolveCanvas(source), ref region);
 			}
 		}
 
@@ -535,7 +538,7 @@ namespace Frost.Composition
 
 			if(!_IsTargetEmpty && !source.Region.IsEmpty)
 			{
-				var sourceContext = _Device2D.Resources.Resolve(source);
+				var sourceContext = _Device2D.Resources.ResolveCanvas(source);
 
 				// translate to 2D surface coordinate space
 				srcRegion = srcRegion.Translate(sourceContext.Region.Location);
@@ -545,7 +548,8 @@ namespace Frost.Composition
 			}
 		}
 
-		public void Composite(Canvas source, Rectangle srcRegion, Rectangle dstRegion)
+		public void Composite(
+			Canvas source, Rectangle srcRegion, Rectangle dstRegion)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -553,7 +557,7 @@ namespace Frost.Composition
 
 			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				var sourceContext = _Device2D.Resources.Resolve(source);
+				var sourceContext = _Device2D.Resources.ResolveCanvas(source);
 
 				// translate to 2D surface coordinate space
 				srcRegion = srcRegion.Translate(sourceContext.Region.Location);
@@ -582,7 +586,7 @@ namespace Frost.Composition
 
 			if(!isTargetEmpty)
 			{
-				var targetContext = _Device2D.Resources.Resolve(target);
+				var targetContext = _Device2D.Resources.ResolveCanvas(target);
 
 				_TargetDelta = targetContext.Region.Location;
 
@@ -611,7 +615,11 @@ namespace Frost.Composition
 		}
 
 		public void CopyResult(
-			float sourceX, float sourceY, float sourceWidth, float sourceHeight, Canvas destination)
+			float sourceX,
+			float sourceY,
+			float sourceWidth,
+			float sourceHeight,
+			Canvas destination)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -621,7 +629,8 @@ namespace Frost.Composition
 			Contract.Requires(Check.IsPositive(sourceHeight));
 			Contract.Requires(destination != null);
 
-			Rectangle sourceRegion = new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight);
+			Rectangle sourceRegion = new Rectangle(
+				sourceX, sourceY, sourceWidth, sourceHeight);
 
 			if(!_IsTargetEmpty && !sourceRegion.IsEmpty)
 			{
@@ -637,7 +646,7 @@ namespace Frost.Composition
 						// translate to 2D surface coordinate space
 						sourceRegion = sourceRegion.Translate(_TargetDelta);
 
-						OnCopyResult(ref sourceRegion, _Device2D.Resources.Resolve(destination));
+						OnCopyResult(ref sourceRegion, _Device2D.Resources.ResolveCanvas(destination));
 
 						return;
 					}
@@ -645,7 +654,8 @@ namespace Frost.Composition
 					throw new InvalidOperationException("Destination cannot contain source!");
 				}
 
-				throw new InvalidOperationException("Source does not contain the source region!");
+				throw new InvalidOperationException(
+					"Source does not contain the source region!");
 			}
 		}
 
@@ -688,7 +698,12 @@ namespace Frost.Composition
 		}
 
 		public void CompositeResult(
-			float srcX, float srcY, float srcWidth, float srcHeight, float dstX, float dstY)
+			float srcX,
+			float srcY,
+			float srcWidth,
+			float srcHeight,
+			float dstX,
+			float dstY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -762,11 +777,12 @@ namespace Frost.Composition
 				// translate to 2D surface coordinate space
 				location = location.Translate(_TargetDelta);
 
-				OnComposite(_Device2D.Resources.Resolve(source), ref location);
+				OnComposite(_Device2D.Resources.ResolveCanvas(source), ref location);
 			}
 		}
 
-		public void Composite(Canvas source, float x, float y, float width, float height)
+		public void Composite(
+			Canvas source, float x, float y, float width, float height)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -783,12 +799,18 @@ namespace Frost.Composition
 				// translate to 2D surface coordinate space
 				region = region.Translate(_TargetDelta);
 
-				OnComposite(_Device2D.Resources.Resolve(source), ref region);
+				OnComposite(_Device2D.Resources.ResolveCanvas(source), ref region);
 			}
 		}
 
 		public void Composite(
-			Canvas source, float srcX, float srcY, float srcWidth, float srcHeight, float dstX, float dstY)
+			Canvas source,
+			float srcX,
+			float srcY,
+			float srcWidth,
+			float srcHeight,
+			float dstX,
+			float dstY)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
@@ -802,7 +824,7 @@ namespace Frost.Composition
 
 			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				var sourceContext = _Device2D.Resources.Resolve(source);
+				var sourceContext = _Device2D.Resources.ResolveCanvas(source);
 
 				Rectangle srcRegion = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 
@@ -841,7 +863,7 @@ namespace Frost.Composition
 
 			if(!_IsTargetEmpty && !source.IsEmpty)
 			{
-				var sourceContext = _Device2D.Resources.Resolve(source);
+				var sourceContext = _Device2D.Resources.ResolveCanvas(source);
 
 				Rectangle srcRegion = new Rectangle(srcX, srcY, srcWidth, srcHeight);
 				Rectangle dstRegion = new Rectangle(dstX, dstY, dstWidth, dstHeight);
@@ -1014,7 +1036,8 @@ namespace Frost.Composition
 			}
 		}
 
-		public void ApplyEffect<T>(T options) where T : struct, IEffectSettings, IEquatable<T>
+		public void ApplyEffect<T>(T options)
+			where T : struct, IEffectSettings, IEquatable<T>
 		{
 			var oldEffectContext = Effect as EffectContext<T>;
 
@@ -1026,7 +1049,7 @@ namespace Frost.Composition
 				}
 			}
 
-			Effect<T> effect = Device2D.Effects.Find<T>();
+			Effect<T> effect = Device2D.Resources.FindEffect<T>();
 
 			Effect = effect != null ? new EffectContext<T>(effect, options) : null;
 		}
@@ -1048,11 +1071,15 @@ namespace Frost.Composition
 		protected abstract void OnCompositeResult(ref Point location);
 		protected abstract void OnCompositeResult(ref Rectangle region);
 
-		protected abstract void OnCompositeResult(ref Rectangle srcRegion, ref Point dstLocation);
+		protected abstract void OnCompositeResult(
+			ref Rectangle srcRegion, ref Point dstLocation);
 
-		protected abstract void OnCompositeResult(ref Rectangle srcRegion, ref Rectangle dstRegion);
+		protected abstract void OnCompositeResult(
+			ref Rectangle srcRegion, ref Rectangle dstRegion);
 
-		protected abstract void OnBegin(Canvas.ResolvedContext target, Retention retention);
+		protected abstract void OnBegin(
+			Canvas.ResolvedContext target, Retention retention);
+
 		protected abstract void OnEnd();
 
 		protected abstract void OnCopyResult(Canvas.ResolvedContext destination);
@@ -1062,14 +1089,20 @@ namespace Frost.Composition
 
 		protected abstract void OnComposite(Canvas.ResolvedContext source);
 
-		protected abstract void OnComposite(Canvas.ResolvedContext source, ref Point location);
-
-		protected abstract void OnComposite(Canvas.ResolvedContext source, ref Rectangle region);
+		protected abstract void OnComposite(
+			Canvas.ResolvedContext source, ref Point location);
 
 		protected abstract void OnComposite(
-			Canvas.ResolvedContext source, ref Rectangle srcRegion, ref Point dstLocation);
+			Canvas.ResolvedContext source, ref Rectangle region);
 
 		protected abstract void OnComposite(
-			Canvas.ResolvedContext source, ref Rectangle srcRegion, ref Rectangle dstRegion);
+			Canvas.ResolvedContext source,
+			ref Rectangle srcRegion,
+			ref Point dstLocation);
+
+		protected abstract void OnComposite(
+			Canvas.ResolvedContext source,
+			ref Rectangle srcRegion,
+			ref Rectangle dstRegion);
 	}
 }

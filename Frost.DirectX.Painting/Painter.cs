@@ -10,6 +10,7 @@ using System.Diagnostics.Contracts;
 
 using Frost.DirectX.Common;
 using Frost.DirectX.Common.Diagnostics;
+using Frost.Construction;
 using Frost.Painting;
 using Frost.Surfacing;
 
@@ -17,7 +18,6 @@ using SharpDX;
 using SharpDX.Direct2D1;
 using SharpDX.Direct3D10;
 
-using Geometry = Frost.Shaping.Geometry;
 using LineJoin = Frost.Painting.LineJoin;
 
 namespace Frost.DirectX.Painting
@@ -166,18 +166,18 @@ namespace Frost.DirectX.Painting
 			_Drawer.Fill(rectangleRegion, roundedRadius, _ActiveBrush);
 		}
 
-		protected override void OnStroke(Geometry geometry)
+		protected override void OnStroke(Figure figure)
 		{
 			Reconfigure();
 
-			_Drawer.Stroke(geometry, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
+			_Drawer.Stroke(figure, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
 		}
 
-		protected override void OnFill(Geometry geometry)
+		protected override void OnFill(Figure figure)
 		{
 			Reconfigure();
 
-			_Drawer.Fill(geometry, _ActiveBrush);
+			_Drawer.Fill(figure, _ActiveBrush);
 		}
 
 		protected override void OnSaveState()

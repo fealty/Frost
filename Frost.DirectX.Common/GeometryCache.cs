@@ -6,10 +6,11 @@
 using System;
 using System.Diagnostics.Contracts;
 
+using Frost.Construction;
+
 using SharpDX.Direct2D1;
 
 using DxGeometry = SharpDX.Direct2D1.Geometry;
-using Geometry = Frost.Shaping.Geometry;
 
 namespace Frost.DirectX.Common
 {
@@ -19,7 +20,7 @@ namespace Frost.DirectX.Common
 
 		private readonly GeometryBuilder _Builder;
 
-		private readonly CacheDictionary<Geometry, DxGeometry> _Cache;
+		private readonly CacheDictionary<Figure, DxGeometry> _Cache;
 
 		private readonly Factory _Factory2D;
 
@@ -31,7 +32,7 @@ namespace Frost.DirectX.Common
 
 			_Builder = new GeometryBuilder(_Factory2D);
 
-			_Cache = new CacheDictionary<Geometry, DxGeometry>(CacheLimit);
+			_Cache = new CacheDictionary<Figure, DxGeometry>(CacheLimit);
 		}
 
 		public void Dispose()
@@ -39,23 +40,23 @@ namespace Frost.DirectX.Common
 			Dispose(true);
 		}
 
-		public DxGeometry ResolveGeometry(Geometry geometry)
+		public DxGeometry ResolveGeometry(Figure figure)
 		{
-			Contract.Requires(geometry != null);
+			Contract.Requires(figure != null);
 			Contract.Ensures(Contract.Result<DxGeometry>() != null);
 
 			DxGeometry newGeometry;
 
-			if(_Cache.TryGetValue(geometry, out newGeometry))
+			if(_Cache.TryGetValue(figure, out newGeometry))
 			{
 				return newGeometry;
 			}
 
-			_Builder.Build(geometry, out newGeometry);
+			_Builder.Build(figure, out newGeometry);
 
 			try
 			{
-				_Cache.Add(geometry, newGeometry);
+				_Cache.Add(figure, newGeometry);
 			}
 			catch
 			{

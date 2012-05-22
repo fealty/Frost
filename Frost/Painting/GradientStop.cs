@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -73,7 +73,8 @@ namespace Frost.Painting
 			return string.Format("Position: {0}, Color: {1}", _Position, _Color);
 		}
 
-		[ContractInvariantMethod] private void Invariant()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
 			Contract.Invariant(Check.IsNormalized(_Position));
 		}
@@ -89,9 +90,11 @@ namespace Frost.Painting
 		}
 
 #if(UNIT_TESTING)
-		[Fact] internal static void Test0()
+		[Fact]
+		internal static void Test0()
 		{
-			Assert.TestObject(new GradientStop(0.0f, Color.Red), new GradientStop(1.0f, Color.Blue));
+			Assert.TestObject(
+				new GradientStop(0.0f, Color.Red), new GradientStop(1.0f, Color.Blue));
 		}
 #endif
 	}

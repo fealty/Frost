@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -61,9 +61,11 @@ namespace Frost.Effects
 
 		public bool Equals(BatchedItem other)
 		{
-			return other._Blend == _Blend && other._Transformation.Equals(_Transformation) &&
-			       other._SourceRegion.Equals(_SourceRegion) &&
-			       other._DestinationRegion.Equals(_DestinationRegion) && Equals(other._Canvas, _Canvas);
+			return other._Blend == _Blend &&
+				other._Transformation.Equals(_Transformation) &&
+					other._SourceRegion.Equals(_SourceRegion) &&
+						other._DestinationRegion.Equals(_DestinationRegion) &&
+							Equals(other._Canvas, _Canvas);
 		}
 
 		public override bool Equals(object obj)

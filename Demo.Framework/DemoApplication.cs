@@ -232,10 +232,10 @@ namespace Demo.Framework
 			}
 			else if(e.KeyChar == 'd')
 			{
-				DumpToPNGFiles(_Device2D.Resources.GetSurfaces(SurfaceUsage.Normal));
-				DumpToPNGFiles(_Device2D.Resources.GetSurfaces(SurfaceUsage.Dynamic));
-				DumpToPNGFiles(_Device2D.Resources.GetSurfaces(SurfaceUsage.External));
-				DumpToPNGFiles(_Device2D.Resources.GetSurfaces(SurfaceUsage.Private));
+				DumpToPNGFiles(_Device2D.Resources.GetPages(SurfaceUsage.Normal));
+				DumpToPNGFiles(_Device2D.Resources.GetPages(SurfaceUsage.Dynamic));
+				DumpToPNGFiles(_Device2D.Resources.GetPages(SurfaceUsage.External));
+				DumpToPNGFiles(_Device2D.Resources.GetPages(SurfaceUsage.Private));
 			}
 			else if(e.KeyChar == 'r')
 			{
@@ -318,7 +318,7 @@ namespace Demo.Framework
 
 			_Context = context;
 
-			_Device2D.ProcessTick();
+			_Device2D.ProcessFrame();
 
 			if(_IsResetQueued)
 			{

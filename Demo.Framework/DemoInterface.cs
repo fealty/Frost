@@ -41,7 +41,7 @@ namespace Demo.Framework
 			Canvas demoTarget = new Canvas(demoRegion.Size);
 
 			// resolve the new resource to avoid timing problems
-			device2D.Resources.Resolve(demoTarget);
+			device2D.Resources.ResolveCanvas(demoTarget);
 
 			// track memory usage and reset the clock
 			long oldMemoryUsage = GC.GetTotalMemory(true);

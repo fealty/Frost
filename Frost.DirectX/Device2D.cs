@@ -13,6 +13,7 @@ using Frost.DirectX.Common;
 using Frost.DirectX.Composition;
 using Frost.DirectX.Painting;
 using Frost.Painting;
+using Frost.Construction;
 using Frost.Shaping;
 using Frost.Surfacing;
 
@@ -81,6 +82,11 @@ namespace Frost.DirectX
 			get { return _CompositionDevice.Compositor; }
 		}
 
+		public override Shaper Shaper
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		public override Painter Painter
 		{
 			get { return _DrawingDevice.Painter; }
@@ -118,7 +124,7 @@ namespace Frost.DirectX
 			Dispose(true);
 		}
 
-		public override void ProcessTick()
+		public override void ProcessFrame()
 		{
 			InvalidateResources();
 
@@ -146,7 +152,7 @@ namespace Frost.DirectX
 		}
 
 		protected override Point OnDeterminePoint(
-			Geometry path, float length, float tolerance, out Point tangentVector)
+			Figure path, float length, float tolerance, out Point tangentVector)
 		{
 			lock(_Lock)
 			{
@@ -168,7 +174,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override float OnMeasureLength(Geometry path, float tolerance)
+		protected override float OnMeasureLength(Figure path, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -183,7 +189,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override float OnMeasureArea(Geometry path, float tolerance)
+		protected override float OnMeasureArea(Figure path, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -199,7 +205,7 @@ namespace Frost.DirectX
 		}
 
 		protected override void OnTessellate(
-			Geometry path, float tolerance, ITessellationSink sink)
+			Figure path, float tolerance, ITessellationSink sink)
 		{
 			lock(_Lock)
 			{
@@ -214,9 +220,9 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Geometry OnCombine(
-			Geometry sourcePath,
-			Geometry destinationPath,
+		protected override Figure OnCombine(
+			Figure sourcePath,
+			Figure destinationPath,
 			float tolerance,
 			CombinationOperation operation)
 		{
@@ -244,7 +250,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Rectangle OnMeasureRegion(Geometry path)
+		protected override Rectangle OnMeasureRegion(Figure path)
 		{
 			lock(_Lock)
 			{
@@ -262,8 +268,8 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Geometry OnWiden(
-			Geometry path, float width, float tolerance)
+		protected override Figure OnWiden(
+			Figure path, float width, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -278,7 +284,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Geometry OnSimplify(Geometry path, float tolerance)
+		protected override Figure OnSimplify(Figure path, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -294,7 +300,7 @@ namespace Frost.DirectX
 		}
 
 		protected override bool OnContains(
-			Geometry path, Point point, float tolerance)
+			Figure path, Point point, float tolerance)
 		{
 			lock(_Lock)
 			{

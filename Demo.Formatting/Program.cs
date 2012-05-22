@@ -10,7 +10,7 @@ using Demo.Framework;
 
 using Frost;
 using Frost.Collections;
-using Frost.Formatting;
+using Frost.Shaping;
 using Frost.Painting;
 
 using SD = System.Drawing;
@@ -31,6 +31,8 @@ namespace Demo.Formatting
 
 		public void Reset(Canvas target, Device2D device2D)
 		{
+			
+
 			/*_Paragraphs.Clear();
 
 			FontMetrics fontMetrics = device2D.Formatter.MeasureFont(
