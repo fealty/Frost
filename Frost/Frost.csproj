@@ -136,13 +136,10 @@
     <Compile Include="Formatting\BreakCondition.cs" />
     <Compile Include="Formatting\FontIdentifier.cs" />
     <Compile Include="Formatting\Helpers.cs" />
-    <Compile Include="Formatting\ShapedCluster.cs" />
     <Compile Include="Formatting\Enumerations.cs" />
     <Compile Include="Formatting\FontFeature.cs" />
     <Compile Include="Formatting\FontFeatureCollection.cs" />
     <Compile Include="Formatting\FontMetrics.cs" />
-    <Compile Include="Formatting\ShapedGlyph.cs" />
-    <Compile Include="Formatting\ShapedSpan.cs" />
     <Compile Include="Formatting\TextShaper.cs" />
     <Compile Include="Formatting\IShapedText.cs" />
     <Compile Include="Formatting\LineBreakpoint.cs" />

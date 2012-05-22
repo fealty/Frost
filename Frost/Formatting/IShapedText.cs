@@ -4,10 +4,10 @@ namespace Frost.Formatting
 {
 	public interface IShapedText
 	{
-		List<ShapedGlyph> Glyphs { get; }
+		List<TextShaper.Glyph> Glyphs { get; }
 
-		List<ShapedCluster> Clusters { get; }
+		List<TextShaper.Cluster> Clusters { get; }
 
-		List<ShapedSpan> Spans { get; }
+		List<TextShaper.Span> Spans { get; }
 	}
 }

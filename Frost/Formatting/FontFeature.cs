@@ -8,6 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Formatting
 {
+	//TODO: add the OpenType features 
 	public struct FontFeature : IEquatable<FontFeature>
 	{
 		private readonly string _Tag;

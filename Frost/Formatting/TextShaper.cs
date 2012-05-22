@@ -3,6 +3,7 @@
 // 
 // See LICENSE for more information.
 
+using System;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 
@@ -104,19 +105,13 @@ namespace Frost.Formatting
 			OnSetWeight(textRange, weight);
 		}
 
-		public void SetInline(
-			IndexedRange textRange,
-			Size inline,
-			Alignment hAlignment,
-			Alignment vAlignment)
+		public void SetInline(IndexedRange textRange, object inlineObject)
 		{
 			Contract.Requires(Paragraph != null);
 			Contract.Requires(textRange.IsWithin(Paragraph));
 			Contract.Requires(textRange.Length == 1);
-			Contract.Requires(Check.IsPositive(inline.Width));
-			Contract.Requires(Check.IsPositive(inline.Height));
 
-			OnSetInline(textRange, inline, hAlignment, vAlignment);
+			OnSetInline(textRange, inlineObject);
 		}
 
 		public void End()
@@ -131,10 +126,7 @@ namespace Frost.Formatting
 		protected abstract void OnBegin(IShapedText outputSink);
 
 		protected abstract void OnSetInline(
-			IndexedRange textRange,
-			Size inline,
-			Alignment hAlignment,
-			Alignment vAlignment);
+			IndexedRange textRange, object inlineObject);
 
 		protected abstract void OnSetWeight(
 			IndexedRange textRange, FontWeight weight);
@@ -164,5 +156,275 @@ namespace Frost.Formatting
 			IndexedRange textRange, FontFeatureCollection features);
 
 		protected abstract void OnEnd();
+
+		public struct Cluster : IEquatable<Cluster>
+		{
+			private readonly float _Advance;
+			private readonly LineBreakpoint _Breakpoint;
+
+			private readonly IndexedRange _Text;
+			private readonly IndexedRange _Glyphs;
+
+			public Cluster(
+				float advance,
+				LineBreakpoint breakpoint,
+				IndexedRange glyphs,
+				IndexedRange text)
+			{
+				Contract.Requires(Check.IsFinite(advance));
+
+				_Advance = advance;
+				_Breakpoint = breakpoint;
+				_Glyphs = glyphs;
+				_Text = text;
+			}
+
+			public IndexedRange Glyphs
+			{
+				get { return _Glyphs; }
+			}
+
+			public IndexedRange Text
+			{
+				get { return _Text; }
+			}
+
+			public LineBreakpoint Breakpoint
+			{
+				get { return _Breakpoint; }
+			}
+
+			public float Advance
+			{
+				get { return _Advance; }
+			}
+
+			public bool Equals(Cluster other)
+			{
+				return other._Advance.Equals(_Advance) &&
+					other._Breakpoint.Equals(_Breakpoint) && other._Text.Equals(_Text) &&
+						other._Glyphs.Equals(_Glyphs);
+			}
+
+			public override bool Equals(object obj)
+			{
+				if (ReferenceEquals(null, obj))
+				{
+					return false;
+				}
+
+				return obj is Cluster && Equals((Cluster)obj);
+			}
+
+			public override int GetHashCode()
+			{
+				unchecked
+				{
+					int result = _Advance.GetHashCode();
+					result = (result * 397) ^ _Breakpoint.GetHashCode();
+					result = (result * 397) ^ _Text.GetHashCode();
+					result = (result * 397) ^ _Glyphs.GetHashCode();
+					return result;
+				}
+			}
+
+			public static bool operator ==(Cluster left, Cluster right)
+			{
+				return left.Equals(right);
+			}
+
+			public static bool operator !=(Cluster left, Cluster right)
+			{
+				return !left.Equals(right);
+			}
+
+			public override string ToString()
+			{
+				return
+					string.Format(
+						"Advance: {0}, Breakpoint: {1}, Glyphs: {2}, Text: {3}",
+						_Advance,
+						_Breakpoint,
+						_Glyphs,
+						_Text);
+			}
+		}
+
+		public struct Glyph : IEquatable<Glyph>
+		{
+			private readonly float _Advance;
+			private readonly short _Index;
+			private readonly Size _Offset;
+
+			public Glyph(float advance, short index, Size offset)
+			{
+				Contract.Requires(Check.IsFinite(advance));
+				Contract.Requires(Check.IsPositive(index));
+
+				_Advance = advance;
+				_Index = index;
+				_Offset = offset;
+			}
+
+			public bool Equals(Glyph other)
+			{
+				return other._Advance.Equals(_Advance) &&
+					other._Index == _Index &&
+						other._Offset.Equals(_Offset);
+			}
+
+			public override bool Equals(object obj)
+			{
+				if (ReferenceEquals(null, obj))
+				{
+					return false;
+				}
+
+				return obj is Glyph && Equals((Glyph)obj);
+			}
+
+			public override int GetHashCode()
+			{
+				unchecked
+				{
+					int result = _Advance.GetHashCode();
+					result = (result * 397) ^ _Index.GetHashCode();
+					result = (result * 397) ^ _Offset.GetHashCode();
+					return result;
+				}
+			}
+
+			public static bool operator ==(Glyph left, Glyph right)
+			{
+				return left.Equals(right);
+			}
+
+			public static bool operator !=(Glyph left, Glyph right)
+			{
+				return !left.Equals(right);
+			}
+
+			public override string ToString()
+			{
+				return string.Format(
+					"Advance: {0}, Index: {1}, Offset: {2}", _Advance, _Index, _Offset);
+			}
+		}
+
+		public struct Span : IEquatable<Span>
+		{
+			private readonly FontIdentifier _FontId;
+
+			private readonly float _PointSize;
+			private readonly byte _BidiLevel;
+
+			private readonly IndexedRange _Text;
+			private readonly IndexedRange _Clusters;
+
+			private readonly object _Inline;
+
+			public Span(
+				IndexedRange text,
+				IndexedRange clusters,
+				float pointSize,
+				FontIdentifier fontId,
+				byte bidiLevel,
+				object inline = null)
+			{
+				_Text = text;
+				_Clusters = clusters;
+				_PointSize = pointSize;
+				_FontId = fontId;
+				_BidiLevel = bidiLevel;
+				_Inline = inline;
+			}
+
+			public object Inline
+			{
+				get { return _Inline; }
+			}
+
+			public IndexedRange Clusters
+			{
+				get { return _Clusters; }
+			}
+
+			public IndexedRange Text
+			{
+				get { return _Text; }
+			}
+
+			public byte BidiLevel
+			{
+				get { return _BidiLevel; }
+			}
+
+			public float PointSize
+			{
+				get { return _PointSize; }
+			}
+
+			public FontIdentifier FontId
+			{
+				get { return _FontId; }
+			}
+
+			public bool Equals(Span other)
+			{
+				return other._FontId.Equals(_FontId) &&
+					other._PointSize.Equals(_PointSize) &&
+						other._BidiLevel == _BidiLevel &&
+							other._Text.Equals(_Text) &&
+								other._Clusters.Equals(_Clusters) &&
+									Equals(other._Inline, _Inline);
+			}
+
+			public override bool Equals(object obj)
+			{
+				if (ReferenceEquals(null, obj))
+				{
+					return false;
+				}
+
+				return obj is Span && Equals((Span)obj);
+			}
+
+			public override int GetHashCode()
+			{
+				unchecked
+				{
+					int result = _FontId.GetHashCode();
+					result = (result * 397) ^ _PointSize.GetHashCode();
+					result = (result * 397) ^ _BidiLevel.GetHashCode();
+					result = (result * 397) ^ _Text.GetHashCode();
+					result = (result * 397) ^ _Clusters.GetHashCode();
+					result = (result * 397) ^ (_Inline != null ? _Inline.GetHashCode() : 0);
+					return result;
+				}
+			}
+
+			public static bool operator ==(Span left, Span right)
+			{
+				return left.Equals(right);
+			}
+
+			public static bool operator !=(Span left, Span right)
+			{
+				return !left.Equals(right);
+			}
+
+			public override string ToString()
+			{
+				return
+					string.Format(
+						"Text: {0}, Clusters: {1}, PointSize: {2}, FontId: {3}, Inline: {4}, BidiLevel: {5}",
+						_Text,
+						_Clusters,
+						_PointSize,
+						_FontId,
+						_Inline,
+						_BidiLevel);
+			}
+		}
 	}
 }

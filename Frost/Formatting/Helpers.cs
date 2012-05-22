@@ -11,7 +11,7 @@ namespace Frost.Formatting
 	public static class Helpers
 	{
 		public static bool IsBrokenAfter(
-			this List<ShapedCluster> clusters,
+			this List<TextShaper.Cluster> clusters,
 			int index,
 			ref bool isForced,
 			bool isStandaloneCall = true)
@@ -19,7 +19,7 @@ namespace Frost.Formatting
 			Contract.Requires(index >= 0);
 			Contract.Requires(clusters != null);
 
-			ShapedCluster cluster;
+			TextShaper.Cluster cluster;
 
 			if(clusters.TryCurrentOrDefault(index, out cluster))
 			{
@@ -43,7 +43,7 @@ namespace Frost.Formatting
 		}
 
 		public static bool IsBrokenBefore(
-			this List<ShapedCluster> clusters,
+			this List<TextShaper.Cluster> clusters,
 			int index,
 			ref bool isForced,
 			bool isStandaloneCall = true)
@@ -51,7 +51,7 @@ namespace Frost.Formatting
 			Contract.Requires(index >= 0);
 			Contract.Requires(clusters != null);
 
-			ShapedCluster cluster;
+			TextShaper.Cluster cluster;
 
 			if(clusters.TryCurrentOrDefault(index, out cluster))
 			{
