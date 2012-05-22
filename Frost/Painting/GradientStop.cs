@@ -88,14 +88,5 @@ namespace Frost.Painting
 		{
 			return !left.Equals(right);
 		}
-
-#if(UNIT_TESTING)
-		[Fact]
-		internal static void Test0()
-		{
-			Assert.TestObject(
-				new GradientStop(0.0f, Color.Red), new GradientStop(1.0f, Color.Blue));
-		}
-#endif
 	}
 }

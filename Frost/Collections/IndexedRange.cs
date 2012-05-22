@@ -212,38 +212,5 @@ namespace Frost.Collections
 		{
 			return !left.Equals(right);
 		}
-
-#if(UNIT_TESTING)
-		[Fact]
-		internal static void Test0()
-		{
-			Assert.Equal(1, new IndexedRange(1, 5).StartIndex);
-			Assert.Equal(5, new IndexedRange(1, 5).LastIndex);
-			Assert.Equal(5, new IndexedRange(1, 5).Length);
-
-			int[] expectedValues = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-
-			Assert.Equal(expectedValues, new IndexedRange(0, 10));
-
-			IndexedRange testSlice = new IndexedRange(0, 10).Slice(0);
-
-			Assert.Equal(expectedValues, testSlice);
-
-			int[] expectedSlice = {2, 3, 4, 5};
-
-			testSlice = testSlice.Slice(2, 4);
-
-			Assert.Equal(expectedSlice, testSlice);
-
-			foreach(int index in ((IEnumerable<int>)testSlice))
-			{
-				Assert.Equal(index, index);
-
-				new Enumerator().Reset();
-			}
-
-			Assert.TestObject(Empty, new IndexedRange(2, 5));
-		}
-#endif
 	}
 }

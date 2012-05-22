@@ -227,47 +227,5 @@ namespace Frost.Collections
 				get { return _Collection._Items[_Index]; }
 			}
 		}
-
-#if(UNIT_TESTING)
-		protected static void TestDerived(ImmutableBase<T> @this)
-		{
-			Contract.Requires(@this != null);
-
-			Assert.Equal(10, @this.Count);
-			Assert.Equal(@this._Items, @this);
-
-			foreach(T item in @this)
-			{
-				Assert.Equal(item, item);
-			}
-
-			new Enumerator().Reset();
-
-			var slice = @this.TakeSlice(1, 8);
-
-			foreach(T item in slice)
-			{
-				Assert.Equal(item, item);
-			}
-
-			new CollectionSlice.Enumerator().Reset();
-
-			T[] expected = new[]
-			{
-				@this._Items[1], @this._Items[2], @this._Items[3], @this._Items[4],
-				@this._Items[5],
-				@this._Items[6], @this._Items[7], @this._Items[8]
-			};
-
-			Assert.Equal(expected, slice);
-
-			expected = new[]
-			{slice[1], slice[2], slice[3], slice[4], slice[5], slice[6]};
-
-			slice = slice.TakeSlice(1, 6);
-
-			Assert.Equal(expected, slice);
-		}
-#endif
 	}
 }

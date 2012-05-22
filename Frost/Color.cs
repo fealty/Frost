@@ -987,31 +987,5 @@ namespace Frost
 		{
 			return !left.Equals(right);
 		}
-
-#if(UNIT_TESTING)
-
-		[Fact]
-		internal void Test0()
-		{
-			Assert.Equal(0, new Color(0, 0.25f, 0.5f).R);
-			Assert.Equal(0.25f, new Color(0, 0.25f, 0.5f).G);
-			Assert.Equal(0.5f, new Color(0, 0.25f, 0.5f).B);
-			Assert.Equal(1, new Color(0, 0.25f, 0.5f).A);
-
-			Assert.TestObject(Red, Blue);
-
-			Assert.Equal<Color>(new Color(1, 0, 0), new HSVColor(000, 100, 100));
-			Assert.Equal<Color>(new Color(1, 1, 0), new HSVColor(060, 100, 100));
-			Assert.Equal<Color>(new Color(0, 1, 0), new HSVColor(120, 100, 100));
-			Assert.Equal<Color>(new Color(0, 1, 1), new HSVColor(180, 100, 100));
-			Assert.Equal<Color>(new Color(0, 0, 1), new HSVColor(240, 100, 100));
-			Assert.Equal<Color>(new Color(1, 0, 1), new HSVColor(360, 100, 100));
-			Assert.Equal<Color>(new Color(1, 1, 1), new HSVColor(180, 000, 100));
-
-			Assert.Equal<Color>(new Color(0, 0, 0), new RGBColor(000, 000, 000));
-			Assert.Equal<Color>(new Color(1, 1, 1), new RGBColor(255, 255, 255));
-		}
-
-#endif
 	}
 }

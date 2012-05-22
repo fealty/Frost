@@ -442,37 +442,5 @@ namespace Frost
 		{
 			return !left.Equals(right);
 		}
-
-#if(UNIT_TESTING)
-		[Fact]
-		internal static void Test0()
-		{
-			Assert.Equal(0, new Matrix3X2(0, 1, 2, 3, 4, 5).M11);
-			Assert.Equal(1, new Matrix3X2(0, 1, 2, 3, 4, 5).M12);
-			Assert.Equal(2, new Matrix3X2(0, 1, 2, 3, 4, 5).M21);
-			Assert.Equal(3, new Matrix3X2(0, 1, 2, 3, 4, 5).M22);
-			Assert.Equal(4, new Matrix3X2(0, 1, 2, 3, 4, 5).M31);
-			Assert.Equal(5, new Matrix3X2(0, 1, 2, 3, 4, 5).M32);
-
-			Assert.True(Identity.IsIdentity);
-
-			Matrix3X2 matrix1;
-			Matrix3X2 matrix2;
-
-			Identity.Rotate(50, out matrix1);
-			Identity.Rotate(50, 0, 0, out matrix2);
-
-			Assert.Equal(matrix1, matrix2);
-
-			Identity.Scale(2, 2, out matrix1);
-			Identity.Scale(2, 2, 0, 0, out matrix2);
-
-			Assert.Equal(matrix1, matrix2);
-
-			Identity.Skew(50, 50, out matrix1);
-
-			Assert.TestObject(Identity, matrix1);
-		}
-#endif
 	}
 }

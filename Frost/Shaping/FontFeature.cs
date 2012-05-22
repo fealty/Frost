@@ -84,16 +84,5 @@ namespace Frost.Shaping
 		{
 			return string.Format("Tag: {0}, Parameter: {1}", _Tag, _Parameter);
 		}
-
-#if(UNIT_TESTING)
-		[Fact]
-		internal static void Test0()
-		{
-			Assert.Equal(string.Empty, new FontFeature(string.Empty).Tag);
-			Assert.Equal(2, new FontFeature(string.Empty, 2).Parameter);
-
-			Assert.TestObject(new FontFeature("kern"), new FontFeature("sset", 2));
-		}
-#endif
 	}
 }

@@ -276,39 +276,5 @@ namespace Frost
 		{
 			return string.Format("Width: {0}, Height: {1}", _Width, _Height);
 		}
-
-#if(UNIT_TESTING)
-		[Fact]
-		internal static void Test0()
-		{
-			Assert.Equal(0, new Size(0, 1).Width);
-			Assert.Equal(1, new Size(0, 1).Height);
-
-			Assert.Equal(0, Empty.Width);
-			Assert.Equal(0, Empty.Height);
-
-			Assert.Equal(6, new Size(3, 2).Area);
-			Assert.Equal(25, new Size(5).Area);
-			Assert.Equal(0, new Size(-5, 6).Area);
-
-			Matrix3X2 scaling;
-			Matrix3X2.Identity.Scale(2.0f, 2.0f, out scaling);
-
-			Size scaled = new Size(5, 5).Transform(ref scaling);
-
-			Assert.Equal(new Size(10, 10), scaled);
-
-			Assert.Equal(new Size(50), new Size(10, 10) * new Size(5));
-			Assert.Equal(new Size(15), new Size(10, 10) + new Size(5));
-			Assert.Equal(new Size(05), new Size(10, 10) - new Size(5));
-			Assert.Equal(new Size(02), new Size(10, 10) / new Size(5));
-
-			Assert.Equal(new Size(4), new Size(2).Scale(new Size(2)));
-
-			Assert.Equal<Size>(new Size(3), new Point(3));
-
-			Assert.TestObject(MinValue, MaxValue);
-		}
-#endif
 	}
 }

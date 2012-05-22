@@ -396,49 +396,5 @@ namespace Frost
 
 			_Empty = new Thickness(0.0f);
 		}
-
-#if(UNIT_TESTING)
-		[Fact]
-		internal static void Test0()
-		{
-			Assert.Equal(0, new Thickness(0, 1, 2, 3).Left);
-			Assert.Equal(1, new Thickness(0, 1, 2, 3).Top);
-			Assert.Equal(2, new Thickness(0, 1, 2, 3).Right);
-			Assert.Equal(3, new Thickness(0, 1, 2, 3).Bottom);
-
-			Assert.Equal(0, new Thickness(0, 1).Left);
-			Assert.Equal(1, new Thickness(0, 1).Top);
-			Assert.Equal(0, new Thickness(0, 1).Right);
-			Assert.Equal(1, new Thickness(0, 1).Bottom);
-
-			Assert.Equal(1, new Thickness(1).Left);
-			Assert.Equal(1, new Thickness(1).Top);
-			Assert.Equal(1, new Thickness(1).Right);
-			Assert.Equal(1, new Thickness(1).Bottom);
-
-			Assert.Equal(8, new Thickness(3, 2, 5, 3).Width);
-			Assert.Equal(5, new Thickness(3, 2, 5, 3).Height);
-
-			Assert.Equal(Empty, new Thickness(5).Contract(5, 5, 5, 5));
-			Assert.Equal(new Thickness(6), new Thickness(5).Contract(-1, -1, -1, -1));
-
-			Assert.Equal(Empty, new Thickness(5).Contract(5, 5));
-			Assert.Equal(new Thickness(6), new Thickness(5).Contract(-1, -1));
-
-			Assert.Equal(Empty, new Thickness(5).Contract(5));
-			Assert.Equal(new Thickness(6), new Thickness(5).Contract(-1));
-
-			Assert.Equal(Empty, new Thickness(5).Expand(-5, -5, -5, -5));
-			Assert.Equal(new Thickness(6), new Thickness(5).Expand(1, 1, 1, 1));
-
-			Assert.Equal(Empty, new Thickness(5).Expand(-5, -5));
-			Assert.Equal(new Thickness(6), new Thickness(5).Expand(1, 1));
-
-			Assert.Equal(Empty, new Thickness(5).Expand(-5));
-			Assert.Equal(new Thickness(6), new Thickness(5).Expand(1));
-
-			Assert.TestObject(MinValue, MaxValue);
-		}
-#endif
 	}
 }
