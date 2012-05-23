@@ -128,6 +128,9 @@
     <Compile Include="CombinationSink.cs" />
     <Compile Include="Device2D.cs" />
     <Compile Include="DynamicSurface.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="FontDevice.cs" />
+    <Compile Include="FontHandle.cs" />
     <Compile Include="GeometrySinkBase.cs" />
     <Compile Include="ISurfaceAtlas.cs" />
     <Compile Include="ExternalSurface.cs" />
@@ -137,6 +140,9 @@
     <Compile Include="SharedSurface.cs" />
     <Compile Include="SimplificationSink.cs" />
     <Compile Include="TessellationSink.cs" />
+    <Compile Include="TextGeometryCache.cs" />
+    <Compile Include="TextGeometryKey.cs" />
+    <Compile Include="TextGeometrySink.cs" />
     <Compile Include="WideningSink.cs" />
   </ItemGroup>
   <ItemGroup>

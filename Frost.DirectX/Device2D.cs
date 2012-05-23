@@ -20,8 +20,10 @@ using Frost.Surfacing;
 
 using SharpDX;
 using SharpDX.DXGI;
+using SharpDX.DirectWrite;
 
 using DxGeometry = SharpDX.Direct2D1.Geometry;
+using FontMetrics = Frost.Shaping.FontMetrics;
 
 namespace Frost.DirectX
 {
@@ -36,8 +38,10 @@ namespace Frost.DirectX
 		private readonly PaintingDevice _DrawingDevice;
 		private readonly SafeList<DynamicSurface> _DynamicSurfaces;
 		private readonly SafeList<ExternalSurface> _ExternalSurfaces;
+		private readonly FontDevice _FontDevice;
 
 		private readonly GeometryCache _GeometryCache;
+		private readonly TextGeometryCache _TextGeometryCache;
 		private readonly SafeList<Canvas> _InvalidatedResources;
 
 		private readonly object _Lock = new object();
@@ -67,6 +71,8 @@ namespace Frost.DirectX
 
 			_CompositionDevice = new CompositionDevice(adapter, this);
 			_DrawingDevice = new PaintingDevice(this, _CompositionDevice.Device3D);
+			_FontDevice = new FontDevice();
+			_TextGeometryCache = new TextGeometryCache();
 
 			_GeometryCache = new GeometryCache(_DrawingDevice.Factory2D);
 
@@ -334,19 +340,6 @@ namespace Frost.DirectX
 			}
 		}
 
-		private IEnumerable<T> DumpAtlases<T>(SafeList<T> atlasCollections)
-			where T : ISurfaceAtlas
-		{
-			Contract.Requires(atlasCollections != null);
-
-			foreach(ISurfaceAtlas atlas in atlasCollections)
-			{
-				MarkAtlas(atlas);
-			}
-
-			return atlasCollections.ToArray();
-		}
-
 		protected override void OnForget(Canvas.ResolvedContext target)
 		{
 			ISurfaceAtlas atlas = target.Surface2D as ISurfaceAtlas;
@@ -362,14 +355,63 @@ namespace Frost.DirectX
 			return CreateCanvas(target.Region.Size, target);
 		}
 
-		protected override Outline OnGetGlyphOutline(IndexedRange glyphRange, bool isVertical, bool isRightToLeft, FontHandle fontHandle, params Shaper.Glyph[] glyphs)
+		protected override Outline OnGetGlyphOutline(
+			IndexedRange glyphRange,
+			bool isVertical,
+			bool isRightToLeft,
+			Shaping.FontHandle fontHandle,
+			params Shaper.Glyph[] glyphs)
 		{
-			throw new NotImplementedException();
+			lock (_Lock)
+			{
+				FontHandle handle = _FontDevice.FindFont(
+					fontHandle.Family,
+					fontHandle.Style,
+					fontHandle.Weight,
+					fontHandle.Stretch);
+
+				FontFace face = handle.ResolveFace();
+
+				float emSize = face.Metrics.Ascent + face.Metrics.Descent;
+
+				float baseline = face.Metrics.Ascent / emSize;
+
+				Figure figure = _TextGeometryCache.Retrieve(
+					glyphRange, isVertical, isRightToLeft, handle, glyphs);
+
+				return new Outline(figure, baseline);
+			}
 		}
 
-		protected override FontMetrics OnGetFontMetrics(FontHandle fontHandle)
+		protected override FontMetrics OnGetFontMetrics(
+			Shaping.FontHandle fontHandle)
 		{
-			throw new NotImplementedException();
+			lock (_Lock)
+			{
+				FontHandle handle = _FontDevice.FindFont(
+					fontHandle.Family,
+					fontHandle.Style,
+					fontHandle.Weight,
+					fontHandle.Stretch);
+
+				var metrics = handle.ResolveFace().Metrics;
+
+				return new FontMetrics(
+					metrics.Ascent, metrics.Descent, metrics.DesignUnitsPerEm);
+			}
+		}
+
+		private IEnumerable<T> DumpAtlases<T>(SafeList<T> atlasCollections)
+			where T : ISurfaceAtlas
+		{
+			Contract.Requires(atlasCollections != null);
+
+			foreach(ISurfaceAtlas atlas in atlasCollections)
+			{
+				MarkAtlas(atlas);
+			}
+
+			return atlasCollections.ToArray();
 		}
 
 		private Canvas.ResolvedContext CreateCanvas(Size size, Canvas target)
@@ -435,7 +477,9 @@ namespace Frost.DirectX
 
 				_CompositionDevice.Dispose();
 				_DrawingDevice.Dispose();
+				_FontDevice.Dispose();
 
+				_TextGeometryCache.Dispose();
 				_GeometryCache.Dispose();
 			}
 		}

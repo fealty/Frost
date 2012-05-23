@@ -308,6 +308,21 @@ namespace Frost.Shaping
 				_Offset = offset;
 			}
 
+			public Size Offset
+			{
+				get { return _Offset; }
+			}
+
+			public short Index
+			{
+				get { return _Index; }
+			}
+
+			public float Advance
+			{
+				get { return _Advance; }
+			}
+
 			public bool Equals(Glyph other)
 			{
 				return other._Advance.Equals(_Advance) &&
