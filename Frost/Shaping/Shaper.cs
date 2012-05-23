@@ -68,7 +68,7 @@ namespace Frost.Shaping
 			Contract.Requires(Text != null);
 			Contract.Requires(textRange.IsWithin(Text));
 
-			OnSetBreakpoints(textRange, breakpoint);
+			OnSetBreakpoint(textRange, breakpoint);
 		}
 
 		public void SetBidiLevel(IndexedRange textRange, byte resolvedLevel)
@@ -155,6 +155,13 @@ namespace Frost.Shaping
 			OnSetInline(textRange, inlineObject);
 		}
 
+		public void AnalyzeScripts()
+		{
+			Contract.Requires(Thread.CurrentThread == BoundThread);
+
+			OnAnalyzeScripts();
+		}
+
 		public void End()
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
@@ -182,7 +189,7 @@ namespace Frost.Shaping
 		protected abstract void OnSetPointSize(
 			IndexedRange textRange, float pointSize);
 
-		protected abstract void OnSetBreakpoints(
+		protected abstract void OnSetBreakpoint(
 			IndexedRange textRange, LineBreakpoint breakpoint);
 
 		protected abstract void OnSetBidiLevel(
@@ -196,6 +203,8 @@ namespace Frost.Shaping
 
 		protected abstract void OnSetFeatures(
 			IndexedRange textRange, FontFeatureCollection features);
+
+		protected abstract void OnAnalyzeScripts();
 
 		protected abstract void OnEnd();
 
