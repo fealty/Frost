@@ -16,13 +16,13 @@ using SharpDX.DirectWrite;
 
 using DxFontMetrics = SharpDX.DirectWrite.FontMetrics;
 using DxFontFeature = SharpDX.DirectWrite.FontFeature;
-using FontFeature = Frost.Formatting.FontFeature;
-using FontMetrics = Frost.Formatting.FontMetrics;
-using FontStretch = Frost.Formatting.FontStretch;
-using FontStyle = Frost.Formatting.FontStyle;
-using FontWeight = Frost.Formatting.FontWeight;
+using FontFeature = Frost.Shaping.FontFeature;
+using FontMetrics = Frost.Shaping.FontMetrics;
+using FontStretch = Frost.Shaping.FontStretch;
+using FontStyle = Frost.Shaping.FontStyle;
+using FontWeight = Frost.Shaping.FontWeight;
 
-namespace Frost.DirectX.Formatting
+namespace Frost.DirectX
 {
 	/// <summary>
 	///   This class produces shaped glyphs and clusters from an <see cref="AggregatorSink" /> .
