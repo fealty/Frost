@@ -52,6 +52,8 @@ namespace Frost.DirectX
 		private readonly TessellationSink _TessellationSink;
 		private readonly WideningSink _WideningSink;
 
+		private readonly TextShaper _Shaper;
+
 		private Size _DefaultAtlasSize;
 		private Size _DynamicAtlasSize;
 
@@ -73,6 +75,7 @@ namespace Frost.DirectX
 			_DrawingDevice = new PaintingDevice(this, _CompositionDevice.Device3D);
 			_FontDevice = new FontDevice();
 			_TextGeometryCache = new TextGeometryCache();
+			_Shaper = new TextShaper(this, _FontDevice.Factory);
 
 			_GeometryCache = new GeometryCache(_DrawingDevice.Factory2D);
 
@@ -91,7 +94,7 @@ namespace Frost.DirectX
 
 		public override Shaper Shaper
 		{
-			get { throw new NotImplementedException(); }
+			get { return _Shaper; }
 		}
 
 		public override Painter Painter
@@ -477,6 +480,7 @@ namespace Frost.DirectX
 
 				_CompositionDevice.Dispose();
 				_DrawingDevice.Dispose();
+				_Shaper.Dispose();
 				_FontDevice.Dispose();
 
 				_TextGeometryCache.Dispose();
