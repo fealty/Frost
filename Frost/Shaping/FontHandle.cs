@@ -11,9 +11,9 @@ namespace Frost.Shaping
 	public struct FontHandle : IEquatable<FontHandle>
 	{
 		private readonly string _Family;
+		private readonly FontStretch _Stretch;
 		private readonly FontStyle _Style;
 		private readonly FontWeight _Weight;
-		private readonly FontStretch _Stretch;
 
 		public FontHandle(
 			string family, FontStyle style, FontWeight weight, FontStretch stretch)
@@ -76,16 +76,6 @@ namespace Frost.Shaping
 			}
 		}
 
-		public static bool operator ==(FontHandle left, FontHandle right)
-		{
-			return left.Equals(right);
-		}
-
-		public static bool operator !=(FontHandle left, FontHandle right)
-		{
-			return !left.Equals(right);
-		}
-
 		public override string ToString()
 		{
 			return string.Format(
@@ -94,6 +84,16 @@ namespace Frost.Shaping
 				_Style,
 				_Weight,
 				_Stretch);
+		}
+
+		public static bool operator ==(FontHandle left, FontHandle right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(FontHandle left, FontHandle right)
+		{
+			return !left.Equals(right);
 		}
 	}
 }

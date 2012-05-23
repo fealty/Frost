@@ -18,15 +18,6 @@ namespace Frost
 		private readonly float _S;
 		private readonly float _V;
 
-		[ContractInvariantMethod]
-		private void Invariant()
-		{
-			Contract.Invariant(Check.IsDegrees(_H));
-			Contract.Invariant(Check.IsPercentage(_S));
-			Contract.Invariant(Check.IsPercentage(_V));
-			Contract.Invariant(Check.IsPercentage(_A));
-		}
-
 		/// <summary>
 		///   constructs a <see cref="HSVColor" /> from hue, saturation, value, and optionally alpha values
 		/// </summary>
@@ -220,6 +211,15 @@ namespace Frost
 			}
 
 			return new Color(r, g, b, _A / 100.0f);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(Check.IsDegrees(_H));
+			Contract.Invariant(Check.IsPercentage(_S));
+			Contract.Invariant(Check.IsPercentage(_V));
+			Contract.Invariant(Check.IsPercentage(_A));
 		}
 
 		/// <summary>

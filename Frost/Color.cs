@@ -823,15 +823,6 @@ namespace Frost
 		private readonly float _G;
 		private readonly float _R;
 
-		[ContractInvariantMethod]
-		private void Invariant()
-		{
-			Contract.Invariant(Check.IsNormalized(_A));
-			Contract.Invariant(Check.IsNormalized(_B));
-			Contract.Invariant(Check.IsNormalized(_G));
-			Contract.Invariant(Check.IsNormalized(_R));
-		}
-
 		/// <summary>
 		///   constructs a <see cref="Color" /> from normalized red, green, blue, and optionally alpha components
 		/// </summary>
@@ -944,6 +935,15 @@ namespace Frost
 		public override string ToString()
 		{
 			return string.Format("R: {1}, G: {2}, B: {3}, A: {0}", _R, _G, _B, _A);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(Check.IsNormalized(_A));
+			Contract.Invariant(Check.IsNormalized(_B));
+			Contract.Invariant(Check.IsNormalized(_G));
+			Contract.Invariant(Check.IsNormalized(_R));
 		}
 
 		/// <summary>

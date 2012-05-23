@@ -27,17 +27,6 @@ namespace Frost
 			_Identity = new Matrix3X2(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 		}
 
-		[ContractInvariantMethod]
-		private void Invariant()
-		{
-			Contract.Invariant(Check.IsFinite(_11));
-			Contract.Invariant(Check.IsFinite(_12));
-			Contract.Invariant(Check.IsFinite(_21));
-			Contract.Invariant(Check.IsFinite(_22));
-			Contract.Invariant(Check.IsFinite(_31));
-			Contract.Invariant(Check.IsFinite(_32));
-		}
-
 		/// <summary>
 		///   constructs a new <see cref="Matrix3X2" /> from its components
 		/// </summary>
@@ -419,6 +408,17 @@ namespace Frost
 				result = (result * 397) ^ _32.GetHashCode();
 				return result;
 			}
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(Check.IsFinite(_11));
+			Contract.Invariant(Check.IsFinite(_12));
+			Contract.Invariant(Check.IsFinite(_21));
+			Contract.Invariant(Check.IsFinite(_22));
+			Contract.Invariant(Check.IsFinite(_31));
+			Contract.Invariant(Check.IsFinite(_32));
 		}
 
 		/// <summary>

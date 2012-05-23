@@ -254,6 +254,37 @@ namespace Frost
 			}
 		}
 
+		Outline IResourceHelpers.GetGlyphOutline(
+			IndexedRange glyphRange,
+			bool isVertical,
+			bool isRightToLeft,
+			FontHandle fontHandle,
+			params Shaper.Glyph[] glyphs)
+		{
+			return OnGetGlyphOutline(
+				glyphRange, isVertical, isRightToLeft, fontHandle, glyphs);
+		}
+
+		FontMetrics IResourceHelpers.GetFontMetrics(FontHandle fontHandle)
+		{
+			return OnGetFontMetrics(fontHandle);
+		}
+
+		void IResourceHelpers.RegisterEffect<T>()
+		{
+			_EffectCollection.Register<T>();
+		}
+
+		Effect<T> IResourceHelpers.FindEffect<T>()
+		{
+			return _EffectCollection.Find<T>();
+		}
+
+		void IResourceHelpers.UnregisterEffect<T>()
+		{
+			_EffectCollection.Unregister<T>();
+		}
+
 		public abstract void ProcessFrame();
 
 		protected abstract void OnCopy(
@@ -313,34 +344,13 @@ namespace Frost
 			}
 		}
 
-		Outline IResourceHelpers.GetGlyphOutline(
+		protected abstract Outline OnGetGlyphOutline(
 			IndexedRange glyphRange,
 			bool isVertical,
 			bool isRightToLeft,
 			FontHandle fontHandle,
-			params Shaper.Glyph[] glyphs)
-		{
-			throw new NotImplementedException();
-		}
+			params Shaper.Glyph[] glyphs);
 
-		FontMetrics IResourceHelpers.GetFontMetrics(FontHandle fontHandle)
-		{
-			throw new NotImplementedException();
-		}
-
-		void IResourceHelpers.RegisterEffect<T>()
-		{
-			_EffectCollection.Register<T>();
-		}
-
-		Effect<T> IResourceHelpers.FindEffect<T>()
-		{
-			return _EffectCollection.Find<T>();
-		}
-
-		void IResourceHelpers.UnregisterEffect<T>()
-		{
-			_EffectCollection.Unregister<T>();
-		}
+		protected abstract FontMetrics OnGetFontMetrics(FontHandle fontHandle);
 	}
 }

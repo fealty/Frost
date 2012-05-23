@@ -14,14 +14,6 @@ namespace Frost.Shaping
 		private readonly float _Descent;
 		private readonly float _UnitsPerEm;
 
-		[ContractInvariantMethod]
-		private void Invariant()
-		{
-			Contract.Invariant(Check.IsPositive(_Ascent));
-			Contract.Invariant(Check.IsPositive(_Descent));
-			Contract.Invariant(Check.IsPositive(_UnitsPerEm));
-		}
-
 		public FontMetrics(float ascent, float descent, float unitsPerEm)
 		{
 			Contract.Requires(Check.IsPositive(ascent));
@@ -137,6 +129,14 @@ namespace Frost.Shaping
 				_Ascent,
 				_Descent,
 				_UnitsPerEm);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(Check.IsPositive(_Ascent));
+			Contract.Invariant(Check.IsPositive(_Descent));
+			Contract.Invariant(Check.IsPositive(_UnitsPerEm));
 		}
 
 		private float ToPixels(float value, float pointSize)

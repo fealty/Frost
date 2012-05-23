@@ -12,11 +12,6 @@ namespace Frost.Collections
 {
 	public struct IndexedRange : IEquatable<IndexedRange>, IEnumerable<int>
 	{
-		public static implicit operator IndexedRange(string str)
-		{
-			return str != null ? new IndexedRange(0, str.Length) : Empty;
-		}
-
 		private static readonly IndexedRange _Empty;
 
 		private readonly int _Length;
@@ -25,13 +20,6 @@ namespace Frost.Collections
 		static IndexedRange()
 		{
 			_Empty = new IndexedRange(0, 0);
-		}
-
-		[ContractInvariantMethod]
-		private void Invariant()
-		{
-			Contract.Invariant(_Length >= 0);
-			Contract.Invariant(_StartIndex >= 0);
 		}
 
 		public IndexedRange(int startIndex, int length)
@@ -46,40 +34,6 @@ namespace Frost.Collections
 			Contract.Assert(Length.Equals(length));
 		}
 
-		public IndexedRange Slice(int startIndex)
-		{
-			return Slice(0, _Length);
-		}
-
-		public IndexedRange Extend(int length)
-		{
-			Contract.Requires(length >= 0);
-
-			return new IndexedRange(StartIndex, Length + length);
-		}
-
-		public IndexedRange Shrink(int length)
-		{
-			Contract.Requires(length >= 0);
-
-			return new IndexedRange(StartIndex, Length - length);
-		}
-
-		public bool Contains(int index)
-		{
-			return index >= StartIndex && index <= LastIndex;
-		}
-
-		public IndexedRange Slice(int startIndex, int length)
-		{
-			Contract.Requires(startIndex >= 0);
-			Contract.Requires(length >= 0);
-			Contract.Assert(length <= _Length);
-			Contract.Assert(startIndex + length <= _StartIndex + _Length);
-
-			return new IndexedRange(startIndex, length);
-		}
-
 		public int LastIndex
 		{
 			get
@@ -88,11 +42,6 @@ namespace Frost.Collections
 
 				return (_StartIndex + _Length) - 1;
 			}
-		}
-
-		public bool IsWithin(IndexedRange range)
-		{
-			return StartIndex >= range.StartIndex && LastIndex <= range.LastIndex;
 		}
 
 		public int Length
@@ -135,6 +84,45 @@ namespace Frost.Collections
 			return other._StartIndex == _StartIndex && other._Length == _Length;
 		}
 
+		public IndexedRange Slice(int startIndex)
+		{
+			return Slice(0, _Length);
+		}
+
+		public IndexedRange Extend(int length)
+		{
+			Contract.Requires(length >= 0);
+
+			return new IndexedRange(StartIndex, Length + length);
+		}
+
+		public IndexedRange Shrink(int length)
+		{
+			Contract.Requires(length >= 0);
+
+			return new IndexedRange(StartIndex, Length - length);
+		}
+
+		public bool Contains(int index)
+		{
+			return index >= StartIndex && index <= LastIndex;
+		}
+
+		public IndexedRange Slice(int startIndex, int length)
+		{
+			Contract.Requires(startIndex >= 0);
+			Contract.Requires(length >= 0);
+			Contract.Assert(length <= _Length);
+			Contract.Assert(startIndex + length <= _StartIndex + _Length);
+
+			return new IndexedRange(startIndex, length);
+		}
+
+		public bool IsWithin(IndexedRange range)
+		{
+			return StartIndex >= range.StartIndex && LastIndex <= range.LastIndex;
+		}
+
 		public override bool Equals(object obj)
 		{
 			if(ReferenceEquals(null, obj))
@@ -161,6 +149,13 @@ namespace Frost.Collections
 		public override string ToString()
 		{
 			return string.Format("StartIndex: {0}, Length: {1}", _StartIndex, _Length);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(_Length >= 0);
+			Contract.Invariant(_StartIndex >= 0);
 		}
 
 		public struct Enumerator : IEnumerator<int>
@@ -201,6 +196,11 @@ namespace Frost.Collections
 			{
 				get { return Current; }
 			}
+		}
+
+		public static implicit operator IndexedRange(string str)
+		{
+			return str != null ? new IndexedRange(0, str.Length) : Empty;
 		}
 
 		public static bool operator ==(IndexedRange left, IndexedRange right)

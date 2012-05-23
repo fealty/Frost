@@ -395,7 +395,8 @@ namespace Frost.Composition
 						// translate to 2D surface coordinate space
 						sourceRegion = sourceRegion.Translate(_TargetDelta);
 
-						OnCopyResult(ref sourceRegion, _Device2D.Resources.ResolveCanvas(destination));
+						OnCopyResult(
+							ref sourceRegion, _Device2D.Resources.ResolveCanvas(destination));
 
 						return;
 					}
@@ -646,7 +647,8 @@ namespace Frost.Composition
 						// translate to 2D surface coordinate space
 						sourceRegion = sourceRegion.Translate(_TargetDelta);
 
-						OnCopyResult(ref sourceRegion, _Device2D.Resources.ResolveCanvas(destination));
+						OnCopyResult(
+							ref sourceRegion, _Device2D.Resources.ResolveCanvas(destination));
 
 						return;
 					}

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
+using Frost.Collections;
 using Frost.Composition;
 using Frost.DirectX.Common;
 using Frost.DirectX.Composition;
@@ -359,6 +360,16 @@ namespace Frost.DirectX
 		protected override Canvas.ResolvedContext OnResolve(Canvas target)
 		{
 			return CreateCanvas(target.Region.Size, target);
+		}
+
+		protected override Outline OnGetGlyphOutline(IndexedRange glyphRange, bool isVertical, bool isRightToLeft, FontHandle fontHandle, params Shaper.Glyph[] glyphs)
+		{
+			throw new NotImplementedException();
+		}
+
+		protected override FontMetrics OnGetFontMetrics(FontHandle fontHandle)
+		{
+			throw new NotImplementedException();
 		}
 
 		private Canvas.ResolvedContext CreateCanvas(Size size, Canvas target)

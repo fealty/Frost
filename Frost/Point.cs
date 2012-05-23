@@ -29,13 +29,6 @@ namespace Frost
 			_Empty = new Point(0.0f);
 		}
 
-		[ContractInvariantMethod]
-		private void Invariant()
-		{
-			Contract.Invariant(Check.IsFinite(_X));
-			Contract.Invariant(Check.IsFinite(_Y));
-		}
-
 		/// <summary>
 		///   constructs a new <see cref="Point" /> from the given coordinates
 		/// </summary>
@@ -60,16 +53,6 @@ namespace Frost
 		public Point(float xy) : this(xy, xy)
 		{
 			Contract.Requires(Check.IsFinite(xy));
-		}
-
-		/// <summary>
-		///   implicitly converts a <see cref="Size" /> to a <see cref="Point" />
-		/// </summary>
-		/// <param name="size"> the <see cref="Size" /> to convert </param>
-		/// <returns> the <see cref="Point" /> as represented by a <see cref="Size" /> </returns>
-		public static implicit operator Point(Size size)
-		{
-			return new Point(size.Width, size.Height);
 		}
 
 		/// <summary>
@@ -330,6 +313,23 @@ namespace Frost
 		public override string ToString()
 		{
 			return string.Format("X: {0}, Y: {1}", _X, _Y);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(Check.IsFinite(_X));
+			Contract.Invariant(Check.IsFinite(_Y));
+		}
+
+		/// <summary>
+		///   implicitly converts a <see cref="Size" /> to a <see cref="Point" />
+		/// </summary>
+		/// <param name="size"> the <see cref="Size" /> to convert </param>
+		/// <returns> the <see cref="Point" /> as represented by a <see cref="Size" /> </returns>
+		public static implicit operator Point(Size size)
+		{
+			return new Point(size.Width, size.Height);
 		}
 
 		/// <summary>

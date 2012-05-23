@@ -112,8 +112,6 @@ namespace Frost.Management
 
 		void ForgetCanvas(Canvas target);
 
-		event Action<IEnumerable<Canvas>> CanvasInvalidated;
-
 		Outline GetGlyphOutline(
 			IndexedRange glyphRange,
 			bool isVertical,
@@ -128,5 +126,6 @@ namespace Frost.Management
 		Effect<T> FindEffect<T>() where T : struct, IEffectSettings, IEquatable<T>;
 
 		void UnregisterEffect<T>();
+		event Action<IEnumerable<Canvas>> CanvasInvalidated;
 	}
 }

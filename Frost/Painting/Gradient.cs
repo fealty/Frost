@@ -38,6 +38,21 @@ namespace Frost.Painting
 			}
 		}
 
+		public bool Equals(Gradient other)
+		{
+			if(ReferenceEquals(null, other))
+			{
+				return false;
+			}
+
+			if(ReferenceEquals(this, other))
+			{
+				return true;
+			}
+
+			return other._Stops.SequenceEqual(_Stops);
+		}
+
 		public static Builder Create()
 		{
 			Contract.Ensures(Contract.Result<Builder>() != null);
@@ -47,6 +62,36 @@ namespace Frost.Painting
 			_Builder.Reset();
 
 			return _Builder;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if(ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+
+			if(ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+
+			return obj is Gradient && Equals((Gradient)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int result = 0;
+
+				foreach(GradientStop stop in _Stops)
+				{
+					result = (result * 397) ^ stop.GetHashCode();
+				}
+
+				return result;
+			}
 		}
 
 		[ContractInvariantMethod]
@@ -96,51 +141,6 @@ namespace Frost.Painting
 			internal void Reset()
 			{
 				_Stops.Clear();
-			}
-		}
-
-		public bool Equals(Gradient other)
-		{
-			if(ReferenceEquals(null, other))
-			{
-				return false;
-			}
-
-			if(ReferenceEquals(this, other))
-			{
-				return true;
-			}
-
-			return other._Stops.SequenceEqual(_Stops);
-		}
-
-		public override bool Equals(object obj)
-		{
-			if(ReferenceEquals(null, obj))
-			{
-				return false;
-			}
-
-			if(ReferenceEquals(this, obj))
-			{
-				return true;
-			}
-
-			return obj is Gradient && Equals((Gradient)obj);
-		}
-
-		public override int GetHashCode()
-		{
-			unchecked
-			{
-				int result = 0;
-
-				foreach(GradientStop stop in _Stops)
-				{
-					result = (result * 397) ^ stop.GetHashCode();
-				}
-
-				return result;
 			}
 		}
 

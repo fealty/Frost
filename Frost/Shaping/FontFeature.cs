@@ -10,9 +10,6 @@ namespace Frost.Shaping
 {
 	public struct FontFeature : IEquatable<FontFeature>
 	{
-		private readonly string _Tag;
-		private readonly int _Parameter;
-
 		public const string AlternativeFractions = "afrc";
 		public const string ContextualAlternates = "calt";
 		public const string CaseSensitiveForms = "case";
@@ -91,6 +88,8 @@ namespace Frost.Shaping
 		public const string ThirdWidths = "twid";
 		public const string Unicase = "unic";
 		public const string SlashedZero = "zero";
+		private readonly int _Parameter;
+		private readonly string _Tag;
 
 		public FontFeature(string tag, int parameter = 1)
 		{
@@ -101,12 +100,6 @@ namespace Frost.Shaping
 
 			Contract.Assert(Tag.Equals(tag));
 			Contract.Assert(Parameter.Equals(parameter));
-		}
-
-		[ContractInvariantMethod]
-		private void Invariant()
-		{
-			Contract.Invariant(_Tag != null);
 		}
 
 		public string Tag
@@ -148,6 +141,17 @@ namespace Frost.Shaping
 			}
 		}
 
+		public override string ToString()
+		{
+			return string.Format("Tag: {0}, Parameter: {1}", _Tag, _Parameter);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(_Tag != null);
+		}
+
 		public static bool operator ==(FontFeature left, FontFeature right)
 		{
 			return left.Equals(right);
@@ -156,11 +160,6 @@ namespace Frost.Shaping
 		public static bool operator !=(FontFeature left, FontFeature right)
 		{
 			return !left.Equals(right);
-		}
-
-		public override string ToString()
-		{
-			return string.Format("Tag: {0}, Parameter: {1}", _Tag, _Parameter);
 		}
 	}
 }

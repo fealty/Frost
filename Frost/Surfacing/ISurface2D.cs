@@ -55,6 +55,7 @@ namespace Frost.Surfacing
 		SurfaceUsage Usage { get; }
 
 		Rectangle Region { get; }
+		Guid Id { get; }
 
 		void DumpToPNG(Stream stream);
 
@@ -62,7 +63,5 @@ namespace Frost.Surfacing
 
 		void AcquireLock();
 		void ReleaseLock();
-
-		Guid Id { get; }
 	}
 }

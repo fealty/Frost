@@ -18,8 +18,8 @@ namespace Frost
 
 		private static readonly Size _Empty;
 
-		private readonly float _Width;
 		private readonly float _Height;
+		private readonly float _Width;
 
 		static Size()
 		{
@@ -27,13 +27,6 @@ namespace Frost
 			_MaxValue = new Size(float.MaxValue);
 
 			_Empty = new Size(0.0f);
-		}
-
-		[ContractInvariantMethod]
-		private void Invariant()
-		{
-			Contract.Invariant(Check.IsFinite(_Width));
-			Contract.Invariant(Check.IsFinite(_Height));
 		}
 
 		/// <summary>
@@ -60,60 +53,6 @@ namespace Frost
 		public Size(float widthHeight) : this(widthHeight, widthHeight)
 		{
 			Contract.Requires(Check.IsFinite(widthHeight));
-		}
-
-		/// <summary>
-		///   implicitly converts a given <see cref="Point" /> to a <see cref="Size" />
-		/// </summary>
-		/// <param name="location"> the location to convert </param>
-		/// <returns> the <see cref="Size" /> representation of <paramref name="location" /> </returns>
-		public static implicit operator Size(Point location)
-		{
-			return new Size(location.X, location.Y);
-		}
-
-		/// <summary>
-		///   produces a <see cref="Size" /> by adding a <see cref="Size" /> to another <see cref="Size" />
-		/// </summary>
-		/// <param name="left"> the left operand </param>
-		/// <param name="right"> the right operand </param>
-		/// <returns> the result of <paramref name="right" /> added to <paramref name="left" /> </returns>
-		public static Size operator +(Size left, Size right)
-		{
-			return new Size(left.Width + right.Width, left.Height + right.Height);
-		}
-
-		/// <summary>
-		///   produces a <see cref="Size" /> by subtracting a <see cref="Size" /> from another <see cref="Size" />
-		/// </summary>
-		/// <param name="left"> the left operand </param>
-		/// <param name="right"> the right operand </param>
-		/// <returns> the result of <paramref name="left" /> subtracted by <paramref name="right" /> </returns>
-		public static Size operator -(Size left, Size right)
-		{
-			return new Size(left.Width - right.Width, left.Height - right.Height);
-		}
-
-		/// <summary>
-		///   produces a <see cref="Size" /> by multiplying a <see cref="Size" /> by another <see cref="Size" />
-		/// </summary>
-		/// <param name="left"> the left operand </param>
-		/// <param name="right"> the right operand </param>
-		/// <returns> the result of <paramref name="left" /> multiplied by <paramref name="right" /> </returns>
-		public static Size operator *(Size left, Size right)
-		{
-			return new Size(left.Width * right.Width, left.Height * right.Height);
-		}
-
-		/// <summary>
-		///   produces a <see cref="Size" /> by dividing a <see cref="Size" /> by another <see cref="Size" />
-		/// </summary>
-		/// <param name="left"> the left operand </param>
-		/// <param name="right"> the right operand </param>
-		/// <returns> the result of <paramref name="left" /> divided by <paramref name="right" /> </returns>
-		public static Size operator /(Size left, Size right)
-		{
-			return new Size(left.Width / right.Width, left.Height / right.Height);
 		}
 
 		/// <summary>
@@ -196,6 +135,11 @@ namespace Frost
 			}
 		}
 
+		public bool Equals(Size other)
+		{
+			return other._Width.Equals(_Width) && other._Height.Equals(_Height);
+		}
+
 		/// <summary>
 		///   computes a new <see cref="Size" /> scaled by the given amount
 		/// </summary>
@@ -227,11 +171,6 @@ namespace Frost
 			return new Size(p1.DistanceTo(p2), p1.DistanceTo(p4));
 		}
 
-		public bool Equals(Size other)
-		{
-			return other._Width.Equals(_Width) && other._Height.Equals(_Height);
-		}
-
 		public override bool Equals(object obj)
 		{
 			if(ReferenceEquals(null, obj))
@@ -248,6 +187,72 @@ namespace Frost
 			{
 				return (_Width.GetHashCode() * 397) ^ _Height.GetHashCode();
 			}
+		}
+
+		public override string ToString()
+		{
+			return string.Format("Width: {0}, Height: {1}", _Width, _Height);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(Check.IsFinite(_Width));
+			Contract.Invariant(Check.IsFinite(_Height));
+		}
+
+		/// <summary>
+		///   implicitly converts a given <see cref="Point" /> to a <see cref="Size" />
+		/// </summary>
+		/// <param name="location"> the location to convert </param>
+		/// <returns> the <see cref="Size" /> representation of <paramref name="location" /> </returns>
+		public static implicit operator Size(Point location)
+		{
+			return new Size(location.X, location.Y);
+		}
+
+		/// <summary>
+		///   produces a <see cref="Size" /> by adding a <see cref="Size" /> to another <see cref="Size" />
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> the result of <paramref name="right" /> added to <paramref name="left" /> </returns>
+		public static Size operator +(Size left, Size right)
+		{
+			return new Size(left.Width + right.Width, left.Height + right.Height);
+		}
+
+		/// <summary>
+		///   produces a <see cref="Size" /> by subtracting a <see cref="Size" /> from another <see cref="Size" />
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> the result of <paramref name="left" /> subtracted by <paramref name="right" /> </returns>
+		public static Size operator -(Size left, Size right)
+		{
+			return new Size(left.Width - right.Width, left.Height - right.Height);
+		}
+
+		/// <summary>
+		///   produces a <see cref="Size" /> by multiplying a <see cref="Size" /> by another <see cref="Size" />
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> the result of <paramref name="left" /> multiplied by <paramref name="right" /> </returns>
+		public static Size operator *(Size left, Size right)
+		{
+			return new Size(left.Width * right.Width, left.Height * right.Height);
+		}
+
+		/// <summary>
+		///   produces a <see cref="Size" /> by dividing a <see cref="Size" /> by another <see cref="Size" />
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> the result of <paramref name="left" /> divided by <paramref name="right" /> </returns>
+		public static Size operator /(Size left, Size right)
+		{
+			return new Size(left.Width / right.Width, left.Height / right.Height);
 		}
 
 		/// <summary>
@@ -270,11 +275,6 @@ namespace Frost
 		public static bool operator !=(Size left, Size right)
 		{
 			return !left.Equals(right);
-		}
-
-		public override string ToString()
-		{
-			return string.Format("Width: {0}, Height: {1}", _Width, _Height);
 		}
 	}
 }

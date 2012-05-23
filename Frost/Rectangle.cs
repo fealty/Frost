@@ -34,37 +34,6 @@ namespace Frost
 			_Empty = new Rectangle(Point.Empty, Size.Empty);
 		}
 
-		[ContractInvariantMethod]
-		private void Invariant()
-		{
-			Contracts.Invariant(Check.IsFinite(_X));
-			Contracts.Invariant(Check.IsFinite(_Y));
-			Contracts.Invariant(Check.IsPositive(_Width));
-			Contracts.Invariant(Check.IsPositive(_Height));
-		}
-
-		/// <summary>
-		///   creates a new <see cref="Rectangle" /> from the given left, top, right, and bottom sides
-		/// </summary>
-		/// <param name="left"> the left side of the new <see cref="Rectangle" /> </param>
-		/// <param name="top"> the top side of the new <see cref="Rectangle" /> </param>
-		/// <param name="right"> the right side of the new <see cref="Rectangle" /> </param>
-		/// <param name="bottom"> the bottom side of the new <see cref="Rectangle" /> </param>
-		/// <returns> the <see cref="Rectangle" /> formed by the <paramref name="left" /> , <paramref name="top" /> , <paramref
-		///    name="right" /> , and <paramref name="bottom" /> sides </returns>
-		public static Rectangle FromEdges(
-			float left, float top, float right, float bottom)
-		{
-			Contracts.Requires(Check.IsFinite(left));
-			Contracts.Requires(Check.IsFinite(top));
-			Contracts.Requires(Check.IsFinite(right));
-			Contracts.Requires(Check.IsFinite(bottom));
-			Contracts.Requires(Check.IsPositive(right - left));
-			Contracts.Requires(Check.IsPositive(bottom - top));
-
-			return new Rectangle(left, top, right - left, bottom - top);
-		}
-
 		/// <summary>
 		///   constructs a new <see cref="Rectangle" /> from the given X and Y coordinates and width and height
 		/// </summary>
@@ -335,6 +304,35 @@ namespace Frost
 		public Point Center
 		{
 			get { return new Point(_X + (_Width / 2.0f), _Y + (_Height / 2.0f)); }
+		}
+
+		public bool Equals(Rectangle other)
+		{
+			return other._Height.Equals(_Height) && other._Width.Equals(_Width) &&
+				other._X.Equals(_X) &&
+					other._Y.Equals(_Y);
+		}
+
+		/// <summary>
+		///   creates a new <see cref="Rectangle" /> from the given left, top, right, and bottom sides
+		/// </summary>
+		/// <param name="left"> the left side of the new <see cref="Rectangle" /> </param>
+		/// <param name="top"> the top side of the new <see cref="Rectangle" /> </param>
+		/// <param name="right"> the right side of the new <see cref="Rectangle" /> </param>
+		/// <param name="bottom"> the bottom side of the new <see cref="Rectangle" /> </param>
+		/// <returns> the <see cref="Rectangle" /> formed by the <paramref name="left" /> , <paramref name="top" /> , <paramref
+		///    name="right" /> , and <paramref name="bottom" /> sides </returns>
+		public static Rectangle FromEdges(
+			float left, float top, float right, float bottom)
+		{
+			Contracts.Requires(Check.IsFinite(left));
+			Contracts.Requires(Check.IsFinite(top));
+			Contracts.Requires(Check.IsFinite(right));
+			Contracts.Requires(Check.IsFinite(bottom));
+			Contracts.Requires(Check.IsPositive(right - left));
+			Contracts.Requires(Check.IsPositive(bottom - top));
+
+			return new Rectangle(left, top, right - left, bottom - top);
 		}
 
 		/// <summary>
@@ -680,13 +678,6 @@ namespace Frost
 			return false;
 		}
 
-		public bool Equals(Rectangle other)
-		{
-			return other._Height.Equals(_Height) && other._Width.Equals(_Width) &&
-				other._X.Equals(_X) &&
-					other._Y.Equals(_Y);
-		}
-
 		public override bool Equals(object obj)
 		{
 			if(ReferenceEquals(null, obj))
@@ -709,6 +700,21 @@ namespace Frost
 			}
 		}
 
+		public override string ToString()
+		{
+			return string.Format(
+				"X: {0}, Y: {1}, Width: {2}, Height: {3}", _X, _Y, _Width, _Height);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contracts.Invariant(Check.IsFinite(_X));
+			Contracts.Invariant(Check.IsFinite(_Y));
+			Contracts.Invariant(Check.IsPositive(_Width));
+			Contracts.Invariant(Check.IsPositive(_Height));
+		}
+
 		/// <summary>
 		///   determines whether two instances of <see cref="RGBColor" /> are equal
 		/// </summary>
@@ -729,12 +735,6 @@ namespace Frost
 		public static bool operator !=(Rectangle left, Rectangle right)
 		{
 			return !left.Equals(right);
-		}
-
-		public override string ToString()
-		{
-			return string.Format(
-				"X: {0}, Y: {1}, Width: {2}, Height: {3}", _X, _Y, _Width, _Height);
 		}
 	}
 }

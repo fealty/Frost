@@ -204,8 +204,8 @@ namespace Frost.Shaping
 			private readonly float _Advance;
 			private readonly LineBreakpoint _Breakpoint;
 
-			private readonly IndexedRange _Text;
 			private readonly IndexedRange _Glyphs;
+			private readonly IndexedRange _Text;
 
 			public Cluster(
 				float advance,
@@ -270,16 +270,6 @@ namespace Frost.Shaping
 				}
 			}
 
-			public static bool operator ==(Cluster left, Cluster right)
-			{
-				return left.Equals(right);
-			}
-
-			public static bool operator !=(Cluster left, Cluster right)
-			{
-				return !left.Equals(right);
-			}
-
 			public override string ToString()
 			{
 				return
@@ -289,6 +279,16 @@ namespace Frost.Shaping
 						_Breakpoint,
 						_Glyphs,
 						_Text);
+			}
+
+			public static bool operator ==(Cluster left, Cluster right)
+			{
+				return left.Equals(right);
+			}
+
+			public static bool operator !=(Cluster left, Cluster right)
+			{
+				return !left.Equals(right);
 			}
 		}
 
@@ -336,6 +336,12 @@ namespace Frost.Shaping
 				}
 			}
 
+			public override string ToString()
+			{
+				return string.Format(
+					"Advance: {0}, Index: {1}, Offset: {2}", _Advance, _Index, _Offset);
+			}
+
 			public static bool operator ==(Glyph left, Glyph right)
 			{
 				return left.Equals(right);
@@ -345,25 +351,18 @@ namespace Frost.Shaping
 			{
 				return !left.Equals(right);
 			}
-
-			public override string ToString()
-			{
-				return string.Format(
-					"Advance: {0}, Index: {1}, Offset: {2}", _Advance, _Index, _Offset);
-			}
 		}
 
 		public struct Span : IEquatable<Span>
 		{
-			private readonly FontHandle _FontId;
-
-			private readonly float _PointSize;
 			private readonly byte _BidiLevel;
 
-			private readonly IndexedRange _Text;
 			private readonly IndexedRange _Clusters;
+			private readonly FontHandle _FontId;
 
 			private readonly object _Inline;
+			private readonly float _PointSize;
+			private readonly IndexedRange _Text;
 
 			public Span(
 				IndexedRange text,
@@ -447,16 +446,6 @@ namespace Frost.Shaping
 				}
 			}
 
-			public static bool operator ==(Span left, Span right)
-			{
-				return left.Equals(right);
-			}
-
-			public static bool operator !=(Span left, Span right)
-			{
-				return !left.Equals(right);
-			}
-
 			public override string ToString()
 			{
 				return
@@ -468,6 +457,16 @@ namespace Frost.Shaping
 						_FontId,
 						_Inline,
 						_BidiLevel);
+			}
+
+			public static bool operator ==(Span left, Span right)
+			{
+				return left.Equals(right);
+			}
+
+			public static bool operator !=(Span left, Span right)
+			{
+				return !left.Equals(right);
 			}
 		}
 	}

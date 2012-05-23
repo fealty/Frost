@@ -15,61 +15,20 @@ namespace Frost
 	/// </summary>
 	public struct Thickness : IEquatable<Thickness>
 	{
+		private static readonly Thickness _MinValue;
+		private static readonly Thickness _MaxValue;
+		private static readonly Thickness _Empty;
 		private readonly float _Bottom;
 		private readonly float _Left;
 		private readonly float _Right;
 		private readonly float _Top;
 
-		[ContractInvariantMethod]
-		private void Invariant()
+		static Thickness()
 		{
-			CContract.Invariant(Check.IsPositive(_Left));
-			CContract.Invariant(Check.IsPositive(_Top));
-			CContract.Invariant(Check.IsPositive(_Right));
-			CContract.Invariant(Check.IsPositive(_Bottom));
-		}
+			_MinValue = new Thickness(0.0f);
+			_MaxValue = new Thickness(float.MaxValue);
 
-		private static readonly Thickness _MinValue;
-		private static readonly Thickness _MaxValue;
-		private static readonly Thickness _Empty;
-
-		/// <summary>
-		///   gets the minimum value a <see cref="Thickness" /> can represent
-		/// </summary>
-		public static Thickness MinValue
-		{
-			get
-			{
-				CContract.Ensures(CContract.Result<Thickness>().Equals(_MinValue));
-
-				return _MinValue;
-			}
-		}
-
-		/// <summary>
-		///   gets the maximum value a <see cref="Thickness" /> can represent
-		/// </summary>
-		public static Thickness MaxValue
-		{
-			get
-			{
-				CContract.Ensures(CContract.Result<Thickness>().Equals(_MaxValue));
-
-				return _MaxValue;
-			}
-		}
-
-		/// <summary>
-		///   gets the default value of a <see cref="Thickness" />
-		/// </summary>
-		public static Thickness Empty
-		{
-			get
-			{
-				CContract.Ensures(CContract.Result<Thickness>().Equals(_Empty));
-
-				return _Empty;
-			}
+			_Empty = new Thickness(0.0f);
 		}
 
 		/// <summary>
@@ -121,6 +80,45 @@ namespace Frost
 				leftRightTopBottom)
 		{
 			CContract.Requires(Check.IsPositive(leftRightTopBottom));
+		}
+
+		/// <summary>
+		///   gets the minimum value a <see cref="Thickness" /> can represent
+		/// </summary>
+		public static Thickness MinValue
+		{
+			get
+			{
+				CContract.Ensures(CContract.Result<Thickness>().Equals(_MinValue));
+
+				return _MinValue;
+			}
+		}
+
+		/// <summary>
+		///   gets the maximum value a <see cref="Thickness" /> can represent
+		/// </summary>
+		public static Thickness MaxValue
+		{
+			get
+			{
+				CContract.Ensures(CContract.Result<Thickness>().Equals(_MaxValue));
+
+				return _MaxValue;
+			}
+		}
+
+		/// <summary>
+		///   gets the default value of a <see cref="Thickness" />
+		/// </summary>
+		public static Thickness Empty
+		{
+			get
+			{
+				CContract.Ensures(CContract.Result<Thickness>().Equals(_Empty));
+
+				return _Empty;
+			}
 		}
 
 		/// <summary>
@@ -205,6 +203,14 @@ namespace Frost
 			}
 		}
 
+		public bool Equals(Thickness other)
+		{
+			return other._Bottom.Equals(_Bottom) &&
+				other._Left.Equals(_Left) &&
+					other._Right.Equals(_Right) &&
+						other._Top.Equals(_Top);
+		}
+
 		/// <summary>
 		///   produces a <see cref="Thickness" /> by contracting an existing <see cref="Thickness" /> on all sides
 		/// </summary>
@@ -252,17 +258,6 @@ namespace Frost
 				leftRightTopBottom,
 				leftRightTopBottom,
 				leftRightTopBottom);
-		}
-
-		/// <summary>
-		///   produces a <see cref="Thickness" /> by contracting an existing <see cref="Thickness" /> by a <see cref="Thickness" />
-		/// </summary>
-		/// <param name="left"> the <see cref="Thickness" /> to contract </param>
-		/// <param name="right"> the <see cref="Thickness" /> to contract by </param>
-		/// <returns> the result of <paramref name="left" /> contracted by <see cref="right" /> </returns>
-		public static Thickness operator -(Thickness left, Thickness right)
-		{
-			return left.Contract(right.Left, right.Top, right.Right, right.Bottom);
 		}
 
 		/// <summary>
@@ -314,47 +309,6 @@ namespace Frost
 				leftRightTopBottom);
 		}
 
-		/// <summary>
-		///   produces a <see cref="Thickness" /> by expanding an existing <see cref="Thickness" /> by a <see cref="Thickness" />
-		/// </summary>
-		/// <param name="left"> the <see cref="Thickness" /> to expand </param>
-		/// <param name="right"> the <see cref="Thickness" /> to expand by </param>
-		/// <returns> the result of <paramref name="left" /> expanded by <see cref="right" /> </returns>
-		public static Thickness operator +(Thickness left, Thickness right)
-		{
-			return left.Expand(right.Left, right.Top, right.Right, right.Bottom);
-		}
-
-		/// <summary>
-		///   determines whether two instances of <see cref="Thickness" /> are equal
-		/// </summary>
-		/// <param name="left"> the left operand </param>
-		/// <param name="right"> the right operand </param>
-		/// <returns> <c>true</c> if <paramref name="left" /> equals <paramref name="right" /> ; otherwise, <c>false</c> </returns>
-		public static bool operator ==(Thickness left, Thickness right)
-		{
-			return left.Equals(right);
-		}
-
-		/// <summary>
-		///   determines whether two instances of <see cref="Thickness" /> are not equal
-		/// </summary>
-		/// <param name="left"> the left operand </param>
-		/// <param name="right"> the right operand </param>
-		/// <returns> <c>true</c> if <paramref name="left" /> does not equal <paramref name="right" /> ; otherwise, <c>false</c> </returns>
-		public static bool operator !=(Thickness left, Thickness right)
-		{
-			return !left.Equals(right);
-		}
-
-		public bool Equals(Thickness other)
-		{
-			return other._Bottom.Equals(_Bottom) &&
-				other._Left.Equals(_Left) &&
-					other._Right.Equals(_Right) &&
-						other._Top.Equals(_Top);
-		}
-
 		public override bool Equals(object obj)
 		{
 			if(ReferenceEquals(null, obj))
@@ -389,12 +343,57 @@ namespace Frost
 				_Bottom);
 		}
 
-		static Thickness()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
-			_MinValue = new Thickness(0.0f);
-			_MaxValue = new Thickness(float.MaxValue);
+			CContract.Invariant(Check.IsPositive(_Left));
+			CContract.Invariant(Check.IsPositive(_Top));
+			CContract.Invariant(Check.IsPositive(_Right));
+			CContract.Invariant(Check.IsPositive(_Bottom));
+		}
 
-			_Empty = new Thickness(0.0f);
+		/// <summary>
+		///   produces a <see cref="Thickness" /> by contracting an existing <see cref="Thickness" /> by a <see cref="Thickness" />
+		/// </summary>
+		/// <param name="left"> the <see cref="Thickness" /> to contract </param>
+		/// <param name="right"> the <see cref="Thickness" /> to contract by </param>
+		/// <returns> the result of <paramref name="left" /> contracted by <see cref="right" /> </returns>
+		public static Thickness operator -(Thickness left, Thickness right)
+		{
+			return left.Contract(right.Left, right.Top, right.Right, right.Bottom);
+		}
+
+		/// <summary>
+		///   produces a <see cref="Thickness" /> by expanding an existing <see cref="Thickness" /> by a <see cref="Thickness" />
+		/// </summary>
+		/// <param name="left"> the <see cref="Thickness" /> to expand </param>
+		/// <param name="right"> the <see cref="Thickness" /> to expand by </param>
+		/// <returns> the result of <paramref name="left" /> expanded by <see cref="right" /> </returns>
+		public static Thickness operator +(Thickness left, Thickness right)
+		{
+			return left.Expand(right.Left, right.Top, right.Right, right.Bottom);
+		}
+
+		/// <summary>
+		///   determines whether two instances of <see cref="Thickness" /> are equal
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> <c>true</c> if <paramref name="left" /> equals <paramref name="right" /> ; otherwise, <c>false</c> </returns>
+		public static bool operator ==(Thickness left, Thickness right)
+		{
+			return left.Equals(right);
+		}
+
+		/// <summary>
+		///   determines whether two instances of <see cref="Thickness" /> are not equal
+		/// </summary>
+		/// <param name="left"> the left operand </param>
+		/// <param name="right"> the right operand </param>
+		/// <returns> <c>true</c> if <paramref name="left" /> does not equal <paramref name="right" /> ; otherwise, <c>false</c> </returns>
+		public static bool operator !=(Thickness left, Thickness right)
+		{
+			return !left.Equals(right);
 		}
 	}
 }

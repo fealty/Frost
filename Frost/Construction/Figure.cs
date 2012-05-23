@@ -72,6 +72,22 @@ namespace Frost.Construction
 			get { return _Transform; }
 		}
 
+		public bool Equals(Figure other)
+		{
+			if(ReferenceEquals(null, other))
+			{
+				return false;
+			}
+
+			if(ReferenceEquals(this, other))
+			{
+				return true;
+			}
+
+			return Equals(other._Commands, _Commands) && Equals(other._Points, _Points) &&
+				other._Transform.Equals(_Transform);
+		}
+
 		public static Builder Create()
 		{
 			Contract.Ensures(Contract.Result<Builder>() != null);
@@ -256,6 +272,32 @@ namespace Frost.Construction
 			Debug.Assert(pointIndex == _Points.Length);
 
 			sink.End();
+		}
+
+		public override bool Equals(object obj)
+		{
+			if(ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+
+			if(ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+
+			return obj is Figure && Equals((Figure)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int result = _Commands.GetHashCode();
+				result = (result * 397) ^ _Points.GetHashCode();
+				result = (result * 397) ^ _Transform.GetHashCode();
+				return result;
+			}
 		}
 
 		[ContractInvariantMethod]
@@ -703,48 +745,6 @@ namespace Frost.Construction
 				_States.Clear();
 
 				_Transform = Matrix3X2.Identity;
-			}
-		}
-
-		public bool Equals(Figure other)
-		{
-			if(ReferenceEquals(null, other))
-			{
-				return false;
-			}
-
-			if(ReferenceEquals(this, other))
-			{
-				return true;
-			}
-
-			return Equals(other._Commands, _Commands) && Equals(other._Points, _Points) &&
-				other._Transform.Equals(_Transform);
-		}
-
-		public override bool Equals(object obj)
-		{
-			if(ReferenceEquals(null, obj))
-			{
-				return false;
-			}
-
-			if(ReferenceEquals(this, obj))
-			{
-				return true;
-			}
-
-			return obj is Figure && Equals((Figure)obj);
-		}
-
-		public override int GetHashCode()
-		{
-			unchecked
-			{
-				int result = _Commands.GetHashCode();
-				result = (result * 397) ^ _Points.GetHashCode();
-				result = (result * 397) ^ _Transform.GetHashCode();
-				return result;
 			}
 		}
 

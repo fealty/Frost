@@ -18,15 +18,6 @@ namespace Frost
 		private readonly float _G;
 		private readonly float _R;
 
-		[ContractInvariantMethod]
-		private void Invariant()
-		{
-			Contract.Invariant(Check.IsByte(_R));
-			Contract.Invariant(Check.IsByte(_G));
-			Contract.Invariant(Check.IsByte(_B));
-			Contract.Invariant(Check.IsPercentage(_A));
-		}
-
 		/// <summary>
 		///   constructs a <see cref="	RGBColor" /> from red, green, blue, and optionally alpha components
 		/// </summary>
@@ -149,6 +140,15 @@ namespace Frost
 		internal Color ToColor()
 		{
 			return new Color(_R / 255.0f, _G / 255.0f, _B / 255.0f, _A / 100.0f);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(Check.IsByte(_R));
+			Contract.Invariant(Check.IsByte(_G));
+			Contract.Invariant(Check.IsByte(_B));
+			Contract.Invariant(Check.IsPercentage(_A));
 		}
 
 		/// <summary>
