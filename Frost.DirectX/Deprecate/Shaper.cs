@@ -24,7 +24,7 @@ using FontWeight = Frost.Shaping.FontWeight;
 
 namespace Frost.DirectX
 {
-	/// <summary>
+	/*/// <summary>
 	///   This class produces shaped glyphs and clusters from an <see cref="AggregatorSink" /> .
 	/// </summary>
 	internal sealed class Shaper : IDisposable
@@ -982,5 +982,5 @@ namespace Frost.DirectX
 				return !left.Equals(right);
 			}
 		}
-	}
+	}*/
 }

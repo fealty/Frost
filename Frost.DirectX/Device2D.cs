@@ -31,6 +31,9 @@ namespace Frost.DirectX
 	{
 		public const int DeferredCacheLimit = 10;
 
+		// DeferredCacheLimit = 10
+		// deferred-cache-limit = 10
+
 		private readonly CombinationSink _CombinationSink;
 		private readonly CompositionDevice _CompositionDevice;
 

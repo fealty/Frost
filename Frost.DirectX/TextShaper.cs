@@ -18,7 +18,7 @@ using LineBreakpoint = Frost.Shaping.LineBreakpoint;
 
 namespace Frost.DirectX
 {
-	internal sealed class TextShaper : Shaper, IDisposable
+	internal sealed class TextShaper : Shaping.Shaper, IDisposable
 	{
 		private readonly TextAnalyzer _Analyzer;
 		private CharacterFormat[] _Characters;
