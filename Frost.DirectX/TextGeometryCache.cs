@@ -59,7 +59,7 @@ namespace Frost.DirectX
 			bool isVertical,
 			bool isRightToLeft,
 			FontHandle font,
-			Formatting.TextShaper.Glyph[] glyphs)
+			List<Formatting.TextShaper.Glyph> glyphs)
 		{
 			ResizeInternalBuffers(glyphRange.Length);
 

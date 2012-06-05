@@ -259,7 +259,7 @@ namespace Frost
 			bool isVertical,
 			bool isRightToLeft,
 			FontHandle fontHandle,
-			params TextShaper.Glyph[] glyphs)
+			List<TextShaper.Glyph> glyphs)
 		{
 			return OnGetGlyphOutline(
 				glyphRange, isVertical, isRightToLeft, fontHandle, glyphs);
@@ -349,7 +349,7 @@ namespace Frost
 			bool isVertical,
 			bool isRightToLeft,
 			FontHandle fontHandle,
-			params TextShaper.Glyph[] glyphs);
+			List<TextShaper.Glyph> glyphs);
 
 		protected abstract FontMetrics OnGetFontMetrics(FontHandle fontHandle);
 	}

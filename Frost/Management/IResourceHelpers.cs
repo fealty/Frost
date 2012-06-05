@@ -53,9 +53,10 @@ namespace Frost.Management
 				bool isVertical,
 				bool isRightToLeft,
 				FontHandle fontHandle,
-				params TextShaper.Glyph[] glyphs)
+				List<TextShaper.Glyph> glyphs)
 			{
 				Contract.Requires(!(isVertical && isRightToLeft));
+				Contract.Requires(glyphs != null);
 
 				throw new NotSupportedException();
 			}
@@ -117,7 +118,7 @@ namespace Frost.Management
 			bool isVertical,
 			bool isRightToLeft,
 			FontHandle fontHandle,
-			params TextShaper.Glyph[] glyphs);
+			List<TextShaper.Glyph> glyphs);
 
 		FontMetrics GetFontMetrics(FontHandle fontHandle);
 

@@ -366,7 +366,7 @@ namespace Frost.DirectX
 			bool isVertical,
 			bool isRightToLeft,
 			Formatting.FontHandle fontHandle,
-			params Formatting.TextShaper.Glyph[] glyphs)
+			List<TextShaper.Glyph> glyphs)
 		{
 			lock (_Lock)
 			{
