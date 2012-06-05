@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
 using Demo.Framework;
@@ -29,9 +30,33 @@ namespace Demo.Formatting
 			//_Paragraphs = new List<ITextMetrics>();
 		}
 
+		public sealed class Test : IShapedGlyphs
+		{
+			public Test()
+			{
+				Glyphs = new List<Shaper.Glyph>();
+				Clusters = new List<Shaper.Cluster>();
+				Spans = new List<Shaper.Span>();
+			}
+
+			public List<Shaper.Glyph> Glyphs { get; private set; }
+			public List<Shaper.Cluster> Clusters { get; private set; }
+			public List<Shaper.Span> Spans { get; private set; }
+		}
+
 		public void Reset(Canvas target, Device2D device2D)
 		{
+			Test tt = new Test();
+
+			device2D.Shaper.Begin(tt, "Hello\u00ADWorld!");
+
+			//device2D.Shaper.AnalyzeScripts();
+
+			device2D.Shaper.SetPointSize("Hello\u00ADWorld!", 12.0f);
 			
+			device2D.Shaper.End();
+
+			int g = 0;
 
 			/*_Paragraphs.Clear();
 
