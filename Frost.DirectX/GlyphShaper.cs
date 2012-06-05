@@ -403,7 +403,7 @@ namespace Frost.DirectX
 			FontMetrics metrics = new FontMetrics(
 				dxMetrics.Ascent, dxMetrics.Descent, dxMetrics.DesignUnitsPerEm, fontId);
 
-			return metrics.Measure(dxMetrics.Ascent + dxMetrics.Descent + dxMetrics.LineGap, pointSize);
+			return metrics.Measure(dxMetrics.Ascent + dxMetrics.Descent, pointSize);
 		}
 
 		/// <summary>
