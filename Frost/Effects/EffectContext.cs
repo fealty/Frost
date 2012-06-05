@@ -21,7 +21,7 @@ namespace Frost.Effects
 		public abstract bool Equals(EffectContext other);
 	}
 
-	public sealed class EffectContext<T>
+	public class EffectContext<T>
 		: EffectContext, IEquatable<EffectContext<T>>
 		where T : struct, IEffectSettings, IEquatable<T>
 	{
@@ -55,7 +55,7 @@ namespace Frost.Effects
 			}
 		}
 
-		public override Effect EffectBase
+		public sealed override Effect EffectBase
 		{
 			get
 			{
@@ -65,12 +65,12 @@ namespace Frost.Effects
 			}
 		}
 
-		public override object OptionsBase
+		public sealed override object OptionsBase
 		{
-			get { return _Options; }
+			get { return Options; }
 		}
 
-		public T Options
+		public virtual T Options
 		{
 			get { return _Options; }
 		}
@@ -90,12 +90,12 @@ namespace Frost.Effects
 			return other._Options.Equals(_Options) && Equals(other._Effect, _Effect);
 		}
 
-		public override bool Equals(EffectContext other)
+		public sealed override bool Equals(EffectContext other)
 		{
 			return Equals((object)other);
 		}
 
-		public override bool Equals(object obj)
+		public sealed override bool Equals(object obj)
 		{
 			if(ReferenceEquals(null, obj))
 			{
@@ -110,7 +110,7 @@ namespace Frost.Effects
 			return obj is EffectContext<T> && Equals((EffectContext<T>)obj);
 		}
 
-		public override int GetHashCode()
+		public sealed override int GetHashCode()
 		{
 			unchecked
 			{
