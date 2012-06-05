@@ -14,8 +14,8 @@ using Frost.DirectX.Common;
 using Frost.DirectX.Composition;
 using Frost.DirectX.Painting;
 using Frost.Painting;
-using Frost.Construction;
 using Frost.Shaping;
+using Frost.Formatting;
 using Frost.Surfacing;
 
 using SharpDX;
@@ -23,7 +23,7 @@ using SharpDX.DXGI;
 using SharpDX.DirectWrite;
 
 using DxGeometry = SharpDX.Direct2D1.Geometry;
-using FontMetrics = Frost.Shaping.FontMetrics;
+using FontMetrics = Frost.Formatting.FontMetrics;
 
 namespace Frost.DirectX
 {
@@ -55,7 +55,7 @@ namespace Frost.DirectX
 		private readonly TessellationSink _TessellationSink;
 		private readonly WideningSink _WideningSink;
 
-		private readonly TextShaper _Shaper;
+		private readonly TextTextShaper _TextShaper;
 
 		private Size _DefaultAtlasSize;
 		private Size _DynamicAtlasSize;
@@ -78,7 +78,7 @@ namespace Frost.DirectX
 			_DrawingDevice = new PaintingDevice(this, _CompositionDevice.Device3D);
 			_FontDevice = new FontDevice();
 			_TextGeometryCache = new TextGeometryCache();
-			_Shaper = new TextShaper(this, _FontDevice);
+			_TextShaper = new TextTextShaper(this, _FontDevice);
 
 			_GeometryCache = new GeometryCache(_DrawingDevice.Factory2D);
 
@@ -95,9 +95,9 @@ namespace Frost.DirectX
 			get { return _CompositionDevice.Compositor; }
 		}
 
-		public override Shaper Shaper
+		public override Formatting.TextShaper TextShaper
 		{
-			get { return _Shaper; }
+			get { return _TextShaper; }
 		}
 
 		public override Painter Painter
@@ -165,7 +165,7 @@ namespace Frost.DirectX
 		}
 
 		protected override Point OnDeterminePoint(
-			Figure path, float length, float tolerance, out Point tangentVector)
+			Shape path, float length, float tolerance, out Point tangentVector)
 		{
 			lock(_Lock)
 			{
@@ -187,7 +187,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override float OnMeasureLength(Figure path, float tolerance)
+		protected override float OnMeasureLength(Shape path, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -202,7 +202,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override float OnMeasureArea(Figure path, float tolerance)
+		protected override float OnMeasureArea(Shape path, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -218,7 +218,7 @@ namespace Frost.DirectX
 		}
 
 		protected override void OnTessellate(
-			Figure path, float tolerance, ITessellationSink sink)
+			Shape path, float tolerance, ITessellationSink sink)
 		{
 			lock(_Lock)
 			{
@@ -233,9 +233,9 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Figure OnCombine(
-			Figure sourcePath,
-			Figure destinationPath,
+		protected override Shape OnCombine(
+			Shape sourcePath,
+			Shape destinationPath,
 			float tolerance,
 			CombinationOperation operation)
 		{
@@ -263,7 +263,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Rectangle OnMeasureRegion(Figure path)
+		protected override Rectangle OnMeasureRegion(Shape path)
 		{
 			lock(_Lock)
 			{
@@ -281,8 +281,8 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Figure OnWiden(
-			Figure path, float width, float tolerance)
+		protected override Shape OnWiden(
+			Shape path, float width, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -297,7 +297,7 @@ namespace Frost.DirectX
 			}
 		}
 
-		protected override Figure OnSimplify(Figure path, float tolerance)
+		protected override Shape OnSimplify(Shape path, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -313,7 +313,7 @@ namespace Frost.DirectX
 		}
 
 		protected override bool OnContains(
-			Figure path, Point point, float tolerance)
+			Shape path, Point point, float tolerance)
 		{
 			lock(_Lock)
 			{
@@ -361,12 +361,12 @@ namespace Frost.DirectX
 			return CreateCanvas(target.Region.Size, target);
 		}
 
-		protected override Outline OnGetGlyphOutline(
+		protected override GlyphOutline OnGetGlyphOutline(
 			IndexedRange glyphRange,
 			bool isVertical,
 			bool isRightToLeft,
-			Shaping.FontHandle fontHandle,
-			params Shaper.Glyph[] glyphs)
+			Formatting.FontHandle fontHandle,
+			params Formatting.TextShaper.Glyph[] glyphs)
 		{
 			lock (_Lock)
 			{
@@ -382,15 +382,15 @@ namespace Frost.DirectX
 
 				float baseline = face.Metrics.Ascent / emSize;
 
-				Figure figure = _TextGeometryCache.Retrieve(
+				Shape shape = _TextGeometryCache.Retrieve(
 					glyphRange, isVertical, isRightToLeft, handle, glyphs);
 
-				return new Outline(figure, baseline);
+				return new GlyphOutline(shape, baseline);
 			}
 		}
 
 		protected override FontMetrics OnGetFontMetrics(
-			Shaping.FontHandle fontHandle)
+			Formatting.FontHandle fontHandle)
 		{
 			lock (_Lock)
 			{
@@ -483,7 +483,7 @@ namespace Frost.DirectX
 
 				_CompositionDevice.Dispose();
 				_DrawingDevice.Dispose();
-				_Shaper.Dispose();
+				_TextShaper.Dispose();
 				_FontDevice.Dispose();
 
 				_TextGeometryCache.Dispose();

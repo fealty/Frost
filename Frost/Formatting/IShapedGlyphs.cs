@@ -5,14 +5,14 @@
 
 using System.Collections.Generic;
 
-namespace Frost.Shaping
+namespace Frost.Formatting
 {
 	public interface IShapedGlyphs
 	{
-		List<Shaper.Glyph> Glyphs { get; }
+		List<TextShaper.Glyph> Glyphs { get; }
 
-		List<Shaper.Cluster> Clusters { get; }
+		List<TextShaper.Cluster> Clusters { get; }
 
-		List<Shaper.Span> Spans { get; }
+		List<TextShaper.Span> Spans { get; }
 	}
 }

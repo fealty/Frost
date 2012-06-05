@@ -10,7 +10,7 @@ using System.Diagnostics.Contracts;
 using Frost.Collections;
 using Frost.Effects;
 using Frost.Management.Contracts;
-using Frost.Shaping;
+using Frost.Formatting;
 using Frost.Surfacing;
 
 namespace Frost.Management
@@ -48,12 +48,12 @@ namespace Frost.Management
 
 			public abstract event Action<IEnumerable<Canvas>> CanvasInvalidated;
 
-			public Outline GetGlyphOutline(
+			public GlyphOutline GetGlyphOutline(
 				IndexedRange glyphRange,
 				bool isVertical,
 				bool isRightToLeft,
 				FontHandle fontHandle,
-				params Shaper.Glyph[] glyphs)
+				params TextShaper.Glyph[] glyphs)
 			{
 				Contract.Requires(!(isVertical && isRightToLeft));
 
@@ -112,12 +112,12 @@ namespace Frost.Management
 
 		void ForgetCanvas(Canvas target);
 
-		Outline GetGlyphOutline(
+		GlyphOutline GetGlyphOutline(
 			IndexedRange glyphRange,
 			bool isVertical,
 			bool isRightToLeft,
 			FontHandle fontHandle,
-			params Shaper.Glyph[] glyphs);
+			params TextShaper.Glyph[] glyphs);
 
 		FontMetrics GetFontMetrics(FontHandle fontHandle);
 

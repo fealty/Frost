@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 
 using Frost.Collections;
-using Frost.Shaping;
+using Frost.Formatting;
 
 using SharpDX;
 using SharpDX.DirectWrite;
@@ -16,7 +16,7 @@ using SharpDX.DirectWrite;
 using DxLineBreakpoint = SharpDX.DirectWrite.LineBreakpoint;
 using DxBreakCondition = SharpDX.DirectWrite.BreakCondition;
 
-using LineBreakpoint = Frost.Shaping.LineBreakpoint;
+using LineBreakpoint = Frost.Formatting.LineBreakpoint;
 
 namespace Frost.DirectX
 {
@@ -26,19 +26,19 @@ namespace Frost.DirectX
 	internal sealed class TextAnalyzer
 		: CallbackBase, TextAnalysisSource, TextAnalysisSink
 	{
-		private readonly TextShaper _Shaper;
+		private readonly TextTextShaper _TextShaper;
 
 		private ReadingDirection _ReadingDirection;
 
 		private SharpDX.DirectWrite.TextAnalyzer _TextAnalyzer;
 
-		public TextAnalyzer(FontDevice fontDevice, TextShaper shaper)
+		public TextAnalyzer(FontDevice fontDevice, TextTextShaper textShaper)
 		{
 			Contract.Requires(fontDevice != null);
 
 			_TextAnalyzer = new SharpDX.DirectWrite.TextAnalyzer(fontDevice.Factory);
 
-			_Shaper = shaper;
+			_TextShaper = textShaper;
 		}
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace Frost.DirectX
 
 			foreach(int index in range)
 			{
-				_Shaper.Characters[index].ScriptAnalysis = scriptAnalysis;
+				_TextShaper.Characters[index].ScriptAnalysis = scriptAnalysis;
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace Frost.DirectX
 						break;
 				}
 
-				_Shaper.Characters[index].Breakpoint = new LineBreakpoint(
+				_TextShaper.Characters[index].Breakpoint = new LineBreakpoint(
 					beforeCondition,
 					afterCondition,
 					breakpoint.IsWhitespace,
@@ -129,7 +129,7 @@ namespace Frost.DirectX
 		{
 			IndexedRange range = new IndexedRange(textPosition, textLength);
 
-			_Shaper.SetBidiLevel(range, resolvedLevel);
+			_TextShaper.SetBidiLevel(range, resolvedLevel);
 		}
 
 		/// <summary>
@@ -145,7 +145,7 @@ namespace Frost.DirectX
 
 			foreach(int index in range)
 			{
-				_Shaper.Characters[index].NumberSubstitution = numberSubstitution;
+				_TextShaper.Characters[index].NumberSubstitution = numberSubstitution;
 			}
 		}
 
@@ -156,13 +156,13 @@ namespace Frost.DirectX
 		/// <returns> This method returns the text at the given position. </returns>
 		string TextAnalysisSource.GetTextAtPosition(int textPosition)
 		{
-			if(textPosition >= _Shaper.Text.Length)
+			if(textPosition >= _TextShaper.Text.Length)
 			{
 				return null;
 			}
 
-			return _Shaper.Text.Substring(
-				textPosition, _Shaper.Text.Length - textPosition);
+			return _TextShaper.Text.Substring(
+				textPosition, _TextShaper.Text.Length - textPosition);
 		}
 
 		/// <summary>
@@ -172,12 +172,12 @@ namespace Frost.DirectX
 		/// <returns> This method returns the text before the given position. </returns>
 		string TextAnalysisSource.GetTextBeforePosition(int textPosition)
 		{
-			if(textPosition == 0 || textPosition > _Shaper.Text.Length)
+			if(textPosition == 0 || textPosition > _TextShaper.Text.Length)
 			{
 				return null;
 			}
 
-			return _Shaper.Text.Substring(0, textPosition);
+			return _TextShaper.Text.Substring(0, textPosition);
 		}
 
 		/// <summary>
@@ -189,22 +189,22 @@ namespace Frost.DirectX
 		string TextAnalysisSource.GetLocaleName(
 			int textPosition, out int textLength)
 		{
-			IndexedRange range = new IndexedRange(textPosition, _Shaper.Text.Length);
+			IndexedRange range = new IndexedRange(textPosition, _TextShaper.Text.Length);
 
 			foreach(int index in range)
 			{
-				if(_Shaper.Characters[index].Culture !=
-					_Shaper.Characters[textPosition].Culture)
+				if(_TextShaper.Characters[index].Culture !=
+					_TextShaper.Characters[textPosition].Culture)
 				{
 					textLength = index - textPosition;
 
-					return _Shaper.Characters[textPosition].Culture.Name;
+					return _TextShaper.Characters[textPosition].Culture.Name;
 				}
 			}
 
-			textLength = _Shaper.Text.Length - textPosition;
+			textLength = _TextShaper.Text.Length - textPosition;
 
-			return _Shaper.Characters[textPosition].Culture.Name;
+			return _TextShaper.Characters[textPosition].Culture.Name;
 		}
 
 		/// <summary>
@@ -216,22 +216,22 @@ namespace Frost.DirectX
 		NumberSubstitution TextAnalysisSource.GetNumberSubstitution(
 			int textPosition, out int textLength)
 		{
-			IndexedRange range = new IndexedRange(textPosition, _Shaper.Text.Length);
+			IndexedRange range = new IndexedRange(textPosition, _TextShaper.Text.Length);
 
 			foreach(int index in range)
 			{
-				if(_Shaper.Characters[index].NumberSubstitution !=
-					_Shaper.Characters[textPosition].NumberSubstitution)
+				if(_TextShaper.Characters[index].NumberSubstitution !=
+					_TextShaper.Characters[textPosition].NumberSubstitution)
 				{
 					textLength = index - textPosition;
 
-					return _Shaper.Characters[textPosition].NumberSubstitution;
+					return _TextShaper.Characters[textPosition].NumberSubstitution;
 				}
 			}
 
-			textLength = _Shaper.Text.Length - textPosition;
+			textLength = _TextShaper.Text.Length - textPosition;
 
-			return _Shaper.Characters[textPosition].NumberSubstitution;
+			return _TextShaper.Characters[textPosition].NumberSubstitution;
 		}
 
 		/// <summary>
@@ -246,13 +246,13 @@ namespace Frost.DirectX
 		{
 			CultureInfo startingCulture;
 
-			if(_Shaper.Characters.Length == 0)
+			if(_TextShaper.Characters.Length == 0)
 			{
 				startingCulture = CultureInfo.InvariantCulture;
 			}
 			else
 			{
-				startingCulture = _Shaper.Characters[0].Culture;
+				startingCulture = _TextShaper.Characters[0].Culture;
 
 				if(startingCulture == null)
 				{
@@ -272,26 +272,26 @@ namespace Frost.DirectX
 			try
 			{
 				if(
-					_TextAnalyzer.AnalyzeLineBreakpoints(this, 0, _Shaper.Text.Length, this).
+					_TextAnalyzer.AnalyzeLineBreakpoints(this, 0, _TextShaper.Text.Length, this).
 						Failure)
 				{
 					throw new InvalidOperationException(
 						"Analysis of line breaking points failed!");
 				}
 
-				if(_TextAnalyzer.AnalyzeBidi(this, 0, _Shaper.Text.Length, this).Failure)
+				if(_TextAnalyzer.AnalyzeBidi(this, 0, _TextShaper.Text.Length, this).Failure)
 				{
 					throw new InvalidOperationException("Analysis of bidi-text failed!");
 				}
 
-				if(_TextAnalyzer.AnalyzeScript(this, 0, _Shaper.Text.Length, this).Failure)
+				if(_TextAnalyzer.AnalyzeScript(this, 0, _TextShaper.Text.Length, this).Failure)
 				{
 					throw new InvalidOperationException("Analysis of scripts failed!");
 				}
 
 				if(
 					_TextAnalyzer.AnalyzeNumberSubstitution(
-						this, 0, _Shaper.Text.Length, this).Failure)
+						this, 0, _TextShaper.Text.Length, this).Failure)
 				{
 					throw new InvalidOperationException(
 						"Analysis of number substition failed!");

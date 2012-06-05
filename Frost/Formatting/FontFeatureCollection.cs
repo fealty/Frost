@@ -9,7 +9,7 @@ using System.Globalization;
 
 using Frost.Collections;
 
-namespace Frost.Shaping
+namespace Frost.Formatting
 {
 	public sealed class FontFeatureCollection : ImmutableBase<FontFeature>
 	{

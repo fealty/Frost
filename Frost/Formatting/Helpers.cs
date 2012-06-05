@@ -6,12 +6,12 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
-namespace Frost.Shaping
+namespace Frost.Formatting
 {
 	public static class Helpers
 	{
 		public static bool IsBrokenAfter(
-			this List<Shaper.Cluster> clusters,
+			this List<TextShaper.Cluster> clusters,
 			int index,
 			ref bool isForced,
 			bool isStandaloneCall = true)
@@ -19,7 +19,7 @@ namespace Frost.Shaping
 			Contract.Requires(index >= 0);
 			Contract.Requires(clusters != null);
 
-			Shaper.Cluster cluster;
+			TextShaper.Cluster cluster;
 
 			if(clusters.TryCurrentOrDefault(index, out cluster))
 			{
@@ -43,7 +43,7 @@ namespace Frost.Shaping
 		}
 
 		public static bool IsBrokenBefore(
-			this List<Shaper.Cluster> clusters,
+			this List<TextShaper.Cluster> clusters,
 			int index,
 			ref bool isForced,
 			bool isStandaloneCall = true)
@@ -51,7 +51,7 @@ namespace Frost.Shaping
 			Contract.Requires(index >= 0);
 			Contract.Requires(clusters != null);
 
-			Shaper.Cluster cluster;
+			TextShaper.Cluster cluster;
 
 			if(clusters.TryCurrentOrDefault(index, out cluster))
 			{

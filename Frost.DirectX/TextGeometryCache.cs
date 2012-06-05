@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 using Frost.Collections;
-using Frost.Construction;
+using Frost.Shaping;
 
 using SharpDX.DirectWrite;
 
@@ -19,7 +19,7 @@ namespace Frost.DirectX
 	/// </summary>
 	internal sealed class TextGeometryCache : IDisposable
 	{
-		private readonly Dictionary<FontHandle, Dictionary<TextGeometryKey, Figure>>
+		private readonly Dictionary<FontHandle, Dictionary<TextGeometryKey, Shape>>
 			_Cache;
 
 		private readonly TextGeometrySink _Sink;
@@ -36,7 +36,7 @@ namespace Frost.DirectX
 
 			_GlyphOffsets = new GlyphOffset[0];
 
-			_Cache = new Dictionary<FontHandle, Dictionary<TextGeometryKey, Figure>>();
+			_Cache = new Dictionary<FontHandle, Dictionary<TextGeometryKey, Shape>>();
 
 			_Sink = new TextGeometrySink();
 		}
@@ -54,12 +54,12 @@ namespace Frost.DirectX
 		/// <param name="font"> This parameter references the font for the cluster. </param>
 		/// <param name="input"> This parameter references the formatted text output. </param>
 		/// <returns> This method returns the geometry for the formatted cluster if available; otherwise, this method returns <c>null</c> . </returns>
-		public Figure Retrieve(
+		public Shape Retrieve(
 			IndexedRange glyphRange,
 			bool isVertical,
 			bool isRightToLeft,
 			FontHandle font,
-			Shaping.Shaper.Glyph[] glyphs)
+			Formatting.TextShaper.Glyph[] glyphs)
 		{
 			ResizeInternalBuffers(glyphRange.Length);
 
@@ -85,11 +85,11 @@ namespace Frost.DirectX
 			key.Indices = _GlyphIndices;
 			key.Offsets = _GlyphOffsets;
 
-			Dictionary<TextGeometryKey, Figure> cacheForFont;
+			Dictionary<TextGeometryKey, Shape> cacheForFont;
 
 			if(_Cache.TryGetValue(font, out cacheForFont))
 			{
-				Figure result;
+				Shape result;
 
 				if(cacheForFont.TryGetValue(key, out result))
 				{
@@ -98,12 +98,12 @@ namespace Frost.DirectX
 			}
 			else
 			{
-				cacheForFont = new Dictionary<TextGeometryKey, Figure>();
+				cacheForFont = new Dictionary<TextGeometryKey, Shape>();
 
 				_Cache.Add(font, cacheForFont);
 			}
 
-			Figure geometry = _Sink.CreateGeometry(
+			Shape geometry = _Sink.CreateGeometry(
 				key, isRightToLeft, isVertical, font);
 
 			TextGeometryKey newKey;

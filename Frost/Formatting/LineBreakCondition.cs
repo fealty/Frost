@@ -3,7 +3,7 @@
 // 
 // See LICENSE for more information.
 
-namespace Frost.Shaping
+namespace Frost.Formatting
 {
 	/// <summary>
 	///   indicates how text at a given character can be split

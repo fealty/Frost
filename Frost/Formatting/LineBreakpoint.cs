@@ -5,7 +5,7 @@
 
 using System;
 
-namespace Frost.Shaping
+namespace Frost.Formatting
 {
 	/// <summary>
 	///   represents the break conditions for an item

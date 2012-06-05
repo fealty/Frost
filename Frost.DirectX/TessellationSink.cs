@@ -5,7 +5,7 @@
 
 using System.Diagnostics.Contracts;
 
-using Frost.Construction;
+using Frost.Shaping;
 
 using SharpDX;
 using SharpDX.Direct2D1;

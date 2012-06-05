@@ -5,7 +5,7 @@
 
 using System.Diagnostics.Contracts;
 
-using Frost.Construction;
+using Frost.Shaping;
 
 using SharpDX.Direct2D1;
 
@@ -15,17 +15,17 @@ namespace Frost.DirectX
 {
 	internal sealed class SimplificationSink : GeometrySinkBase
 	{
-		public Figure CreateSimplification(DxGeometry resolvedSource, float tolerance)
+		public Shape CreateSimplification(DxGeometry resolvedSource, float tolerance)
 		{
 			Contract.Requires(resolvedSource != null);
 			Contract.Requires(Check.IsPositive(tolerance));
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
-			_Builder = Figure.Create();
+			_Builder = Shape.Create();
 
 			resolvedSource.Simplify(GeometrySimplificationOption.Lines, tolerance, this);
 
-			Figure result = _Builder.Build();
+			Shape result = _Builder.Build();
 
 			_Builder = null;
 

@@ -6,7 +6,7 @@
 using System.Diagnostics.Contracts;
 using System.Threading;
 
-using Frost.Construction;
+using Frost.Shaping;
 
 namespace Frost.Painting
 {
@@ -673,27 +673,27 @@ namespace Frost.Painting
 			}
 		}
 
-		public void Stroke(Figure figure)
+		public void Stroke(Shape shape)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
-			Contract.Requires(figure != null);
+			Contract.Requires(shape != null);
 
 			if(!_IsTargetEmpty)
 			{
-				OnStroke(figure);
+				OnStroke(shape);
 			}
 		}
 
-		public void Fill(Figure figure)
+		public void Fill(Shape shape)
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(ActiveTarget != null);
-			Contract.Requires(figure != null);
+			Contract.Requires(shape != null);
 
 			if(!_IsTargetEmpty)
 			{
-				OnFill(figure);
+				OnFill(shape);
 			}
 		}
 
@@ -1119,8 +1119,8 @@ namespace Frost.Painting
 		protected abstract void OnFillRectangle(
 			ref Rectangle rectangleRegion, ref Size roundedRadius);
 
-		protected abstract void OnStroke(Figure figure);
-		protected abstract void OnFill(Figure figure);
+		protected abstract void OnStroke(Shape shape);
+		protected abstract void OnFill(Shape shape);
 
 		protected abstract void OnSaveState();
 		protected abstract void OnRestoreState();

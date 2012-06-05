@@ -7,7 +7,7 @@ using System;
 using System.Diagnostics.Contracts;
 
 using Frost.DirectX.Common;
-using Frost.Construction;
+using Frost.Shaping;
 
 using SharpDX;
 using SharpDX.Direct2D1;
@@ -233,28 +233,28 @@ namespace Frost.DirectX.Painting
 			_Target.FillRoundedRectangle(roundedRect, brush);
 		}
 
-		public void Stroke(Figure figure, Brush brush, StrokeStyle style, float strokeWidth)
+		public void Stroke(Shape shape, Brush brush, StrokeStyle style, float strokeWidth)
 		{
-			Contract.Requires(figure != null);
+			Contract.Requires(shape != null);
 			Contract.Requires(brush != null);
 			Contract.Requires(style != null);
 			Contract.Requires(Check.IsPositive(strokeWidth));
 			Contract.Assert(_Target != null);
 
-			DxGeometry resolved = _GeometryCache.ResolveGeometry(figure);
+			DxGeometry resolved = _GeometryCache.ResolveGeometry(shape);
 
 			Contract.Assert(resolved != null);
 
 			_Target.DrawGeometry(resolved, brush, strokeWidth, style);
 		}
 
-		public void Fill(Figure figure, Brush brush)
+		public void Fill(Shape shape, Brush brush)
 		{
-			Contract.Requires(figure != null);
+			Contract.Requires(shape != null);
 			Contract.Requires(brush != null);
 			Contract.Assert(_Target != null);
 
-			DxGeometry resolved = _GeometryCache.ResolveGeometry(figure);
+			DxGeometry resolved = _GeometryCache.ResolveGeometry(shape);
 
 			Contract.Assert(resolved != null);
 

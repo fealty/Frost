@@ -8,9 +8,9 @@ using System.Diagnostics.Contracts;
 
 using SharpDX.DirectWrite;
 
-using FontStretch = Frost.Shaping.FontStretch;
-using FontStyle = Frost.Shaping.FontStyle;
-using FontWeight = Frost.Shaping.FontWeight;
+using FontStretch = Frost.Formatting.FontStretch;
+using FontStyle = Frost.Formatting.FontStyle;
+using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX
 {
@@ -50,11 +50,11 @@ namespace Frost.DirectX
 			_Stretch = stretch;
 		}
 
-		public Shaping.FontHandle Id
+		public Formatting.FontHandle Id
 		{
 			get
 			{
-				return new Shaping.FontHandle(_Family, _Style, _Weight, _Stretch);
+				return new Formatting.FontHandle(_Family, _Style, _Weight, _Stretch);
 			}
 		}
 

@@ -5,9 +5,9 @@
 
 using System.Diagnostics.Contracts;
 
-using Frost.Construction.Contracts;
+using Frost.Shaping.Contracts;
 
-namespace Frost.Construction
+namespace Frost.Shaping
 {
 	namespace Contracts
 	{

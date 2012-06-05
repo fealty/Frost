@@ -10,9 +10,9 @@ using System.Linq;
 
 using SharpDX.DirectWrite;
 
-using FontStretch = Frost.Shaping.FontStretch;
-using FontStyle = Frost.Shaping.FontStyle;
-using FontWeight = Frost.Shaping.FontWeight;
+using FontStretch = Frost.Formatting.FontStretch;
+using FontStyle = Frost.Formatting.FontStyle;
+using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX
 {

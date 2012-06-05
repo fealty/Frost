@@ -10,9 +10,9 @@ using System.Threading;
 
 using Frost.Collections;
 
-namespace Frost.Shaping
+namespace Frost.Formatting
 {
-	public abstract class Shaper
+	public abstract class TextShaper
 	{
 		private readonly Thread _BoundThread;
 		private readonly Device2D _Device2D;
@@ -21,7 +21,7 @@ namespace Frost.Shaping
 
 		private bool _WasAnalyzed;
 
-		protected Shaper(Device2D device2D)
+		protected TextShaper(Device2D device2D)
 		{
 			Contract.Requires(device2D != null);
 

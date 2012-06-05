@@ -6,7 +6,7 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace Frost.Shaping
+namespace Frost.Formatting
 {
 	public struct FontMetrics : IEquatable<FontMetrics>
 	{

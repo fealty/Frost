@@ -9,71 +9,71 @@ namespace Frost.DirectX
 {
 	internal static class Extensions
 	{
-		internal static FontWeight ToDirectWrite(this Shaping.FontWeight weight)
+		internal static FontWeight ToDirectWrite(this Formatting.FontWeight weight)
 		{
 			switch(weight)
 			{
-				case Shaping.FontWeight.Regular:
+				case Formatting.FontWeight.Regular:
 					return FontWeight.Normal;
-				case Shaping.FontWeight.Thin:
+				case Formatting.FontWeight.Thin:
 					return FontWeight.Thin;
-				case Shaping.FontWeight.ExtraLight:
+				case Formatting.FontWeight.ExtraLight:
 					return FontWeight.ExtraLight;
-				case Shaping.FontWeight.Light:
+				case Formatting.FontWeight.Light:
 					return FontWeight.Light;
-				case Shaping.FontWeight.Medium:
+				case Formatting.FontWeight.Medium:
 					return FontWeight.Medium;
-				case Shaping.FontWeight.SemiBold:
+				case Formatting.FontWeight.SemiBold:
 					return FontWeight.SemiBold;
-				case Shaping.FontWeight.Bold:
+				case Formatting.FontWeight.Bold:
 					return FontWeight.Bold;
-				case Shaping.FontWeight.ExtraBold:
+				case Formatting.FontWeight.ExtraBold:
 					return FontWeight.ExtraBold;
-				case Shaping.FontWeight.Heavy:
+				case Formatting.FontWeight.Heavy:
 					return FontWeight.Heavy;
 				default:
 					return FontWeight.Normal;
 			}
 		}
 
-		internal static FontStyle ToDirectWrite(this Shaping.FontStyle style)
+		internal static FontStyle ToDirectWrite(this Formatting.FontStyle style)
 		{
 			switch(style)
 			{
-				case Shaping.FontStyle.Regular:
+				case Formatting.FontStyle.Regular:
 					return FontStyle.Normal;
-				case Shaping.FontStyle.Italic:
+				case Formatting.FontStyle.Italic:
 					return FontStyle.Italic;
-				case Shaping.FontStyle.Oblique:
+				case Formatting.FontStyle.Oblique:
 					return FontStyle.Oblique;
 				default:
 					return FontStyle.Normal;
 			}
 		}
 
-		internal static FontStretch ToDirectWrite(this Shaping.FontStretch stretch)
+		internal static FontStretch ToDirectWrite(this Formatting.FontStretch stretch)
 		{
 			switch(stretch)
 			{
-				case Shaping.FontStretch.UltraCondensed:
+				case Formatting.FontStretch.UltraCondensed:
 					return FontStretch.UltraCondensed;
-				case Shaping.FontStretch.ExtraCondensed:
+				case Formatting.FontStretch.ExtraCondensed:
 					return FontStretch.ExtraCondensed;
-				case Shaping.FontStretch.Condensed:
+				case Formatting.FontStretch.Condensed:
 					return FontStretch.Condensed;
-				case Shaping.FontStretch.SemiCondensed:
+				case Formatting.FontStretch.SemiCondensed:
 					return FontStretch.SemiCondensed;
-				case Shaping.FontStretch.Regular:
+				case Formatting.FontStretch.Regular:
 					return FontStretch.Normal;
-				case Shaping.FontStretch.SemiExpanded:
+				case Formatting.FontStretch.SemiExpanded:
 					return FontStretch.SemiExpanded;
-				case Shaping.FontStretch.Expanded:
+				case Formatting.FontStretch.Expanded:
 					return FontStretch.Expanded;
-				case Shaping.FontStretch.ExtraExpanded:
+				case Formatting.FontStretch.ExtraExpanded:
 					return FontStretch.ExtraExpanded;
-				case Shaping.FontStretch.UltraExpanded:
+				case Formatting.FontStretch.UltraExpanded:
 					return FontStretch.UltraExpanded;
-				case Shaping.FontStretch.Medium:
+				case Formatting.FontStretch.Medium:
 					return FontStretch.Medium;
 				default:
 					return FontStretch.Normal;

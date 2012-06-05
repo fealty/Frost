@@ -10,7 +10,7 @@ using System.Diagnostics.Contracts;
 
 using Frost.DirectX.Common;
 using Frost.DirectX.Common.Diagnostics;
-using Frost.Construction;
+using Frost.Shaping;
 using Frost.Painting;
 using Frost.Surfacing;
 
@@ -166,18 +166,18 @@ namespace Frost.DirectX.Painting
 			_Drawer.Fill(rectangleRegion, roundedRadius, _ActiveBrush);
 		}
 
-		protected override void OnStroke(Figure figure)
+		protected override void OnStroke(Shape shape)
 		{
 			Reconfigure();
 
-			_Drawer.Stroke(figure, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
+			_Drawer.Stroke(shape, _ActiveBrush, _StrokeStyle, ActiveStrokeWidth);
 		}
 
-		protected override void OnFill(Figure figure)
+		protected override void OnFill(Shape shape)
 		{
 			Reconfigure();
 
-			_Drawer.Fill(figure, _ActiveBrush);
+			_Drawer.Fill(shape, _ActiveBrush);
 		}
 
 		protected override void OnSaveState()

@@ -3,7 +3,7 @@
 // 
 // See LICENSE for more information.
 
-namespace Frost.Construction
+namespace Frost.Shaping
 {
 	public interface ITessellationSink
 	{

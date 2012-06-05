@@ -11,7 +11,7 @@ using Demo.Framework;
 
 using Frost;
 using Frost.Collections;
-using Frost.Shaping;
+using Frost.Formatting;
 using Frost.Painting;
 
 using SD = System.Drawing;
@@ -34,27 +34,27 @@ namespace Demo.Formatting
 		{
 			public Test()
 			{
-				Glyphs = new List<Shaper.Glyph>();
-				Clusters = new List<Shaper.Cluster>();
-				Spans = new List<Shaper.Span>();
+				Glyphs = new List<TextShaper.Glyph>();
+				Clusters = new List<TextShaper.Cluster>();
+				Spans = new List<TextShaper.Span>();
 			}
 
-			public List<Shaper.Glyph> Glyphs { get; private set; }
-			public List<Shaper.Cluster> Clusters { get; private set; }
-			public List<Shaper.Span> Spans { get; private set; }
+			public List<TextShaper.Glyph> Glyphs { get; private set; }
+			public List<TextShaper.Cluster> Clusters { get; private set; }
+			public List<TextShaper.Span> Spans { get; private set; }
 		}
 
 		public void Reset(Canvas target, Device2D device2D)
 		{
 			Test tt = new Test();
 
-			device2D.Shaper.Begin(tt, "Hello\u00ADWorld!");
+			device2D.TextShaper.Begin(tt, "Hello\u00ADWorld!");
 
 			//device2D.Shaper.AnalyzeScripts();
 
-			device2D.Shaper.SetPointSize("Hello\u00ADWorld!", 12.0f);
+			device2D.TextShaper.SetPointSize("Hello\u00ADWorld!", 12.0f);
 			
-			device2D.Shaper.End();
+			device2D.TextShaper.End();
 
 			int g = 0;
 

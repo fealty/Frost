@@ -8,22 +8,22 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 
-namespace Frost.Construction
+namespace Frost.Shaping
 {
-	public sealed class Figure : IEquatable<Figure>
+	public sealed class Shape : IEquatable<Shape>
 	{
 		[ThreadStatic]
 		private static Builder _Builder;
 
-		private static readonly Figure _Square;
-		private static readonly Figure _Circle;
+		private static readonly Shape _Square;
+		private static readonly Shape _Circle;
 
 		private readonly GeometryCommand[] _Commands;
 		private readonly Point[] _Points;
 
 		private Matrix3X2 _Transform;
 
-		static Figure()
+		static Shape()
 		{
 			_Square =
 				Create().MoveTo(0.0f, 0.0f).LineTo(1.0f, 0.0f).LineTo(1.0f, 1.0f).LineTo(
@@ -36,7 +36,7 @@ namespace Frost.Construction
 						0.5f, 1.0f, 0.5f, 0.0f, 0.5f, 0.5f).Build();
 		}
 
-		private Figure(Point[] points, GeometryCommand[] commands)
+		private Shape(Point[] points, GeometryCommand[] commands)
 		{
 			Contract.Requires(points != null);
 			Contract.Requires(commands != null);
@@ -46,7 +46,7 @@ namespace Frost.Construction
 			_Transform = Matrix3X2.Identity;
 		}
 
-		private Figure(
+		private Shape(
 			Point[] points, GeometryCommand[] commands, ref Matrix3X2 transformation)
 		{
 			Contract.Requires(points != null);
@@ -57,12 +57,12 @@ namespace Frost.Construction
 			_Transform = transformation;
 		}
 
-		public static Figure Circle
+		public static Shape Circle
 		{
 			get { return _Circle; }
 		}
 
-		public static Figure Square
+		public static Shape Square
 		{
 			get { return _Square; }
 		}
@@ -72,7 +72,7 @@ namespace Frost.Construction
 			get { return _Transform; }
 		}
 
-		public bool Equals(Figure other)
+		public bool Equals(Shape other)
 		{
 			if(ReferenceEquals(null, other))
 			{
@@ -99,126 +99,126 @@ namespace Frost.Construction
 			return _Builder;
 		}
 
-		public Figure Scale(float width, float height)
+		public Shape Scale(float width, float height)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Scale(width, height, out result);
 
-			return new Figure(_Points, _Commands, ref result);
+			return new Shape(_Points, _Commands, ref result);
 		}
 
-		public Figure Scale(Size size)
+		public Shape Scale(Size size)
 		{
 			Contract.Requires(Check.IsPositive(size.Width));
 			Contract.Requires(Check.IsPositive(size.Height));
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
 			return Scale(size.Width, size.Height);
 		}
 
-		public Figure Scale(float width, float height, float originX, float originY)
+		public Shape Scale(float width, float height, float originX, float originY)
 		{
 			Contract.Requires(Check.IsPositive(width));
 			Contract.Requires(Check.IsPositive(height));
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Scale(width, height, originX, originY, out result);
 
-			return new Figure(_Points, _Commands, ref result);
+			return new Shape(_Points, _Commands, ref result);
 		}
 
-		public Figure Skew(float angleX, float angleY)
+		public Shape Skew(float angleX, float angleY)
 		{
 			Contract.Requires(Check.IsDegrees(angleX));
 			Contract.Requires(Check.IsDegrees(angleY));
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Skew(angleX, angleY, out result);
 
-			return new Figure(_Points, _Commands, ref result);
+			return new Shape(_Points, _Commands, ref result);
 		}
 
-		public Figure Rotate(float angle)
+		public Shape Rotate(float angle)
 		{
 			Contract.Requires(Check.IsDegrees(angle));
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Rotate(angle, out result);
 
-			return new Figure(_Points, _Commands, ref result);
+			return new Shape(_Points, _Commands, ref result);
 		}
 
-		public Figure Rotate(float angle, float originX, float originY)
+		public Shape Rotate(float angle, float originX, float originY)
 		{
 			Contract.Requires(Check.IsDegrees(angle));
 			Contract.Requires(Check.IsFinite(originX));
 			Contract.Requires(Check.IsFinite(originY));
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Rotate(angle, originX, originY, out result);
 
-			return new Figure(_Points, _Commands, ref result);
+			return new Shape(_Points, _Commands, ref result);
 		}
 
-		public Figure Rotate(float angle, Point origin)
+		public Shape Rotate(float angle, Point origin)
 		{
 			Contract.Requires(Check.IsDegrees(angle));
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
 			return Rotate(angle, origin.X, origin.Y);
 		}
 
-		public Figure Translate(float width, float height)
+		public Shape Translate(float width, float height)
 		{
 			Contract.Requires(Check.IsFinite(width));
 			Contract.Requires(Check.IsFinite(height));
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
 			Matrix3X2 result;
 
 			_Transform.Translate(width, height, out result);
 
-			return new Figure(_Points, _Commands, ref result);
+			return new Shape(_Points, _Commands, ref result);
 		}
 
-		public Figure Translate(Size value)
+		public Shape Translate(Size value)
 		{
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
 			return Translate(value.Width, value.Height);
 		}
 
-		public Figure Transform(
+		public Shape Transform(
 			ref Matrix3X2 transformation,
 			TransformMode operation = TransformMode.Multiply)
 		{
-			Contract.Ensures(Contract.Result<Figure>() != null);
+			Contract.Ensures(Contract.Result<Shape>() != null);
 
 			if(operation == TransformMode.Replace)
 			{
-				return new Figure(_Points, _Commands, ref transformation);
+				return new Shape(_Points, _Commands, ref transformation);
 			}
 
 			Matrix3X2 result;
 
 			transformation.Multiply(ref _Transform, out result);
 
-			return new Figure(_Points, _Commands, ref result);
+			return new Shape(_Points, _Commands, ref result);
 		}
 
 		public void Extract(IGeometrySink sink)
@@ -286,7 +286,7 @@ namespace Frost.Construction
 				return true;
 			}
 
-			return obj is Figure && Equals((Figure)obj);
+			return obj is Shape && Equals((Shape)obj);
 		}
 
 		public override int GetHashCode()
@@ -324,11 +324,11 @@ namespace Frost.Construction
 				_Transform = Matrix3X2.Identity;
 			}
 
-			public Figure Build()
+			public Shape Build()
 			{
 				if(_Points.Count > 0 && _Commands.Count > 0)
 				{
-					return new Figure(_Points.ToArray(), _Commands.ToArray());
+					return new Shape(_Points.ToArray(), _Commands.ToArray());
 				}
 
 				return null;
@@ -748,12 +748,12 @@ namespace Frost.Construction
 			}
 		}
 
-		public static bool operator ==(Figure left, Figure right)
+		public static bool operator ==(Shape left, Shape right)
 		{
 			return Equals(left, right);
 		}
 
-		public static bool operator !=(Figure left, Figure right)
+		public static bool operator !=(Shape left, Shape right)
 		{
 			return !Equals(left, right);
 		}

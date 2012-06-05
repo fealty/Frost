@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 
-using Frost.Shaping;
+using Frost.Formatting;
 
 using SharpDX.DirectWrite;
 
@@ -15,17 +15,17 @@ using SharpDX;
 
 using DxFontMetrics = SharpDX.DirectWrite.FontMetrics;
 using DxFontFeature = SharpDX.DirectWrite.FontFeature;
-using FontFeature = Frost.Shaping.FontFeature;
-using FontMetrics = Frost.Shaping.FontMetrics;
-using FontStretch = Frost.Shaping.FontStretch;
-using FontStyle = Frost.Shaping.FontStyle;
-using FontWeight = Frost.Shaping.FontWeight;
+using FontFeature = Frost.Formatting.FontFeature;
+using FontMetrics = Frost.Formatting.FontMetrics;
+using FontStretch = Frost.Formatting.FontStretch;
+using FontStyle = Frost.Formatting.FontStyle;
+using FontWeight = Frost.Formatting.FontWeight;
 
 namespace Frost.DirectX
 {
 	internal sealed class GlyphShaper : IDisposable
 	{
-		private readonly TextShaper _Shaper;
+		private readonly TextTextShaper _TextShaper;
 		private readonly FontDevice _FontDevice;
 
 		public static readonly Result InsufficientBufferError;
@@ -56,13 +56,13 @@ namespace Frost.DirectX
 			InsufficientBufferError = new Result(0x8007007A);
 		}
 
-		public GlyphShaper(FontDevice fontDevice, TextShaper textShaper)
+		public GlyphShaper(FontDevice fontDevice, TextTextShaper textTextShaper)
 		{
 			Contract.Requires(fontDevice != null);
-			Contract.Requires(textShaper != null);
+			Contract.Requires(textTextShaper != null);
 
 			_FontDevice = fontDevice;
-			_Shaper = textShaper;
+			_TextShaper = textTextShaper;
 
 			_FeatureRangeLengths = new int[0];
 			_Features = new DxFontFeature[0][];
@@ -95,7 +95,7 @@ namespace Frost.DirectX
 		{
 			InternalRun activeRun;
 			
-			var firstCharacter = _Shaper.Characters[0];
+			var firstCharacter = _TextShaper.Characters[0];
 
 			activeRun.Text = null;
 			activeRun.Range = IndexedRange.Empty;
@@ -114,11 +114,11 @@ namespace Frost.DirectX
 			FeatureRange activeFeatures = new FeatureRange(
 				IndexedRange.Empty, firstCharacter.Features);
 
-			for (int i = 0; i < _Shaper.Text.Length; ++i)
+			for (int i = 0; i < _TextShaper.Text.Length; ++i)
 			{
 				InternalRun currentRun;
 
-				var currentCharacter = _Shaper.Characters[i];
+				var currentCharacter = _TextShaper.Characters[i];
 
 				currentRun.Text = null;
 				currentRun.Range = activeRun.Range;
@@ -180,7 +180,7 @@ namespace Frost.DirectX
 					_FeatureRanges.Add(activeFeatures);
 
 					// grab the text for the run
-					activeRun.Text = _Shaper.Text.Substring(
+					activeRun.Text = _TextShaper.Text.Substring(
 						activeRun.Range.StartIndex, activeRun.Range.Length);
 
 					yield return activeRun;
@@ -205,7 +205,7 @@ namespace Frost.DirectX
 			_FeatureRanges.Add(activeFeatures);
 
 			// grab the text for the final run
-			activeRun.Text = _Shaper.Text.Substring(
+			activeRun.Text = _TextShaper.Text.Substring(
 				activeRun.Range.StartIndex, activeRun.Range.Length);
 
 			yield return activeRun;
@@ -258,15 +258,15 @@ namespace Frost.DirectX
 			// output the shaped clusters
 			OutputClusters(glyphsIndex, ref run, output);
 
-			Shaper.Cluster firstCluster = 
+			Formatting.TextShaper.Cluster firstCluster = 
 				output.Clusters[clustersIndex];
 
-			Shaper.Cluster lastCluster = 
+			Formatting.TextShaper.Cluster lastCluster = 
 				output.Clusters[output.Clusters.Count - 1];
 
 			// output the span
 			output.Spans.Add(
-				new Shaper.Span(
+				new Formatting.TextShaper.Span(
 					new IndexedRange(
 						firstCluster.Text.StartIndex,
 						lastCluster.Text.LastIndex - firstCluster.Text.StartIndex),
@@ -335,7 +335,7 @@ namespace Frost.DirectX
 			for (int i = 0; i < glyphCount; ++i)
 			{
 				output.Glyphs.Add(
-					new Shaper.Glyph(
+					new Formatting.TextShaper.Glyph(
 						_GlyphAdvances[i],
 						_GlyphIndices[i],
 						new Size(
@@ -376,10 +376,10 @@ namespace Frost.DirectX
 					advance = Math.Max(advance, output.Glyphs[gIndex].Advance);
 				}
 
-				var character = _Shaper.Characters[characterIndex];
+				var character = _TextShaper.Characters[characterIndex];
 				
 				output.Clusters.Add(
-					new Shaper.Cluster(
+					new Formatting.TextShaper.Cluster(
 						advance, character.Breakpoint, glyphRange, characterRange));
 			}
 		}

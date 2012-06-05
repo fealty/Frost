@@ -5,37 +5,21 @@
 
 namespace Frost.Shaping
 {
-	public enum FontWeight
+	public enum CombinationOperation
 	{
-		Regular,
-		Bold,
-		Thin,
-		ExtraLight,
-		Light,
-		Medium,
-		SemiBold,
-		ExtraBold,
-		Heavy
+		Combine,
+		Intersect,
+		Xor,
+		Exclude
 	}
 
-	public enum FontStyle
+	internal enum GeometryCommand : byte
 	{
-		Regular,
-		Italic,
-		Oblique
-	}
-
-	public enum FontStretch
-	{
-		Regular,
-		Medium,
-		UltraCondensed,
-		ExtraCondensed,
-		Condensed,
-		SemiCondensed,
-		SemiExpanded,
-		Expanded,
-		ExtraExpanded,
-		UltraExpanded
+		ArcTo,
+		BezierCurveTo,
+		Close,
+		LineTo,
+		MoveTo,
+		QuadraticCurveTo
 	}
 }

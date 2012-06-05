@@ -8,18 +8,18 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 
 using Frost.Collections;
-using Frost.Shaping;
+using Frost.Formatting;
 
 using SharpDX.DirectWrite;
 
-using FontStretch = Frost.Shaping.FontStretch;
-using FontStyle = Frost.Shaping.FontStyle;
-using FontWeight = Frost.Shaping.FontWeight;
-using LineBreakpoint = Frost.Shaping.LineBreakpoint;
+using FontStretch = Frost.Formatting.FontStretch;
+using FontStyle = Frost.Formatting.FontStyle;
+using FontWeight = Frost.Formatting.FontWeight;
+using LineBreakpoint = Frost.Formatting.LineBreakpoint;
 
 namespace Frost.DirectX
 {
-	internal sealed class TextShaper : Shaper, IDisposable
+	internal sealed class TextTextShaper : Formatting.TextShaper, IDisposable
 	{
 		private readonly TextAnalyzer _Analyzer;
 		private readonly GlyphShaper _Shaper;
@@ -28,7 +28,7 @@ namespace Frost.DirectX
 
 		private IShapedGlyphs _OutputSink;
 
-		public TextShaper(Frost.Device2D device2D, FontDevice fontDevice) : base(device2D)
+		public TextTextShaper(Frost.Device2D device2D, FontDevice fontDevice) : base(device2D)
 		{
 			Contract.Requires(device2D != null);
 			Contract.Requires(fontDevice != null);

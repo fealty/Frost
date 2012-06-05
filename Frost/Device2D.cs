@@ -11,15 +11,15 @@ using Frost.Collections;
 using Frost.Composition;
 using Frost.Diagnostics;
 using Frost.Effects;
-using Frost.Shaping;
+using Frost.Formatting;
 using Frost.Painting;
 using Frost.Management;
-using Frost.Construction;
+using Frost.Shaping;
 using Frost.Surfacing;
 
 namespace Frost
 {
-	public abstract class Device2D : IResourceHelpers, IFigureHelpers
+	public abstract class Device2D : IResourceHelpers, IShapeHelpers
 	{
 		public const float Flattening = 0.25f;
 
@@ -44,78 +44,78 @@ namespace Frost
 			get { return _CounterCollection; }
 		}
 
-		public IFigureHelpers Geometry
+		public IShapeHelpers Geometry
 		{
 			get { return this; }
 		}
 
-		public abstract Shaper Shaper { get; }
+		public abstract TextShaper TextShaper { get; }
 		public abstract Painter Painter { get; }
 		public abstract Compositor Compositor { get; }
 
 		protected abstract Size PageSize { set; }
 
-		bool IFigureHelpers.Contains(Figure path, Point point, float tolerance)
+		bool IShapeHelpers.Contains(Shape path, Point point, float tolerance)
 		{
 			return OnContains(path, point, tolerance);
 		}
 
-		Figure IFigureHelpers.Simplify(Figure path, float tolerance)
+		Shape IShapeHelpers.Simplify(Shape path, float tolerance)
 		{
 			return OnSimplify(path, tolerance);
 		}
 
-		Figure IFigureHelpers.Widen(Figure path, float width, float tolerance)
+		Shape IShapeHelpers.Widen(Shape path, float width, float tolerance)
 		{
 			return OnWiden(path, width, tolerance);
 		}
 
-		Rectangle IFigureHelpers.MeasureRegion(Figure path)
+		Rectangle IShapeHelpers.MeasureRegion(Shape path)
 		{
 			return OnMeasureRegion(path);
 		}
 
-		Figure IFigureHelpers.Combine(
-			Figure sourcePath,
-			Figure destinationPath,
+		Shape IShapeHelpers.Combine(
+			Shape sourcePath,
+			Shape destinationPath,
 			CombinationOperation operation,
 			float tolerance)
 		{
 			return OnCombine(sourcePath, destinationPath, tolerance, operation);
 		}
 
-		void IFigureHelpers.Tessellate(
-			Figure path, ITessellationSink sink, float tolerance)
+		void IShapeHelpers.Tessellate(
+			Shape path, ITessellationSink sink, float tolerance)
 		{
 			OnTessellate(path, tolerance, sink);
 		}
 
-		float IFigureHelpers.MeasureArea(Figure path, float tolerance)
+		float IShapeHelpers.MeasureArea(Shape path, float tolerance)
 		{
 			return OnMeasureArea(path, tolerance);
 		}
 
-		float IFigureHelpers.MeasureLength(Figure path, float tolerance)
+		float IShapeHelpers.MeasureLength(Shape path, float tolerance)
 		{
 			return OnMeasureLength(path, tolerance);
 		}
 
-		Point IFigureHelpers.DeterminePoint(
-			Figure path, float length, float tolerance)
+		Point IShapeHelpers.DeterminePoint(
+			Shape path, float length, float tolerance)
 		{
 			Point stub;
 
 			return OnDeterminePoint(path, length, tolerance, out stub);
 		}
 
-		Point IFigureHelpers.DeterminePoint(
-			Figure path, float length, out Point tangentVector, float tolerance)
+		Point IShapeHelpers.DeterminePoint(
+			Shape path, float length, out Point tangentVector, float tolerance)
 		{
 			return OnDeterminePoint(path, length, tolerance, out tangentVector);
 		}
 
-		Canvas IFigureHelpers.CreateDistanceField(
-			Figure path, Size resolution, float tolerance)
+		Canvas IShapeHelpers.CreateDistanceField(
+			Shape path, Size resolution, float tolerance)
 		{
 			throw new NotImplementedException();
 		}
@@ -254,12 +254,12 @@ namespace Frost
 			}
 		}
 
-		Outline IResourceHelpers.GetGlyphOutline(
+		GlyphOutline IResourceHelpers.GetGlyphOutline(
 			IndexedRange glyphRange,
 			bool isVertical,
 			bool isRightToLeft,
 			FontHandle fontHandle,
-			params Shaper.Glyph[] glyphs)
+			params TextShaper.Glyph[] glyphs)
 		{
 			return OnGetGlyphOutline(
 				glyphRange, isVertical, isRightToLeft, fontHandle, glyphs);
@@ -296,30 +296,30 @@ namespace Frost
 			byte[] rgbaData, Canvas.ResolvedContext toTarget);
 
 		protected abstract Point OnDeterminePoint(
-			Figure path, float length, float tolerance, out Point tangentVector);
+			Shape path, float length, float tolerance, out Point tangentVector);
 
-		protected abstract float OnMeasureLength(Figure path, float tolerance);
+		protected abstract float OnMeasureLength(Shape path, float tolerance);
 
-		protected abstract float OnMeasureArea(Figure path, float tolerance);
+		protected abstract float OnMeasureArea(Shape path, float tolerance);
 
 		protected abstract void OnTessellate(
-			Figure path, float tolerance, ITessellationSink sink);
+			Shape path, float tolerance, ITessellationSink sink);
 
-		protected abstract Figure OnCombine(
-			Figure sourcePath,
-			Figure destinationPath,
+		protected abstract Shape OnCombine(
+			Shape sourcePath,
+			Shape destinationPath,
 			float tolerance,
 			CombinationOperation operation);
 
-		protected abstract Rectangle OnMeasureRegion(Figure path);
+		protected abstract Rectangle OnMeasureRegion(Shape path);
 
-		protected abstract Figure OnWiden(
-			Figure path, float width, float tolerance);
+		protected abstract Shape OnWiden(
+			Shape path, float width, float tolerance);
 
-		protected abstract Figure OnSimplify(Figure path, float tolerance);
+		protected abstract Shape OnSimplify(Shape path, float tolerance);
 
 		protected abstract bool OnContains(
-			Figure path, Point point, float tolerance);
+			Shape path, Point point, float tolerance);
 
 		protected abstract IEnumerable<ISurface2D> OnGetSurfaces(SurfaceUsage usage);
 
@@ -344,12 +344,12 @@ namespace Frost
 			}
 		}
 
-		protected abstract Outline OnGetGlyphOutline(
+		protected abstract GlyphOutline OnGetGlyphOutline(
 			IndexedRange glyphRange,
 			bool isVertical,
 			bool isRightToLeft,
 			FontHandle fontHandle,
-			params Shaper.Glyph[] glyphs);
+			params TextShaper.Glyph[] glyphs);
 
 		protected abstract FontMetrics OnGetFontMetrics(FontHandle fontHandle);
 	}

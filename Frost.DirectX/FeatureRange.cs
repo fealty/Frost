@@ -6,7 +6,7 @@
 using System;
 
 using Frost.Collections;
-using Frost.Shaping;
+using Frost.Formatting;
 
 namespace Frost.DirectX
 {

@@ -6,7 +6,7 @@
 using System;
 using System.Diagnostics.Contracts;
 
-using Frost.Construction;
+using Frost.Shaping;
 
 using SharpDX;
 using SharpDX.Direct2D1;
@@ -19,7 +19,7 @@ namespace Frost.DirectX
 	/// </summary>
 	internal sealed class TextGeometrySink : CallbackBase, SimplifiedGeometrySink
 	{
-		private Figure.Builder _GeometryBuilder;
+		private Shape.Builder _GeometryBuilder;
 
 		void SimplifiedGeometrySink.SetFillMode(FillMode fillMode)
 		{
@@ -75,15 +75,15 @@ namespace Frost.DirectX
 		/// <param name="bidiLevel"> This parameter contains the bidi level for the cluster. </param>
 		/// <param name="font"> This parameter references the font for the cluster. </param>
 		/// <returns> This method returns the geometry for the cluster key. </returns>
-		public Figure CreateGeometry(TextGeometryKey key, bool isVertical, bool isRightToLeft, FontHandle font)
+		public Shape CreateGeometry(TextGeometryKey key, bool isVertical, bool isRightToLeft, FontHandle font)
 		{
 			Contract.Requires(font != null);
 
 			FontFace face = font.ResolveFace();
 
-			_GeometryBuilder = Figure.Create();
+			_GeometryBuilder = Shape.Create();
 
-			Figure result;
+			Shape result;
 
 			try
 			{
