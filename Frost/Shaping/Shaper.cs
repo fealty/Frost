@@ -12,13 +12,14 @@ using Frost.Collections;
 
 namespace Frost.Shaping
 {
-	//TODO: implementation must respect forced breaks
 	public abstract class Shaper
 	{
 		private readonly Thread _BoundThread;
 		private readonly Device2D _Device2D;
 
 		private string _Text;
+
+		private bool _WasAnalyzed;
 
 		protected Shaper(Device2D device2D)
 		{
@@ -58,6 +59,8 @@ namespace Frost.Shaping
 			Contract.Requires(paragraph != null);
 
 			_Text = paragraph;
+
+			_WasAnalyzed = false;
 
 			OnBegin(outputSink);
 		}
@@ -159,6 +162,8 @@ namespace Frost.Shaping
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 
+			_WasAnalyzed = true;
+
 			OnAnalyzeScripts();
 		}
 
@@ -166,6 +171,11 @@ namespace Frost.Shaping
 		{
 			Contract.Requires(Thread.CurrentThread == BoundThread);
 			Contract.Requires(Text != null);
+
+			if(!_WasAnalyzed)
+			{
+				AnalyzeScripts();
+			}
 
 			OnEnd();
 
