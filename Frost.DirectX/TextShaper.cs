@@ -4,6 +4,7 @@
 // See LICENSE for more information.
 
 using System;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 
 using Frost.Collections;
@@ -18,18 +19,24 @@ using LineBreakpoint = Frost.Shaping.LineBreakpoint;
 
 namespace Frost.DirectX
 {
-	internal sealed class TextShaper : Shaping.Shaper, IDisposable
+	internal sealed class TextShaper : Shaper, IDisposable
 	{
 		private readonly TextAnalyzer _Analyzer;
+		private readonly GlyphShaper _Shaper;
+
 		private CharacterFormat[] _Characters;
 
 		private IShapedGlyphs _OutputSink;
 
-		public TextShaper(Frost.Device2D device2D, Factory factory) : base(device2D)
+		public TextShaper(Frost.Device2D device2D, FontDevice fontDevice) : base(device2D)
 		{
+			Contract.Requires(device2D != null);
+			Contract.Requires(fontDevice != null);
+
 			_Characters = new CharacterFormat[0];
 
-			_Analyzer = new TextAnalyzer(factory, this);
+			_Analyzer = new TextAnalyzer(fontDevice, this);
+			_Shaper = new GlyphShaper(fontDevice, this);
 		}
 
 		public CharacterFormat[] Characters
@@ -40,6 +47,7 @@ namespace Frost.DirectX
 		public void Dispose()
 		{
 			_Analyzer.Dispose();
+			_Shaper.Dispose();
 		}
 
 		protected override void OnBegin(IShapedGlyphs outputSink)
@@ -149,7 +157,7 @@ namespace Frost.DirectX
 
 		protected override void OnEnd()
 		{
-			throw new NotImplementedException();
+			_Shaper.Shape(_OutputSink);
 		}
 
 		internal struct CharacterFormat : IEquatable<CharacterFormat>

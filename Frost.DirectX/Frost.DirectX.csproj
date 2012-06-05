@@ -125,7 +125,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Deprecate\FeatureRange.cs" />
+    <Compile Include="FeatureRange.cs" />
     <Compile Include="GlyphShaper.cs" />
     <Compile Include="TextAnalyzer.cs" />
     <Compile Include="CombinationSink.cs" />
@@ -140,7 +140,6 @@
     <Compile Include="PrivateSurface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SafeList.cs" />
-    <Compile Include="Deprecate\Shaper.cs" />
     <Compile Include="SharedSurface.cs" />
     <Compile Include="SimplificationSink.cs" />
     <Compile Include="TessellationSink.cs" />

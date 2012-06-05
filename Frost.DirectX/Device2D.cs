@@ -78,7 +78,7 @@ namespace Frost.DirectX
 			_DrawingDevice = new PaintingDevice(this, _CompositionDevice.Device3D);
 			_FontDevice = new FontDevice();
 			_TextGeometryCache = new TextGeometryCache();
-			_Shaper = new TextShaper(this, _FontDevice.Factory);
+			_Shaper = new TextShaper(this, _FontDevice);
 
 			_GeometryCache = new GeometryCache(_DrawingDevice.Factory2D);
 

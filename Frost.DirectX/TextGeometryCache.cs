@@ -9,7 +9,6 @@ using System.Diagnostics.Contracts;
 
 using Frost.Collections;
 using Frost.Construction;
-using Frost.Shaping;
 
 using SharpDX.DirectWrite;
 
@@ -60,7 +59,7 @@ namespace Frost.DirectX
 			bool isVertical,
 			bool isRightToLeft,
 			FontHandle font,
-			Shaper.Glyph[] glyphs)
+			Shaping.Shaper.Glyph[] glyphs)
 		{
 			ResizeInternalBuffers(glyphRange.Length);
 

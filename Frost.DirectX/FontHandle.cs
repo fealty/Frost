@@ -50,6 +50,14 @@ namespace Frost.DirectX
 			_Stretch = stretch;
 		}
 
+		public Shaping.FontHandle Id
+		{
+			get
+			{
+				return new Shaping.FontHandle(_Family, _Style, _Weight, _Stretch);
+			}
+		}
+
 		/// <summary>
 		///   This property references the font family.
 		/// </summary>

@@ -32,11 +32,11 @@ namespace Frost.DirectX
 
 		private SharpDX.DirectWrite.TextAnalyzer _TextAnalyzer;
 
-		public TextAnalyzer(Factory factory, TextShaper shaper)
+		public TextAnalyzer(FontDevice fontDevice, TextShaper shaper)
 		{
-			Contract.Requires(factory != null);
+			Contract.Requires(fontDevice != null);
 
-			_TextAnalyzer = new SharpDX.DirectWrite.TextAnalyzer(factory);
+			_TextAnalyzer = new SharpDX.DirectWrite.TextAnalyzer(fontDevice.Factory);
 
 			_Shaper = shaper;
 		}

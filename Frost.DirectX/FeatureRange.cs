@@ -2,11 +2,11 @@
 // All rights reserved.
 // 
 // See LICENSE for more information.
-/*
+
 using System;
 
 using Frost.Collections;
-using Frost.Formatting;
+using Frost.Shaping;
 
 namespace Frost.DirectX
 {
@@ -78,4 +78,4 @@ namespace Frost.DirectX
 			return !left.Equals(right);
 		}
 	}
-}*/
+}
