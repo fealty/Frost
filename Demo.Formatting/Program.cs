@@ -53,7 +53,7 @@ namespace Demo.Formatting
 
 			device2D.TextShaper.AnalyzeScripts();
 
-			device2D.TextShaper.SetPointSize(plainText, 12.0f);
+			device2D.TextShaper.SetPointSize(plainText, 95.0f);
 			
 			device2D.TextShaper.End();
 
@@ -76,7 +76,7 @@ namespace Demo.Formatting
 
 			device2D.Painter.Begin(target);
 
-			device2D.Painter.SetBrush(Color.Black);
+			device2D.Painter.SetBrush(Resources.Foreground);
 
 			foreach(TextShaper.Span span in shapedOutput.Spans)
 			{
