@@ -52,7 +52,7 @@ namespace Frost.Management
 				IndexedRange glyphRange,
 				bool isVertical,
 				bool isRightToLeft,
-				FontHandle fontHandle,
+				FontId fontId,
 				List<TextShaper.Glyph> glyphs)
 			{
 				Contract.Requires(!(isVertical && isRightToLeft));
@@ -61,7 +61,7 @@ namespace Frost.Management
 				throw new NotSupportedException();
 			}
 
-			public FontMetrics GetFontMetrics(FontHandle fontHandle)
+			public FontMetrics GetFontMetrics(FontId fontId)
 			{
 				throw new NotSupportedException();
 			}
@@ -117,10 +117,10 @@ namespace Frost.Management
 			IndexedRange glyphRange,
 			bool isVertical,
 			bool isRightToLeft,
-			FontHandle fontHandle,
+			FontId fontId,
 			List<TextShaper.Glyph> glyphs);
 
-		FontMetrics GetFontMetrics(FontHandle fontHandle);
+		FontMetrics GetFontMetrics(FontId fontId);
 
 		void RegisterEffect<T>() where T : Effect, new();
 

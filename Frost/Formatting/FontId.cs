@@ -8,14 +8,14 @@ using System.Diagnostics.Contracts;
 
 namespace Frost.Formatting
 {
-	public struct FontHandle : IEquatable<FontHandle>
+	public struct FontId : IEquatable<FontId>
 	{
 		private readonly string _Family;
 		private readonly FontStretch _Stretch;
 		private readonly FontStyle _Style;
 		private readonly FontWeight _Weight;
 
-		public FontHandle(
+		public FontId(
 			string family, FontStyle style, FontWeight weight, FontStretch stretch)
 		{
 			Contract.Requires(!string.IsNullOrWhiteSpace(family));
@@ -46,7 +46,7 @@ namespace Frost.Formatting
 			get { return _Family; }
 		}
 
-		public bool Equals(FontHandle other)
+		public bool Equals(FontId other)
 		{
 			return Equals(other._Family, _Family) &&
 				other._Style == _Style &&
@@ -61,7 +61,7 @@ namespace Frost.Formatting
 				return false;
 			}
 
-			return obj is FontHandle && Equals((FontHandle)obj);
+			return obj is FontId && Equals((FontId)obj);
 		}
 
 		public override int GetHashCode()
@@ -86,12 +86,12 @@ namespace Frost.Formatting
 				_Stretch);
 		}
 
-		public static bool operator ==(FontHandle left, FontHandle right)
+		public static bool operator ==(FontId left, FontId right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(FontHandle left, FontHandle right)
+		public static bool operator !=(FontId left, FontId right)
 		{
 			return !left.Equals(right);
 		}

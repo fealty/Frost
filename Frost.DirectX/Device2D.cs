@@ -365,16 +365,16 @@ namespace Frost.DirectX
 			IndexedRange glyphRange,
 			bool isVertical,
 			bool isRightToLeft,
-			Formatting.FontHandle fontHandle,
+			Formatting.FontId fontId,
 			List<TextShaper.Glyph> glyphs)
 		{
 			lock (_Lock)
 			{
 				FontHandle handle = _FontDevice.FindFont(
-					fontHandle.Family,
-					fontHandle.Style,
-					fontHandle.Weight,
-					fontHandle.Stretch);
+					fontId.Family,
+					fontId.Style,
+					fontId.Weight,
+					fontId.Stretch);
 
 				FontFace face = handle.ResolveFace();
 
@@ -390,20 +390,20 @@ namespace Frost.DirectX
 		}
 
 		protected override FontMetrics OnGetFontMetrics(
-			Formatting.FontHandle fontHandle)
+			Formatting.FontId fontId)
 		{
 			lock (_Lock)
 			{
 				FontHandle handle = _FontDevice.FindFont(
-					fontHandle.Family,
-					fontHandle.Style,
-					fontHandle.Weight,
-					fontHandle.Stretch);
+					fontId.Family,
+					fontId.Style,
+					fontId.Weight,
+					fontId.Stretch);
 
 				var metrics = handle.ResolveFace().Metrics;
 
 				return new FontMetrics(
-					metrics.Ascent, metrics.Descent, metrics.DesignUnitsPerEm);
+					metrics.Ascent, metrics.Descent, metrics.DesignUnitsPerEm, fontId);
 			}
 		}
 

@@ -50,11 +50,11 @@ namespace Frost.DirectX
 			_Stretch = stretch;
 		}
 
-		public Formatting.FontHandle Id
+		public Formatting.FontId Id
 		{
 			get
 			{
-				return new Formatting.FontHandle(_Family, _Style, _Weight, _Stretch);
+				return new Formatting.FontId(_Family, _Style, _Weight, _Stretch);
 			}
 		}
 

@@ -264,6 +264,11 @@ namespace Frost.DirectX
 			Formatting.TextShaper.Cluster lastCluster = 
 				output.Clusters[output.Clusters.Count - 1];
 
+			var mm = fontHandle.ResolveFace().Metrics;
+
+			FontMetrics metrics = new FontMetrics(
+					mm.Ascent, mm.Descent, mm.DesignUnitsPerEm, fontHandle.Id);				
+
 			// output the span
 			output.Spans.Add(
 				new Formatting.TextShaper.Span(
@@ -274,7 +279,7 @@ namespace Frost.DirectX
 						clustersIndex, 
 						output.Clusters.Count - clustersIndex),
 					run.PointSize,
-					fontHandle.Id,
+					metrics,
 					run.BidiLevel,
 					run.Inline));
 		}
@@ -390,13 +395,13 @@ namespace Frost.DirectX
 		/// <param name="pointSize"> This parameter indicates the point size of the font. </param>
 		/// <param name="dxMetrics"> This parameter references the DirectWrite font metrics. </param>
 		/// <returns> This method returns the computed height of the EM unit for the given parameters. </returns>
-		private static float ComputeEmHeight(float pointSize, ref DxFontMetrics dxMetrics)
+		private static float ComputeEmHeight(float pointSize, ref DxFontMetrics dxMetrics, Formatting.FontId fontId)
 		{
 			Contract.Requires(Check.IsPositive(pointSize));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
 
 			FontMetrics metrics = new FontMetrics(
-				dxMetrics.Ascent, dxMetrics.Descent, dxMetrics.DesignUnitsPerEm);
+				dxMetrics.Ascent, dxMetrics.Descent, dxMetrics.DesignUnitsPerEm, fontId);
 
 			return metrics.Measure(dxMetrics.Ascent + dxMetrics.Descent + dxMetrics.LineGap, pointSize);
 		}
@@ -428,7 +433,7 @@ namespace Frost.DirectX
 						_ShapedGlyphProperties,
 						actualGlyphCount,
 						fontHandle.ResolveFace(),
-						ComputeEmHeight(run.PointSize, ref metrics),
+						ComputeEmHeight(run.PointSize, ref metrics, fontHandle.Id),
 						false,
 						Convert.ToBoolean(run.BidiLevel & 1),
 						run.ScriptAnalysis,

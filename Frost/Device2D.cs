@@ -258,16 +258,16 @@ namespace Frost
 			IndexedRange glyphRange,
 			bool isVertical,
 			bool isRightToLeft,
-			FontHandle fontHandle,
+			FontId fontId,
 			List<TextShaper.Glyph> glyphs)
 		{
 			return OnGetGlyphOutline(
-				glyphRange, isVertical, isRightToLeft, fontHandle, glyphs);
+				glyphRange, isVertical, isRightToLeft, fontId, glyphs);
 		}
 
-		FontMetrics IResourceHelpers.GetFontMetrics(FontHandle fontHandle)
+		FontMetrics IResourceHelpers.GetFontMetrics(FontId fontId)
 		{
-			return OnGetFontMetrics(fontHandle);
+			return OnGetFontMetrics(fontId);
 		}
 
 		void IResourceHelpers.RegisterEffect<T>()
@@ -348,9 +348,9 @@ namespace Frost
 			IndexedRange glyphRange,
 			bool isVertical,
 			bool isRightToLeft,
-			FontHandle fontHandle,
+			FontId fontId,
 			List<TextShaper.Glyph> glyphs);
 
-		protected abstract FontMetrics OnGetFontMetrics(FontHandle fontHandle);
+		protected abstract FontMetrics OnGetFontMetrics(FontId fontId);
 	}
 }

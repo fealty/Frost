@@ -132,7 +132,7 @@
     <Compile Include="Enumerations.cs" />
     <Compile Include="Check.cs" />
     <Compile Include="Formatting\LineBreakCondition.cs" />
-    <Compile Include="Formatting\FontHandle.cs" />
+    <Compile Include="Formatting\FontId.cs" />
     <Compile Include="Formatting\Helpers.cs" />
     <Compile Include="Formatting\Enumerations.cs" />
     <Compile Include="Formatting\FontFeature.cs" />

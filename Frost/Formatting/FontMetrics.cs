@@ -13,8 +13,9 @@ namespace Frost.Formatting
 		private readonly float _Ascent;
 		private readonly float _Descent;
 		private readonly float _UnitsPerEm;
+		private readonly FontId _FontId;
 
-		public FontMetrics(float ascent, float descent, float unitsPerEm)
+		public FontMetrics(float ascent, float descent, float unitsPerEm, FontId fontId)
 		{
 			Contract.Requires(Check.IsPositive(ascent));
 			Contract.Requires(Check.IsPositive(descent));
@@ -23,10 +24,21 @@ namespace Frost.Formatting
 			_Ascent = ascent;
 			_Descent = descent;
 			_UnitsPerEm = unitsPerEm;
+			_FontId = fontId;
 
 			Contract.Assert(Ascent.Equals(ascent));
 			Contract.Assert(Descent.Equals(descent));
 			Contract.Assert(UnitsPerEm.Equals(unitsPerEm));
+		}
+
+		public FontId FontId
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<FontId>().Equals(_FontId));
+
+				return _FontId;
+			}
 		}
 
 		public float UnitsPerEm
@@ -65,7 +77,7 @@ namespace Frost.Formatting
 		public bool Equals(FontMetrics other)
 		{
 			return other._Ascent.Equals(_Ascent) && other._Descent.Equals(_Descent) &&
-				other._UnitsPerEm.Equals(_UnitsPerEm);
+				other._UnitsPerEm.Equals(_UnitsPerEm) && other._FontId.Equals(_FontId);
 		}
 
 		public float MeasureAscent(float pointSize)
@@ -118,6 +130,7 @@ namespace Frost.Formatting
 				int result = _Ascent.GetHashCode();
 				result = (result * 397) ^ _Descent.GetHashCode();
 				result = (result * 397) ^ _UnitsPerEm.GetHashCode();
+				result = (result * 397) ^ _FontId.GetHashCode();
 				return result;
 			}
 		}
@@ -125,10 +138,11 @@ namespace Frost.Formatting
 		public override string ToString()
 		{
 			return string.Format(
-				"Ascent: {0}, Descent: {1}, UnitsPerEm: {2}",
+				"Ascent: {0}, Descent: {1}, UnitsPerEm: {2} FontId: {3}",
 				_Ascent,
 				_Descent,
-				_UnitsPerEm);
+				_UnitsPerEm,
+				_FontId);
 		}
 
 		[ContractInvariantMethod]

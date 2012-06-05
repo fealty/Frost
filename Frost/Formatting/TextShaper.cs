@@ -392,7 +392,7 @@ namespace Frost.Formatting
 			private readonly byte _BidiLevel;
 
 			private readonly IndexedRange _Clusters;
-			private readonly FontHandle _FontId;
+			private readonly FontMetrics _FontMetrics;
 
 			private readonly object _Inline;
 			private readonly float _PointSize;
@@ -402,7 +402,7 @@ namespace Frost.Formatting
 				IndexedRange text,
 				IndexedRange clusters,
 				float pointSize,
-				FontHandle fontId,
+				FontMetrics fontMetrics,
 				byte bidiLevel,
 				object inline = null)
 			{
@@ -411,7 +411,7 @@ namespace Frost.Formatting
 				_Text = text;
 				_Clusters = clusters;
 				_PointSize = pointSize;
-				_FontId = fontId;
+				_FontMetrics = fontMetrics;
 				_BidiLevel = bidiLevel;
 				_Inline = inline;
 			}
@@ -441,14 +441,14 @@ namespace Frost.Formatting
 				get { return _PointSize; }
 			}
 
-			public FontHandle FontId
+			public FontMetrics FontMetrics
 			{
-				get { return _FontId; }
+				get { return _FontMetrics; }
 			}
 
 			public bool Equals(Span other)
 			{
-				return other._FontId.Equals(_FontId) &&
+				return other._FontMetrics.Equals(_FontMetrics) &&
 					other._PointSize.Equals(_PointSize) &&
 						other._BidiLevel == _BidiLevel &&
 							other._Text.Equals(_Text) &&
@@ -470,7 +470,7 @@ namespace Frost.Formatting
 			{
 				unchecked
 				{
-					int result = _FontId.GetHashCode();
+					int result = _FontMetrics.GetHashCode();
 					result = (result * 397) ^ _PointSize.GetHashCode();
 					result = (result * 397) ^ _BidiLevel.GetHashCode();
 					result = (result * 397) ^ _Text.GetHashCode();
@@ -488,7 +488,7 @@ namespace Frost.Formatting
 						_Text,
 						_Clusters,
 						_PointSize,
-						_FontId,
+						_FontMetrics,
 						_Inline,
 						_BidiLevel);
 			}
