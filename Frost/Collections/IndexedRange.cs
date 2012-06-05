@@ -118,7 +118,7 @@ namespace Frost.Collections
 			return new IndexedRange(startIndex, length);
 		}
 
-		public bool IsWithin(IndexedRange range)
+		[Pure] public bool IsWithin(IndexedRange range)
 		{
 			return StartIndex >= range.StartIndex && LastIndex <= range.LastIndex;
 		}
