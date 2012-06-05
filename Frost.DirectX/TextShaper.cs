@@ -59,6 +59,12 @@ namespace Frost.DirectX
 
 			Array.Clear(_Characters, 0, Text.Length);
 
+			for(int i = 0; i < Text.Length; ++i)
+			{
+				_Characters[i].Family = "Arial";
+				_Characters[i].Culture = CultureInfo.InvariantCulture;
+			}
+
 			_OutputSink = outputSink;
 		}
 
