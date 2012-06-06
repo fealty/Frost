@@ -20,7 +20,7 @@ namespace Demo.SDF
 
 		private static Point _FigureStart;
 
-		private readonly Geometry _Geometry;
+		private readonly Shape _Geometry;
 		private readonly FullLine[] _Lines;
 
 		static GeometryNode()
@@ -30,19 +30,19 @@ namespace Demo.SDF
 			_LineBuilder = new LineBuilder();
 		}
 
-		public GeometryNode(Geometry geometry, float resolution, Device2D device2D)
+		public GeometryNode(Shape geometry, float resolution, Device2D device2D)
 		{
 			Contract.Requires(geometry != null);
 			Contract.Requires(resolution >= double.MinValue && resolution <= double.MaxValue);
 			Contract.Requires(device2D != null);
 
-			Rectangle region = device2D.Shaper.MeasureRegion(geometry);
+			Rectangle region = device2D.Geometry.MeasureRegion(geometry);
 
 			SetRegion(ref region);
 
 			_Geometry = geometry;
 
-			Geometry simplified = device2D.Shaper.Simplify(geometry, 1.0f / resolution);
+			Shape simplified = device2D.Geometry.Simplify(geometry, 1.0f / resolution);
 
 			simplified.Extract(this);
 
@@ -54,7 +54,7 @@ namespace Demo.SDF
 			get { return false; }
 		}
 
-		public override Geometry Geometry
+		public override Shape Geometry
 		{
 			get { return _Geometry; }
 		}

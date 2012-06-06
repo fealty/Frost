@@ -44,7 +44,7 @@ namespace Demo.SDF
 			get { return true; }
 		}
 
-		public virtual Geometry Geometry
+		public virtual Shape Geometry
 		{
 			get { return null; }
 		}

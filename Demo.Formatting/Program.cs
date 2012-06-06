@@ -47,7 +47,7 @@ namespace Demo.Formatting
 		{
 			ShapedText shapedOutput = new ShapedText();
 
-			const string plainText = "Hello World!";
+			const string plainText = "Hello world!";
 
 			device2D.TextShaper.Begin(shapedOutput, plainText);
 

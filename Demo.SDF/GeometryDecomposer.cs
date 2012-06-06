@@ -18,7 +18,7 @@ namespace Demo.SDF
 
 		private static LineBuilder mLineBuilder;
 
-		private readonly Geometry mGeometry;
+		private readonly Shape mGeometry;
 		private readonly FullLine[] mLines;
 		private readonly Rectangle mRegion;
 
@@ -29,13 +29,13 @@ namespace Demo.SDF
 			mLineBuilder = new LineBuilder();
 		}
 
-		public SimplifiedGeometry(Geometry geometry, Device2D device2D)
+		public SimplifiedGeometry(Shape geometry, Device2D device2D)
 		{
 			mGeometry = geometry;
 
-			mRegion = device2D.Shaper.MeasureRegion(geometry);
+			mRegion = device2D.Geometry.MeasureRegion(geometry);
 
-			Geometry simplified = device2D.Shaper.Simplify(
+			Shape simplified = device2D.Geometry.Simplify(
 				geometry, 1.0f / DistanceField.ResolvedLength);
 
 			simplified.Extract(this);
@@ -53,7 +53,7 @@ namespace Demo.SDF
 			get { return mRegion; }
 		}
 
-		public Geometry Geometry
+		public Shape Geometry
 		{
 			get { return mGeometry; }
 		}
@@ -186,19 +186,19 @@ namespace Demo.SDF
 	{
 		private readonly LinkedList<Test4> mActiveNodes;
 		private readonly List<SimplifiedGeometry> mComponents;
-		private readonly List<Geometry> mGeometries;
+		private readonly List<Shape> mGeometries;
 		private readonly LinkedList<Test4> mInactiveNodes;
 		private Point mFigureCurrent;
 
 		private Point? mFigureStart;
-		private Geometry mGeometry;
+		private Shape mGeometry;
 		private Rectangle mRegion;
 
 		private Matrix3X2 mTransform;
 
 		public GeometryDecomposer()
 		{
-			mGeometries = new List<Geometry>();
+			mGeometries = new List<Shape>();
 			mComponents = new List<SimplifiedGeometry>();
 
 			mActiveNodes = new LinkedList<Test4>();
@@ -231,7 +231,7 @@ namespace Demo.SDF
 			Contract.Assert(mFigureStart != null);
 
 			mGeometries.Add(
-				Geometry.Create().Transform(ref mTransform, TransformMode.Replace).MoveTo(mFigureCurrent).LineTo
+				Shape.Create().Transform(ref mTransform, TransformMode.Replace).MoveTo(mFigureCurrent).LineTo
 					(mFigureStart.Value.X, mFigureStart.Value.Y).Build());
 
 			mFigureCurrent = Point.Empty;
@@ -248,7 +248,7 @@ namespace Demo.SDF
 			Contract.Assert(mFigureStart != null);
 
 			mGeometries.Add(
-				Geometry.Create().Transform(ref mTransform, TransformMode.Replace).MoveTo(mFigureCurrent).LineTo
+				Shape.Create().Transform(ref mTransform, TransformMode.Replace).MoveTo(mFigureCurrent).LineTo
 					(endPoint).Build());
 
 			mFigureCurrent = endPoint;
@@ -259,7 +259,7 @@ namespace Demo.SDF
 			Contract.Assert(mFigureStart != null);
 
 			mGeometries.Add(
-				Geometry.Create().Transform(ref mTransform, TransformMode.Replace).MoveTo(mFigureCurrent).
+				Shape.Create().Transform(ref mTransform, TransformMode.Replace).MoveTo(mFigureCurrent).
 					QuadraticCurveTo(controlPoint, endPoint).Build());
 
 			mFigureCurrent = endPoint;
@@ -270,7 +270,7 @@ namespace Demo.SDF
 			Contract.Assert(mFigureStart != null);
 
 			mGeometries.Add(
-				Geometry.Create().Transform(ref mTransform, TransformMode.Replace).MoveTo(mFigureCurrent).
+				Shape.Create().Transform(ref mTransform, TransformMode.Replace).MoveTo(mFigureCurrent).
 					BezierCurveTo(controlPoint1, controlPoint2, endPoint).Build());
 
 			mFigureCurrent = endPoint;
@@ -281,17 +281,17 @@ namespace Demo.SDF
 			Contract.Assert(mFigureStart != null);
 
 			mGeometries.Add(
-				Geometry.Create().Transform(ref mTransform, TransformMode.Replace).MoveTo(mFigureCurrent).ArcTo(
+				Shape.Create().Transform(ref mTransform, TransformMode.Replace).MoveTo(mFigureCurrent).ArcTo(
 					tangentStart, tangentEnd, radius).Build());
 
 			mFigureCurrent = tangentEnd;
 		}
 
-		public void Decompose(Geometry geometry, ref Matrix3X2 transform, Device2D device2D)
+		public void Decompose(Shape geometry, ref Matrix3X2 transform, Device2D device2D)
 		{
-			Geometry tg = geometry.Transform(ref transform);
+			Shape tg = geometry.Transform(ref transform);
 
-			mRegion = device2D.Shaper.MeasureRegion(tg);
+			mRegion = device2D.Geometry.MeasureRegion(tg);
 
 			mGeometry = geometry;
 
@@ -301,7 +301,7 @@ namespace Demo.SDF
 
 			mComponents.Clear();
 
-			foreach(Geometry item in mGeometries)
+			foreach (Shape item in mGeometries)
 			{
 				mComponents.Add(new SimplifiedGeometry(item, device2D));
 			}
@@ -391,9 +391,9 @@ namespace Demo.SDF
 				}
 			}
 
-			Geometry tg = mGeometry.Transform(ref mTransform);
+			Shape tg = mGeometry.Transform(ref mTransform);
 
-			if(device2D.Shaper.Contains(tg, point, 1))
+			if(device2D.Geometry.Contains(tg, point, 1))
 			{
 				distance = -distance;
 			}

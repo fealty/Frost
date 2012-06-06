@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Demo.Framework;
 
 using Frost;
+using Frost.Collections;
 using Frost.Formatting;
 using Frost.Surfacing;
 
@@ -25,21 +26,45 @@ namespace Demo.SDF
 			_Distance = new DistanceField();
 		}
 
-		public void Reset(Canvas target, Device2D device2D)
+		private sealed class ShapedText : IShapedGlyphs
 		{
-			if(device2D.Effects.Find<DistanceEffectSettings>() == null)
+			public ShapedText()
 			{
-				device2D.Effects.Register<DistanceFieldEffect>();
+				Glyphs = new List<TextShaper.Glyph>();
+				Clusters = new List<TextShaper.Cluster>();
+				Spans = new List<TextShaper.Span>();
 			}
 
-			Paragraph p = Paragraph.Create().WithPointSize(12)
-				//.ChangeFontStyle(FontStyle.Italic)
-				.WithFeatures(new FontFeatureCollection(new[] {new FontFeature("swsh", 1)})).WithFamily(
-					"Brioso Pro").AddText("R").Build();
+			public List<TextShaper.Glyph> Glyphs { get; private set; }
+			public List<TextShaper.Cluster> Clusters { get; private set; }
+			public List<TextShaper.Span> Spans { get; private set; }
+		}
 
-			ITextMetrics metrics = device2D.Formatter.MeasureLayout(p, new Rectangle(Point.Empty, Size.MaxValue), null);
+		public void Reset(Canvas target, Device2D device2D)
+		{
+			if(device2D.Resources.FindEffect<DistanceEffectSettings>() == null)
+			{
+				device2D.Resources.RegisterEffect<DistanceFieldEffect>();
+			}
 
-			Outline outline = metrics.Outlines[0];
+			ShapedText output = new ShapedText();
+
+			const string text = "R";
+
+			device2D.TextShaper.Begin(output, text);
+			device2D.TextShaper.AnalyzeScripts();
+			device2D.TextShaper.SetFamily(text, "Brioso Pro");
+			device2D.TextShaper.SetPointSize(text, 12.0f);
+			device2D.TextShaper.SetFeatures(text, new FontFeatureCollection(new[] {new FontFeature("swsh")}));
+			device2D.TextShaper.End();
+
+			GlyphOutline outline =
+				device2D.Resources.GetGlyphOutline(
+					new IndexedRange(0, 1),
+					false,
+					false,
+					output.Spans[0].FontMetrics.FontId,
+					output.Glyphs);
 
 			GC.Collect(4);
 
@@ -48,14 +73,14 @@ namespace Demo.SDF
 			Stopwatch watch = new Stopwatch();
 			watch.Start();
 			Canvas test = _Distance.CreateField(
-				outline.NormalizedOutline, outline.NormalizedBaseline, device2D);
+				outline.Shape, outline.Baseline, device2D);
 			watch.Stop();
 
 			//mForm.Text = string.Format("Time: {0}", watch.ElapsedMilliseconds);
 
 			Debug.WriteLine("Time: {0}", watch.ElapsedMilliseconds);
 
-			Rectangle reg = device2D.Shaper.MeasureRegion(outline.NormalizedOutline);
+			Rectangle reg = device2D.Geometry.MeasureRegion(outline.Shape);
 
 			device2D.Painter.Begin(target);
 			device2D.Painter.Translate(test.Region.X, test.Region.Y);
@@ -66,7 +91,7 @@ namespace Demo.SDF
 			device2D.Painter.Translate(-reg.X * 400, -reg.Y * 400);
 			device2D.Painter.SetBrush(Color.Black);
 			device2D.Painter.Scale(400, 400);
-			device2D.Painter.Fill(outline.NormalizedOutline);
+			device2D.Painter.Fill(outline.Shape);
 			device2D.Painter.End(); //*/
 
 			device2D.Compositor.Begin(target, Retention.RetainData);
