@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -25,24 +25,6 @@ namespace Demo.Formatting
 		private bool _AreLinesDisplayed;
 		private bool _AreRegionsDisplayed;
 
-		public Application()
-		{
-		}
-
-		public sealed class ShapedText : IShapedGlyphs
-		{
-			public ShapedText()
-			{
-				Glyphs = new List<TextShaper.Glyph>();
-				Clusters = new List<TextShaper.Cluster>();
-				Spans = new List<TextShaper.Span>();
-			}
-
-			public List<TextShaper.Glyph> Glyphs { get; private set; }
-			public List<TextShaper.Cluster> Clusters { get; private set; }
-			public List<TextShaper.Span> Spans { get; private set; }
-		}
-
 		public void Reset(Canvas target, Device2D device2D)
 		{
 			ShapedText shapedOutput = new ShapedText();
@@ -54,7 +36,7 @@ namespace Demo.Formatting
 			device2D.TextShaper.AnalyzeScripts();
 
 			device2D.TextShaper.SetPointSize(plainText, 95.0f);
-			
+
 			device2D.TextShaper.End();
 
 			List<GlyphOutline> outlines = new List<GlyphOutline>();
@@ -65,12 +47,13 @@ namespace Demo.Formatting
 				{
 					TextShaper.Cluster cluster = shapedOutput.Clusters[clusterIndex];
 
-					outlines.Add(device2D.Resources.GetGlyphOutline(
-						cluster.Glyphs,
-						false,
-						false,
-						span.FontMetrics.FontId,
-						shapedOutput.Glyphs));
+					outlines.Add(
+						device2D.Resources.GetGlyphOutline(
+							cluster.Glyphs,
+							false,
+							false,
+							span.FontMetrics.FontId,
+							shapedOutput.Glyphs));
 				}
 			}
 
@@ -140,6 +123,20 @@ namespace Demo.Formatting
 			}
 
 			return false;
+		}
+
+		public sealed class ShapedText : IShapedGlyphs
+		{
+			public ShapedText()
+			{
+				Glyphs = new List<TextShaper.Glyph>();
+				Clusters = new List<TextShaper.Cluster>();
+				Spans = new List<TextShaper.Span>();
+			}
+
+			public List<TextShaper.Glyph> Glyphs { get; private set; }
+			public List<TextShaper.Cluster> Clusters { get; private set; }
+			public List<TextShaper.Span> Spans { get; private set; }
 		}
 
 		/*private void OutlineLines(Painter painter)

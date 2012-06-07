@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2012, Joshua Burke
+﻿// Copyright (c) 2012, Joshua Burke  
 // All rights reserved.
 // 
 // See LICENSE for more information.
@@ -65,8 +65,8 @@ namespace Demo.Framework
 
 			string shader = GetShaderText(Properties.Resources.RenderingEffects);
 
-			using(var byteCode = ShaderBytecode.Compile(shader, "fx_4_0", ShaderFlags.None, EffectFlags.None)
-				)
+			using(var byteCode = ShaderBytecode.Compile(
+					shader, "fx_4_0", ShaderFlags.None, EffectFlags.None))
 			{
 				_Effect = new Effect(_Device3D, byteCode);
 			}
@@ -79,7 +79,8 @@ namespace Demo.Framework
 
 			Contract.Assert(_EffectPass != null);
 
-			_InputLayout = new InputLayout(_Device3D, _EffectPass.Description.Signature, _InputLayoutData);
+			_InputLayout = new InputLayout(
+				_Device3D, _EffectPass.Description.Signature, _InputLayoutData);
 
 			const int byteSize = _Stride * _VertexCount;
 
@@ -109,7 +110,8 @@ namespace Demo.Framework
 
 				_VertexBuffer = new Buffer(_Device3D, stream, description);
 
-				_VertexBufferBinding = new VertexBufferBinding(_VertexBuffer, _Stride, _Offset);
+				_VertexBufferBinding = new VertexBufferBinding(
+					_VertexBuffer, _Stride, _Offset);
 			}
 		}
 
@@ -167,7 +169,7 @@ namespace Demo.Framework
 				}
 			}
 
-			if (_SharedMutex != null)
+			if(_SharedMutex != null)
 			{
 				_SharedMutex.AcquireSync();
 

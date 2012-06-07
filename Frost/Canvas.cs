@@ -10,7 +10,6 @@ using Frost.Surfacing;
 
 namespace Frost
 {
-	// TODO: put the invalidated event on this class?
 	public sealed class Canvas
 	{
 		private readonly Rectangle _Region;
