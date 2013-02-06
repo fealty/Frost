@@ -285,8 +285,8 @@ namespace Demo.Framework
 
 			Viewport view = new Viewport
 			{
-				TopLeftX = 0,
-				TopLeftY = 0,
+				X = 0,
+				Y = 0,
 				Width = _Form.ClientSize.Width,
 				Height = _Form.ClientSize.Height,
 				MinDepth = 0.0f,

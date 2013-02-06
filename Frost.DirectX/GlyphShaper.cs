@@ -258,10 +258,10 @@ namespace Frost.DirectX
 			// output the shaped clusters
 			OutputClusters(glyphsIndex, ref run, output);
 
-			Formatting.TextShaper.Cluster firstCluster = 
+			TextShaper.Cluster firstCluster = 
 				output.Clusters[clustersIndex];
 
-			Formatting.TextShaper.Cluster lastCluster = 
+			TextShaper.Cluster lastCluster = 
 				output.Clusters[output.Clusters.Count - 1];
 
 			var mm = fontHandle.ResolveFace().Metrics;
@@ -271,7 +271,7 @@ namespace Frost.DirectX
 
 			// output the span
 			output.Spans.Add(
-				new Formatting.TextShaper.Span(
+				new TextShaper.Span(
 					new IndexedRange(
 						firstCluster.Text.StartIndex,
 						lastCluster.Text.LastIndex - firstCluster.Text.StartIndex),
@@ -340,7 +340,7 @@ namespace Frost.DirectX
 			for (int i = 0; i < glyphCount; ++i)
 			{
 				output.Glyphs.Add(
-					new Formatting.TextShaper.Glyph(
+					new TextShaper.Glyph(
 						_GlyphAdvances[i],
 						_GlyphIndices[i],
 						new Size(
@@ -384,7 +384,7 @@ namespace Frost.DirectX
 				var character = _TextShaper.Characters[characterIndex];
 				
 				output.Clusters.Add(
-					new Formatting.TextShaper.Cluster(
+					new TextShaper.Cluster(
 						advance, character.Breakpoint, glyphRange, characterRange));
 			}
 		}
@@ -395,7 +395,7 @@ namespace Frost.DirectX
 		/// <param name="pointSize"> This parameter indicates the point size of the font. </param>
 		/// <param name="dxMetrics"> This parameter references the DirectWrite font metrics. </param>
 		/// <returns> This method returns the computed height of the EM unit for the given parameters. </returns>
-		private static float ComputeEmHeight(float pointSize, ref DxFontMetrics dxMetrics, Formatting.FontId fontId)
+		private static float ComputeEmHeight(float pointSize, ref DxFontMetrics dxMetrics, FontId fontId)
 		{
 			Contract.Requires(Check.IsPositive(pointSize));
 			Contract.Ensures(Check.IsPositive(Contract.Result<float>()));
@@ -423,28 +423,24 @@ namespace Frost.DirectX
 
 			try
 			{
-				if (
-					_TextAnalyzer.GetGlyphPlacements(
-						run.Text,
-						_ClusterMap,
-						_ShapedTextProperties,
-						run.Text.Length,
-						_GlyphIndices,
-						_ShapedGlyphProperties,
-						actualGlyphCount,
-						fontHandle.ResolveFace(),
-						ComputeEmHeight(run.PointSize, ref metrics, fontHandle.Id),
-						false,
-						Convert.ToBoolean(run.BidiLevel & 1),
-						run.ScriptAnalysis,
-						run.Culture.Name,
-						_Features,
-						_FeatureRangeLengths,
-						_GlyphAdvances,
-						_GlyphOffsets).Failure)
-				{
-					throw new InvalidOperationException("Failed to place glyphs!");
-				}
+				_TextAnalyzer.GetGlyphPlacements(
+					run.Text,
+					_ClusterMap,
+					_ShapedTextProperties,
+					run.Text.Length,
+					_GlyphIndices,
+					_ShapedGlyphProperties,
+					actualGlyphCount,
+					fontHandle.ResolveFace(),
+					ComputeEmHeight(run.PointSize, ref metrics, fontHandle.Id),
+					false,
+					Convert.ToBoolean(run.BidiLevel & 1),
+					run.ScriptAnalysis,
+					run.Culture.Name,
+					_Features,
+					_FeatureRangeLengths,
+					_GlyphAdvances,
+					_GlyphOffsets);
 			}
 			catch (SharpDXException e)
 			{
@@ -471,9 +467,11 @@ namespace Frost.DirectX
 			{
 				glyphCount = 0;
 
+				result = Result.Ok;
+
 				try
 				{
-					result = _TextAnalyzer.GetGlyphs(
+					_TextAnalyzer.GetGlyphs(
 						run.Text,
 						run.Text.Length,
 						fontHandle.ResolveFace(),
@@ -490,11 +488,6 @@ namespace Frost.DirectX
 						_GlyphIndices,
 						_ShapedGlyphProperties,
 						out glyphCount);
-
-					if (result.Failure)
-					{
-						throw new InvalidOperationException("Failed to shape glyphs!");
-					}
 				}
 				catch (SharpDXException e)
 				{

@@ -271,31 +271,13 @@ namespace Frost.DirectX
 
 			try
 			{
-				if(
-					_TextAnalyzer.AnalyzeLineBreakpoints(this, 0, _TextShaper.Text.Length, this).
-						Failure)
-				{
-					throw new InvalidOperationException(
-						"Analysis of line breaking points failed!");
-				}
+				_TextAnalyzer.AnalyzeLineBreakpoints(this, 0, _TextShaper.Text.Length, this);
 
-				if(_TextAnalyzer.AnalyzeBidi(this, 0, _TextShaper.Text.Length, this).Failure)
-				{
-					throw new InvalidOperationException("Analysis of bidi-text failed!");
-				}
+				_TextAnalyzer.AnalyzeBidi(this, 0, _TextShaper.Text.Length, this);
 
-				if(_TextAnalyzer.AnalyzeScript(this, 0, _TextShaper.Text.Length, this).Failure)
-				{
-					throw new InvalidOperationException("Analysis of scripts failed!");
-				}
+				_TextAnalyzer.AnalyzeScript(this, 0, _TextShaper.Text.Length, this);
 
-				if(
-					_TextAnalyzer.AnalyzeNumberSubstitution(
-						this, 0, _TextShaper.Text.Length, this).Failure)
-				{
-					throw new InvalidOperationException(
-						"Analysis of number substition failed!");
-				}
+				_TextAnalyzer.AnalyzeNumberSubstitution(this, 0, _TextShaper.Text.Length, this);
 			}
 			catch(SharpDXException e)
 			{

@@ -183,7 +183,7 @@ namespace Frost.DirectX.Painting
 			rectangle.Right = newRegion.Right;
 			rectangle.Bottom = newRegion.Bottom;
 
-			RoundedRect roundedRectangle = new RoundedRect
+			RoundedRectangle roundedRectangle = new RoundedRectangle
 			{
 				Rect = rectangle,
 				RadiusX = roundedRectangleRadius.Width,
@@ -223,7 +223,7 @@ namespace Frost.DirectX.Painting
 			rectangle.Right = rectangleRegion.Right;
 			rectangle.Bottom = rectangleRegion.Bottom;
 
-			RoundedRect roundedRect = new RoundedRect
+			RoundedRectangle roundedRect = new RoundedRectangle
 			{
 				Rect = rectangle,
 				RadiusX = roundedRectangleRadius.Width,

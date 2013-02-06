@@ -22,12 +22,40 @@ namespace Demo.Framework
 
 		internal static Result AcquireSync(this KeyedMutex mutex)
 		{
-			return mutex != null ? mutex.Acquire(0, -1) : Result.NoInterface;
+			if(mutex != null)
+			{
+				try
+				{
+					mutex.Acquire(0, -1);
+				}
+				catch(SharpDXException)
+				{
+					return Result.NoInterface;
+				}
+
+				return Result.Ok;
+			}
+
+			return Result.NoInterface;
 		}
 
 		internal static Result ReleaseSync(this KeyedMutex mutex)
 		{
-			return mutex != null ? mutex.Release(0) : Result.NoInterface;
+			if(mutex != null)
+			{
+				try
+				{
+					mutex.Release(0);
+				}
+				catch(SharpDXException)
+				{
+					return Result.NoInterface;
+				}
+
+				return Result.Ok;
+			}
+
+			return Result.NoInterface;
 		}
 	}
 }

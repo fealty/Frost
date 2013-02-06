@@ -139,6 +139,7 @@ namespace Demo.Formatting
 			public List<TextShaper.Span> Spans { get; private set; }
 		}
 
+		//TODO: old code... update so the options work
 		/*private void OutlineLines(Painter painter)
 		{
 			Contract.Requires(painter != null);

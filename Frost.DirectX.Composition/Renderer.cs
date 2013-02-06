@@ -9,7 +9,6 @@ using System.Diagnostics.Contracts;
 using System.IO;
 
 using Frost.DirectX.Common;
-using Frost.DirectX.Composition.Properties;
 using Frost.Surfacing;
 
 using SharpDX;
@@ -305,8 +304,8 @@ namespace Frost.DirectX.Composition
 			Viewport viewport;
 
 			viewport.MinDepth = 0.0f;
-			viewport.TopLeftX = Convert.ToInt32(activeLayer.Region.Left);
-			viewport.TopLeftY = Convert.ToInt32(activeLayer.Region.Top);
+			viewport.X = Convert.ToInt32(activeLayer.Region.Left);
+			viewport.Y = Convert.ToInt32(activeLayer.Region.Top);
 			viewport.Width = Convert.ToInt32(activeLayer.Region.Width);
 			viewport.Height = Convert.ToInt32(activeLayer.Region.Height);
 			viewport.MaxDepth = 1.0f;
