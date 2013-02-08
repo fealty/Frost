@@ -38,7 +38,7 @@ namespace Demo.SDF
 			Shape simplified = device2D.Geometry.Simplify(
 				geometry, 1.0f / DistanceField.ResolvedLength);
 
-			simplified.Extract(this);
+			simplified.ExtractTo(this);
 
 			mLines = mBuiltLines.ToArray();
 		}
@@ -297,7 +297,7 @@ namespace Demo.SDF
 
 			mTransform = transform;
 
-			geometry.Extract(this);
+			geometry.ExtractTo(this);
 
 			mComponents.Clear();
 

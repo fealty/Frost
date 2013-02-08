@@ -221,7 +221,7 @@ namespace Frost.Shaping
 			return new Shape(_Points, _Commands, ref result);
 		}
 
-		public void Extract(IGeometrySink sink)
+		public void ExtractTo(IGeometrySink sink)
 		{
 			Contract.Requires(sink != null);
 

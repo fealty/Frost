@@ -143,7 +143,7 @@ namespace Frost.DirectX.Common
 
 			try
 			{
-				shape.Extract(this);
+				shape.ExtractTo(this);
 			}
 			finally
 			{

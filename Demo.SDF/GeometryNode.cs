@@ -44,7 +44,7 @@ namespace Demo.SDF
 
 			Shape simplified = device2D.Geometry.Simplify(geometry, 1.0f / resolution);
 
-			simplified.Extract(this);
+			simplified.ExtractTo(this);
 
 			_Lines = _BuiltLines.ToArray();
 		}
