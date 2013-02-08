@@ -3,18 +3,13 @@
 // 
 // See LICENSE for more information.
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
 
 using Demo.Framework;
 
 using Frost;
-using Frost.Collections;
 using Frost.Formatting;
 using Frost.Painting;
-using Frost.Shaping;
 
 using SD = System.Drawing;
 
@@ -22,7 +17,6 @@ namespace Demo.Formatting
 {
 	internal sealed class Application : IDemoContext
 	{
-		private bool _AreLinesDisplayed;
 		private bool _AreRegionsDisplayed;
 
 		public void Reset(Canvas target, Device2D device2D)
@@ -67,10 +61,28 @@ namespace Demo.Formatting
 
 				foreach(int clusterIndex in span.Clusters)
 				{
+					float advance = shapedOutput.Clusters[clusterIndex].Advance;
+
+					if (_AreRegionsDisplayed)
+					{
+						device2D.Painter.SaveState();
+
+						device2D.Painter.StrokeWidth = 0.5f;
+						device2D.Painter.LineStyle = LineStyle.Dash;
+
+						device2D.Painter.SetBrush(Color.Red);
+						device2D.Painter.StrokeRectangle(0, 0, advance, emSize);
+						device2D.Painter.SetBrush(Resources.Foreground);
+						
+						device2D.Painter.RestoreState();
+					}
+
+					float baseline = outlines[clusterIndex].Baseline;
+
 					device2D.Painter.SaveState();
 
 					device2D.Painter.Scale(emSize, emSize);
-					device2D.Painter.Translate(0, outlines[clusterIndex].Baseline);
+					device2D.Painter.Translate(0, baseline);
 
 					if(outlines[clusterIndex].Shape != null)
 					{
@@ -79,8 +91,7 @@ namespace Demo.Formatting
 
 					device2D.Painter.RestoreState();
 
-					device2D.Painter.Translate(
-						shapedOutput.Clusters[clusterIndex].Advance, 0);
+					device2D.Painter.Translate(advance, 0);
 				}
 			}
 
@@ -91,12 +102,6 @@ namespace Demo.Formatting
 		{
 			get
 			{
-				yield return
-					new DemoSetting(
-						"Hide Lines",
-						"Show Lines",
-						_AreLinesDisplayed,
-						() => _AreLinesDisplayed = !_AreLinesDisplayed);
 				yield return
 					new DemoSetting(
 						"Hide Regions",
@@ -115,9 +120,6 @@ namespace Demo.Formatting
 			switch(keyCharacter)
 			{
 				case '1':
-					_AreLinesDisplayed = !_AreLinesDisplayed;
-					return true;
-				case '2':
 					_AreRegionsDisplayed = !_AreRegionsDisplayed;
 					return true;
 			}
@@ -138,50 +140,6 @@ namespace Demo.Formatting
 			public List<TextShaper.Cluster> Clusters { get; private set; }
 			public List<TextShaper.Span> Spans { get; private set; }
 		}
-
-		//TODO: old code... update so the options work
-		/*private void OutlineLines(Painter painter)
-		{
-			Contract.Requires(painter != null);
-
-			if(_AreLinesDisplayed)
-			{
-				painter.SetBrush(Color.Black);
-
-				foreach(var paragraph in _Paragraphs)
-				{
-					foreach(IndexedRange line in paragraph.Lines)
-					{
-						Rectangle region;
-
-						paragraph.ComputeRegion(line, out region);
-
-						painter.StrokeRectangle(region);
-					}
-				}
-			}
-		}
-
-		private void OutlineCharacters(Painter painter)
-		{
-			Contract.Requires(painter != null);
-
-			if(_AreRegionsDisplayed)
-			{
-				painter.SetBrush(Color.Black);
-
-				foreach(var paragraph in _Paragraphs)
-				{
-					foreach(var item in paragraph.Regions)
-					{
-						if(!item.IsEmpty)
-						{
-							painter.StrokeRectangle(item);
-						}
-					}
-				}
-			}
-		}*/
 	}
 
 	internal static class Program
