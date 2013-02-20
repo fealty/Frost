@@ -306,6 +306,9 @@ namespace Demo.SDF
 				mComponents.Add(new SimplifiedGeometry(item, device2D));
 			}
 
+			mActiveNodes.Clear();
+			mInactiveNodes.Clear();
+
 			foreach(SimplifiedGeometry geo in mComponents)
 			{
 				Test4 item;
