@@ -280,8 +280,6 @@ namespace Demo.SDF
 
 			double error = MinimumError + ((MaximumError - MinimumError) * s);
 
-			//error = MaximumError;
-
 			float halfWidth = region.Width / 2.0f;
 			float halfHeight = region.Height / 2.0f;
 

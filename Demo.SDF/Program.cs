@@ -49,11 +49,11 @@ namespace Demo.SDF
 
 			ShapedText output = new ShapedText();
 
-			const string text = "R";
+			const string text = "M";
 
 			device2D.TextShaper.Begin(output, text);
 			device2D.TextShaper.AnalyzeScripts();
-			device2D.TextShaper.SetFamily(text, "Brioso Pro");
+			device2D.TextShaper.SetFamily(text, "Arno Pro");
 			device2D.TextShaper.SetPointSize(text, 12.0f);
 			device2D.TextShaper.SetFeatures(text, new FontFeatureCollection(new[] {new FontFeature("swsh")}));
 			device2D.TextShaper.End();
