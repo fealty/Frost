@@ -19,12 +19,9 @@ namespace Demo.Framework
 	{
 		private static readonly Stopwatch _Watch;
 
-		private static readonly ShapedText _ShapedText;
-
 		static DemoInterface()
 		{
 			_Watch = new Stopwatch();
-			_ShapedText = new ShapedText();
 		}
 
 		public static void ResetDemo(
@@ -93,27 +90,28 @@ namespace Demo.Framework
 			Rectangle subsystemRegion = subsystemMetrics.AlignRelativeTo(
 				middle, Alignment.Center, Axis.Horizontal);
 
-			subsystemRegion = subsystemRegion.Translate(0, middle.Bottom - subsystemRegion.Height);
+			subsystemRegion = subsystemRegion.Translate(
+				0, middle.Bottom - subsystemRegion.Height);
 
 			////////////////////////////////
-			string memoryString = string.Format("Memory: {0:N0} KB", GC.GetTotalMemory(true) / 1024);
+			string memoryString = string.Format(
+				"Memory: {0:N0} KB", GC.GetTotalMemory(true) / 1024);
 
-			Rectangle memoryMetrics = MeasureText(memoryString, device2D);
+			string garbageString = string.Format(
+				"Garbage: {0:N0} KB", memoryDelta / 1024);
 
-			string garbageString = string.Format("Garbage: {0:N0} KB", memoryDelta / 1024);
-
-			Rectangle garbageMetrics = MeasureText(garbageString, device2D);
-
-			string snapshotString = "SNAPSHOT";
+			const string snapshotString = "SNAPSHOT";
 
 			Rectangle snapshotMetrics = MeasureText(snapshotString, device2D);
 
-			string optionsString = "OPTIONS";
+			const string optionsString = "OPTIONS";
 
 			Rectangle optionsMetrics = MeasureText(optionsString, device2D);
 
-			snapshotMetrics = snapshotMetrics.AlignRelativeTo(right, Alignment.Center, Axis.Horizontal);
-			optionsMetrics = optionsMetrics.AlignRelativeTo(left, Alignment.Center, Axis.Horizontal);
+			snapshotMetrics = snapshotMetrics.AlignRelativeTo(
+				right, Alignment.Center, Axis.Horizontal);
+			optionsMetrics = optionsMetrics.AlignRelativeTo(
+				left, Alignment.Center, Axis.Horizontal);
 
 			device2D.Painter.Begin(target);
 
@@ -127,9 +125,13 @@ namespace Demo.Framework
 			device2D.Painter.FillRectangle(right);
 
 			Rectangle timePanel = timeRegion.Expand(
-				timeRegion.Height, timeRegion.Height, timeRegion.Height, timeRegion.Height / 4.0f);
+				timeRegion.Height,
+				timeRegion.Height,
+				timeRegion.Height,
+				timeRegion.Height / 4.0f);
 
-			device2D.Painter.FillRectangle(timePanel, new Size(timeRegion.Height / 2.0f));
+			device2D.Painter.FillRectangle(
+				timePanel, new Size(timeRegion.Height / 2.0f));
 
 			Rectangle subsystemPanel = subsystemRegion.Expand(
 				subsystemRegion.Height,
@@ -137,7 +139,8 @@ namespace Demo.Framework
 				subsystemRegion.Height,
 				subsystemRegion.Height);
 
-			device2D.Painter.FillRectangle(subsystemPanel, new Size(subsystemRegion.Height / 2.0f));
+			device2D.Painter.FillRectangle(
+				subsystemPanel, new Size(subsystemRegion.Height / 2.0f));
 
 			device2D.Painter.SetBrush(Resources.ActiveButton);
 
@@ -175,14 +178,17 @@ namespace Demo.Framework
 				snapshotMetrics.Right,
 				snapshotMetrics.Bottom);
 
-			device2D.Painter.Translate(right.Left + (timeRegion.Height / 2.0f), (timeRegion.Height * 2) + (timeRegion.Height * 0.25f));
+			device2D.Painter.Translate(
+				right.Left + (timeRegion.Height / 2.0f),
+				(timeRegion.Height * 2) + (timeRegion.Height * 0.25f));
 
 			DrawText(Point.Empty, memoryString, device2D);
 
-			device2D.Painter.Translate(0, (timeRegion.Height * 2) + (timeRegion.Height * 0.25f));
+			device2D.Painter.Translate(
+				0, (timeRegion.Height * 2) + (timeRegion.Height * 0.25f));
 
 			DrawText(Point.Empty, garbageString, device2D);
-			
+
 			device2D.Painter.RestoreState();
 
 			device2D.Painter.SaveState();
@@ -200,8 +206,11 @@ namespace Demo.Framework
 			device2D.Painter.RestoreState();
 
 			GenerateMenu(
-				context, target, device2D, (timeRegion.Height * 3) + (timeRegion.Height * 0.25f), left.Width);
-			
+				context,
+				target,
+				device2D,
+				(timeRegion.Height * 3) + (timeRegion.Height * 0.25f),
+				left.Width);
 
 			device2D.Painter.End();
 
@@ -294,12 +303,13 @@ namespace Demo.Framework
 			float maxWidth = 0.0f;
 			float maxHeight = 0.0f;
 
-			foreach (TextShaper.Span span in shapedOutput.Spans)
+			foreach(TextShaper.Span span in shapedOutput.Spans)
 			{
-				maxHeight = Math.Max(maxHeight, 
+				maxHeight = Math.Max(
+					maxHeight,
 					span.FontMetrics.MeasureEm(span.PointSize));
 
-				foreach (int clusterIndex in span.Clusters)
+				foreach(int clusterIndex in span.Clusters)
 				{
 					maxWidth += shapedOutput.Clusters[clusterIndex].Advance;
 				}
